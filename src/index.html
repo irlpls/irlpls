@@ -770,7 +770,7 @@ var LOOK=/monitoring-locations\/items\/|\/mdapi\/|\/points\/|\/stations(\.json)?
    highlighted pane, every one in a short list with its status and time */
 function calls(cs,name,id,cache){if(!cs||!cs.length)return;var main=cs.filter(function(c){return !LOOK.test(c.url)}).pop()||cs[cs.length-1];
   var st=function(c){return c.status===0?'running…':c.status<0?'failed':c.status+' · '+c.ms+' ms'};
-  var h='<p class="rt">Your agent asks irlpls once; irlpls matched <b>'+E(name)+'</b> and called it, here straight from this browser. No key, no irlpls server.</p>';
+  var h='<p class="rt">Your agent asks irlpls once; irlpls matched <b>'+E(name)+'</b> and called it. No key, no irlpls server.</p>';
   if(window.IRLCall)h+=IRLCall.html({provider:name,readiness:{state:'ready_now'},price:'Free',free:true,text:curQ,rc:{method:main.method,url:main.url,headers:{},auth:{},safe_to_run_without_approval:true},kicker:'What irlpls sent for you',ran:{status:main.status,ms:main.ms},cache:cache||'',note:''});
   if(cs.length>1)h+='<ul class="cls" aria-label="Every call">'+cs.map(function(c){return '<li><span>'+E(c.method+' '+host(c.url))+'</span><b class="'+(c.status>=200&&c.status<300?'ok':'')+'">'+E(st(c))+'</b></li>'}).join('')+'</ul>';
   impl(h,'<span class="m">'+E(main.method)+'</span><span class="u">'+E(host(main.url))+'</span><span class="s'+(main.status>=200&&main.status<300?' ok':'')+'">'+E(st(main))+'</span>'+(cache?'<span class="s">cached</span>':''));
