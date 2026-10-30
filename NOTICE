@@ -11,3 +11,5 @@ except as follows:
   Apache-2.0 or CC BY 4.0.
 - Provider names and marks belong to their owners. Their use here is
   descriptive only and implies no endorsement.
+- src/places.json is derived from GeoNames (https://www.geonames.org/),
+  licensed CC BY 4.0 (see src/media/CREDITS.md).

@@ -27,6 +27,35 @@ function fitTitle(s){return 'match '+s.total+'/100 for this request'}
 function fmt(m){return m<60?m+' min':m<1440?Math.floor(m/60)+' h':Math.floor(m/1440)+' d'}
 function regionName(cc){try{return new Intl.DisplayNames(['en'],{type:'region'}).of(cc.toUpperCase())}catch(e){return cc.toUpperCase()}}
 
+/* honest notes for an ask (they were screen 3's; Find data reads every ask now) ---------------------------------------
+   person-targeting: the matcher's own check, plus asks about someone close ("what is my neighbour doing"). A family
+   member's place is a place ("check on my mom's house in Tampa"), as in the matcher (need.py PLACE_NOUNS). */
+var PLACES='(?:house|home|apartment|flat|condo|place|property|yard|garden|lawn|porch|roof|driveway|garage|barn|farm|land|lot|cabin|cottage|building|street|shop|store|restaurant|bakery|cafe|office|business|storefront|fence|grave|church)s?';
+var NEAR=new RegExp("\\b(my|our)\\s+(?:(?:neighbou?rs?|ex|wife|husband|partner|girlfriend|boyfriend|spouse|boss|landlord|tenant|roommate|flatmate|co-?worker|colleague)\\b|(?:kids?|daughter|son|mother|father|mom|dad|sister|brother)\\b(?!(?:'s|s'|’s)\\s+"+PLACES+"\\b))|\\b(where|what)\\s+is\\s+(he|she)\\b|\\bwho\\s+lives\\b","i");
+/* an ask to check media someone already has ("verify a photo", "is this video real", "check this footage", "authenticate") */
+var EXISTING=/\bauthenticat(?:e|ing)\b|\b(?:verify|verifying|fact[- ]?check|check|checking)\s+(?:(?:this|that|the|a|an|my|our|some|these|those)\s+)?(?:[\w-]+\s+){0,2}(?:photo|picture|image|video|footage|clip|recording|screenshot|media)s?\b|\b(?:is|are)\s+(?:this|that|these|those|the)\s+(?:[\w-]+\s+){0,8}?(?:photo|picture|image|video|footage|clip|recording|screenshot)s?\b[^.?!]{0,60}?\b(?:real|fake|genuine|authentic|edited|doctored|ai[- ]generated|deepfake)\b/i;
+/* the past: irlpls orders new captures, so an ask about yesterday, last week or a past date can't be met */
+var MON='jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec',MI={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11};
+function past(q){var t=q.toLowerCase(),now=new Date(),d0=new Date(now.getFullYear(),now.getMonth(),now.getDate()),m;
+  if(/\b(yesterday|last\s+(night|week|weekend|month|year|summer|winter|spring|fall|autumn|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|(\d+|a|an|few)\s+(hours?|days?|weeks?|months?|years?)\s+ago|earlier\s+today)\b/.test(t))return true;
+  if(/\bnext\b|\bfrom now\b/.test(t))return false;
+  var y=/\b(19\d\d|20\d\d)\b/.exec(t);if(y&&+y[1]<now.getFullYear()&&!new RegExp('\\b('+MON+')').test(t))return true;
+  if((m=/\b(\d{4})-(\d\d)-(\d\d)\b/.exec(t)))return new Date(+m[1],+m[2]-1,+m[3])<d0;
+  if((m=new RegExp('\\b('+MON+')[a-z]*\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?\\b(?:,?\\s+(\\d{4}))?').exec(t))||(m=new RegExp('\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?('+MON+')[a-z]*\\b(?:,?\\s+(\\d{4}))?').exec(t))){
+    var mo=isNaN(+m[1])?m[1]:m[2],dd=isNaN(+m[1])?+m[2]:+m[1];if(mo==='may'&&isNaN(+m[1])&&!m[3]&&!/\bon\s+may\b/.test(t))return false;
+    return new Date(m[3]?+m[3]:now.getFullYear(),MI[mo],dd)<d0}
+  return false}
+/* proof: an ask that demands it (signed, C2PA, verified, authenticated location...) is met only by a match that evidences
+   the links it names (any link when it names none) */
+var PROOF=/\b(signed|signature|c2pa|seal(ed)?|verified|verifiable|evidenced|evidence|authenticated|attested|attestation|provenance|prove[dn]?|proving|proof|tamper[- ]?(proof|evident)|timestamped|time-stamped)\b/i;
+function proofStages(q){var t=q.toLowerCase(),s=[];
+  if(/c2pa|signed|signature|seal/.test(t))s.push(3);if(/locat|position|gps|place|where/.test(t)&&/authentic|verif|prov|proof|evidenc|signed/.test(t))s.push(1);
+  if(/time-?stamp/.test(t))s.push(4);if(/\b(id|identity|real person|human)\b/.test(t))s.push(0);if(/device|attest/.test(t))s.push(2);
+  if(/independent|third[- ]party/.test(t))s.push(6);return s}
+/* a street address in the ask ("50 Elm St, Burlington, VT"), as the library reads one (adapters.base.street_address) */
+var STREET=/\b\d{1,6}[A-Za-z]?(?:-\d{1,5})?\s+(?:[NSEW]\.?\s+)?[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}?\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Way|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Ter|Terrace|Cir|Circle|Sq|Square|Trl|Trail|Row|Alley|Broadway)\b\.?[^]*$/i;
+function evidences(c,st){var l=IRLMatch.stageLevels(c);return st.length?st.every(function(i){return l[i]==='evidenced'}):l.some(function(x){return x==='evidenced'})}
+
 /* the fit for one request, and what this provider can't do for it, in plain words */
 /* proof gaps are not repeated here: the card's proof marks switch to the guarantees this request needs */
 function gaps(s){var out=[];
@@ -83,7 +112,9 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
       var fl=flt.free||flt.live||flt.commission;
       /* 'Recently published by providers' sits after the list, and only while browsing: a query or a filter shows the user's results alone */
       var pubs=document.querySelector('section.pubs');if(pubs)pubs.hidden=on||fl;
-      bestBlock(on&&list.length?list[0]:null,text);
+      if(on&&noteFor(text,req,list)){bestBlock(null);grid.innerHTML='';more.hidden=true;meta.textContent='No providers shown.';parsed.hidden=true;return}
+      if(!on&&notes)notes.innerHTML='';
+      bestBlock(on&&list.length?list[0]:null,text,req);
       grid.classList.toggle('scored',on);
       meta.textContent=shown.length+(on?(shown.length===1?' provider matches':' providers match'):(shown.length===1?' provider':' providers'));
       grid.innerHTML=shown.map(function(x){return row(x.c,x.s,on)}).join('');var ky=document.querySelector('.lhead .key');if(ky)ky.hidden=!list.length;
@@ -91,22 +122,63 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
       if(!list.length){meta.innerHTML=fl&&matched.length?'None with these filters. <button type="button" class="linkish" id="clrf">Clear filters</button>':'No provider covers this. Try a broader ask.';
         var cf=document.getElementById('clrf');if(cf)cf.onclick=function(){flt={free:false,live:false,commission:false};syncF();render()}}
       try{var u=new URL(location.href);if(on)u.searchParams.set('q',text);else u.searchParams.delete('q');[['free','free'],['live','live'],['made','commission']].forEach(function(p){if(flt[p[1]])u.searchParams.set(p[0],'1');else u.searchParams.delete(p[0])});history.replaceState(history.state,'',u)}catch(e){}}
-    /* the best match, read like the landing's screen 3 (the owner, 2026-10-29): what you get from it in one line, and the one
-       next step. A free live source this browser can read: Get it now (the landing fetches it). Otherwise its plan: mode,
-       price, speed and how close it is to "just say yes" (readiness, from catalog.json, fetched once). */
-    var best=document.getElementById('best'),RDY=null,rdyAsked=false;
-    function bestBlock(x,text){if(!best)return;if(!x){best.hidden=true;best.innerHTML='';return}
-      var c=x.c,LV=window.IRLLive,now=(c.access||{}).cost==='free'&&LV&&LV.route(c.id),card='<a href="'+base+'c/'+c.id+'.html" data-open="'+c.id+'">';
+    /* the top match, run or shown (the owner, 2026-10-30): a free live source this browser can read is asked straight from
+       here (src/live.js, with its spacing, budget, cache and Retry-After rules) and its answer shows inline. Anything else
+       shows the call an agent would make: the reference library's prepared call for this provider (catalog.json
+       providers[id].ready_call, built by build.py from the adapter's prepare()), filled with this ask, the key only named,
+       and its plan (mode, price, speed) and readiness. Nothing is ever sent or ordered from here. */
+    var best=document.getElementById('best'),CAT=null,catAsked=false,LV=window.IRLLive,ranFor='',lt=null,lastBest=null,typed=false;
+    function cardLink(c,cls,label){return '<a'+(cls?' class="'+cls+'"':'')+' href="'+base+'c/'+c.id+'.html" data-open="'+c.id+'">'+label+'</a>'}
+    function runnable(c){return (c.access||{}).cost==='free'&&LV&&LV.route(c.id)}
+    function bestBlock(x,text,req){if(!best)return;clearTimeout(lt);if(!x){best.hidden=true;best.innerHTML='';lastBest=null;return}
+      var c=x.c,key=c.id+'|'+text;if(lastBest===key&&!best.hidden)return;lastBest=key;
       var h='<p class="bk">Best match</p><p class="bn">'+E(plainName(c))+'</p>';
-      h+=now?'<p class="bp">Live · Free · it answers now, straight to your browser.</p><div class="ba"><a class="go" href="'+base+'index.html?q='+encodeURIComponent(text)+'&amp;go=1#try">Get it now</a>'+card+'Its card</a></div>':
-        '<p class="bp">'+E(modeText(c)+' · '+priceText(c)+' · '+speed(c))+'</p><p class="bp" id="brdy" hidden></p><div class="ba">'+card.replace('<a ','<a class="go" ')+'See the plan</a></div>';
-      best.innerHTML=h;best.hidden=false;if(!now)readiness(c.id)}
-    function readiness(id){var put=function(){var r=document.getElementById('brdy'),x=RDY&&RDY[id];if(r&&x&&x.line){r.textContent=x.line;r.hidden=false}};
-      if(RDY||rdyAsked){put();return}rdyAsked=true;
-      fetch(base+'catalog.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){RDY={};var ps=d.providers||{};Object.keys(ps).forEach(function(k){RDY[k]=ps[k].readiness||null});put()}).catch(function(){})}
+      if(runnable(c)){var R=LV.route(c.id);
+        h+='<p class="bp">Live · Free · runs in your browser, straight from '+E(R.name)+'.</p><div id="blv" class="blv" aria-live="polite"></div>'+
+          '<div class="ba"><button class="go" type="button" id="brun">Ask '+E(R.name)+' live</button>'+cardLink(c,'','Its card')+'</div>';
+        best.innerHTML=h;best.hidden=false;
+        document.getElementById('brun').onclick=function(){runLive(c,text,req)};
+        /* typing that names a place this page can map runs it once the typing pauses; one lookup per ask (the cache keeps it) */
+        var pl=LV.place(text,req);if(typed&&!pl.missing&&(!R.cc||R.cc.indexOf(pl.cc)>-1)&&ranFor!==key)lt=setTimeout(function(){if(lastBest===key)runLive(c,text,req)},900);
+        return}
+      h+='<p class="bp">'+E(modeText(c)+' · '+priceText(c)+' · '+speed(c))+'</p><p class="bp" id="brdy" hidden></p><div id="bcall"></div><div class="ba">'+cardLink(c,'go','See the plan')+'</div>';
+      best.innerHTML=h;best.hidden=false;catalog(function(){planFor(c,text,req)})}
+    function catalog(f){if(CAT){f();return}if(catAsked){var w=setInterval(function(){if(CAT){clearInterval(w);f()}},100);setTimeout(function(){clearInterval(w)},8000);return}catAsked=true;
+      fetch(base+'catalog.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){CAT=d.providers||{};f()}).catch(function(){CAT={}})}
+    /* readiness, then the ready call with this ask filled in */
+    function planFor(c,text,req){var p=CAT[c.id]||{},r=document.getElementById('brdy'),box=document.getElementById('bcall');if(!box)return;
+      if(r&&p.readiness&&p.readiness.line){r.textContent=p.readiness.line;r.hidden=false}
+      var rc=p.ready_call;if(!rc){var d=(p.api||{}).docs_url;box.innerHTML='<p class="bq">No ready call for this provider yet.'+(d?' <a href="'+E(d)+'" rel="noopener">Its API docs</a>':'')+'</p>';return}
+      /* the pane (src/callpane.js, shared with the landing's screen 3): provider, readiness pill, price, the call as
+         HTTP / curl / Python with Copy, the key only named and where to get it */
+      var C=window.IRLCall;if(!C){box.innerHTML='<p class="bq">Nothing is sent from this page.</p>';return}
+      box.innerHTML=C.html({provider:plainName(c),readiness:p.readiness,price:priceText(c),rc:rc,text:text,req:req,place:LV?LV.place(text,req):{missing:true},street:STREET.exec(text)});
+      C.bind(box)}
+    /* the live answer, inline: the value in one line, its source with the eight dots and its age, and where it came from */
+    function runLive(c,text,req){var box=document.getElementById('blv');if(!box)return;clearTimeout(lt);ranFor=c.id+'|'+text;
+      var b=document.getElementById('brun');if(b)b.disabled=true;
+      LV.ask(c.id,text,req,function(line){box.innerHTML='<p class="lvs">'+E(line)+'</p>'}).then(function(x){
+        if(document.getElementById('blv')!==box)return;if(b){b.disabled=false;b.textContent='Ask again'}
+        if(x.kind==='msg'){box.innerHTML='<p class="lvm"><b>'+E(x.head)+'</b>'+(x.rest?' '+E(x.rest):'')+(x.sug?' <button type="button" class="linkish" id="bsug">'+E(x.sug)+'</button>':'')+'</p>';
+          if(x.wait&&b){b.disabled=true;b.textContent='Ask again in '+x.wait+' s';setTimeout(function(){if(document.getElementById('brun')===b){b.disabled=false;b.textContent='Ask again'}},x.wait*1000)}
+          var sg=document.getElementById('bsug');if(sg)sg.onclick=function(){q.value=x.sug;render();var nb=document.getElementById('brun');if(nb)nb.click()};return}
+        var ac=byId(x.id)||c,seg=LV.reply(x),age=(x.r.checked?'checked ':'')+LV.ago(x.r.t)+' ago';  /* the same reply as the landing's screen 3 */
+        box.innerHTML='<p class="lva">'+seg.map(function(s){return typeof s==='string'?E(s):'<b>'+E(s.b)+'</b>'}).join('')+'</p>'+(x.r.photo?'<img class="lvi" src="'+E(x.r.photo)+'" alt="'+E(x.r.alt||'')+'">':'')+
+          '<p class="lvsrc">'+dots(ac).replace('role="img"','aria-hidden="true"')+'<span><b>'+E(x.name)+'</b> · '+E(age)+'</span></p>'+
+          '<p class="via">'+(x.why?E(x.name)+' answered, not '+E(x.asked)+': '+E(x.why)+'. ':'')+'Fetched by your browser, straight from '+E(x.name)+'.</p>'})}
+    /* what irlpls won't do, or can't, said plainly above the matches (the landing said it before; Find data is where asks go now) */
+    var notes=document.getElementById('notes');
+    function noteFor(text,req,top){if(!notes)return false;var h='';
+      if(req.targets_person||NEAR.test(text)){notes.innerHTML='<p class="note stop"><b>irlpls won’t route this.</b> Requests that watch or follow a person are refused.</p>';return true}
+      if(EXISTING.test(text))h+='<p class="note"><b>irlpls can’t check a photo or video you already have;</b> it finds who can capture something new, and shows what each can prove.</p>';
+      if(past(text))h+='<p class="note"><b>irlpls orders new captures; it can’t capture the past.</b> These could capture it from now on.</p>';
+      if(top.length&&PROOF.test(text)){var st=proofStages(text);if(!top.slice(0,5).some(function(x){return evidences(x.c,st)}))h+='<p class="note"><b>None of these evidence that.</b> At most, they claim it.</p>'}
+      notes.innerHTML=h;return false}
     if(best)best.addEventListener('click',function(e){var a=e.target.closest('a[data-open]');if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();open(a.dataset.open,true,e.detail>0)});
-    function later(){clearTimeout(tm);tm=setTimeout(render,90)}
+    function later(){if(window.IRLPlaces)IRLPlaces.load();typed=true;clearTimeout(tm);tm=setTimeout(render,90)}
     q.addEventListener('input',later);clr.onclick=function(){q.value='';render();q.focus()};
+    /* Enter asks the top match now (a live source answers; anything else already shows its call) */
+    q.addEventListener('keydown',function(e){if(e.key!=='Enter'||e.isComposing)return;e.preventDefault();clearTimeout(tm);render();var b=document.getElementById('brun');if(b&&!b.disabled)b.click();if(matchMedia('(pointer: coarse)').matches)q.blur()});
     more.addEventListener('click',function(){var n=grid.querySelectorAll('.row').length;showWeak=true;render();var a=grid.querySelectorAll('.row')[n];if(a)a.focus()});
     document.getElementById('filters').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var k=b.dataset.f;flt[k]=!flt[k];
       if(flt[k]&&k==='live')flt.commission=false;if(flt[k]&&k==='commission')flt.live=false;syncF();render()});
@@ -142,7 +214,7 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
       if(e.key==='Tab'){var f=[].slice.call(sheet.querySelectorAll('button,a[href],summary')).filter(function(n){return n.offsetParent});if(!f.length)return;var a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
     window.addEventListener('popstate',function(){var id=history.state&&history.state.sheet;if(id&&byId(id)){pushed=true;open(id,false)}else close(true)});
     var hash=location.hash.slice(1),q0=P.get('q');if(q0)q.value=q0;
-    render();if(hash&&byId(hash))open(hash,false)}
+    render();if(P.get('go')==='1'){var gb=document.getElementById('brun');if(gb)gb.click()}if(hash&&byId(hash))open(hash,false)}
 
   /* ---------- compare: up to four, side by side; the eight stages as marks so a phone holds three columns ---------- */
   function compare(){

@@ -62,8 +62,15 @@ def nav(p="", here=""):
             f'<a class="brand" href="{p}index.html" aria-label="irlpls home">irl<i>pls</i></a><a class="nr" href="{p}agents.html"{cur("agents")}>For agents</a></nav></header>')
 
 
-def foot(p=""):
-    return f'<footer class="site-foot"><span>No data sold, no cut. Buy from providers directly.</span><span class="fl"><a href="{p}standard.html">standard</a><a href="{p}changelog.html">changelog</a><a href="{p}providers.html">for providers</a><a href="{p}governance.html">governance</a><a href="{p}privacy.html">privacy</a><a href="{p}chain.html">the chain</a><a href="{p}glossary.html">glossary</a><a href="{p}cards.json">cards.json</a><a href="{p}llms.txt">llms.txt</a></span></footer>'
+def foot(p="", extra=""):
+    """The one footer on every page (src/index.html, chain.html, check.html and standard.html carry the same markup with p="";
+    tests/test_ui.py pins them to this). extra: page-specific small print (credits), above the licence line."""
+    links = (("standard.html", "Standard"), ("docs.html", "Docs"), ("providers.html", "For providers"), ("privacy.html", "Privacy"),
+             ("glossary.html", "Glossary"), ("changelog.html", "Changelog"), ("governance.html", "Governance"))
+    return ('<footer class="site-foot"><div class="ft"><p class="fd"><a class="fw" href="' + p + 'index.html" aria-label="irlpls home">irl<i>pls</i></a>'
+            '<span>No data sold, no cut. Buy from providers directly.</span></p><nav class="fl" aria-label="Footer">'
+            + "".join(f'<a href="{p}{h}">{t}</a>' for h, t in links) + '</nav></div>' + extra +
+            '<p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><a href="mailto:hello@irlpls.com">hello@irlpls.com</a><span>© irlpls maintainers</span></p></footer>')
 
 
 # ---- card values. Every value comes from the card JSON; anything the card leaves out reads "Not stated".
@@ -559,21 +566,110 @@ def index_page(cards):
     rows = "".join(finder_row(c) for c in sorted(cards, key=lambda c: plain_name(c).lower()))
     body = f'''{nav(here="find")}
 <main id="main" class="finder">
-<h1><span>Find data</span></h1>
+<h1 class="hl all" data-t="Find data">Find data</h1>
 <p class="lede-b">Every provider, link by link.</p>
 <noscript><p class="nojs">Search needs JavaScript. All providers are listed below.</p></noscript>
-<div class="search">{SEARCH_IC}<input id="q" type="search" autocomplete="off" enterkeyhint="search" aria-label="What you need, where, and how soon" placeholder="What, where, how soon" aria-describedby="meta"><button type="button" class="x" id="clr" aria-label="Clear search" hidden>&times;</button></div>
+<div class="search">{SEARCH_IC}<input id="q" type="search" autocomplete="off" enterkeyhint="search" aria-label="Type anything you need: what, where, how soon" placeholder="Type anything" aria-describedby="meta"><button type="button" class="x" id="clr" aria-label="Clear search" hidden>&times;</button></div>
 <p class="examples" id="ex" aria-label="Example requests"><span>Try:</span><button type="button" data-q="river level in Texas right now">river level, Texas</button><i aria-hidden="true">·</i><button type="button" data-q="storefront photos in Lisbon with proof of when and where">storefront, Lisbon</button><i aria-hidden="true">·</i><button type="button" data-q="drone survey of a construction site in Canada">drone survey</button></p>
 <div class="chips" id="filters" role="group" aria-label="Filters"><button type="button" aria-pressed="false" data-f="live">Live</button><button type="button" aria-pressed="false" data-f="commission">Made to order</button><button type="button" aria-pressed="false" data-f="free">Free</button></div>
 <p class="read" id="parsed" aria-label="How the request was read" hidden></p>
+<div class="notes" id="notes" aria-live="polite"></div>
 <section class="best" id="best" aria-label="Best match" aria-live="polite" hidden></section>
 <div class="lhead"><p class="meta count" id="meta" role="status" aria-live="polite">{len(cards)} providers</p><p class="key" aria-hidden="true">{STAGE_KEY}</p></div>
 <ul id="grid" class="list" aria-label="Providers">{rows}</ul>
 <button type="button" class="linkish more" id="more" hidden></button>
 {pub_strip(cards)}
 </main>{foot()}'''
-    head = '<noscript><style>.search,.examples,.chips,#parsed,#more{display:none!important}</style></noscript><script src="live.js"></script>'
+    head = '<noscript><style>.search,.examples,.chips,#parsed,#more{display:none!important}</style></noscript><script src="places.js"></script><script src="live.js"></script><script src="callpane.js"></script>'
     return page("Find data · irlpls", body, 0, "p-finder", desc="Find who can capture real-world data, and what each provider evidences or only claims.", canon="find.html", head=head)
+
+
+# ---------- the ready call per provider (Find data's "The call your agent would make") ----------
+# From each adapter's own prepare() (the call the library and the broker hand an agent), for a generic ask. Built offline;
+# nothing is sent and no credential is filled in (keys stay named placeholders). Where the call only puts the ask's point,
+# words and place in as they are, they become {LAT} {LON} {NEED} {PLACE} and the page fills them from the person's ask;
+# where it derives from them (a box around the point), the call is shown for one example place, and says so.
+_RC_PT = ((11.1111, 22.2222), (33.3333, 44.4444))
+_RC_NEED, _RC_PLACE = "ZZNEEDZZ", "ZZPLACEZZ"
+_RC_EXAMPLE = {"us": (30.27, -97.74, "Austin, TX"), "gb": (51.51, -0.13, "London"), "de": (50.94, 6.96, "Köln"), "fi": (60.17, 24.94, "Helsinki"),
+               "fr": (48.86, 2.35, "Paris"), "nz": (-41.29, 174.78, "Wellington"), "at": (48.21, 16.37, "Vienna")}
+
+
+def _rc_tokens(v, k):
+    """The call with the sentinel point `k` (0 or 1), words and place written as {LAT} {LON} {NEED} {PLACE}."""
+    lat, lon = _RC_PT[k]
+    if isinstance(v, dict):
+        return {a: _rc_tokens(b, k) for a, b in v.items()}
+    if isinstance(v, list):
+        return [_rc_tokens(b, k) for b in v]
+    if isinstance(v, float) and abs(v - lat) < 1e-6:
+        return "{LAT}"
+    if isinstance(v, float) and abs(v - lon) < 1e-6:
+        return "{LON}"
+    if isinstance(v, str):
+        for x, t in ((lat, "{LAT}"), (lon, "{LON}")):
+            s = f"{x:.4f}"
+            v = re.sub(re.escape(s[:-1]) + r"\d*", t, v)
+        return v.replace(_RC_NEED, "{NEED}").replace(_RC_PLACE, "{PLACE}")
+    return v
+
+
+def _rc_keep(pc):
+    """The parts of a prepared call the page shows: method, URL, headers, body, the key (named) and other placeholders."""
+    keep = {k: pc[k] for k in ("operation", "method", "url", "headers", "body", "auth", "placeholders", "docs_url", "notes") if pc.get(k) not in (None, {}, [])}
+    keep["safe_to_run_without_approval"] = bool(pc.get("safe_to_run_without_approval"))
+    return keep
+
+
+def ready_calls(cards):
+    """{card id: ready call template} for every in-scope card whose adapter prepares one."""
+    from irlpls import adapters as lib
+    out = {}
+    stamp = re.compile(r"\d{4}-\d\d-\d\dT[\d:%A-F]+Z?|\b\d{12,}\b")   # times a call computes when it is built (starttime, from=)
+    for c in cards:
+        a = lib.get(c["id"])
+        if not a or not callable(getattr(a, "prepare", None)):
+            continue
+        route = "live" if "live" in ((c.get("delivery") or {}).get("modes") or []) else "commission"
+        def prep(lat, lon, need=_RC_NEED, place=_RC_PLACE):
+            try:
+                pc = a.prepare({"need": need, "text": need, "place": place, "lat": lat, "lon": lon, "quantity": 1, "mode": route}, route)
+            except Exception:
+                return None
+            return pc if isinstance(pc, dict) and pc.get("url") else None
+        p = [prep(*_RC_PT[k]) for k in (0, 1)]
+        if not p[0]:
+            continue
+        t = [_rc_tokens(p[k], k) for k in (0, 1)]
+        if stamp.sub("", json.dumps(t[0], sort_keys=True)) == stamp.sub("", json.dumps(t[1], sort_keys=True)):
+            rc = _rc_keep(t[0])
+        else:   # derived from the point: one example place, named
+            cc = next((x.lower() for x in ((c.get("coverage") or {}).get("areas") or []) if isinstance(x, str) and x.lower() in _RC_EXAMPLE), "us")
+            lat, lon, name = _RC_EXAMPLE[cc]
+            pc = prep(lat, lon, place=name)
+            if not pc:
+                continue
+            rc = _rc_keep(pc)
+            rc = json.loads(json.dumps(rc).replace(_RC_NEED, "{NEED}"))
+            rc["example"] = name
+        out[c["id"]] = rc
+    return out
+
+
+def add_ready_calls(cards):
+    """catalog.json providers[id].ready_call: the adapter's prepared call for a generic ask (see ready_calls)."""
+    p = SITE / "catalog.json"
+    cat = json.loads(p.read_text())
+    rc = ready_calls(cards)
+    for cid, call in rc.items():
+        if cid in cat.get("providers", {}):
+            cat["providers"][cid]["ready_call"] = call
+    cat["ready_call_note"] = ("providers[id].ready_call: the reference library's prepared call for a generic ask, built offline. "
+                              "{LAT} {LON} {NEED} {PLACE} are the ask's point, words and place; {KEY_NAME} placeholders are credentials "
+                              "you supply (auth says where to get them). `example` names the place a call was prepared for when it "
+                              "derives from the point. Nothing was sent.")
+    p.write_text(json.dumps(cat, separators=(",", ":"), ensure_ascii=False))
+    return len(rc)
 
 
 def compare_page():
@@ -651,19 +747,37 @@ def agents_md(cards):
             "| Provider | Routes | Speed | Price | Time · place · content |\n|---|---|---|---|---|\n" + rows)
 
 
-def doc_page(md, title, canon, desc):
-    """A plain document page (changelog, governance) from Markdown, in the spec layout."""
+def doc_page(md, title, canon, desc, aud=""):
+    """A plain document page (changelog, governance) from Markdown, in the spec layout. aud: one plain line under the
+    title saying who the page is for (the owner, 2026-10-30: providers, agents, the standard)."""
     body, _ = md_html(md)
     h1 = re.search(r"^# (.*)", md, re.M).group(1)
-    head = (f'{nav("")}<div class="spec-wrap"><div class="spec-head"><h1>{e(h1)}</h1></div>'
+    head = (f'{nav("")}<div class="spec-wrap"><div class="spec-head"><h1 class="hl hl-doc all">{e(h1)}</h1>{f"<p class=aud>{e(aud)}</p>" if aud else ""}</div>'
             f'<main id="main" class="std">\n{body}\n</main></div>{foot()}')
     return page(title, head, cls="doc", desc=desc, canon=canon, head="")
+
+
+DOORS = (("agents.html", "For agents", "The manual your AI agent reads: how to ask, the tools, the rules."),
+         ("providers.html", "For providers", "Publish your Capture Card and make a link evidenced."),
+         ("standard.html", "The standard", "The full specification: card format, the eight links, levels, protocol."))
+DOCS_MORE = (("glossary.html", "Glossary"), ("chain.html", "The full chain"), ("check.html", "Check a card"), ("changelog.html", "Changelog"))
+
+
+def docs_page():
+    """docs.html: three doors (agents, providers, the standard) as cards, and a few small secondary links."""
+    arrow = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg>'
+    doors = "".join(f'<li><a class="door" href="{h}"><b>{e(t)}</b><span>{e(d)}</span>{arrow}</a></li>' for h, t, d in DOORS)
+    more = "".join(f'<a href="{h}">{e(t)}</a>' for h, t in DOCS_MORE)
+    body = (f'{nav("")}<main id="main" class="docs"><h1 class="hl all" data-t="The docs">The docs</h1>'
+            f'<p class="aud">Pick the one for you.</p><ul class="doors">{doors}</ul>'
+            f'<nav class="more" aria-label="More">{more}</nav></main>{foot()}')
+    return page("Docs · irlpls", body, cls="doc", desc="The irlpls docs: the agent manual, the provider guide and the standard.", canon="docs.html", head="")
 
 
 def agents_page(md):
     body, toc = md_html(md)
     ask = "Read https://irlpls.com/agents.md before you use irlpls for me."
-    head = (f'{nav("", "agents")}<div class="spec-wrap"><div class="spec-head agents-head"><h1>irlpls for agents</h1>'
+    head = (f'{nav("", "agents")}<div class="spec-wrap"><div class="spec-head agents-head"><h1 class="hl all" data-t="irlpls for agents">irlpls for agents</h1><p class="aud">The manual your AI agent reads.</p>'
             f'<div class="handoff"><code id="ask">{e(ask)}</code><button type="button" id="copy">Copy</button></div>'
             '<p class="raw">Plain text: <a href="agents.md">agents.md</a></p></div>'
             f'<main id="main" class="std">\n{body}\n</main></div>{foot()}')
@@ -708,7 +822,7 @@ LANDING_KEYS = ("id", "name", "status", "tags", "summary", "short", "capabilitie
 
 def landing(h, cards):
     """src/index.html, made current: the embedded card snapshot (what the matcher and stage dots need, used until
-    cards.json arrives or if it never does) and the saved river reading for screen 1."""
+    cards.json arrives or if it never does). Screen 1's examples are samples with committed media: nothing live here."""
     def trim(c):  # only the fields match.js and the stage dots read
         t = {k: c[k] for k in LANDING_KEYS if k in c}
         # the level, plus what the stage mapping reads: a camera standard, and the camera/content/time methods (a seal, an attested time)
@@ -730,13 +844,6 @@ def landing(h, cards):
         foot_at = h.index('<footer class="site-foot">')
         end = h.index('</footer>', foot_at)
         h = h[:end] + f'<a class="publ" href="find.html#pubh">Published by providers: {names}&nbsp;›</a>' + h[end:]
-    live = ROOT / "src" / "media" / "live" / "index.json"
-    if live.exists():  # the latest saved reading, so the first frame is as fresh as the build
-        d = json.loads(live.read_text())
-        g, cam = d.get("_gauge") or {}, (d.get("TX_Guadalupe_Rv_at_Comfort") or {}).get("captured")
-        if (g.get("flow") or {}).get("v") and g.get("normal") and cam:
-            snapg = "var G=" + json.dumps({"flow": {"v": g["flow"]["v"], "t": g["flow"]["t"]}, "cam": cam, "normal": g["normal"], "live": False}) + ";"
-            h = re.sub(r"var G=\{flow:.*?live:false\};", lambda m: snapg, h, count=1)
     return h
 
 
@@ -773,7 +880,8 @@ def main(public=False):
                 comp = next(a for a in all_cards if a["id"] == c["id"])
                 cards[cards.index(c)] = comp
                 PUB["eff"][c["id"]] = "rejected"
-    LIVE.update(health.load(ROOT / "src" / "media" / "live" / "health.json"))  # merged into each card's read-check line
+    if not public:  # the private refresh job's check (gitignored); the public build never reads it
+        LIVE.update(health.load(ROOT / "src" / "media" / "live" / "health.json"))  # merged into each card's read-check line
     if SITE.exists():
         for f in SITE.iterdir():
             if f.name != "CNAME":
@@ -783,6 +891,8 @@ def main(public=False):
         if public and f.name in PUBLIC_OMIT:
             continue
         (shutil.copytree if f.is_dir() else shutil.copy)(f, SITE / f.name)
+    if public:  # src/media/live/ is the private refresh job's gitignored output: never part of the public site
+        shutil.rmtree(SITE / "media" / "live", ignore_errors=True)
     (SITE / "c").mkdir(parents=True, exist_ok=True)
     (SITE / "cards").mkdir(exist_ok=True)
     for i, c in enumerate(cards):
@@ -799,7 +909,7 @@ def main(public=False):
         (SITE / "cards" / f'{c["id"]}.json').write_text(json.dumps(c, indent=2) + "\n")
     (SITE / "cards.json").write_text(json.dumps({"assurances": [list(a) for a in ASSURANCES], "cards": cards}))
     shutil.copy(ROOT / "schema" / "request.schema.json", SITE / "request.schema.json")
-    pages = ["", "find.html", "compare.html", "agents.html", "standard.html", "changelog.html", "governance.html", "providers.html", "privacy.html", "glossary.html"] + [f'c/{c["id"]}.html' for c in cards]
+    pages = ["", "find.html", "compare.html", "docs.html", "agents.html", "standard.html", "changelog.html", "governance.html", "providers.html", "privacy.html", "glossary.html"] + [f'c/{c["id"]}.html' for c in cards]
     (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"<url><loc>https://irlpls.com/{u}</loc></url>\n" for u in pages) + "</urlset>\n")
     (SITE / "published.json").write_text(json.dumps(published.public(PUB["state"]), indent=1) + "\n")  # check.html ?d= reads it
     if PUB["state"].get("cards"):
@@ -818,10 +928,12 @@ def main(public=False):
     (SITE / "index.html").write_text(landing((SITE / "index.html").read_text(), cards))
     import subprocess, sys
     subprocess.run([sys.executable, str(ROOT / "tools" / "build_catalog.py"), "--out", str(SITE), "--cards-json", str(SITE / "cards.json")], check=True)  # catalog.index.json + catalog.json for agents
+    add_ready_calls(cards)  # + each provider's ready call (Find data shows it for the top match)
     (SITE / "llms.txt").write_text(LLMS.format(ids="\n".join(f"- [{c['name']}](/cards/{c['id']}.json): {c.get('short') or c['summary']}" for c in cards)))
     md = agents_md(cards)
     (SITE / "agents.md").write_text(md)
     (SITE / "agents.html").write_text(agents_page(md))
+    (SITE / "docs.html").write_text(docs_page())
     (SITE / "find.html").write_text(index_page(cards))  # the finder; src/index.html is the landing page
     (SITE / "check.html").write_text((ROOT / "src" / "check.html").read_text())
     shutil.copyfile(ROOT / "irlpls" / "data" / "public_suffix_list.dat", SITE / "public_suffix_list.dat")  # check.html's www-twin rule (MPL-2.0)
@@ -830,7 +942,7 @@ def main(public=False):
     (SITE / "404.html").write_text(not_found_page())  # GitHub Pages serves it for any missing path
     (SITE / "changelog.html").write_text(doc_page((ROOT / "CHANGELOG.md").read_text(), "Changelog · irlpls", "changelog.html", "Every version of the irlpls standard, newest first."))
     (SITE / "governance.html").write_text(doc_page((ROOT / "GOVERNANCE.md").read_text(), "Governance · irlpls", "governance.html", "Who decides what at irlpls, what it will not do, and when that changes."))
-    (SITE / "providers.html").write_text(doc_page((ROOT / "docs" / "PROVIDERS.md").read_text(), "For providers · irlpls", "providers.html", "How a provider publishes its own Capture Card at /.well-known/irlpls."))
+    (SITE / "providers.html").write_text(doc_page((ROOT / "docs" / "PROVIDERS.md").read_text(), "For providers · irlpls", "providers.html", "How a provider publishes its own Capture Card at /.well-known/irlpls.", aud="For companies that capture real-world data."))
     (SITE / "privacy.html").write_text(doc_page((ROOT / "docs" / "PRIVACY.md").read_text(), "Privacy · irlpls", "privacy.html", "What irlpls sees, logs and sends: there is no hosted irlpls service, only static files with no request endpoint."))
     (SITE / "glossary.html").write_text(doc_page((ROOT / "docs" / "GLOSSARY.md").read_text(), "Glossary · irlpls", "glossary.html", "The field's terms for provenance, from capture to delivery: what each link shows, and what it cannot."))
     for f in [*(ROOT / "schema").glob("*.schema.json"), *(ROOT / "schema" / "protocol").glob("*.schema.json")]:  # each version's schemas at the address their $id names

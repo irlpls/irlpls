@@ -3,7 +3,7 @@
     uv run --with playwright python tools/qa.py [OUTDIR] [BASE_URL]
 
 The landing is three screens, each one <section>: #s1 (headline + a swipeable row of five example chats), #how (the eight-link
-provenance standard) and #try (type anything; matched in the browser). Every screen is rendered on three iPhones (WebKit:
+provenance standard) and #try (try a free service live: pick one, ask, Go; providers faked). Every screen is rendered on three iPhones (WebKit:
 390x709 the area above Safari's bar, 375x553 an SE in Safari, 390x664 with the keyboard-less toolbar) plus one desktop,
 and fails on:
   - anything wider than the screen (sideways scroll), or any visible element past the screen's left/right edge
@@ -15,7 +15,7 @@ and fails on:
   - screen 1's chat, its source chip or its call to action below the first screen on a phone (every example); ?ex=N not
     opening example N; the dots not moving to the next example
   - the headline's three lines not each whole on one line (VOICE-1028 #1)
-  - a staged example without its faint "Sample" label inside the photo's bottom-right corner, or the river with one; "Sample" in a chip
+  - an example without its faint "Sample" label inside the photo's bottom-right corner (all five are samples); "Sample" in a chip
   - on every example: a source chip whose sheet does not show all eight stages and the card link without inner scrolling,
     anything moving (page, card, headline) while it opens or closes, or a close button that does not return to the chip
   - the one-time swipe nudge not playing (~32px) once the first reply has arrived
@@ -54,8 +54,8 @@ BASE = (sys.argv[2] if len(sys.argv) > 2 else _PREVIEW).rstrip("/") + "/"
 EXAMPLES = 5
 
 # blocks that must never overlap one another (ancestor/descendant pairs are skipped)
-BLOCKS = ("h1, h2, .kick, .lede, .chat, .pager, .cta, .you, .tool, .ans, .media, .cites, .pv li, #chain > li, .lkf .cap, .lkf .std, .ask, .priv,"
-          " .tries, .note, .oh, .res li, .all, .msg, .dev")
+BLOCKS = ("h1, h2, .kick, .lede, .chat, .pager, .cta, .you, .tool, .ans, .media, .cites, .pv li, #chain > li, .bm, .dn, .info, .ask, .priv,"
+          " .note, .sv, .hint, .lv, .ircp")
 TAPS = "a[href], button, input, textarea, summary, select"
 
 PROBE = r"""([sel, BLOCKS, TAPS]) => {
@@ -84,11 +84,12 @@ PROBE = r"""([sel, BLOCKS, TAPS]) => {
     if ((r.right > W + 1 || r.left < -1) && !e.closest('.chat.off') && !inRow(e)) out.push(name(e) + ' past the screen edge (' + Math.round(r.left) + '..' + Math.round(r.right) + ')');
     const hasText = [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
     if (hasText && (cs.overflowX !== 'visible' || cs.overflowY !== 'visible')) {
-      const meant = cs.textOverflow === 'ellipsis' || cs.webkitLineClamp !== 'none' && cs.webkitLineClamp;
+      // an ellipsis, a line clamp, or a box that scrolls on purpose (the ready call's code block scrolls sideways inside itself)
+      const meant = cs.textOverflow === 'ellipsis' || cs.webkitLineClamp !== 'none' && cs.webkitLineClamp || /(auto|scroll)/.test(cs.overflowX);
       if (!meant && (e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 2)) out.push(name(e) + ' text clipped by its box');
     }
     const g = e.parentElement && e.parentElement.closest('.glass');
-    if (g && sec.contains(g)) { const gr = R(g);
+    if (g && sec.contains(g) && !inRow(e)) { const gr = R(g);
       if (r.left < gr.left - 1 || r.right > gr.right + 1 || r.top < gr.top - 1 || r.bottom > gr.bottom + 1) out.push(name(e) + ' spills out of its card'); }
   }
   // overlap
@@ -121,7 +122,7 @@ UNDER_HEADER = r"""(sel) => {
 
 # round 6: a screen as it shows when scrolled to (links and paging land there): the first line clear of the header (16px),
 # no empty band over 120px between the things that show, and (spill) nothing of it past the bottom of its screen. The last
-# screen ends on the footer, so the footer counts as part of it. "Ink" is what a person sees: text, a photo or its placeholder,
+# screen ends on the footer, so the footer counts as part of it. "Ink" is what a person sees: text, a photo or the white place held for it,
 # an icon, a field. Cards swiped out of view to the side are skipped.
 SCREEN = r"""([sel, spill]) => {
   const sec = document.querySelector(sel), hb = document.querySelector('.top').getBoundingClientRect().bottom, R = e => e.getBoundingClientRect(),
@@ -153,10 +154,9 @@ HEADLINE = r"""() => [...document.querySelectorAll('#h1 .ln')].flatMap((l, i) =>
   const w = g.getBoundingClientRect().width, tops = new Set([...g.getClientRects()].map(x => Math.round(x.top))).size;
   return w > l.clientWidth + 0.5 || tops !== 1 ? ['headline line ' + (i + 1) + ' not whole (' + Math.round(w) + ' > ' + l.clientWidth + ', ' + tops + ' lines)'] : []; })"""
 
-# a staged example says "Sample" small and faint inside its photo's bottom-right corner; the river is real (no label); no chip says it
+# every example is a sample (the owner, 2026-10-30: the river too): "Sample" small and faint inside its photo's bottom-right corner; no chip says it
 SAMPLE = r"""(ex) => { const c = document.getElementById('ex' + ex), s = c.querySelector('.smp'), m = c.querySelector('.media'), out = [];
   if (/Sample/.test(c.querySelector('.chip').innerText)) out.push('"Sample" in the chip');
-  if (ex === 0) { if (s) out.push('the river (real) has a Sample label'); return out; }
   if (!s || s.innerText.trim() !== 'Sample') return ['no Sample label in the photo'];
   const a = m.getBoundingClientRect(), b = s.getBoundingClientRect();
   if (b.left < a.left + a.width * 2 / 3 || b.top < a.top + a.height - 30 || b.right > a.right + 1 || b.bottom > a.bottom + 1) out.push('Sample label not in the photo\'s bottom-right corner');
@@ -183,35 +183,52 @@ SHEET = r"""(ex) => { const v = document.getElementById('pv' + ex), r = v.getBou
   const x = v.querySelector('.pxb'); if (!x || x.getBoundingClientRect().height < 44) out.push('close under a 44px target');
   return out; }"""
 
+# desktop: each arrow centred on its card's edge (prev: left edge, next: right edge) at the card's mid-height, inside the screen
+ARROWS = r"""(ex) => { const c = document.getElementById('ex' + ex).getBoundingClientRect(), out = [];
+  for (const [id, x] of [['prev', c.left], ['next', c.right]]) { const b = document.getElementById(id);
+    if (b.parentElement.id !== 'stage') { out.push(id + ' arrow not on the card'); continue; }
+    if (b.disabled) { if (+getComputedStyle(b).opacity > 0.05) out.push(id + ' arrow shows while it cannot move'); continue; }
+    const r = b.getBoundingClientRect(), cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
+    if (Math.abs(cx - x) > 2 || Math.abs(cy - (c.top + c.bottom) / 2) > 2) out.push(id + ' arrow off the card edge (' + Math.round(cx - x) + ', ' + Math.round(cy - (c.top + c.bottom) / 2) + ')');
+    if (r.width < 44 || r.height < 44) out.push(id + ' arrow under 44px'); }
+  return out; }"""
+
+# screen 2's foot: the arrow down centred under the screen, the info icon at its lower right, both 44px targets, on screen
+HOW_FOOT = r"""() => { const R = e => document.querySelector(e).getBoundingClientRect(), s = R('#how'), a = R('#to3'), i = R('#bmc'), m = R('#bm'), out = [];
+  if (Math.abs((a.left + a.right) / 2 - (s.left + s.right) / 2) > 1.5) out.push('the arrow down is not centred');
+  if (a.top < Math.max(i.bottom, m.bottom) - 1) out.push('the arrow down shares a row with the benchmark line or the icon');
+  if (Math.abs((i.top + i.bottom) / 2 - (m.top + m.bottom) / 2) > 2 || i.left < m.right - 1 || Math.abs(i.right - R('#how .bmr').right) > 1.5) out.push('the info icon is not at the right of the benchmark line');
+  if (i.width < 44 || i.height < 44 || a.height < 44) out.push('screen 2 foot targets under 44px');
+  if (document.getElementById('to3').getAttribute('href') !== '#try') out.push('the arrow down does not lead to #try');
+  return out; }"""
+
 # record the card, the headline and the page on every frame (to catch any jump while the sheet opens or closes)
 REC = r"""(ex) => { window.__r = []; window.__go = true; (function f() { const c = document.getElementById('ex' + ex).getBoundingClientRect(),
   h = document.getElementById('h1').getBoundingClientRect(); __r.push([Math.round(c.top), Math.round(c.height), Math.round(c.left), Math.round(h.top), scrollY]);
   if (__go) requestAnimationFrame(f); })(); }"""
 
-RESULT = r"""() => ({ rows: document.querySelectorAll('#out .res li').length, empty: !!document.querySelector('#out .msg:not(.stop)'),
-  stop: !!document.querySelector('#out .msg.stop'), text: document.getElementById('out').innerText.trim(),
-  links: [...document.querySelectorAll('#out .res a')].map(a => a.getAttribute('href')) })"""
+# screen 3 (try a free service live): the providers are faked here, so QA never asks a real service. USGS answers (a gauge
+# reading with its name); NWS is down; anything else outside the page is refused.
+def fake_live(pg):
+    import datetime as dt, json as js
+    t = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=12)).replace(microsecond=0).isoformat()
+    lc = js.dumps({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.694, 30.244]},
+                   "properties": {"monitoring_location_id": "USGS-08158000", "parameter_code": "00065", "value": "4.12", "time": t}}]})
+    ml = js.dumps({"type": "Feature", "id": "USGS-08158000", "properties": {"id": "USGS-08158000", "monitoring_location_name": "Colorado Rv at Austin, TX"}})
+    hd = {"content-type": "application/json", "access-control-allow-origin": "*"}
+    pg.route("**/api.waterdata.usgs.gov/**", lambda r: r.fulfill(status=200, headers=hd, body=ml if "/monitoring-locations/" in r.request.url else lc))
+    pg.route("**/api.weather.gov/**", lambda r: r.abort())
 
-# typed queries: what each must show (rows = some providers; empty = the honest "no provider covers this"; stop = refused)
-QUERIES = [
-    ("river level Texas", "rows"), ("storefront photo Lisbon", "rows"), ("500 egocentric videos", "rows"),
-    ("air quality in Delhi now", "rows"), ("drone survey of a roof in Ohio", "rows"), ("ice cave Antarctica", "any"),
-    ("xyzzy plugh", "empty"), ("follow my ex home tonight", "stop"), ("where is my neighbour right now", "stop"),
-    ("track this person's location", "stop"), ("photos of what my wife is doing", "stop"),
-    ("someone to check on my mom's house in Tampa, Florida after the storm", "rows"), ("where is my mom right now", "stop"),
-    ("photograph my neighbour", "stop"), ("verify a photo of a flooded street in Lagos, Nigeria", "rows"),
-    ("live webcam view of traffic on the Golden Gate Bridge right now", "rows"),
-]
-# notes and orderings that must hold for some of those queries (round 4)
-EXISTING_NOTE = "irlpls can’t check a photo or video you already have"
-MUST = {"verify a photo of a flooded street in Lagos, Nigeria": lambda r: EXISTING_NOTE in r["text"],
-        "live webcam view of traffic on the Golden Gate Bridge right now": lambda r: r["links"][:1] == ["c/caltrans-cctv.html"]}
+
+# screen 3 states: (service, question, what must show in the chat turn)
+TRIES = [("usgs-water", "River level in Austin, Texas?", "4.12 ft"), ("nws", "Weather in Denver right now?", "didn’t answer"),
+         ("usgs-water", "river, Smallvillezz, Kansas", "Couldn’t place Smallvillezz"), ("usgs-water", "where is my neighbour right now", "won’t route this"),
+         ("usgs-water", "photo of the storefront at 50 Elm St, Springfield, IL", "ProxyPics")]
+
 # the open sheet has no large empty band under its last row
 SHEET_GAP = r"""(ex) => { const v = document.getElementById('pv' + ex), r = v.getBoundingClientRect();
   const kids = [...v.querySelectorAll('li, a, p')].filter(e => e.getClientRects().length);
   return Math.round(r.bottom - Math.max(...kids.map(e => e.getBoundingClientRect().bottom))); }"""
-# a result name is whole (wrapped, never cut)
-NAMES_WHOLE = r"""() => [...document.querySelectorAll('#out .res b')].filter(b => b.scrollHeight > b.clientHeight + 1 || b.scrollWidth > b.clientWidth + 1).map(b => b.textContent)"""
 
 UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"
 PHONE = {"device_scale_factor": 2, "is_mobile": True, "has_touch": True, "user_agent": UA}
@@ -282,10 +299,38 @@ def main():
             pg.goto(BASE)
             pg.evaluate("""window.__tx = []; (function f() { const m = getComputedStyle(document.getElementById('ex0')).transform;
               __tx.push(m === 'none' ? 0 : new DOMMatrix(m).m41); requestAnimationFrame(f); })()""")
-            pg.wait_for_timeout(12500)  # one thing at a time: flourish + pause (5.8 s), the reply (up to ~4.6 s), then the 1.4 s nudge
+            pg.wait_for_timeout(7500)  # the reply plays on load (up to ~4.1 s), then the 1.4 s nudge
             tx = pg.evaluate("__tx")
             if min(tx) > -28 or tx[-1] != 0:
                 fails.append(f"{name} s1: the swipe nudge did not play (min {round(min(tx))}px, ends at {round(tx[-1])}px)")
+            # desktop (the owner, 2026-10-30): the arrows sit on the card's edges at mid-height; phones keep them in the pager
+            if not phone:
+                for ex in (0, 2, 4):
+                    pg.goto(f"{BASE}?still=1&ex={ex}")
+                    pg.wait_for_timeout(600)
+                    for x in pg.evaluate(ARROWS, ex):
+                        fails.append(f"{name} s1 ex{ex}: {x}")
+            else:
+                if pg.evaluate("document.getElementById('next').parentElement.id") != "pager":
+                    fails.append(f"{name} s1: on a phone the arrows left the pager")
+            # the clip (example 5) starts from 0 only once its photo slot shows and its card is in view; never plays hidden
+            pg.goto(f"{BASE}?ex=4")
+            pg.wait_for_timeout(250)
+            if not pg.evaluate("document.querySelector('#ex4 video').paused"):
+                fails.append(f"{name} s1 ex4: the clip plays before its reply reveals it")
+            pg.wait_for_timeout(6500)
+            v = pg.evaluate("(()=>{const v=document.querySelector('#ex4 video');return [v.paused, document.querySelector('#ex4 .att').classList.contains('hide')]})()")
+            if v[1] or v[0]:
+                fails.append(f"{name} s1 ex4: the clip is not playing once shown (paused {v[0]}, hidden {v[1]})")
+            pg.evaluate("document.getElementById('try').scrollIntoView({behavior:'instant'})")
+            pg.wait_for_timeout(700)
+            if not pg.evaluate("document.querySelector('#ex4 video').paused"):
+                fails.append(f"{name} s1 ex4: the clip keeps playing out of view")
+            pg.evaluate("scrollTo({top:0,behavior:'instant'})")
+            pg.wait_for_timeout(400)
+            v = pg.evaluate("(()=>{const v=document.querySelector('#ex4 video');return [v.paused, v.currentTime]})()")
+            if v[0] or v[1] > 1.0:
+                fails.append(f"{name} s1 ex4: back in view, the clip does not restart from 0 (paused {v[0]}, at {v[1]:.2f} s)")
             # screen 1 while it plays, and after a tap on next
             pg.goto(BASE)
             pg.wait_for_selector("#ex0 .tt")
@@ -295,18 +340,16 @@ def main():
                 bad = pg.evaluate(f"(()=>{{const c=document.getElementById('ex{ex}');return !c.querySelector('.att').classList.contains('hide')||!c.querySelector('.cites').classList.contains('hide')}})()")
                 if bad:
                     fails.append(f"{name} s1 ex{ex}: not yet seen, but already complete (it should play when it comes into view)")
-            # the first card waits for the headline and a pause (HOLD 5.8 s), then: the status, the answer streaming, the whole reply
-            # round 6: while it waits and while the answer types, the card holds the photo's place (no blank band)
-            for t, wait in ((1500, 1500), (6600, 5100), (7600, 1000), (8800, 1200), (10600, 1800)):
+            # the first card plays on load (the owner, 2026-10-30: never waiting for the headline): the status, the answer
+            # streaming, the whole reply; while the answer types, the card holds the photo's place in white (no blank band)
+            for t, wait in ((800, 800), (1800, 1000), (3000, 1200), (4800, 1800)):
                 pg.wait_for_timeout(wait)
                 screen("#s1", f"s1 playing {t}ms")
-                if t < 6600:
-                    continue
                 probe("#s1", f"s1 playing {t}ms")
-                if t == 6600 and not pg.evaluate("['.you','.tool'].every(s=>+getComputedStyle(document.querySelector('#ex0 '+s)).opacity>.5)&&!!document.querySelector('#ex0 .tt').textContent.trim()"):
-                    fails.append(f"{name} s1: blank card 0.8 s after the hold (no question or status line)")
-                if t == 10600 and pg.evaluate("document.querySelectorAll('#ex0 .hide, #ex0 .wait').length"):
-                    fails.append(f"{name} s1: the reply has not fully arrived 4.8 s after the hold")
+                if t == 800 and not pg.evaluate("['.you','.tool'].every(s=>+getComputedStyle(document.querySelector('#ex0 '+s)).opacity>.5)&&!!document.querySelector('#ex0 .tt').textContent.trim()"):
+                    fails.append(f"{name} s1: blank card 0.8 s after load (no question or status line)")
+                if t == 4800 and pg.evaluate("document.querySelectorAll('#ex0 .hide, #ex0 .wait').length"):
+                    fails.append(f"{name} s1: the reply has not fully arrived 4.8 s after load")
                 pg.screenshot(path=f"{OUT}/{name}-s1-play{t}.png")
             pg.screenshot(path=f"{OUT}/{name}-s1-played.png")
             pg.click("#pd button:nth-child(2)" if phone else "#next")
@@ -336,75 +379,69 @@ def main():
             n = pg.locator("#chain > li").count()
             if n != 8:
                 fails.append(f"{name} how: {n} links, want 8")
-            if pg.evaluate("document.querySelector('#how .std').getBoundingClientRect().bottom > innerHeight + 1") and pg.viewport_size["height"] >= 844:
+            if pg.evaluate("document.getElementById('bmc').getBoundingClientRect().bottom > innerHeight + 1") and pg.viewport_size["height"] >= 844:
                 fails.append(f"{name} how: the screen does not show whole")
-            if pg.evaluate("[...document.querySelectorAll('#chain button')].filter(b=>b.getBoundingClientRect().bottom<=innerHeight).length") < 6:
+            if pg.evaluate("[...document.querySelectorAll('#chain li')].filter(b=>b.getBoundingClientRect().bottom<=innerHeight).length") < 6:
                 fails.append(f"{name} how: fewer than six links show with the heading")
-            for i in (0, 7):
-                pg.locator("#chain button").nth(i).click()
-                pg.wait_for_timeout(350)
-                if not pg.evaluate("document.getElementById('lks').open"):
-                    fails.append(f"{name} how: link {i + 1} does not open its sheet")
-                    continue
-                if pg.evaluate("(()=>{const s=document.querySelector('#lks .sh');return s.scrollHeight>s.clientHeight+1||s.getBoundingClientRect().top<0})()"):
-                    fails.append(f"{name} how: link {i + 1}'s sheet scrolls or is cut")
-                probe("#lks", f"how sheet {i + 1}")
-                pg.screenshot(path=f"{OUT}/{name}-how-sheet{i + 1}.png")
-                pg.click("#lkx")
-                pg.wait_for_timeout(200)
-            # screen 3: reached by hash; each query
+            # the links are static rows (no button, no sheet); the benchmark line, then the screen's foot: a quiet arrow down to
+            # screen 3, centred, and a small info icon (chain.html) at the lower right
+            if pg.locator("#chain button, #lks, #how [aria-haspopup], #bmf").count():
+                fails.append(f"{name} how: a link is tappable, a sheet is back, or 'See where each stands' is back")
+            if not pg.inner_text("#bm").startswith("Of ") or pg.get_attribute("#bmc", "href") != "chain.html" or pg.get_attribute("#bmc", "aria-label") != "What each link means" \
+                    or pg.inner_text("#bmc").strip() or not pg.locator("#bmc svg").count():
+                fails.append(f"{name} how: the benchmark line or the info icon is missing")
+            for x in pg.evaluate(HOW_FOOT):
+                fails.append(f"{name} how: {x}")
+            pg.click("#to3")
+            pg.wait_for_timeout(1200)
+            if pg.evaluate("(()=>{const t=document.getElementById('h3').getBoundingClientRect().top,hb=document.querySelector('.top').getBoundingClientRect().bottom;return t<hb-1||t>hb+90})()"):
+                fails.append(f"{name} how: the arrow down does not bring screen 3 to the top")
+            # screen 3: reached by hash; pick a service, ask, Go (the providers are faked: fake_live)
+            fake_live(pg)
             pg.goto(f"{BASE}?still=1#try")
             pg.wait_for_timeout(900)
             for x in pg.evaluate(UNDER_HEADER, "#try"):
                 fails.append(f"{name} try: {x}")
             screen("#try", "try (by hash)")
-            if pg.evaluate(RESULT)["rows"] < 1:
-                fails.append(f"{name} try: the first example shows no providers")
-            probe("#try", "try (first example)")
-            if pg.evaluate("(()=>{const e=document.getElementById('tries');return e.scrollWidth>e.clientWidth+1})()"):
-                fails.append(f"{name} try: the 'Try:' line does not fit whole")
+            if pg.locator("#svc .sv").count() < 15 or pg.get_attribute("#svc .sv:first-child", "aria-pressed") != "true" or not pg.input_value("#q"):
+                fails.append(f"{name} try: the services, the picked one and its question do not all show")
+            probe("#try", "try (at rest)")
             pg.screenshot(path=f"{OUT}/{name}-try.png")
-            for i, (q, want) in enumerate(QUERIES):
+            for i, (svc, q, want) in enumerate(TRIES):
+                pg.click(f'#svc .sv[data-id="{svc}"]')
+                if pg.evaluate("document.activeElement.id") != "q":
+                    fails.append(f"{name} try {svc}: picking a service does not focus the field")
                 pg.fill("#q", q)
                 pg.press("#q", "Enter")
-                pg.wait_for_timeout(150)
-                r = pg.evaluate(RESULT)
-                ok = {"rows": r["rows"] > 0 and not r["stop"], "empty": r["empty"] and not r["rows"], "stop": r["stop"] and not r["rows"],
-                      "any": (r["rows"] > 0) != r["empty"] and not r["stop"]}[want]
-                if not ok:
-                    fails.append(f"{name} try {q!r}: want {want}, got {r['rows']} rows, empty={r['empty']}, refused={r['stop']}: {r['text'][:80]!r}")
-                if q in MUST and r["rows"] and not MUST[q](r):
-                    fails.append(f"{name} try {q!r}: round-4 expectation not met: {r['text'][:120]!r} {r['links'][:3]}")
-                for nm in pg.evaluate(NAMES_WHOLE):
-                    fails.append(f"{name} try {q!r}: result name cut off: {nm!r}")
-                if r["empty"] and "No provider covers this" not in r["text"]:
-                    fails.append(f"{name} try {q!r}: empty state does not say so: {r['text'][:80]!r}")
-                if name == "iphone":
-                    for h in r["links"]:
-                        if not pg.request.get(BASE + h).ok:
-                            fails.append(f"{name} try {q!r}: result links to missing {h}")
-                pg.locator("#out").scroll_into_view_if_needed()
-                probe("#try", f"try {q!r}")
+                try:
+                    pg.wait_for_selector("#lv .ans, #lv .lvm", timeout=8000)
+                    if "Elm St" in q:
+                        pg.wait_for_selector("#lv .ircp", timeout=8000)
+                except Exception:
+                    fails.append(f"{name} try {q!r}: no answer or message")
+                pg.wait_for_timeout(700)
+                t = pg.inner_text("#out") if pg.locator("#out").count() else ""
+                if want not in t:
+                    fails.append(f"{name} try {q!r}: want {want!r}, got {t[:100]!r}")
+                if "4.12" in want:
+                    if "Fetched by your browser, straight from USGS." not in t:
+                        fails.append(f"{name} try: the answer does not say who fetched it")
+                    r = pg.evaluate("[document.getElementById('lv').getBoundingClientRect().bottom, innerHeight]")
+                    if r[0] > r[1] + 1:
+                        fails.append(f"{name} try: the answer is not brought into view ({round(r[0])} > {r[1]})")
+                    probe("#try", f"try {q!r}")
+                    pg.click("#lvc")
+                    pg.wait_for_timeout(700)
+                    probe("#try", f"try {q!r} source open")
+                    pg.screenshot(path=f"{OUT}/{name}-try-src.png")
+                    pg.click("#lvp .pxb")
+                    pg.wait_for_timeout(500)
+                else:
+                    probe("#try", f"try {q!r}")
                 if phone or i < 2:
                     pg.screenshot(path=f"{OUT}/{name}-try-{i:02d}.png")
-            # Match brings the results into view
-            pg.evaluate("scrollTo(0, document.getElementById('try').offsetTop - 52)")
-            pg.fill("#q", "500 egocentric clips")
-            pg.press("#q", "Enter")
-            pg.wait_for_timeout(1200)
-            top = pg.evaluate("document.getElementById('out').getBoundingClientRect().top")
-            if not (0 <= top < ctx["viewport"]["height"] - 150):
-                fails.append(f"{name} try: results not brought into view after Match (top {round(top)})")
-            # typing (not submitting) also answers
-            pg.fill("#q", "")
-            pg.type("#q", "flood photos Houston", delay=20)
-            pg.wait_for_timeout(700)
-            r = pg.evaluate(RESULT)
-            if not (r["rows"] or r["empty"]):
-                fails.append(f"{name} try: typing without Enter showed nothing")
-            if "private preview, not published yet" not in pg.inner_text("#dev") or pg.get_attribute("#dev a[href='agents.html']", "href") is None \
-                    or pg.locator("#dev a[href='standard.html#14-protocol']").count() != 1:
-                fails.append(f"{name} try: the agent line does not point to the manual and protocol, as a private preview")
+            if pg.inner_text("#docs").strip() != "See the docs" or pg.get_attribute("#docs", "href") != "docs.html":
+                fails.append(f"{name} try: the last call to action is not 'See the docs' (docs.html)")
             # the footer, at the end
             pg.evaluate("scrollTo(0, document.documentElement.scrollHeight)")
             pg.wait_for_timeout(300)
@@ -427,16 +464,20 @@ def main():
                 cen(f"s1 ex{ex} source open")
             pg.goto(f"{BASE}?still=1#how")
             pg.wait_for_timeout(700)
-            pg.locator("#chain [aria-haspopup=dialog]").first.click()
-            pg.wait_for_timeout(400)
-            cen("how sheet")
+            cen("how")
+            if "1280" in name:  # screen 2 on a desktop: no empty band over 120px inside it (the owner, 2026-10-30)
+                for x in pg.evaluate(SCREEN, ["#how", False]):
+                    fails.append(f"{name} how: {x}")
+            fake_live(pg)
+            pg.goto("about:blank")  # a hash-only goto keeps the open sheet
             pg.goto(f"{BASE}?still=1#try")
             pg.wait_for_timeout(900)
             cen("try")
-            for q, _ in QUERIES[:6]:
+            for svc, q, _ in TRIES:
+                pg.click(f'#svc .sv[data-id="{svc}"]')
                 pg.fill("#q", q)
                 pg.press("#q", "Enter")
-                pg.wait_for_timeout(300)
+                pg.wait_for_timeout(2500 if svc == "usgs-water" and "Austin" in q else 600)
                 cen(f"try {q!r}")
             b.close()
         # round 6: the visitors' phones. Each screen, scrolled to, and paged to (one viewport down at a time): clear of the
@@ -457,6 +498,20 @@ def main():
                 pg.wait_for_timeout(250)
                 for x in pg.evaluate(SCREEN, [sel, True]):
                     fails.append(f"{name} paged {k}: {x}")
+            # screen 3 answered (faked USGS): nothing clipped, overlapping or spilling, no empty band
+            fake_live(pg)
+            pg.evaluate(GO_SCREEN, "#try")
+            pg.press("#q", "Enter")
+            try:
+                pg.wait_for_selector("#lv .ans", timeout=8000)
+            except Exception:
+                fails.append(f"{name}: screen 3 gave no answer")
+            pg.wait_for_timeout(900)
+            for x in pg.evaluate(PROBE, ["#try", BLOCKS, TAPS]) + [y for y in pg.evaluate(SCREEN, ["#try", False]) if "first line" not in y]:  # scrolled to the answer
+                fails.append(f"{name} try answered: {x}")
+            if pg.evaluate("document.getElementById('lv').getBoundingClientRect().bottom > innerHeight + 1 || document.getElementById('ask').getBoundingClientRect().top < document.querySelector('.top').getBoundingClientRect().bottom - 1"):
+                fails.append(f"{name} try answered: the field and the answer are not both in view")
+            pg.screenshot(path=f"{OUT}/{name}-try-answered.png")
             pg.close()
         b.close()
     seen = set()

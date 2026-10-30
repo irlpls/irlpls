@@ -79,52 +79,50 @@ h2{margin:4px 0 0;font:700 clamp(25px,7vw,34px)/1.08 var(--head);letter-spacing:
 .ask:focus-within{box-shadow:var(--shadow),0 0 0 2px var(--pol)}
 .ask button{flex:none;height:44px;padding:0 16px;border:0;border-radius:999px;background:var(--fg);color:#fff;font-weight:600;cursor:pointer}
 .priv{margin:6px 0 0 16px;font-size:12.5px;color:var(--fg3)}
-/* sample asks: one quiet line of three short plain-text suggestions that fits a 375px phone whole */
-.tries{display:flex;align-items:center;margin:2px 0 0 16px;white-space:nowrap;font:500 13.5px/1 var(--sans);color:var(--fg3)}
-@media(max-width:370px){.tries{flex-wrap:wrap}}
-.tries>span{flex:none;margin-right:6px}
-.tries i{flex:none;font-style:normal;padding:0 6px;color:var(--dot)}
-.tries button{flex:none;min-height:44px;padding:0 1px;border:0;background:none;font:inherit;color:var(--fg2);cursor:pointer;text-decoration:underline dotted rgba(61,70,84,.45);text-underline-offset:3px}
-.tries button:hover,.tries button:focus-visible{color:var(--pol);text-decoration-color:currentColor}
-.tries button:focus-visible{outline-offset:-2px}
 .all{margin:6px 2px 0}
 .out{margin-top:12px;scroll-margin-top:calc(var(--hh) + 12px)}
 .note{margin:0 2px 8px;font-size:14px;line-height:1.4;color:var(--fg2)}.note b{color:var(--fg)}
 .dev{margin:14px 2px 0;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.7);border:1px solid var(--line);font-size:14.5px;line-height:1.45;font-weight:500;color:var(--fg)}
 .dev a{color:var(--pol);font-weight:600;text-decoration:none;padding:14px 0;margin:-14px 0}.dev a:hover{text-decoration:underline}
-.oh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 6px;font:600 13px var(--sans);color:var(--fg2)}
-.oh span{font-weight:500;color:var(--fg3)}
-.res{list-style:none;margin:0;padding:4px;display:flex;flex-direction:column}
-.res li+li{border-top:1px solid var(--line)}
-.res li{padding:4px 0 8px}
-.res a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:5px 10px 3px;min-height:44px;text-decoration:none;border-radius:16px}
-@media(hover:hover) and (pointer:fine){.res a:hover b{text-decoration:underline;text-underline-offset:3px}}
-/* a long name wraps (two lines at most), never cut mid-word */
-.res b{font:600 15px/1.3 var(--sans);min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:break-word}
-.res em{font:600 12px var(--sans);font-style:normal;color:var(--live);white-space:nowrap}
-.res em.w{color:var(--fg3)}
-.res .s{margin:0 10px;font-size:13px;line-height:1.35;color:var(--fg2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.res .s.more{cursor:pointer;border-radius:8px}
-.res .s.open{display:block;-webkit-line-clamp:none;overflow:visible}
-.res .d{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;margin:4px 10px 0;font-size:12px;color:var(--fg3)}
-.res .cu{flex-basis:100%;color:var(--fg2)}
-.msg{margin:0;padding:14px 16px;font-size:15px;line-height:1.4;color:var(--fg2)}
-.msg b{display:block;color:var(--fg);font-size:16px;margin-bottom:2px}
-.msg.stop b{color:var(--bad)}
 [hidden]{display:none!important}
 .legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin:8px 2px 0;font-size:12.5px;color:var(--fg3)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--dot)}.legend i.e{background:var(--live);box-shadow:none}.legend i.c{background:var(--pol);box-shadow:none}.legend i.r{box-shadow:inset 0 0 0 1.5px var(--fg2)}
 
-.site-foot{max-width:720px;margin:12px auto 0;padding:16px var(--gut) max(24px,env(safe-area-inset-bottom));border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.6;color:var(--fg3)}
-.site-foot a{color:var(--fg2)}.site-foot .fl{display:flex;flex-wrap:wrap;column-gap:14px}
+.site-foot{margin:56px 0 0;padding:24px max(var(--gut),calc((100% - 1100px)/2 + var(--gut))) max(24px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:rgba(255,255,255,.55);display:flex;flex-direction:column;gap:10px;font:400 13px/1.5 var(--sans);color:var(--fg3)}
+.site-foot a{color:var(--fg2);text-decoration:none}
+@media(hover:hover){.site-foot a:hover{color:var(--fg);text-decoration:underline;text-underline-offset:3px}}
+.site-foot .ft{display:flex;flex-direction:column;gap:4px}
+.site-foot .fd{margin:0;display:flex;flex-wrap:wrap;align-items:center;column-gap:14px}
+.site-foot .fw{display:inline-flex;align-items:center;min-height:44px;font:700 16px var(--sans);letter-spacing:-.04em;color:var(--fg)}.site-foot .fw i{font-style:normal;color:var(--fg3)}
+.site-foot .fl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}
+.site-foot .fl a{display:flex;align-items:center;min-height:44px;font-weight:500}
+/* desktop: a full-width band, content to the site's widest column (1100px), the wordmark left and the links in columns right */
+@media(min-width:760px){.site-foot{padding-top:32px;gap:14px}.site-foot .ft{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:48px;align-items:start}
+  .site-foot .fd{flex-direction:column;align-items:flex-start}.site-foot .fl{grid-template-columns:repeat(4,max-content);column-gap:48px}}
+.site-foot .fc{margin:0;font-size:12px;color:var(--fg3)}
+.site-foot .fm{margin:0;padding-top:6px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;column-gap:18px;font-size:12px}
+.site-foot .fm a{display:inline-flex;align-items:center;min-height:44px}
 
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+/* one title treatment (the owner, 2026-10-30): screen 1's headline style on every main title, from one rule set (src/style.css
+   and the landing's own head carry the same text): Inter Tight 700 on one size scale, a key term in the headline's gradient,
+   and its slow light sweep (data-t: the title's own text laid over it, clipped to the letters). Long documents (.hl-doc): the
+   same family and scale in ink, no sweep. Reduced motion and ?still=1: static. */
+.hl{position:relative;font:700 clamp(20px,calc((min(100vw,720px) - 32px)/13.3),40px)/1.12 var(--head);letter-spacing:-.025em;text-wrap:wrap}
+.hl .k3,.hl .k4,.hl .k5{-webkit-background-clip:text;background-clip:text;color:transparent}
+.hl .k3{background-image:linear-gradient(90deg,#0f766e,#0891b2)}.hl .k4{background-image:linear-gradient(90deg,#0891b2,#0284c7)}.hl .k5{background-image:linear-gradient(90deg,#059669,#0d9488)}
+.hl[data-t]:after{content:attr(data-t);white-space:inherit;position:absolute;inset:0;pointer-events:none;color:transparent;-webkit-background-clip:text;background-clip:text;background-image:linear-gradient(100deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.38) 50%,rgba(255,255,255,0) 70%);background-repeat:no-repeat;background-size:40% 100%;background-position:-70% 0;opacity:0}
+@media(prefers-reduced-motion:no-preference){html:not(.still) .hl[data-t]:after{opacity:1;animation:shine 7s linear infinite}}
+@keyframes shine{from{background-position:-70% 0}to{background-position:170% 0}}
+@media(forced-colors:active){.hl .k3,.hl .k4,.hl .k5{color:CanvasText;background:none}}
+.aud{margin:6px 0 0;font:500 15px/1.4 var(--sans);color:var(--fg2)}
 .top.ctr{display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center}.top.ctr .brand{grid-column:2;justify-self:center}.top.ctr .nl{grid-column:1;justify-self:start}.top.ctr .nr{grid-column:3;justify-self:end}.top.ctr nav{display:contents}.top.ctr nav a{min-height:44px;display:inline-flex;align-items:center}</style>
 </head>
 <body><a class="skip" href="#main">Skip to content</a>
 <header class="top ctr"><nav aria-label="Main"><a class="nl" href="find.html">Find data</a><a class="brand" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><a class="nr" href="agents.html">For agents</a></nav></header>
 
+<script src="places.js"></script>
 <script src="match.js"></script>
 <script src="labels.js"></script>
 <!-- a snapshot of the in-scope cards, written by build.py; cards.json replaces it when the page is served -->
@@ -208,30 +206,24 @@ return api})();
 #s1{justify-content:flex-start}
 /* three lines broken on meaning, each kept whole (never re-wrapped): the widest line is ~13em, so the size is the
    column width / 13.3, which keeps every line inside the column down to 360px */
-h1{margin:4px 0 0;font:700 clamp(20px,calc((min(100vw,720px) - 2*var(--gut))/13.3),40px)/1.12 var(--head);letter-spacing:-.025em}
+#h1{margin:4px 0 0}
 h1 .ln{display:block;white-space:nowrap}
 .sub{margin:6px 0 0;font:500 15px/1.4 var(--sans);color:var(--fg2)}
-/* the headline (the owner, 2026-10-29): each term flourishes once, one after another (ink, its colour sweeping through, ink
-   again) and then rests in ink; only a very faint light sweeps the ink terms now and then. ?still=1 and reduced motion: ink.
-   The flourish ends at 4.05 s (k5: 2.75 s + 1.3 s); the first card waits for that plus a pause to read (HOLD in the script). */
-#h1 .k3,#h1 .k4,#h1 .k5{-webkit-background-clip:text;background-clip:text;color:transparent;background-size:250% 100%,400% 100%;background-position:100% 0,0 0}
-#h1 .k3{background-image:linear-gradient(100deg,transparent 44%,rgba(255,255,255,.2) 50%,transparent 56%),linear-gradient(90deg,var(--fg) 0 26%,#0f766e 38%,#0891b2 50%,#0f766e 62%,var(--fg) 74% 100%)}
-#h1 .k4{background-image:linear-gradient(100deg,transparent 44%,rgba(255,255,255,.2) 50%,transparent 56%),linear-gradient(90deg,var(--fg) 0 26%,#0891b2 38%,#0284c7 50%,#0891b2 62%,var(--fg) 74% 100%)}
-#h1 .k5{background-image:linear-gradient(100deg,transparent 44%,rgba(255,255,255,.2) 50%,transparent 56%),linear-gradient(90deg,var(--fg) 0 26%,#059669 38%,#0d9488 50%,#059669 62%,var(--fg) 74% 100%)}
-@media(prefers-reduced-motion:no-preference){html:not(.still) #h1 .k3,html:not(.still) #h1 .k4,html:not(.still) #h1 .k5{background-position:100% 0,100% 0;animation:lit 1.3s cubic-bezier(.4,0,.2,1) forwards,shine 14s ease-in-out infinite}
-html:not(.still) #h1 .k3{animation-delay:.35s,12s}html:not(.still) #h1 .k4{animation-delay:1.55s,12.4s}html:not(.still) #h1 .k5{animation-delay:2.75s,12.8s}}
-@keyframes lit{from{background-position:100% 0,100% 0}to{background-position:100% 0,0 0}}
-/* after it rests, a very faint light sweeps across the ink terms every 14 s, left to right */
-@keyframes shine{0%{background-position:100% 0,0 0}18%,100%{background-position:0 0,0 0}}
+/* the headline (the owner, 2026-10-30): in colour from the first frame (the three terms in their colours, the rest in ink),
+   and one slow, constant, subtle light that sweeps across the WHOLE title, every word, left to right, forever. It is a
+   copy of the title's own text laid exactly over it (::after, content from data-t, its two lines), clipped to the letters,
+   so one band of light crosses every word and never the page behind them. ?still=1 and reduced motion: static colour, no light. The first card never waits for it. */
+#h1:after{white-space:pre}  /* its two lines, as broken in the markup (the shared .hl rules draw the colour and the light) */
 /* scrolling past the headline, its colours flow into the wordmark and stay: irl in the headline's blue, pls in its green (--bc: 0 ink, 1 colour) */
 .top .brand,.top .brand i{-webkit-background-clip:text;background-clip:text}.top .brand{background-image:linear-gradient(90deg,#2563eb,#06b6d4)}.top .brand i{background-image:linear-gradient(90deg,#10b981,#16a34a)}
 .top .brand{color:rgba(16,20,24,calc(1 - var(--bc,0)))}.top .brand i{color:rgba(91,101,116,calc(1 - var(--bc,0)))}
 /* the five chats: a swipeable row; the next card's edge peeks in, dots below */
+.stage{position:relative;display:flex;flex-direction:column;flex:1 1 0;min-height:0}
 .track{display:flex;gap:10px;flex:1 1 0;min-height:0;margin:8px calc(-1*var(--gut)) -12px;padding:4px var(--gut) 16px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding:0 var(--gut);overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 /* the row takes what the screen leaves (flex-basis 0), so its height never follows its content: all five cards are one
    height, a card's photo fills what its reply leaves (no blank band), and an opened tool line scrolls inside its card
    instead of pushing the chip off the screen. Below 500px tall the page scrolls, so the cards size to their content. */
-@media(max-height:499px){.track{flex-basis:auto}}
+@media(max-height:499px){.stage,.track{flex-basis:auto}}
 .track::-webkit-scrollbar{display:none}
 .track:focus-visible{outline-offset:-2px}
 .track:focus:not(:focus-visible),.track.ptr:focus{outline:none}
@@ -249,6 +241,14 @@ html:not(.still) #h1 .k3{animation-delay:.35s,12s}html:not(.still) #h1 .k4{anima
 .pg{width:44px;height:44px;margin:-8px 0;display:none;place-items:center;border:0;background:none;border-radius:50%;color:var(--fg2);cursor:pointer;padding:0}
 .pg:disabled{opacity:.3;cursor:default}
 @media(hover:hover) and (pointer:fine){.pg{display:grid}.pg:not(:disabled):hover{color:var(--fg);background:rgba(20,30,50,.05)}}
+/* desktop (the owner, 2026-10-30): the arrows sit on the card's left and right edges at mid-height, over the edge like a
+   carousel (the script moves them into .stage); the card in view is always at the row's start (a spacer after the last card
+   lets it snap there too), so the arrows always meet its edges. Phones keep them in the pager, beside the dots. */
+@media(min-width:760px){.track:after{content:"";flex:0 0 38px}
+  .stage>.pg{position:absolute;z-index:3;top:calc(50% - 18px);margin:0;background:#fff;border:1px solid var(--line2);box-shadow:0 4px 14px rgba(20,30,50,.10);color:var(--fg);transition:opacity .2s ease}
+  .stage>#prev{left:-22px}.stage>#next{left:calc(100% - 70px)}
+  .stage>.pg:disabled{opacity:0;pointer-events:none}
+  @media(hover:hover) and (pointer:fine){.stage>.pg:not(:disabled):hover{background:#fff;border-color:rgba(20,30,50,.3)}}}
 /* the person's message: a quiet neutral bubble, right */
 .you{align-self:flex-end;max-width:90%;margin:0;padding:9px 14px;border-radius:20px;background:#007aff;color:#fff;font-size:15.5px;line-height:1.35}
 /* the assistant's turn */
@@ -288,7 +288,7 @@ html:not(.still) #h1 .k3{animation-delay:.35s,12s}html:not(.still) #h1 .k4{anima
 .att{margin:0;flex:1 1 auto;display:flex;flex-direction:column;transition:opacity .45s ease,transform .45s ease}
 /* corners concentric with the card (24px radius, 14px padding); the mask makes WebKit clip a playing video to the radius
    too; the hairline is drawn above the photo so no grey seam shows at its rounded edge */
-.media{position:relative;flex:1 1 auto;min-height:72px;border-radius:12px;overflow:hidden;background:#dfe5ee;isolation:isolate;-webkit-mask-image:-webkit-radial-gradient(white,black)}
+.media{position:relative;flex:1 1 auto;min-height:72px;border-radius:12px;overflow:hidden;background:none;isolation:isolate;-webkit-mask-image:-webkit-radial-gradient(white,black)}
 .media:after{content:"";position:absolute;inset:0;z-index:2;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(20,30,50,.08);pointer-events:none}
 .media img,.media video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
 /* a licensor's watermark sits bottom-left: keep that corner in frame whatever the crop */
@@ -353,54 +353,35 @@ html:not(.still) #h1 .k3{animation-delay:.35s,12s}html:not(.still) #h1 .k4{anima
 .step{transition:opacity .35s ease,transform .35s ease}
 .step.hide{opacity:0;transform:translateY(6px)}
 .media img,.media video{transition:opacity .4s ease,filter .6s ease,transform .6s ease}
-/* the reply evolves like a chat: the photo appears only when it has arrived */
-/* (round 6) its place is held from the start by a quiet, empty placeholder the photo's size, so the card never shows a
-   large blank band while the answer types and nothing moves when the photo lands */
-.att.hide .media{background:#eef1f5}.att.hide .media:after{box-shadow:inset 0 0 0 1px rgba(20,30,50,.05)}
+/* the reply evolves like a chat: the photo appears only when it has arrived and loaded. Until then its place is plain white
+   card (the owner, 2026-10-30: no grey placeholder), held at the photo's size so nothing moves when it lands */
+.att.hide .media:after{box-shadow:none}
 .att.hide .media img,.att.hide .media video,.att.hide .smp{opacity:0}
-.media{transition:background-color .4s ease}
 .cites.hide{opacity:0}
 /* short screens (an SE in Safari): every example still fits above the fold, call to action included */
-@media(max-height:600px){.sub{margin-top:1px;font-size:13px;line-height:1.25}.pv{padding-top:10px}#s1{padding-top:10px}h1{font-size:min(21px,calc((min(100vw,720px) - 2*var(--gut))/13.3));margin:0}.track{margin-top:2px}.chat{gap:6px;padding:11px 12px}.turn{gap:6px}.you{padding:8px 13px;font-size:15px}.ans{font-size:15px;line-height:1.4}.cta{margin-top:8px}}
+@media(max-height:600px){.sub{margin-top:1px;font-size:13px;line-height:1.25}.pv{padding-top:10px}#s1{padding-top:10px}#h1{font-size:min(21px,calc((min(100vw,720px) - 2*var(--gut))/13.3));margin:0}.track{margin-top:2px}.chat{gap:6px;padding:11px 12px}.turn{gap:6px}.you{padding:8px 13px;font-size:15px}.ans{font-size:15px;line-height:1.4}.cta{margin-top:8px}}
 /* desktop: the photo fills what the reply leaves too (round 6: a capped photo left an empty band under the chip) */
 @media(min-width:700px){.media{min-height:160px}}
 </style>
 <script>/[?&]still=1/.test(location.search)&&document.documentElement.classList.add("still")</script>
-<h1 id="h1"><span class="ln"><span class="k3">Real-world data</span> <span class="k4">on demand</span>,</span> <span class="ln">with <span class="k5">provenance</span>.</span></h1>
+<h1 class="hl" id="h1" data-t="Real-world data on demand,
+with provenance."><span class="ln"><span class="k3">Real-world data</span> <span class="k4">on demand</span>,</span> <span class="ln">with <span class="k5">provenance</span>.</span></h1>
 <p class="sub">An open protocol and router for agents.</p>
-<div class="track" id="track" role="region" aria-roledescription="carousel" aria-label="Five example chats: an assistant gets real-world data through irlpls. Swipe for the next one." tabindex="0"></div>
-<div class="pager"><button class="pg" id="prev" type="button" aria-label="Previous example"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 3-5 5 5 5"/></svg></button><div class="pd" id="pd"></div><button class="pg" id="next" type="button" aria-label="Next example"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></button></div>
+<div class="stage" id="stage"><div class="track" id="track" role="region" aria-roledescription="carousel" aria-label="Five example chats: an assistant gets real-world data through irlpls. Swipe for the next one." tabindex="0"></div></div>
+<div class="pager" id="pager"><button class="pg" id="prev" type="button" aria-label="Previous example"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 3-5 5 5 5"/></svg></button><div class="pd" id="pd"></div><button class="pg" id="next" type="button" aria-label="Next example"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></button></div>
 <a class="cta" href="#how">How it’s proven<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 6 5 5 5-5"/></svg></a>
 <script>
 (function(){
 var U=IRL3,E=U.E,$=U.$,RM=matchMedia('(prefers-reduced-motion: reduce)').matches||/[?&]still=1/.test(location.search);
-/* the river reading: a saved snapshot (build.py writes the latest; never empty), then media/live/index.json, then USGS live from the browser */
-var G={flow:{"v": 76.3, "t": "2026-10-28T04:35:00+00:00"},cam:"2026-10-27T21:41:22Z",normal:{"p25": 55.0, "p50": 102.0, "p75": 181.0, "years": "1940-2025", "date": "Oct 27"},live:false};
-function ct(t){try{return new Date(t).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/Chicago'})}catch(e){return ''}}
-/* "2:20 AM CT", "4:41 PM CT yesterday" or "4:41 PM CT, Oct 25": the time with its day, in the river's time zone */
-function stamp(t){var o={timeZone:'America/Chicago'},day=function(d){try{return d.toLocaleDateString('en-US',o)}catch(e){return ''}},d=new Date(t),now=new Date(),y=new Date(now-864e5);
-  var s=ct(t)+' CT';return day(d)===day(now)?s:day(d)===day(y)?s+' yesterday':s+', '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/Chicago'})}
-function ago(t){var m=Math.max(1,Math.round((Date.now()-Date.parse(t))/60000));return m<90?m+' min':m<2880?Math.round(m/60)+' h':Math.round(m/1440)+' d'}
-function fmt(v){return v>=100?Math.round(v):Math.round(v*10)/10}
-/* "Oct 27" -> "late October" (the date USGS's daily statistics are for) */
-function when(d){var M={Jan:'January',Feb:'February',Mar:'March',Apr:'April',May:'May',Jun:'June',Jul:'July',Aug:'August',Sep:'September',Oct:'October',Nov:'November',Dec:'December'},p=String(d||'').split(' '),n=+p[1];
-  return M[p[0]]?(n<11?'early ':n<21?'mid-':'late ')+M[p[0]]:'today'}
-/* the assistant's opinion, from the reading and USGS's daily percentiles (the opinion is the assistant's, not irlpls's) */
-function river(){var f=G.flow,n=G.normal,at=' the Guadalupe at Comfort is running about '+fmt(f.v)+' ft³/s';
-  if(!n)return [{b:'Flowing now:'},at+'.'];
-  var u=' the usual ~'+Math.round(n.p50)+' for '+when(n.date);
-  return f.v<n.p25?[{b:'Not today:'},at+', well under'+u+'. Expect a shallow, scrapey float.']:
-    f.v<n.p50?[{b:'Not great today:'},at+', under'+u+', so expect a slow, scrapey float.']:
-    f.v<=n.p75?[{b:'Yes, a good day:'},at+', right around'+u+'.']:
-    [{b:'Careful today:'},at+', well above'+u+'. Check advisories before you go.']}
+/* the five examples are samples (the owner, 2026-10-30): the river is a saved USGS camera frame and the gauge reading taken
+   with it (media/guadalupe-comfort-2026-10-29.jpg and .json, public domain, see media/CREDITS.md), never fetched live */
 var X=[
- {ask:'Tubing on the Guadalupe today?',call:'river at Comfort, TX now',id:'usgs-water',pick:'USGS stream gauges',src:'USGS',how:'live, free',got:'1 reading and the river camera’s photo',
-  media:function(){return '<img src="media/live/TX_Guadalupe_Rv_at_Comfort.jpg" alt="The Guadalupe River at Comfort, Texas, from the USGS camera">'},
-  /* the chip's age is the reading's own (the answer is the reading) */
-  age:function(){return 'reading '+ago(G.flow.t)+' ago'},
-  /* honesty, for screen readers (the chip's label): whether the answer's reading is USGS live or the site's saved copy */
-  state:function(){return (G.live?'Live reading from USGS: ':'Saved reading: ')+fmt(G.flow.v)+' ft³/s at '+stamp(G.flow.t)+'.'},
-  say:river},
+ {ask:'Tubing on the Guadalupe today?',call:'river at Comfort, TX now',id:'usgs-water',pick:'USGS stream gauges',src:'USGS',how:'live, free',kind:'stream gauge',got:'1 reading and the river camera’s photo',
+  media:function(){return '<img src="media/guadalupe-comfort-2026-10-29.jpg" alt="Sample photo: the Guadalupe River at Comfort, Texas, from the USGS camera, October 29, 2026">'},
+  sample:true,
+  note:function(){return 'Read from the USGS gauge and its river camera.'},
+  /* the saved reading: 80.6 ft³/s at 2:40 PM CDT, Oct 29 2026; USGS's median for Oct 29 is 100 (p25 53.3) */
+  say:function(){return [{b:'Not great today:'},' the Guadalupe at Comfort is running about 81 ft³/s, under the usual ~100 for late October, so expect a slow, scrapey float.']}},
  {ask:'Is the Bellevue Safeway ramp too steep?',call:'measure the ramp at Safeway, Bellevue',id:'rentahuman',pick:'RentAHuman',how:'person for hire',kind:'person for hire',got:'2 photos and a slope measurement',
   media:function(){return '<img src="media/ex-ramp.jpg" alt="Example photo: a store entrance ramp">'},
   sample:true,
@@ -488,18 +469,19 @@ slides.forEach(function(sl,i){
   q(i,'.cite').onclick=function(){sheet(i,this.getAttribute('aria-expanded')!=='true')};
   q(i,'.pv').addEventListener('click',function(e){if(e.target.closest('.px,.pxb'))sheet(i,false)});
   sl.addEventListener('keydown',function(e){if(e.key==='Escape'&&sl.classList.contains('pvo')){e.preventDefault();sheet(i,false)}})});
-/* a card arrives like a real reply, once, the first time it is in view (the first card after HOLD): a one-line status
-   (shimmering), the photo hidden; at 0.65 s the status names the provider; from 0.75 s the answer streams in at reading
-   pace (WORD ms a word, at most MAXANS); then the photo appears, then the source. */
-/* one thing at a time (the owner, 2026-10-29): the headline's flourish (ends 4.05 s), a pause to read it, then the first card
-   plays its reply at reading pace (120 ms a word, at most 3 s), and only when it is done, the swipe nudge. Never overlapping.
-   A card swiped to later plays at once, at the same pace. */
-var WORD=120,MAXANS=3000,HOLD=5800,T0=Date.now();
+/* a card arrives like a real reply, once, the first time it is in view (the first card on load, the owner 2026-10-30: never
+   waiting for the headline): a one-line status (shimmering), the photo hidden; at 0.65 s the status names the provider; from
+   0.75 s the answer streams in at reading pace (WORD ms a word, at most MAXANS); then the photo appears (once it has loaded),
+   then the source; only when it is done, the swipe nudge. A card swiped to later plays at once, at the same pace. */
+var WORD=120,MAXANS=3000;
 var ANIM=!RM&&'IntersectionObserver' in window,seen=[],vis=[],s1in=false;
 function prep(i){var tool=q(i,'.tool'),tl=q(i,'.tl'),tt=q(i,'.tt'),ans=q(i,'.ans');
   ans.innerHTML=words(X[i].say(),true);ans.classList.add('wait');
   ans.classList.add('pre');tool.classList.add('hide');q(i,'.att').classList.add('hide');q(i,'.cites').classList.add('hide');tl.classList.add('run');
   tt.textContent='Asking irlpls · searching '+U.cards.length+' providers';tl.disabled=true}
+/* the photo shows only once it has loaded (a still decoded, a clip's first frame); until then its place stays white */
+function ready(att,f){var m=att.querySelector('img,video');if(!m||(m.tagName==='IMG'?m.complete&&m.naturalWidth:m.readyState>=2||m.poster))return f();
+  m.addEventListener(m.tagName==='IMG'?'load':'loadeddata',function(){f()},{once:true})}
 function arrive(i){var tool=q(i,'.tool'),tl=q(i,'.tl'),tt=q(i,'.tt'),ans=q(i,'.ans'),att=q(i,'.att'),cs=q(i,'.cites'),x=X[i];
   if(!ANIM)return;
   ans.innerHTML=words(x.say(),true);ans.classList.add('wait');
@@ -508,7 +490,7 @@ function arrive(i){var tool=q(i,'.tool'),tl=q(i,'.tl'),tt=q(i,'.tt'),ans=q(i,'.a
   later(function(){tool.classList.remove('hide')},60);
   later(function(){tl.classList.remove('run');tt.innerHTML=done(x);tl.disabled=false},650);
   later(function(){ans.classList.remove('pre');ans.offsetWidth;ans.classList.remove('wait')},750);
-  later(function(){att.classList.remove('hide')},800+n);
+  later(function(){ready(att,function(){att.classList.remove('hide');vsync(i)})},800+n);
   later(function(){cs.classList.remove('hide')},1100+n);
   if(i===0)later(function(){armed=true;nudge()},1700+n)}
 /* once, when the first reply has arrived and screen 1 is in view, show that the row moves: the cards slide 32px left,
@@ -519,8 +501,15 @@ function nudge(){var t=$('track');if(RM||nudged||!armed||!s1in||cur!==0)return;
   nudged=true;later(function(){if(t.scrollLeft>4||!s1in)return;t.classList.add('nudge');
     t.addEventListener('animationend',function f(e){if(e.target!==slides[0])return;t.classList.remove('nudge');t.removeEventListener('animationend',f)})},350)}
 /* a card counts as in view when 60% of it shows in the row and screen 1 is on screen; its clip plays only then */
-function sync(){slides.forEach(function(s,i){var on=s1in&&vis[i];if(on&&!seen[i]){seen[i]=1;var w=i===0&&cur===0?HOLD-(Date.now()-T0):0;if(w>0)later(function(){arrive(i)},w);else arrive(i)}
-  var v=s.querySelector('video');if(!v)return;if(on&&!RM)v.play().catch(function(){});else v.pause()});nudge()}
+function sync(){slides.forEach(function(s,i){var on=s1in&&vis[i];if(on&&!seen[i]){seen[i]=1;arrive(i)}vsync(i)});nudge()}
+/* a clip (the owner, 2026-10-30) starts from its beginning each time it actually appears: its card's reply has revealed the
+   photo slot, the card is at least 60% in view, screen 1 is on screen and the tab is visible. It never plays hidden. */
+var vplay=[];
+function vsync(i){var s=slides[i],v=s.querySelector('video');if(!v)return;
+  var shown=!RM&&s1in&&!!vis[i]&&!q(i,'.att').classList.contains('hide')&&!document.hidden;
+  if(shown&&!vplay[i]){vplay[i]=1;try{v.currentTime=0}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){vplay[i]=0})}
+  else if(!shown&&vplay[i]){vplay[i]=0;v.pause()}}
+document.addEventListener('visibilitychange',function(){slides.forEach(function(s,i){vsync(i)})});
 function watch(){if(!('IntersectionObserver' in window))return;
   var io=new IntersectionObserver(function(es){es.forEach(function(e){vis[slides.indexOf(e.target)]=e.intersectionRatio>=.6});sync()},{root:$('track'),threshold:[0,.6,1]});
   slides.forEach(function(s){io.observe(s)});
@@ -535,111 +524,88 @@ var st=0;$('track').addEventListener('scroll',function(){clearTimeout(st);var t=
 /* a swipe or tap on the row never leaves a focus ring; Tab brings it back */
 $('track').addEventListener('pointerdown',function(){this.classList.add('ptr');nudged=true},{passive:true});
 addEventListener('keydown',function(e){if(e.key==='Tab')$('track').classList.remove('ptr')});
+/* desktop: the arrows on the card's edges (in .stage); narrower: in the pager, beside the dots */
+var wide=matchMedia('(min-width:760px)');function place(){var s=$('stage'),pg=$('pager');
+  if(wide.matches){s.appendChild($('prev'));s.appendChild($('next'))}else{pg.insertBefore($('prev'),$('pd'));pg.appendChild($('next'))}}
+place();if(wide.addEventListener)wide.addEventListener('change',place);else if(wide.addListener)wide.addListener(place);
 $('prev').onclick=function(){go(cur-1)};$('next').onclick=function(){go(cur+1)};
 pds.forEach(function(b,i){b.onclick=function(){go(i)}});
 $('track').addEventListener('keydown',function(e){if(e.target!==this)return;if(e.key==='ArrowRight'){e.preventDefault();go(cur+1)}else if(e.key==='ArrowLeft'){e.preventDefault();go(cur-1)}});
-/* fresher cards or a fresher reading: rewrite in place (no replay) */
-/* the river's answer and its chip always read the same reading (G.flow): the answer is rewritten whatever its state */
-function paint(){var a=q(0,'.ans');a.innerHTML=words(X[0].say(),a.classList.contains('wait'));
+/* fresher cards: rewrite in place (no replay) */
+function paint(){
   slides.forEach(function(s,i){var x=X[i];q(i,'.tp').innerHTML=steps(x);q(i,'.chip').innerHTML=chip(x);q(i,'.cite').setAttribute('aria-label',chipLabel(x));q(i,'.pv').innerHTML=prov(x);if(s.classList.contains('pvo'))fromChip(i);
     if(q(i,'.tl').disabled)q(i,'.tt').textContent='Asking irlpls · searching '+U.cards.length+' providers'})}
 var m=/[?&]ex=(\d)/.exec(location.search),i0=m&&+m[1]<X.length?+m[1]:0;  /* ?ex=N opens example N (tools/qa.py) */
 setCur(i0);if(i0)go(i0,true);seen=X.map(function(){return 0});if(ANIM)X.forEach(function(x,i){prep(i)});watch();
 U.on(function(fresh){if(fresh)paint()});
-/* fresher than the saved snapshot: the site's saved reading, then USGS itself */
-if(location.protocol!=='file:')fetch('media/live/index.json').then(function(r){return r.json()}).then(function(d){var g=d._gauge||{},cam=d.TX_Guadalupe_Rv_at_Comfort;
-  if(!G.live&&g.flow&&g.flow.v>0&&Date.parse(g.flow.t)>Date.parse(G.flow.t))G.flow=g.flow;if(g.normal)G.normal=g.normal;if(cam&&cam.captured)G.cam=cam.captured;paint()}).catch(function(){});
-(function(){var o={};if('AbortController' in window){var a=new AbortController();setTimeout(function(){a.abort()},4000);o.signal=a.signal}
-  fetch('https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/items?monitoring_location_id=USGS-08167000&parameter_code=00060&f=json&limit=1',o).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){var p=d.features[0].properties;if(+p.value>0){G.flow={v:+p.value,t:p.time};G.live=true;paint()}}).catch(function(){})})();
 })();
 </script>
 </section>
 <!-- ===== end of screen 1 ===== -->
 
-<!-- ===== screen 2: the provenance standard. Eight links on one rail (the converged design, src/pitch/s2r3-07.html); a tap opens
-     the link's sheet with the site's own words (IRL3.STAGES, as on chain.html). Self-contained: its own style, markup, script. ===== -->
+<!-- ===== screen 2: the provenance standard. Eight links on one rail (the converged design, src/pitch/s2r3-07.html), as static
+     rows: a line icon, the link's title and the technical term (IRL3.STAGES, as on chain.html, which defines each). Under them one
+     quiet benchmark line computed from the cards. Self-contained: its own style, markup, script. ===== -->
 <section class="scr" id="how" aria-labelledby="h2">
 <style>
 /* icon size follows the screen's height: the whole screen shows at 390x844; heading + six links at 375x667 */
 #how{--is:clamp(40px,calc((100svh - var(--hh) - 334px)/8 - 8px),54px);--bad2:#b91c1c;--step:520ms}
 #how .kick{font-size:11.5px;letter-spacing:.09em}
-#how h2{margin-top:8px;font:700 clamp(26px,7.6vw,34px)/1.07 var(--head);letter-spacing:-.022em}
+#how h2{margin-top:8px}
 #how h2 em{font-style:normal;color:var(--bad2)}
 #how .lede{margin-top:8px;font:500 clamp(14.5px,4vw,16.5px)/1.35 var(--sans)}
 .lk{list-style:none;margin:clamp(12px,2.4svh,22px) 0 0;padding:0;position:relative;flex:1 1 auto;display:flex;flex-direction:column;justify-content:space-between;gap:4px;max-height:calc(var(--is)*8 + 110px)}
 /* the rail: a quiet line through the circles (:before); its ink (:after) draws down over it, link by link, the first time screen 2 is half in view */
 .lk:before,.lk:after{content:"";position:absolute;left:calc(var(--is)/2 - 1px);top:calc(var(--is)/2);bottom:calc(var(--is)/2);width:2px;border-radius:2px;background:var(--line2)}
 .lk:after{background:var(--fg);opacity:.55;transform-origin:top;transform:scaleY(1)}
-.lk li{position:relative}
-.lk button{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:var(--is) minmax(0,1fr) 16px;gap:16px;align-items:center;min-height:max(44px,var(--is));cursor:pointer;-webkit-tap-highlight-color:transparent}
-.lk button:focus-visible{outline:2px solid var(--pol);outline-offset:3px;border-radius:999px}
+/* a static row: icon, title, term. Nothing to tap */
+.lk li{position:relative;display:grid;grid-template-columns:var(--is) minmax(0,1fr);gap:16px;align-items:center;min-height:max(44px,var(--is))}
 .lk i{width:var(--is);height:var(--is);border-radius:50%;display:grid;place-items:center;position:relative;z-index:1;background:#fff;border:1px solid var(--edge);box-shadow:0 8px 26px rgba(20,30,50,.09),inset 0 1px 0 #fff;color:var(--fg)}
 .lk i svg{width:58%;height:58%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .lk span{display:flex;flex-direction:column;gap:2px;min-width:0}
 .lk b{font:600 clamp(17px,4.9vw,20px)/1.15 var(--sans);letter-spacing:-.012em}
 .lk small{font:500 12px/1.2 var(--sans);letter-spacing:.01em;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lk s{width:14px;height:14px;color:var(--fg3)}
-.lk s svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-@media(hover:hover) and (pointer:fine){.lk button:hover b{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}}
 @media(prefers-reduced-motion:no-preference){
  html.rail .lk:after{transform:scaleY(0)}
  html.rail.go .lk:after{transform:scaleY(1);transition:transform calc(var(--step)*7) linear}
  html.rail .lk i svg{opacity:.3;transition:opacity .45s}
  html.rail .lk li.on i svg{opacity:1}}
-.lkf{margin-top:clamp(12px,2.2svh,20px);display:flex;flex-direction:column;gap:10px;align-items:flex-start}
-.cap{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 18px;border-radius:999px;background:var(--fg);color:#fff;font:600 14.5px var(--sans);box-shadow:0 6px 18px rgba(16,20,24,.22)}
-.cap:before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:#ff6b5e}
-.std{margin:0;font:500 clamp(14px,3.9vw,15.5px)/1.4 var(--sans);color:var(--fg2);text-wrap:balance}
-/* a short phone (375x667, 390x709): the screen still shows whole, the closing line included (round 6): rows at the 44px
-   tap floor with no extra gap, a slimmer capsule, tighter spacing */
-@media(max-height:760px){#how{padding-bottom:10px}#how h2{font-size:clamp(24px,6.9vw,30px)}#how .lede{margin-top:6px}
-  .lk{gap:0;margin-top:10px}.lkf{margin-top:10px;gap:6px}.cap{min-height:36px;margin:0}}
-/* the sheet */
-#lks{border:0;padding:0;background:none;max-width:none;width:100%;max-height:100%;margin:auto 0 0;overflow:visible}
-#lks::backdrop{background:rgba(16,20,24,.28)}
-#lks .sh{max-width:720px;max-height:calc(100svh - 24px);overflow:auto;margin:0 auto;background:#fff;box-shadow:0 -10px 40px rgba(20,30,50,.15);border-radius:26px 26px 0 0;padding:22px var(--gut) max(22px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}
-@media(prefers-reduced-motion:no-preference){#lks[open] .sh{animation:lkup .28s cubic-bezier(.2,.8,.2,1)}}
-@keyframes lkup{from{transform:translateY(40px);opacity:0}}
-#lks h3{margin:0;display:flex;align-items:center;gap:12px;font:700 22px/1.15 var(--head);letter-spacing:-.015em}
-#lks h3 svg{flex:none;width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-#lks h3 small{display:block;margin-top:2px;font:500 12.5px/1.2 var(--sans);letter-spacing:0;color:var(--fg3)}
-#lks p{margin:0;font:400 16px/1.4 var(--sans)}
-#lks p b{display:block;margin-bottom:2px;font:600 12px/1.3 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--fg3)}
-#lks .y b{color:var(--live)}#lks .no b{color:var(--bad2)}
-#lks .lnk{margin:-6px 0;align-self:flex-start}
-#lks .ac{display:flex;gap:8px;margin-top:2px}
-#lks .ac button{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line2);background:#fff;font:600 14px var(--sans);color:var(--fg);cursor:pointer}
-#lks .ac .x{margin-left:auto;background:var(--fg);color:#fff;border-color:var(--fg)}
-#lks .ac button:focus:not(:focus-visible){outline:none}
+.lkf{margin-top:clamp(14px,2.6svh,24px);display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.bm{margin:0;font:500 clamp(14px,3.9vw,15.5px)/1.4 var(--sans);color:var(--fg2);text-wrap:balance}.bm br{display:none}@media(max-width:560px){.bm br{display:inline}}
+/* the screen's foot (the owner, 2026-10-30): the benchmark line with a small info icon at its right (chain.html), then on its
+   own row a quiet arrow down to screen 3, centred (screen 1's call to action, quieter: no fill, a hairline) */
+.bmr{display:flex;align-items:center;gap:8px}
+/* desktop (the owner, 2026-10-30): screen 2 is one centred column (title, lede, rail, benchmark row with its icon at the
+   column's right edge, the arrow centred under it) with an even rhythm, and the screen ends where its content does: no
+   full-screen height pushing the foot down, so no empty band before screen 3 */
+@media(min-width:760px) and (min-height:700px){#how{min-height:0;padding-bottom:40px}#how>*{width:100%;max-width:640px;margin-left:auto;margin-right:auto}
+  #how .lede{margin-top:10px}.lk{margin-top:24px;flex:none}.lkf{margin-top:28px}.dn{margin-top:16px}}.bmr .bm{flex:1 1 auto;min-width:0}
+.dn{align-self:center;margin-top:10px;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);font:500 14px var(--sans);color:var(--fg2);text-decoration:none}
+.info{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--fg3)}
+@media(hover:hover){.dn:hover{color:var(--fg);border-color:var(--line2)}.info:hover{color:var(--fg);background:rgba(20,30,50,.05)}}
+/* a short phone (375x667, 390x709): the screen still shows whole, the closing lines included: rows at the 44px
+   floor with no extra gap, tighter spacing */
+@media(max-height:760px){#how{padding-bottom:10px}#how .lede{margin-top:6px}
+  .lk{gap:0;margin-top:10px}.lkf{margin-top:8px;gap:2px}.dn{margin-top:4px}}
 </style>
-<p class="kick">The provenance standard</p>
-<h2 id="h2">Get every link right,<br> or get <em>junk.</em></h2>
-<p class="lede">Adversaries and generative AI only need your weakest link.</p>
+<h2 class="hl" id="h2" data-t="A standard of provenance.">A standard of <span class="k5">provenance</span>.</h2>
+<p class="lede">Humans and machines need an authentic view of the world, from source to receipt.</p>
 <ol class="lk" id="chain" aria-label="Eight links"></ol>
-<div class="lkf"><p class="cap" id="gap" aria-live="polite"></p>
-<p class="std">irlpls checks none of it. It asks every provider for the proof, and shows it.</p></div>
-<dialog id="lks" aria-labelledby="lkh"><div class="sh"><h3 id="lkh"></h3><p class="y" id="lky"></p><p class="no" id="lkn"></p><p id="lkr"></p><p id="lkt"></p>
-<a class="lnk" href="chain.html">The full chain<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg></a>
-<div class="ac"><button type="button" id="lkb">Back</button><button type="button" id="lknx">Next</button><button type="button" class="x" id="lkx" autofocus>Close</button></div></div></dialog>
+<div class="lkf"><div class="bmr"><p class="bm" id="bm" aria-live="polite"></p><a class="info" id="bmc" href="chain.html" aria-label="What each link means" title="What each link means"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".6" fill="currentColor"/></svg></a></div>
+<a class="dn" id="to3" href="#try">Try it live<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 6 5 5 5-5"/></svg></a></div>
 <script>
-(function(){var U=IRL3,E=U.E,$=U.$,ol=$('chain'),d=$('lks'),cur=0;
-var CH='<s aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M6 3l5 5-5 5"/></svg></s>';
-function ic(i){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+U.PVI[i]+'</svg>'}
-/* each link: its title (IRL3.TITLES) and, quiet under it, the technical term the site uses (IRL3.STAGES, as on chain.html) */
-ol.innerHTML=(U.STAGES.map(function(s,i){return '<li><button type="button" data-i="'+i+'" aria-haspopup="dialog"><i aria-hidden="true">'+ic(i)+'</i><span><b>'+E(U.TITLES[i])+'</b><small>'+E(s[1])+'</small></span>'+CH+'</button></li>'}).join(''));
-/* the counts follow the cards (IRL3.on): providers that evidence any link, and, in the sheet, this one */
-function ev(i){return U.cards.filter(function(c){var l=U.levels(c);return i==null?l.indexOf('evidenced')>=0:l[i]==='evidenced'}).length}
-function today(){var n=U.cards.length;$('lkt').innerHTML=n?'<b>Today</b>'+ev(cur)+' of '+n+' providers evidence this link.':''}
-U.on(function(){var n=U.cards.length;$('gap').hidden=!n;if(n)$('gap').textContent=ev()+' of '+n+' providers prove any link';if(d.open)today()});
-function show(i){cur=(i+8)%8;var s=U.STAGES[cur];
-  $('lkh').innerHTML=ic(cur)+'<span>'+E(U.TITLES[cur])+'<small>'+E(s[1])+'</small></span>';
-  $('lky').innerHTML='<b>Proves</b>'+E(s[4]);$('lkn').innerHTML='<b>Can’t prove</b>'+E(s[5]);$('lkr').innerHTML='<b>'+E(s[0])+'</b>'+E(s[2]);today()}
-ol.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;show(+b.dataset.i);if(!d.open)d.showModal()});
-$('lkb').onclick=function(){show(cur-1)};$('lknx').onclick=function(){show(cur+1)};$('lkx').onclick=function(){d.close()};
-d.addEventListener('click',function(e){if(e.target===d)d.close()});
-d.addEventListener('close',function(){var b=ol.querySelectorAll('button')[cur];if(b)b.focus({preventScroll:true})});
-/* the rail draws down once, link by link, when screen 2 is about half in view; still with reduced motion and ?still=1.
-   Only the rail and the icons' strokes move: every link is tappable from the start. */
+(function(){var U=IRL3,E=U.E,$=U.$,ol=$('chain');
+/* each link: its line icon, its title (IRL3.TITLES) and, quiet under it, the technical term (IRL3.STAGES; chain.html defines it) */
+ol.innerHTML=U.STAGES.map(function(s,i){return '<li><i aria-hidden="true"><svg viewBox="0 0 24 24">'+U.PVI[i]+'</svg></i><span><b>'+E(U.TITLES[i])+'</b><small>'+E(s[1])+'</small></span></li>'}).join('');
+/* the benchmark follows the cards (IRL3.on): providers that claim at least one link (claimed or evidenced), and those
+   that prove one (evidenced). "Of 86 providers, 43 claim at least one link. None prove one yet." */
+function bench(cards){var n=cards.length,c=0,e=0;cards.forEach(function(x){var l=U.levels(x);
+    if(l.indexOf('evidenced')>=0){e++;c++}else if(l.indexOf('claimed')>=0)c++});
+  return n?'Of '+n+' providers, '+c+' claim at least one link.'+(e?' '+e+' prove at least one.':' None prove one yet.'):''}
+U.bench=bench;
+/* two clean lines on a phone: a break after the first sentence (hidden on wider screens, where it fits one line) */
+U.on(function(){var t=bench(U.cards);$('bm').hidden=!t;$('bm').innerHTML=E(t).replace(/link\. /,'link.<br> ')});
+/* the rail draws down once, link by link, when screen 2 is about half in view; still with reduced motion and ?still=1 */
 var root=document.documentElement,lis=ol.querySelectorAll('li');
 if(matchMedia('(prefers-reduced-motion: reduce)').matches||/[?&]still=1/.test(location.search)||!('IntersectionObserver' in window))return;
 root.classList.add('rail');
@@ -653,17 +619,23 @@ new IntersectionObserver(function(es,o){if(!es[0].isIntersecting)return;o.discon
 
 <section class="scr" id="try" aria-labelledby="h3">
 <style>
-/* screen 3 additions: the Free, no key capsule, the top match's action, and a live answer as a chat turn (it reuses
-   screen 1's chat classes: .chat .you .turn .ans .att .media .cites .cite .chip .pvw .pv) */
-#try .oh{align-items:center;margin:0 2px 8px}
-.fo{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:0;padding:0 14px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.75);font:600 13.5px var(--sans);color:var(--fg2);cursor:pointer;position:relative}
-.fo:before{content:"";position:absolute;inset:-4px 0}
-.fo[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:#fff}
-.fo svg{display:none}.fo[aria-pressed="true"] svg{display:block}
-.act{display:flex;align-items:center;gap:10px;margin:8px 10px 2px}
-.get{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 18px;border:0;border-radius:999px;background:var(--fg);color:#fff;font:600 15px var(--sans);cursor:pointer}
-.get:disabled{opacity:.45;cursor:default}
-.plan{margin:0;font:500 13px/1.35 var(--sans);color:var(--fg2)}
+/* screen 3: try a free service live. Pick a service (capsules), ask (the field fills with its example), Go: the answer
+   is fetched by this browser straight from the provider and shown as a chat turn. It reuses screen 1's chat classes
+   (.chat .you .turn .ans .att .media .cites .cite .chip .pvw .pv) and IRL3.pane for the provenance sheet. */
+/* the services (the owner, 2026-10-30): an orderly grid of equal capsules, a line icon (the topic) and a short name each;
+   two columns on a phone, three on a desktop; one height, never a ragged wrap */
+.svc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:12px 0 0;padding:0;list-style:none}
+@media(min-width:600px){.svc{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
+.sv{display:flex;align-items:center;justify-content:flex-start;gap:7px;min-width:0;height:44px;margin:0;padding:0 12px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.75);font:600 13.5px/1.2 var(--sans);color:var(--fg2);cursor:pointer;white-space:nowrap;text-align:left}
+.sv svg{flex:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;color:var(--fg3)}
+.sv span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.sv[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:#fff}.sv[aria-pressed="true"] svg{color:#fff}
+@media(hover:hover){.sv:not([aria-pressed="true"]):hover{color:var(--fg);border-color:var(--fg3)}}
+@media(max-width:370px){.sv{padding:0 10px;gap:6px;font-size:12.5px}}
+#try .docs{margin-top:18px}
+#try .ask{margin-top:12px}
+.hint{margin:10px 16px 0;font:500 14px/1.4 var(--sans);color:var(--fg3)}
+.hint b{font-weight:600;color:var(--fg2)}
 /* the live answer */
 .lv{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px;transition:min-height .3s ease}
 .lv .turn{flex:none}
@@ -671,184 +643,120 @@ new IntersectionObserver(function(es,o){if(!es[0].isIntersecting)return;o.discon
 .lvs{margin:0;font:500 14px/1.4 var(--sans);color:var(--fg3)}
 .lvs span{background:linear-gradient(90deg,var(--fg3) 0 35%,#c5ccd6 50%,var(--fg3) 65% 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 1.3s linear infinite}
 .lvm{margin:0;font:400 16px/1.45 var(--sans);color:var(--fg)}.lvm b{font-weight:600}
+.lvm.stop b{color:var(--bad)}
 .via{margin:0;font:500 12.5px/1.35 var(--sans);color:var(--fg3)}
 .again{align-self:flex-start;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:#fff;font:600 14px var(--sans);color:var(--fg);cursor:pointer}
 .again:disabled{border-color:transparent;background:#f1f2f4;color:var(--fg3);cursor:default}
 .again:not(:disabled):not(.sug){background:var(--fg);border-color:var(--fg);color:#fff}
 .lv .cites+.via{margin-top:-4px}
-.back{border:0;background:none;padding:0 2px;cursor:pointer;margin-top:6px}
-.res:empty{display:none}
-.oth{margin:14px 4px 6px;font:600 12px/1.3 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--fg3)}
-.rdy{margin:4px 10px 2px;font:500 13px/1.35 var(--sans);color:var(--fg2)}
+#try .out{margin-top:12px}
+#try .out:empty{display:none}
 </style>
-<h2 id="h3">Type anything you need captured.</h2>
-<form class="ask glass" id="ask" role="search" autocomplete="off"><label class="sr" for="q">What do you need captured?</label><textarea id="q" rows="1" placeholder="e.g. river level in Texas" enterkeyhint="go" maxlength="200" spellcheck="false"></textarea><button type="submit">Go</button></form>
-<p class="tries" id="tries" aria-label="Example asks"></p>
+<h2 class="hl" id="h3" data-t="Try a free service, live.">Try a free service, <span class="k4">live</span>.</h2>
+<div class="svc" id="svc" role="group" aria-label="Free services"></div>
+<form class="ask glass" id="ask" autocomplete="off"><label class="sr" for="q">Your question</label><textarea id="q" rows="1" placeholder="Ask it anything it measures" enterkeyhint="go" maxlength="200" spellcheck="false"></textarea><button type="submit">Go</button></form>
+<p class="hint" id="hint"></p>
 <p class="sr" id="ann" role="status"></p>
 <div class="out" id="out"></div>
-<p class="dev" id="dev">For your agent: <a href="agents.html">the manual (agents.md)</a>, <a href="standard.html#14-protocol">the protocol</a>, and an MCP server: private preview, not published yet.</p>
+<a class="cta docs" id="docs" href="docs.html">See the docs<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></a>
 <script src="live.js"></script>
+<script src="callpane.js"></script>
 <script>
-(function(){var U=IRL3,E=U.E,$=U.$,RM=matchMedia('(prefers-reduced-motion: reduce)').matches,L=window.IRLLive;
-/* three short asks that fit one line on a 375px phone (tests pin it) */
-var EXS=['drone, Ohio','egocentric video','air, Delhi'],ASK0='river, Texas';  /* the field opens on ASK0; the tries are the others */
-var tr=$('tries');tr.innerHTML='<span>Try:</span>'+EXS.map(function(q){return '<button type="button">'+E(q)+'</button>'}).join('<i aria-hidden="true">·</i>');
-[].forEach.call(tr.querySelectorAll('button'),function(b){b.onclick=function(){$('q').value=b.textContent;fit();run(b.textContent,true)}});
-/* the field grows with a long ask instead of hiding most of it; Enter matches, it never adds a line */
-var qa=$('q');
+(function(){var U=IRL3,E=U.E,$=U.$,RM=matchMedia('(prefers-reduced-motion: reduce)').matches,L=window.IRLLive;if(!L)return;
+var S=L.services,sel=S[0],qa=$('q'),tick=0;
+/* the services as capsules: picking one fills the field with its question and focuses it, ready to edit or Go */
+var ICON={river:'<path d="M3 9c2 0 2-1.5 4.5-1.5S9.5 9 12 9s2.5-1.5 4.5-1.5S19 9 21 9"/><path d="M3 15c2 0 2-1.5 4.5-1.5S9.5 15 12 15s2.5-1.5 4.5-1.5S19 15 21 15"/>',
+  weather:'<path d="M10 14.5V5a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><path d="M12 11v6"/>',
+  tide:'<path d="M3 18c2 0 2-1.5 4.5-1.5S9.5 18 12 18s2.5-1.5 4.5-1.5S19 18 21 18"/><path d="M12 4v9M8.5 9.5 12 13l3.5-3.5"/>',
+  quake:'<path d="M3 12h4l2-5 3 10 2.5-7 1.5 2H21"/>',air:'<path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 15h15a3 3 0 1 1-3 3"/>',
+  cam:'<rect x="3" y="7" width="13" height="10" rx="2"/><path d="m16 11 5-3v8l-5-3"/>',ship:'<path d="M4 15l1.5 4h13L20 15z"/><path d="M7 15V9h10v6M12 5v4"/>'};
+$('svc').innerHTML=S.map(function(s){return '<button class="sv" type="button" data-id="'+E(s.id)+'" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true">'+(ICON[s.t]||'')+'</svg><span>'+E(s.label)+'</span></button>'}).join('');
+function pick(s,fill){sel=s;[].forEach.call($('svc').children,function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-id')===s.id))});
+  $('hint').innerHTML='Go asks <b>'+E(L.route(s.id).name)+'</b> straight from your browser.';if(fill){qa.value=s.q;fit()}}
+[].forEach.call($('svc').children,function(b){b.onclick=function(){var s=S.filter(function(x){return x.id===b.getAttribute('data-id')})[0];
+  pick(s,true);clearInterval(tick);$('out').innerHTML='';qa.focus({preventScroll:true});try{qa.setSelectionRange(qa.value.length,qa.value.length)}catch(e){}}});
+/* the field grows with a long question instead of hiding most of it; Enter asks, it never adds a line */
 function fit(){qa.style.height='auto';qa.style.height=qa.scrollHeight+'px';$('ask').classList.toggle('tall',qa.scrollHeight>48)}
-qa.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();submit()}});
-/* person-targeting: the matcher's own check, plus a small word check for asks about someone close ("what is my neighbour doing").
-   A family member's place is a place ("check on my mom's house in Tampa"), as in the matcher (need.py PLACE_NOUNS). */
-var PLACES='(?:house|home|apartment|flat|condo|place|property|yard|garden|lawn|porch|roof|driveway|garage|barn|farm|land|lot|cabin|cottage|building|street|shop|store|restaurant|bakery|cafe|office|business|storefront|fence|grave|church)s?';
-var NEAR=new RegExp("\\b(my|our)\\s+(?:(?:neighbou?rs?|ex|wife|husband|partner|girlfriend|boyfriend|spouse|boss|landlord|tenant|roommate|flatmate|co-?worker|colleague)\\b|(?:kids?|daughter|son|mother|father|mom|dad|sister|brother)\\b(?!(?:'s|s'|’s)\\s+"+PLACES+"\\b))|\\b(where|what)\\s+is\\s+(he|she)\\b|\\bwho\\s+lives\\b","i");
-/* an ask to check media someone already has ("verify a photo", "is this video real", "check this footage", "authenticate") */
-var EXISTING=/\bauthenticat(?:e|ing)\b|\b(?:verify|verifying|fact[- ]?check|check|checking)\s+(?:(?:this|that|the|a|an|my|our|some|these|those)\s+)?(?:[\w-]+\s+){0,2}(?:photo|picture|image|video|footage|clip|recording|screenshot|media)s?\b|\b(?:is|are)\s+(?:this|that|these|those|the)\s+(?:[\w-]+\s+){0,8}?(?:photo|picture|image|video|footage|clip|recording|screenshot)s?\b[^.?!]{0,60}?\b(?:real|fake|genuine|authentic|edited|doctored|ai[- ]generated|deepfake)\b/i;
-/* honest notes ------------------------------------------------------------------------------------------------
-   the past: irlpls orders new captures, so an ask about yesterday, last week or a past date can't be met */
-var MON='jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec',MI={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11};
-function past(q){var t=q.toLowerCase(),now=new Date(),d0=new Date(now.getFullYear(),now.getMonth(),now.getDate()),m;
-  if(/\b(yesterday|last\s+(night|week|weekend|month|year|summer|winter|spring|fall|autumn|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|(\d+|a|an|few)\s+(hours?|days?|weeks?|months?|years?)\s+ago|earlier\s+today)\b/.test(t))return true;
-  if(/\bnext\b|\bfrom now\b/.test(t))return false;
-  var y=/\b(19\d\d|20\d\d)\b/.exec(t);if(y&&+y[1]<now.getFullYear()&&!new RegExp('\\b('+MON+')').test(t))return true;
-  if((m=/\b(\d{4})-(\d\d)-(\d\d)\b/.exec(t)))return new Date(+m[1],+m[2]-1,+m[3])<d0;
-  if((m=new RegExp('\\b('+MON+')[a-z]*\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?\\b(?:,?\\s+(\\d{4}))?').exec(t))||(m=new RegExp('\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?('+MON+')[a-z]*\\b(?:,?\\s+(\\d{4}))?').exec(t))){
-    var mo=isNaN(+m[1])?m[1]:m[2],dd=isNaN(+m[1])?+m[2]:+m[1];if(mo==='may'&&isNaN(+m[1])&&!m[3]&&!/\bon\s+may\b/.test(t))return false;
-    return new Date(m[3]?+m[3]:now.getFullYear(),MI[mo],dd)<d0}
-  return false}
-/* proof: an ask that demands it (signed, C2PA, verified, authenticated location...) is met only by a match that evidences
-   the stages it names (any stage when it names none) */
-var PROOF=/\b(signed|signature|c2pa|seal(ed)?|verified|verifiable|evidenced|evidence|authenticated|attested|attestation|provenance|prove[dn]?|proving|proof|tamper[- ]?(proof|evident)|timestamped|time-stamped)\b/i;
-function proofStages(q){var t=q.toLowerCase(),s=[];
-  if(/c2pa|signed|signature|seal/.test(t))s.push(3);if(/locat|position|gps|place|where/.test(t)&&/authentic|verif|prov|proof|evidenc|signed/.test(t))s.push(1);
-  if(/time-?stamp/.test(t))s.push(4);if(/\b(id|identity|real person|human)\b/.test(t))s.push(0);if(/device|attest/.test(t))s.push(2);
-  if(/independent|third[- ]party/.test(t))s.push(6);return s}
-function evidences(c,st){var l=U.levels(c);return st.length?st.every(function(i){return l[i]==='evidenced'}):l.some(function(x){return x==='evidenced'})}
-function note(t){return '<p class="note">'+t+'</p>'}
-var OUT='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>';
+qa.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();go()}});
+qa.addEventListener('input',function(){if(/\n/.test(this.value))this.value=this.value.replace(/\s*\n\s*/g,' ');fit()});
+/* asks about a person (the matcher's own check, plus asks about someone close) are refused, as everywhere on the site */
+var NEAR=/\b(my|our)\s+(neighbou?rs?|ex|wife|husband|partner|girlfriend|boyfriend|spouse|boss|landlord|tenant|roommate|flatmate|co-?worker|colleague)\b|\b(where|what)\s+is\s+(he|she)\b|\bwho\s+lives\b/i;
+/* which free service answers (the owner, 2026-10-30, as Find data does): a question on a topic a browser can read (rivers,
+   weather, tides, quakes, air, cameras, ships) goes to the service for that topic that covers the place, the picked one first;
+   its capsule lights. Anything else (no such topic, a place no browser source covers, or a match that needs a key, an
+   account or an order) shows the best matching provider and the call an agent would make (IRLCall), never sent from here.
+   Only a place nobody can find stops at a message. Every Go ends in an answer, a call, or a plain message. */
+var TOP={river:/\b(rivers?|levels?|flows?|gauges?|gages?|stages?|streams?|floods?)\b/i,weather:/\b(weather|temperatures?|wind|rain|cold|hot|snow)\b/i,tide:/\btides?\b/i,
+  quake:/\b(earth)?quakes?\b|\bseismic/i,air:/\b(air|aqi|pm2\.?5|smog|pollution|smoke)\b/i,cam:/\b(cams?|cameras?|webcams?|traffic)\b/i,ship:/\b(ships?|vessels?|boats?|ais)\b/i};
+function topic(q){return TOP[sel.t].test(q)?sel.t:Object.keys(TOP).filter(function(k){return TOP[k].test(q)})[0]}
+function covers(s,p){var R=L.route(s.id);return !p.missing&&(!R.cc||R.cc.indexOf(p.cc)>-1)}
+function best(q,r,p){var t=topic(q);if(!t)return null;
+  var C=S.filter(function(s){return s.t===t});if(t===sel.t&&covers(sel,p))return sel;return C.filter(function(s){return covers(s,p)})[0]||null}
 var BACK='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>';
-var TICK='<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.5 3 3 6-7"/></svg>';
-/* Free, no key: providers whose card says free with no key (what a browser can use as is). The finder's Free filter
-   is wider (it includes free with a key), so the capsule says "no key" */
-var free=false,lastQ='';
-function short(c){var R=L&&L.route(c.id);return R?R.name:c.name.replace(/\s*\(.*\)/,'')}
-/* what each match offers: a free provider with a browser route gets "Get it now"; any other shows its plan, never an order */
-function act(c){var a=(c.access||{}).cost,m=((c.delivery||{}).modes||[]),mode=m.indexOf('commission')>-1?'Made to order':'Live',n=E(short(c)),pr=(c.pricing||{}).from_usd;
-  if(a==='free'&&L&&L.route(c.id))return '<div class="act"><button class="get" type="button" data-id="'+E(c.id)+'">Get it now</button></div>';
-  /* the row's title already names the provider: the plan is two or three words */
-  /* the price in the finder's exact words (IRLLabels.priceText, src/labels.js). A free, keyless live feed this browser can't
-     read (no CORS, or no capture time it can read) says so, so it never looks like a row that has Get it now */
-  var t=mode+' · '+IRLLabels.priceText(c)+(a==='free'&&m.indexOf('live')>-1?' · through your agent':'');
-  return '<div class="act"><p class="plan">'+E(t)+'</p></div>'}
-function run(q,go){q=(q||'').trim();lastQ=q;var out=$('out'),C=U.cards,ann='';$('tries').hidden=false;if(!q){out.innerHTML='';$('ann').textContent='';return}
-  var r=IRLMatch.parse(q,C);
-  if(r.targets_person||NEAR.test(q)){out.innerHTML='<div class="glass"><p class="msg stop"><b>irlpls won’t route this.</b>Requests that watch or follow a person are refused.</p></div>';say('irlpls won’t route this.',go);return}
-  /* the finder's ranking, exactly (src/app.js): every provider with any fit, best first; under 40% of the best fit waits there.
-     A provider whose coverage excludes the place you named is not shown as a fit. */
-  var s=C.map(function(c){return{c:c,s:IRLMatch.score(c,r)}}).filter(function(x){return x.s.total>0&&!x.s.parts.outside}).sort(IRLMatch.compare);
-  if(s.length){var best=s[0].s.total;s=s.filter(function(x){return x.s.total>=.4*best})}
-  var notes=(EXISTING.test(q)?note('<b>irlpls can’t check a photo or video you already have;</b> it finds who can capture something new, and shows what each can prove.'):'')+
-    (past(q)?note('<b>irlpls orders new captures; it can’t capture the past.</b> These could capture it from now on.'):'');
-  if(!s.length){out.innerHTML=notes+'<div class="glass"><p class="msg"><b>No provider covers this.</b>None of '+C.length+' providers states it. Try a broader ask, in fewer words: <i>photo, Denver</i>.</p></div>';say('No provider covers this.',go);return}
-  var all=s.length;if(free)s=s.filter(function(x){return IRLMatch.isKeyless(x.c)});
-  var head='<p class="oh"><button class="fo" id="fo" type="button" aria-pressed="'+free+'">'+TICK+'Free, no key</button></p>';
-  if(!s.length){out.innerHTML=notes+head+'<div class="glass"><p class="msg"><b>No free, no-key provider for this ask.</b>Turn off Free, no key to see the rest.</p></div>';wire(out);say('No free, no-key provider for this ask.',go);return}
-  var top=s.slice(0,5);
-  if(PROOF.test(q)){var st=proofStages(q);if(!top.some(function(x){return evidences(x.c,st)}))notes+=note('<b>None of these evidence that.</b> At most, they claim it.')}
-  /* each row: the name (as Find data shows it, without its parenthetical; whole, wrapping) and fit link to the card; the description is clamped to two lines
-     and taps open to its full text; the stage dots; where a place was named and the card doesn't say it works there,
-     "coverage not stated" */
-  /* one action (the owner, 2026-10-29): Go (or Enter, or a Try chip) answers at once when the top match is a free live
-     source this browser can read: the answer, and where it came from, sits above the other matches. Otherwise the top
-     match's plan (made to order or keyed: mode, price, readiness) is the answer. Typing only previews the matches. */
-  var first=top[0].c,now=go&&(first.access||{}).cost==='free'&&L&&L.route(first.id);
-  out.innerHTML=(now?'<div id="lvw"></div>'+(top.length>1?'<p class="oth">Other matches</p>':''):'')+notes+head+'<ul class="res glass">'+(now?top.slice(1):top).map(function(x,k){var c=x.c;
-    return '<li><a href="c/'+E(c.id)+'.html"><b>'+E(c.name.replace(/\s*\(.*\)/,''))+'</b>'+(x.s.verdict==='strong'?'':'<em class="w">Partial fit</em>')+'</a>'+
-      (c.short?'<p class="s" id="rs'+k+'">'+E(c.short)+'</p>':'')+
-      '<span class="d">'+U.dots(c)+'<span>'+U.tally(c,true)+'</span>'+(r.country_code&&x.s.parts.coverage_unknown?'<span class="cu">Coverage not stated</span>':'')+'</span>'+
-      act(c)+(k===0&&!now?'<p class="rdy" id="rdy0" hidden></p>':'')+'</li>'}).join('')+'</ul>'+
-    '<a class="lnk all" href="find.html?q='+encodeURIComponent(q)+(free?'&amp;free=1':'')+'">All matches'+OUT+'</a>';
-  clamp(out);wire(out);
-  if(now){live(first.id,q,true);return}
-  if(go)ready(first.id);
-  say(s.length+(s.length===1?' provider might':' providers might')+' cover it'+(s.length>5?'; showing the top 5.':'.'),go)}
-/* the top match's readiness ("Needs an account first." …), from catalog.json, fetched once when first needed */
-var RDY=null;
-function ready(id){var put=function(){var r=$('rdy0'),x=RDY&&RDY[id];if(r&&x&&x.line){r.textContent=x.line;r.hidden=false}};
-  if(RDY){put();return}if(location.protocol==='file:')return;
-  fetch('catalog.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){RDY={};var ps=d.providers||{};
-    Object.keys(ps).forEach(function(k){RDY[k]=ps[k].readiness||null});put()}).catch(function(){})}
-function wire(out){var f=out.querySelector('#fo');if(f)f.onclick=function(){free=!free;run(lastQ);var n=$('fo');if(n)n.focus({preventScroll:true})};
-  [].forEach.call(out.querySelectorAll('.get'),function(b){b.onclick=function(){live(b.getAttribute('data-id'),lastQ)}})}
-/* a clamped description becomes a button that opens to its full text (and closes again) */
-function clamp(out){[].forEach.call(out.querySelectorAll('.res .s'),function(p){if(p.scrollHeight<=p.clientHeight+1)return;
-  p.classList.add('more');p.setAttribute('role','button');p.tabIndex=0;p.setAttribute('aria-expanded','false');
-  var t=function(){var o=p.getAttribute('aria-expanded')!=='true';p.setAttribute('aria-expanded',o);p.classList.toggle('open',o)};
-  p.onclick=t;p.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}}})}
-
-/* ---------- Get it now: the provider's own reading, fetched by this browser (src/live.js), as a chat turn ---------- */
-function ago(t){var m=Math.max(1,Math.round((Date.now()-Date.parse(t))/60000));return m<90?m+' min':m<2880?Math.round(m/60)+' h':Math.round(m/1440)+' d'}
-function clock(t){var d=new Date(t),s;try{s=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}catch(e){s=''}
-  return new Date().toDateString()===d.toDateString()?s:s+', '+d.toLocaleDateString([],{month:'short',day:'numeric'})}
 var CV='<svg class="cv" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>';
-/* "…, 6 km from Austin, TX"; nothing when the station's own name already says the place */
-function where(r,p){var city=p.name.split(',')[0];return r.km==null||(r.km<15&&r.station.toLowerCase().indexOf(city.toLowerCase())>-1)?r.station:r.station+', '+(r.km<1?'under 1':Math.round(r.km))+' km from '+p.name}
-/* value, what, then the station: after a "·" when it is a place apart (a distance, or the route says so), else as one phrase */
-function lsay(r,p){var w=where(r,p);return '<b>'+E(r.value)+'</b>'+E((r.what?' '+r.what:'')+(w?(r.km!=null||r.sep?' · ':' ')+w:''))}
-/* the sheet, as on screen 1 (IRL3.pane) */
-function prov(c){return U.pane(c,c.name.replace(/\s*\(.*\)/,''),c.id)}
-var tick=0,deb=0;
-/* keep: the answer goes above the matches (Go); otherwise it replaces them, with a way back (a row's Get it now) */
-function live(id,q,keep){var c=U.card(id),R=L.route(id);if(!c||!R)return;clearInterval(tick);clearTimeout(deb);
-  var out=$('out'),p=L.place(q,IRLMatch.parse(q,U.cards)),n=E(R.name),box=keep&&$('lvw')?$('lvw'):out;
-  box.innerHTML='<article class="chat glass lv" id="lv" aria-label="Live answer from '+n+'"><p class="you">'+E(q)+'</p><div class="turn" id="lvt"></div>'+
-    '<div class="pvw"><div class="pv" id="lvp" role="region" aria-label="Provenance: '+n+'" inert></div></div></article>'+
-    (keep?'':'<button class="lnk back" id="back" type="button">'+BACK+'Back to matches</button>');
-  if(!keep){$('tries').hidden=true;$('back').onclick=function(){clearInterval(tick);run(lastQ)}}
-  var t=$('lvt');
-  function msg(b,rest,again,sug){t.innerHTML='<p class="lvm"><b>'+b+'</b>'+(rest?' '+rest:'')+'</p>'+(again?'<button class="again" id="again" type="button">Try again</button>':'')+
-      (sug?'<button class="again sug" id="sug" type="button">'+E(sug)+'</button>':'');say(b,true);
-    if(again)$('again').onclick=function(){live(id,q)};
-    if(sug)$('sug').onclick=function(){qa.value=sug;fit();run(sug,true)}}
-  /* a place this page can't put on the map: offer a big city it can, in the same state when the ask names one */
-  if(p.missing){var pr=IRLMatch.parse(q,U.cards),sc=pr.state&&L.place(pr.state),sug=R.eg;
-    if(p.missing==='known'&&sc&&!sc.missing)sug=q.replace(p.heard,sc.name.split(',')[0]);
-    msg(p.missing==='known'?'Can’t place '+E(p.heard)+'.':'Add a place.','Try:',false,sug);return}
-  if(R.cc&&R.cc.indexOf(p.cc)<0){msg(n+' covers '+E(R.area)+' only.','Add a place there, e.g. “'+E(R.eg)+'”.');return}
-  t.innerHTML='<p class="lvs"><span>Asking '+n+' near '+E(p.name)+'…</span></p>';say('Asking '+R.name+'.',true);
-  /* a slow provider (USGS can take seconds): after 3 s the status says it is still waiting, so the wait reads as one */
-  var slow=setTimeout(function(){var s=t.querySelector('.lvs span');if(s&&$('lvt')===t)s.textContent='Still waiting for '+R.name+'. Public services can take a few seconds…'},3000);
-  /* the ask goes along only so the page can pick which value to show (a level, not a flow); it never leaves the browser */
-  L.get(id,p,null,{ask:q}).then(function(x){clearTimeout(slow);if(!$('lv')||$('lvt')!==t)return;
-    if(!x.ok){
-      if(x.kind==='busy'||x.kind==='budget'){var w=x.wait||60,end=Date.now()+w*1000;
-        var head=x.kind==='busy'?n+' is busy.':'Paused, to go easy on providers.';
-        msg(head,'',true);var a=$('again'),lab=function(s){return s>=90?Math.ceil(s/60)+' min':s+' s'};a.disabled=true;a.textContent='Try again in '+lab(w);
+var seq=0;
+function go(){var q=qa.value.trim();if(!q){qa.value=sel.q;fit();q=sel.q}clearInterval(tick);var n=++seq;
+  shell(q);$('lvt').innerHTML='<p class="lvs"><span>Reading your ask…</span></p>';
+  L.ready().then(function(){if(n===seq)go1(q)})}
+function go1(q){var r=IRLMatch.parse(q,U.cards);
+  if(r.targets_person||NEAR.test(q)){shell(q);msg('irlpls won’t route this.','Requests that watch or follow a person are refused.',{stop:true});return}
+  var p=L.place(q,r),t=topic(q);
+  /* a place nobody can find: say so, and how to fix it (only when the ask needs a place) */
+  if(p.missing==='known'){var s0=t&&t!==sel.t?S.filter(function(s){return s.t===t})[0]:sel;if(s0!==sel)pick(s0,false);live(s0.id,q,r);return}  /* IRLLive.ask says it, with a city it can place */
+  var s=best(q,r,p);if(s){if(s!==sel)pick(s,false);live(s.id,q,r);return}
+  /* a live topic with no place: the picked (or topic's) service asks for one */
+  if(t&&p.missing){var s1=t===sel.t?sel:S.filter(function(x){return x.t===t})[0];if(s1!==sel)pick(s1,false);live(s1.id,q,r);return}
+  plan(q,r,p,t)}
+/* the best matching provider, as Find data ranks them (IRLMatch.score/compare), and its ready call */
+var CAT=null,catP=null;
+/* a street address in the ask fills the call's {STREET_ADDRESS} (the same pattern as Find data, src/app.js) */
+var STREET=/\b\d{1,6}[A-Za-z]?(?:-\d{1,5})?\s+(?:[NSEW]\.?\s+)?[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}?\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Way|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Ter|Terrace|Cir|Circle|Sq|Square|Trl|Trail|Row|Alley|Broadway)\b\.?[^]*$/i;
+function catalog(){return catP||(catP=fetch('catalog.json').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(d){CAT=d.providers||{};return CAT},function(){catP=null;return CAT={}}))}
+function plan(q,r,p,t){shell(q);var t0=$('lvt');
+  var list=U.cards.map(function(c){return{c:c,s:IRLMatch.score(c,r)}}).filter(function(x){return x.s.total>0}).sort(IRLMatch.compare);
+  var top=list[0];
+  if(!top){msg(p.missing?'No provider matches this.':'No free live source covers '+p.name+'.',p.missing?'Try a broader ask.':'No provider in the registry states coverage there yet.');return}
+  t0.innerHTML='<p class="lvs"><span>Finding the call for '+E(top.c.name.replace(/\s*\(.*\)/,''))+'…</span></p>';
+  catalog().then(function(cat){if($('lvt')!==t0)return;var pr=cat[top.c.id]||{};
+    var head=t&&!p.missing?'No free live source covers '+p.name+' for this.':'This one isn’t free to run from a browser.';
+    t0.innerHTML='<p class="lvm"><b>'+E(head)+'</b> The best match is '+E(top.c.name.replace(/\s*\(.*\)/,''))+'. Here is the call your agent would make.</p><div id="lvcall"></div>';
+    var box=$('lvcall');
+    if(window.IRLCall){box.innerHTML=IRLCall.html({provider:top.c.name.replace(/\s*\(.*\)/,''),readiness:pr.readiness||null,price:IRLLabels.priceText(top.c),rc:pr.ready_call||null,text:q,req:r,place:p,street:STREET.exec(q),showLine:true,docs:(pr.api||{}).docs_url});IRLCall.bind(box)}
+    else box.innerHTML='<p class="via">No ready call for this provider yet.</p>';
+    box.insertAdjacentHTML('beforeend','<p class="via"><a class="lnk" href="c/'+E(top.c.id)+'.html">'+E(top.c.name.replace(/\s*\(.*\)/,''))+'’s Capture Card</a></p>');
+    $('lv').classList.add('plan');say(head+' The best match is '+top.c.name+'.')})}
+/* the chat turn: the question, then the answer (or what happened), then the source chip that opens the eight links */
+function shell(q){$('out').innerHTML='<article class="chat glass lv" id="lv" aria-label="Live answer"><p class="you">'+E(q)+'</p><div class="turn" id="lvt"></div>'+
+  '<div class="pvw"><div class="pv" id="lvp" role="region" aria-label="Provenance" inert></div></div></article>'}
+function msg(b,rest,o){o=o||{};var t=$('lvt');if(!t)return;
+  t.innerHTML='<p class="lvm'+(o.stop?' stop':'')+'"><b>'+E(b)+'</b>'+(rest?' '+E(rest):'')+'</p>'+(o.again?'<button class="again" id="again" type="button">Try again</button>':'')+
+    (o.sug?'<button class="again sug" id="sug" type="button">'+E(o.sug)+'</button>':'');say(b);
+  if(o.again)$('again').onclick=function(){go()};
+  if(o.sug)$('sug').onclick=function(){qa.value=o.sug;fit();go()}}
+function live(id,q,r){shell(q);var t=$('lvt');
+  var slow=0;
+  L.ask(id,q,r,function(line){t.innerHTML='<p class="lvs"><span>'+E(line)+'</span></p>';say(line);
+    /* a slow provider (USGS can take seconds): after 3 s the status says it is still waiting, so the wait reads as one */
+    slow=setTimeout(function(){var s=t.querySelector('.lvs span');if(s&&$('lvt')===t)s.textContent='Still waiting for '+L.route(id).name+'. Public services can take a few seconds…'},3000)}).then(function(x){
+    clearTimeout(slow);if($('lvt')!==t)return;
+    if(x.kind==='msg'){msg(x.head,x.rest,{again:x.again,sug:x.sug});
+      if(x.wait){var end=Date.now()+x.wait*1000,a=$('again'),lab=function(s){return s>=90?Math.ceil(s/60)+' min':s+' s'};a.disabled=true;a.textContent='Try again in '+lab(x.wait);
         tick=setInterval(function(){var s=Math.ceil((end-Date.now())/1000),b=$('again');if(!b){clearInterval(tick);return}
-          if(s<=0){clearInterval(tick);b.disabled=false;b.textContent='Try again'}else b.textContent='Try again in '+lab(s)},1000);return}
-      if(x.kind==='none'){if(x.plan){msg(E(x.plan[0]),E(x.plan[1]));return}
-        msg(R.noun==='ships'?'No ships reporting within '+(p.r||20)+' km of '+E(p.name)+'.':'No '+n+' '+E(R.noun)+' reporting near '+E(p.name)+'.','Try a nearby city.');return}
-      msg(n+' didn’t answer.','It may be down.',true);return}
-    /* another provider answered (the regional quake catalogue, or AirNow when no citizen sensor is trustworthy): its name,
-       dots and provenance replace the tapped one's, and one line says why */
-    var asked=n,why='';if(x.via&&U.card(x.via)&&L.route(x.via)){c=U.card(x.via);R=L.route(x.via);n=E(R.name);why=VIA[x.via]||''}
-    /* an empty catalogue answer carries the time it was checked, never a quake's: "checked 1 min ago" */
-    var r=x.r,dots=U.dots(c).replace('role="img"','aria-hidden="true"'),age=(r.checked?'checked ':'')+ago(r.t)+' ago';
-    t.innerHTML='<p class="ans">'+lsay(r,p)+'</p>'+
-      (r.photo?'<figure class="att"><div class="media"><img src="'+E(r.photo)+'" alt="'+E(r.alt||'')+'"></div></figure>':'')+
-      '<div class="cites"><button class="cite" id="lvc" type="button" aria-expanded="false" aria-controls="lvp" title="'+E((r.checked?'Checked at ':'Reading at ')+clock(r.t))+'" aria-label="'+E('Source: '+R.name+', '+(r.checked?'checked at ':'reading at ')+clock(r.t)+', '+ago(r.t)+' ago. '+U.tally(c)+', '+U.who(c)+'. Show provenance')+'"><span class="chip">'+dots+'<span class="nm"><b>'+n+'</b> · '+E(age)+'</span>'+CV+'</span></button></div>'+
-      '<p class="via">'+(why?n+' answered, not '+asked+': '+E(why)+'. ':'')+'Fetched by your browser, straight from '+n+'.</p>';
-    $('lvp').innerHTML=prov(c);
+          if(s<=0){clearInterval(tick);b.disabled=false;b.textContent='Try again'}else b.textContent='Try again in '+lab(s)},1000)}
+      return}
+    /* the reply: a sentence built from the reading (IRLLive.reply, one template per service), bold where it says */
+    var c=U.card(x.id),rd=x.r,n=E(x.name),seg=L.reply(x),said=seg.map(function(s){return typeof s==='string'?s:s.b}).join(''),age=(rd.checked?'checked ':'')+L.ago(rd.t)+' ago',dots=c?U.dots(c).replace('role="img"','aria-hidden="true"'):'';
+    t.innerHTML='<p class="ans">'+seg.map(function(s){return typeof s==='string'?E(s):'<b>'+E(s.b)+'</b>'}).join('')+'</p>'+
+      (rd.photo?'<figure class="att"><div class="media"><img src="'+E(rd.photo)+'" alt="'+E(rd.alt||'')+'"></div></figure>':'')+
+      '<div class="cites"><button class="cite" id="lvc" type="button" aria-expanded="false" aria-controls="lvp" title="'+E((rd.checked?'Checked at ':'Reading at ')+L.clock(rd.t))+'" aria-label="'+E('Source: '+x.name+', '+(rd.checked?'checked at ':'reading at ')+L.clock(rd.t)+', '+age+'. '+(c?U.tally(c)+', '+U.who(c)+'. ':'')+'Show provenance')+'"><span class="chip">'+dots+'<span class="nm"><b>'+n+'</b> · '+E(age)+'</span>'+CV+'</span></button></div>'+
+      '<p class="via">'+(x.why?n+' answered, not '+E(x.asked)+': '+E(x.why)+'. ':'')+'Fetched by your browser, straight from '+n+'.</p>';
+    $('lvp').innerHTML=U.pane(c,c?c.name.replace(/\s*\(.*\)/,''):x.name,x.id);$('lvp').setAttribute('aria-label','Provenance: '+x.name);
     $('lvc').onclick=function(){sheet(this.getAttribute('aria-expanded')!=='true')};
     $('lvp').addEventListener('click',function(e){if(e.target.closest('.px,.pxb'))sheet(false)});
     $('lv').addEventListener('keydown',function(e){if(e.key==='Escape'&&$('lv').classList.contains('pvo')){e.preventDefault();sheet(false)}});
-    /* the spoken answer is the shown sentence as text, then its age and source (never "at within", "at ,") */
-    var sp=document.createElement('p');sp.innerHTML=lsay(r,p);$('ann').textContent=sp.textContent+', '+age+', from '+R.name+'.'})}
-/* why another provider answered (IRLLive.get's via) */
-var VIA={'geonet-nz':'New Zealand’s own catalogue lists smaller quakes','emsc-seismicportal':'Europe’s catalogue lists smaller quakes there',
-  'airnow':'no Sensor.Community sensor nearby gave a trustworthy reading','usgs-earthquakes':'GeoNet covers New Zealand only'};
+    say(said.replace(/\.$/,'')+', from '+x.name+'.')}).catch(function(){clearTimeout(slow);if($('lvt')===t)msg(L.route(id).name+' didn’t answer.','It may be down.',{again:true})})}
 /* the provenance sheet, as on screen 1: it opens from the chip and closes back into it. The card grows first if the
-   eight stages need more room than the answer takes, so every stage shows without scrolling. */
+   eight links need more room than the answer takes, so every link shows without scrolling. */
 function fromChip(){var pv=$('lvp'),a=pv.getBoundingClientRect(),c=$('lvc').querySelector('.chip').getBoundingClientRect();if(!a.width)return;
   var pc=function(v,d){return Math.max(0,v/d*100).toFixed(2)+'%'};
   pv.style.setProperty('--ct',pc(c.top-a.top,a.height));pv.style.setProperty('--cb',pc(a.bottom-c.bottom,a.height));
@@ -859,27 +767,28 @@ function sheet(open){var sl=$('lv'),pv=$('lvp'),btn=$('lvc');if(!sl||sl.classLis
     sl.querySelector('.you').inert=$('lvt').inert=true;btn.setAttribute('aria-expanded','true');pv.querySelector('.pxb').focus({preventScroll:true})}
   else{sl.querySelector('.you').inert=$('lvt').inert=false;fromChip();sl.classList.remove('pvo');pv.inert=true;btn.setAttribute('aria-expanded','false');btn.focus({preventScroll:true});
     setTimeout(function(){if(!sl.classList.contains('pvo'))sl.style.minHeight=''},RM?0:420)}}
-/* after Match: say the count, and bring the results into view (smoothly, unless motion is reduced) */
-function say(t,go){if(!go)return;var a=$('ann');a.textContent='';setTimeout(function(){a.textContent=t},30);
+/* say it for screen readers, and keep the answer in view (smoothly, unless motion is reduced) */
+function say(t){var a=$('ann');a.textContent='';setTimeout(function(){a.textContent=t},30);
   if(matchMedia('(pointer: coarse)').matches)qa.blur();
-  /* the screen sits at the top when the answer fits under its heading (a shorter answer never leaves it half-scrolled
-     into screen 2); otherwise the answer itself comes to the top */
-  var o=$('out'),r=o.getBoundingClientRect(),hb=document.querySelector('.top').getBoundingClientRect().bottom,sc=$('try'),d=sc.getBoundingClientRect().top,b={block:'start',behavior:RM?'auto':'smooth'};
-  if(Math.abs(d)>2&&r.bottom-d<=innerHeight)sc.scrollIntoView(b);else if(r.bottom>innerHeight||r.top<hb)o.scrollIntoView(b)}
-function submit(){clearTimeout(deb);run(qa.value,true)}
-$('ask').onsubmit=function(e){e.preventDefault();submit()};
-var q0=(/[?&]q=([^&]*)/.exec(location.search)||[])[1];try{q0=q0?decodeURIComponent(q0.replace(/\+/g,' ')):ASK0}catch(e){q0=ASK0}  /* ?q= shares a query */
-if(/[?&]free=1/.test(location.search))free=true;
-var go0=/[?&]go=1/.test(location.search);  /* ?q=…&go=1 (the finder's Get it now): answer at once, as Go does */
-qa.value=q0;fit();U.on(function(){if(!$('lv')){run(qa.value,go0);go0=false}});addEventListener('resize',fit);
-qa.addEventListener('input',function(){if(/\n/.test(this.value))this.value=this.value.replace(/\s*\n\s*/g,' ');fit();clearTimeout(deb);var v=this.value;deb=setTimeout(function(){if(v.trim().length>2)run(v)},350)});
+  /* the field and the answer together when they fit (the field at the top, under the header); else the answer from its top */
+  var r=$('out').getBoundingClientRect(),f=$('ask').getBoundingClientRect(),hb=document.querySelector('.top').getBoundingClientRect().bottom;
+  if(r.bottom>innerHeight-8||r.top<hb)scrollTo({top:scrollY+(r.bottom-f.top<=innerHeight-hb-20?f.top:r.top)-hb-10,behavior:RM?'auto':'smooth'})}
+$('ask').onsubmit=function(e){e.preventDefault();go()};
+/* the world place table loads only when screen 3 comes near (or the field is used) */
+if('IntersectionObserver' in window)new IntersectionObserver(function(es,o){if(es[0].isIntersecting){o.disconnect();L.ready()}},{rootMargin:'400px'}).observe($('try'));else L.ready();
+qa.addEventListener('focus',function(){L.ready()},{once:true});
+/* ?svc=<id> picks a service, ?q= fills the question, &go=1 asks at once (links from Find data and the docs) */
+var P=new URLSearchParams(location.search),s0=S.filter(function(x){return x.id===P.get('svc')})[0];
+pick(s0||sel,true);if(P.get('q')){qa.value=P.get('q').slice(0,200);fit()}
+addEventListener('resize',fit);
+if(P.get('go')==='1')U.on(function(){if(!$('lv'))go()});
 })();
 </script>
 </section>
 
 </main>
 
-<footer class="site-foot"><span>No data sold, no cut. Buy from providers directly.</span><span class="fl"><a href="standard.html">standard</a><a href="changelog.html">changelog</a><a href="providers.html">for providers</a><a href="governance.html">governance</a><a href="privacy.html">privacy</a><a href="chain.html">the chain</a><a href="glossary.html">glossary</a><a href="cards.json">cards.json</a><a href="llms.txt">llms.txt</a></span><span>River photo and reading: USGS, public domain. Other images are examples.</span></footer>
+<footer class="site-foot"><div class="ft"><p class="fd"><a class="fw" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><span>No data sold, no cut. Buy from providers directly.</span></p><nav class="fl" aria-label="Footer"><a href="standard.html">Standard</a><a href="docs.html">Docs</a><a href="providers.html">For providers</a><a href="privacy.html">Privacy</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a><a href="governance.html">Governance</a></nav></div><p class="fc">Screen 1’s answers are samples. River photo and reading (Oct 29, 2026): USGS, public domain.</p><p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><a href="mailto:hello@irlpls.com">hello@irlpls.com</a><span>© irlpls maintainers</span></p></footer>
 <script>/* the last screen ends on the footer (#try's min-height): its height, kept current */
 (function(){var f=document.querySelector('.site-foot');if(!f)return;function set(){var cs=getComputedStyle(f);document.documentElement.style.setProperty('--fh',Math.ceil(f.offsetHeight+parseFloat(cs.marginTop))+'px')}
 set();addEventListener('resize',set);if(document.fonts)document.fonts.ready.then(set)})();</script>

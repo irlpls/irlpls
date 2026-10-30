@@ -1,0 +1,8 @@
+{
+ "what": "The saved reading behind screen 1's river sample (a sample: never refreshed). Public domain, U.S. Geological Survey.",
+ "site": "USGS-08167000",
+ "name": "Guadalupe Rv at Comfort, TX",
+ "flow": {"v": 80.6, "u": "ft^3/s", "t": "2026-10-29T19:40:00Z", "source": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/continuous/items?monitoring_location_id=USGS-08167000&parameter_code=00060&datetime=2026-10-29T19:00:00Z/2026-10-29T20:30:00Z&f=json"},
+ "normal": {"date": "Oct 29", "p25": 53.3, "p50": 100.0, "p75": 188.0, "count": 87, "source": "USGS Water Data Statistics API, day-of-year percentiles of the daily mean discharge"},
+ "photo": {"file": "guadalupe-comfort-2026-10-29.jpg", "captured": "2026-10-29T19:41:21Z", "camera": "TX_Guadalupe_Rv_at_Comfort"}
+}

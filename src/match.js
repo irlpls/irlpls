@@ -100,7 +100,12 @@ function where(text,r){var m=text.match(/(?:([A-Z][\w.'-]*)\s*)?,\s*([A-Z]{2})\b
   for(k in STATES)if(new RegExp('\\b'+title(STATES[k])+'\\b').test(text)){r.state=STATES[k];r.country_code='us';r.subdivision=subCode('us',r.state);return}
   for(k in COUNTRIES)if(text.indexOf(k)>-1&&new RegExp('(?<![\\w.])'+esc(k)+'(?![\\w])').test(text)){r.country_code=COUNTRIES[k];var sc=subCode(COUNTRIES[k],k);if(sc){r.state=k.toLowerCase();r.subdivision=sc}return}
   for(k in CITIES)if(text.indexOf(k)>-1&&new RegExp('(?<![\\w.])'+esc(k)+'(?![\\w])').test(text)){r.country_code=CITIES[k][0];r.state=CITIES[k][1];r.subdivision=subCode(CITIES[k][0],CITIES[k][1]);return}
-  var low=text.toLowerCase();for(var i=0;i<CASELESS.length;i++)if(low.indexOf(CASELESS[i][0])>-1&&new RegExp('(?<![\\w.])'+esc(CASELESS[i][0])+'(?![\\w])').test(low)){r.country_code=CASELESS[i][1];return}}
+  var low=text.toLowerCase();for(var i=0;i<CASELESS.length;i++)if(low.indexOf(CASELESS[i][0])>-1&&new RegExp('(?<![\\w.])'+esc(CASELESS[i][0])+'(?![\\w])').test(low)){r.country_code=CASELESS[i][1];return}
+  var g=worldPlace(text);if(g){r.country_code=g.cc;if(g.cc==='us'&&g.admin){r.state=g.admin.toLowerCase();r.subdivision=subCode('us',r.state)}}}
+/* browser only: the world gazetteer (src/places.js: GeoNames cities of 50,000+ and capitals), used as the LAST fallback and
+   only once a page has loaded it (IRLPlaces.ready). Python's irlpls/geo geocodes a place with Nominatim instead, so this has
+   no Python twin; without IRLPlaces (the Python/JS bench, Node) parse() is unchanged. */
+function worldPlace(text){var W=typeof window!=='undefined'&&window.IRLPlaces;return W&&W.ready?W.find(text):null}
 
 /* the first state, city, landmark or country the gazetteer finds, as written (need.py _named_place): "air, Delhi" */
 function namedPlace(text){var k,i;for(k in STATES)if(new RegExp('\\b'+title(STATES[k])+'\\b').test(text))return title(STATES[k]);
@@ -137,6 +142,7 @@ function parse(text,cards){
   var places=[],rest=text.replace(new RegExp(ANYWHERE.source,'gi'),' '),m;
   [ADDRESS,ADDRESS_LC].forEach(function(rx){(rest.match(rx)||[]).forEach(function(a){places.push(a.replace(/^[ ,.]+|[ ,.]+$/g,''))});rest=rest.replace(rx,' , ')});
   PLACE.lastIndex=0;while((m=PLACE.exec(rest))){var pl=m[1].replace(/^[ ,.]+|[ ,.]+$/g,'');if(!isLanguage(pl))places.push(pl)}if(places.length)r.place=places.join(', ');else if(r.country_code&&!r.anywhere){var nm0=namedPlace(text);if(nm0)r.place=nm0}
+  if(!r.place&&r.country_code&&!r.anywhere){var wp=worldPlace(text);if(wp&&wp.cc===r.country_code)r.place=wp.name}
   var pw=(r.place||'').toLowerCase().split(/[^a-z]+/),regs={},names={},nm,NR=/(?<![.?!]\s)\b[A-Z][a-zà-ÿ'-]+/g;
   while((nm=NR.exec(rest)))if(nm.index>0&&GENERIC.indexOf(nm[0].toLowerCase())<0)names[nm[0].toLowerCase()]=1;
   (cards||[]).forEach(function(c){c.coverage.regions.forEach(function(g){g.toLowerCase().split(/[^a-zà-ÿ]+/).forEach(function(x){if(x.length>2)regs[x]=1})})});

@@ -42,3 +42,34 @@ def test_check_site_reports_broken_links_and_internal_files(tmp_path):
     s = site(tmp_path, index='<a href="missing.html">x</a>')
     r = subprocess.run([sys.executable, str(ROOT / "tools" / "check_site.py"), str(s)], capture_output=True, text=True)
     assert r.returncode == 1 and "broken: /missing.html" in r.stdout and "internal file shipped: /pitch/provider-flow.html" in r.stdout
+
+
+def test_check_site_catches_assets_named_in_scripts_and_private_folders(tmp_path):
+    """The landing built its river <img> in JS from media/live/ (the private refresh job's gitignored snapshots): the
+    public site showed no photo. Asset paths inside scripts count, and media/live/ never appears in a public build."""
+    s = site(tmp_path, index='<a href="find.html">Find</a><script>var m=function(){return \'<img src="media/live/cam.jpg">\'};'
+                              'var ok="https://example.org/x.json",tail=B+\'/api/stations.json\'</script>')
+    r = subprocess.run([sys.executable, str(ROOT / "tools" / "check_site.py"), str(s)], capture_output=True, text=True)
+    assert r.returncode == 1 and "references private-only media/live/cam.jpg" in r.stdout and "broken: /media/live/cam.jpg" in r.stdout
+    assert "x.json" not in r.stdout and "stations.json" not in r.stdout, r.stdout
+
+
+def test_real_public_build_references_only_files_it_ships(tmp_path):
+    """Build the real public site the way Cloudflare Pages does (the repo's files only: nothing gitignored, so no
+    src/media/live/) and crawl it: every link and every asset named in a page, script or style exists in the build."""
+    try:
+        ls = subprocess.run(["git", "ls-files", "-co", "--exclude-standard"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.split("\n")
+    except (OSError, subprocess.CalledProcessError):
+        pytest.skip("needs git to list the repo's files")
+    import shutil
+    for f in filter(None, ls):
+        src = ROOT / f
+        if src.is_file() and not f.startswith(("site/", "qa-", "scratchpad/")):
+            (tmp_path / f).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, tmp_path / f)
+    b = subprocess.run([sys.executable, "build.py", "--public"], cwd=tmp_path, capture_output=True, text=True)
+    assert b.returncode == 0, b.stdout + b.stderr
+    out = tmp_path / "site"
+    assert not (out / "media" / "live").exists() and "media/live" not in (out / "index.html").read_text()
+    r = subprocess.run([sys.executable, str(ROOT / "tools" / "check_site.py"), str(out)], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout

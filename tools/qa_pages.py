@@ -46,10 +46,13 @@ OUT = sys.argv[1] if len(sys.argv) > 1 else "qa-pages"
 BASE = sys.argv[2] if len(sys.argv) > 2 else None
 
 BUDGET = {
-    "finder_controls": 42,  # +2: the header link "Sources" became "Find data" (the owner's rename). round 5: "made to order" (was "commissioned") and the stage key's "not stated"   # everything on the finder except the result rows (incl. the lede and the "N sources match" line)
+    "finder_controls": 44,  # +2 (2026-10-30): the read-back of a street address ("50 Elm St, Burlington, VT → Vermont"). +2: the header link "Sources" became "Find data" (the owner's rename). round 5: "made to order" (was "commissioned") and the stage key's "not stated"   # everything on the finder except the result rows (incl. the lede and the "N sources match" line)
     "row": 17,              # one result row (round 5: the eight-stage tally "n claimed · n evidenced" replaced three chips); +1 (sweep nit 14): "Speed not stated" matches "Price not stated"
     "card_head": 60,        # kicker, name, one-liner, fit, spec grid
-    "best": 30,             # the finder's best match: label, name, one plan line, readiness line, one or two buttons
+    "best": 30,             # the finder's best match: label, name, one plan line, readiness line, one or two buttons (its call and live answer apart)
+    "call_lines": 70,       # under the top match's ready call: the key and where to get it, up to three values to fill, approval, "Nothing is sent"
+    "live_answer": 45,
+    "notes": 45,            # the finder's plain notes above the matches (refused, can't capture the past, already have it, no evidence)      # the top match's live answer inline: the reading, its source and age, who fetched it
     "stage_row": 6,         # one link row's head: number + name + level ("8. Delivered to you Not stated")
     "card_first_screen": 90,  # visible words on the card's first iPhone screen (nav included); +10 (sweep 2026-10-29): each count names its unit ("1 of 8 links claimed", "Source guarantees · 3 of 7 claimed · 0 evidenced")
     "cmp_cell": 6,          # one compare cell
@@ -63,6 +66,9 @@ FINDER = [
     ("find-drone", "find.html?q=" + Q("drone survey of a construction site in Canada")),
     ("find-proof", "find.html?q=" + Q("verified human photos of a roof, camera proof, cross-checked")),
     ("find-none", "find.html?q=" + Q("xyzzy plugh")),
+    ("find-call", "find.html?q=" + Q("satellite image of Austin, TX")),
+    ("find-refused", "find.html?q=" + Q("follow my ex home tonight")),
+    ("find-past", "find.html?q=" + Q("storefront photo, Lisbon, last week")),
     ("find-filtered-empty", "find.html?q=" + Q("river level in Texas right now") + "&made=1"),
     ("find-free", "find.html?free=1"),
     ("sheet-q", "find.html?q=" + Q("river level in Texas right now") + "#usgs-water"),
@@ -76,7 +82,7 @@ COMPARE = [
     ("cmp-bad", "compare.html?ids=nope,zzz"),
 ]
 # long documents and the stand-alone pages (no word budgets: they are read, not scanned)
-DOCS = [("std", "standard.html"), ("log", "changelog.html"), ("gov", "governance.html"), ("privacy", "privacy.html"),
+DOCS = [("docs", "docs.html"), ("std", "standard.html"), ("log", "changelog.html"), ("gov", "governance.html"), ("privacy", "privacy.html"),
         ("glossary", "glossary.html"), ("providers", "providers.html"), ("agents", "agents.html"), ("chain", "chain.html"),
         ("check", "check.html"), ("check-id", "check.html?id=proxypics"), ("404", "c/nope.html")]
 NOJS = [("find", "find.html", "finder"), ("card-usgs", "c/usgs-water.html", "card"), ("card-zeitview", "c/zeitview.html", "card"),
@@ -107,7 +113,7 @@ PROBE = r"""(B) => {
   // words broken across two lines ("Commissi / on"); long URLs and paths may break at their punctuation
   const tw2 = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT); let bn;
   while ((bn = tw2.nextNode())) {
-    const el = bn.parentElement; if (!bn.textContent.trim() || !shown(el) || /^(SCRIPT|STYLE|OPTION)$/.test(el.tagName)) continue;
+    const el = bn.parentElement; if (!bn.textContent.trim() || !shown(el) || /^(SCRIPT|STYLE|OPTION)$/.test(el.tagName) || el.closest('pre')) continue;  // code (the ready call) wraps anywhere
     const all = document.createRange(); all.selectNodeContents(bn); if (all.getClientRects().length < 2) continue;
     const re = /[^\s\/\u2010-\u2014-]+/g; let m;  // pieces between spaces, hyphens and slashes: breaking at those is fine
     while ((m = re.exec(bn.textContent))) { if (/[.:_]/.test(m[0]) && m[0].length > 18) continue;
@@ -158,8 +164,13 @@ PROBE = r"""(B) => {
   if (page === 'finder' && !inSheet) {
     const main = document.getElementById('main'), grid = document.getElementById('grid');
     const best = document.getElementById('best');  // the best match (read like the landing's screen 3) has its own budget
-    budget('finder_controls', vis(main) - vis(grid) - (best ? vis(best) : 0), 'finder controls');
-    if (best) budget('best', vis(best), 'best match');
+    const notes = document.getElementById('notes');  // what irlpls won't or can't do for this ask: its own budget
+    budget('finder_controls', vis(main) - vis(grid) - (best ? vis(best) : 0) - (notes ? vis(notes) : 0), 'finder controls');
+    if (notes) budget('notes', vis(notes), 'notes');
+    const bcall = document.getElementById('bcall'), blv = document.getElementById('blv'), pre = bcall && bcall.querySelector('pre');
+    if (best) budget('best', vis(best) - (bcall ? vis(bcall) : 0) - (blv ? vis(blv) : 0), 'best match');
+    if (bcall) budget('call_lines', vis(bcall) - (pre ? vis(pre) : 0), 'the call\'s notes');
+    if (blv) budget('live_answer', vis(blv), 'live answer');
     grid.querySelectorAll('.row').forEach((row, i) => budget('row', vis(row), 'row ' + (i + 1)));
     if (!grid.querySelector('.row') && !document.getElementById('meta').textContent.trim()) out.push('empty: no rows and no message');
   }
@@ -487,6 +498,11 @@ def main():
                     res["problems"].append(f"{res['first']} words on the first screen (budget {BUDGET['card_first_screen']})")
                 fails += [f"{dev} {name}: {x}" for x in res["problems"]]
                 fails += [f"{dev} {name}: {x}" for x in pg.evaluate(CENTRE, {"tol": 1.5})]
+                if not phone:  # the owner, 2026-10-30: the footer is a full-width band; its content at least 80% of the main column's width
+                    fw = pg.evaluate("""(()=>{const f=document.querySelector('.site-foot'),m=document.querySelector('main, #main');if(!f||!m)return null;
+                      const cs=getComputedStyle(f);return [f.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight), m.getBoundingClientRect().width]})()""")
+                    if fw and fw[0] < 0.8 * fw[1]:
+                        fails.append(f"{dev} {name}: footer content {round(fw[0])}px is under 80% of the main column ({round(fw[1])}px)")
                 pg.screenshot(path=f"{OUT}/{dev}-{name}.png")
                 if kind != "finder" or name.startswith("find-river"):
                     pg.screenshot(path=f"{OUT}/{dev}-{name}-full.png", full_page=True)

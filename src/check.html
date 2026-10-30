@@ -84,7 +84,7 @@ details.notes>summary{display:inline-flex;align-items:center;min-height:44px;col
 #pvw .stg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--fg2);margin:0}
 </style></head><body><a class="skip" href="#main">Skip to content</a><header class="top ctr"><nav aria-label="Main"><a class="nl" href="find.html">Find data</a><a class="brand" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><a class="nr" href="agents.html">For agents</a></nav></header><main id="main" class="ck">
 <a class="back" href="providers.html">&larr; For providers</a>
-<h1>Check your card</h1>
+<h1 class="hl hl-doc all">Check your card</h1>
 <p class="lede">Paste your Capture Card or enter your domain. The reference checks run in your browser; nothing goes to irlpls.</p>
 
 <label id="drop"><span class="sr" style="position:absolute;left:-9999px">Capture Card JSON</span>
@@ -105,7 +105,7 @@ details.notes>summary{display:inline-flex;align-items:center;min-height:44px;col
 <ul id="proofs"></ul></section>
 </main>
 <script src="match.js"></script>
-<footer class="site-foot"><span>No data sold, no cut. Buy from providers directly.</span><span class="fl"><a href="standard.html">standard</a><a href="changelog.html">changelog</a><a href="providers.html">for providers</a><a href="governance.html">governance</a><a href="privacy.html">privacy</a><a href="chain.html">the chain</a><a href="glossary.html">glossary</a><a href="cards.json">cards.json</a><a href="llms.txt">llms.txt</a></span></footer>
+<footer class="site-foot"><div class="ft"><p class="fd"><a class="fw" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><span>No data sold, no cut. Buy from providers directly.</span></p><nav class="fl" aria-label="Footer"><a href="standard.html">Standard</a><a href="docs.html">Docs</a><a href="providers.html">For providers</a><a href="privacy.html">Privacy</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a><a href="governance.html">Governance</a></nav></div><p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><a href="mailto:hello@irlpls.com">hello@irlpls.com</a><span>© irlpls maintainers</span></p></footer>
 <script>
 "use strict";
 const VERSION="2026-10-26",SCHEMA_URL="2026-10-26/schemas/capture-card.json";
@@ -497,4 +497,5 @@ const dz=$("drop");
 ["dragenter","dragover"].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.add("over")}));
 ["dragleave","drop"].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.remove("over")}));
 dz.addEventListener("drop",async e=>{const f=e.dataTransfer.files[0];if(f){const t=await f.text();$("json").value=t;run(t)}});
-</script></body></html>
+</script><script src="bar.js"></script>
+</body></html>

@@ -122,6 +122,9 @@ function at(k){var p=PL[k],o={lat:p[0],lon:p[1],cc:p[2],name:p[3]};if(p[4])o.r=p
    ("Springfield, Illinois"), that place is asked about, never swapped for its state's city; else its state or country */
 function place(text,r){text=String(text||'');var t=' '+text.toLowerCase()+' ',i,k,areas=[];r=r||{};
   for(i=0;i<KEYS.length;i++){k=KEYS[i];if(hit(t,k)){if(!AREA.test(k))return at(k);areas.push(k)}}
+  /* then the world table (src/places.js: GeoNames cities of 50k+ and capitals, loaded in this browser; the text never leaves it) */
+  var W=window.IRLPlaces&&window.IRLPlaces.ready?window.IRLPlaces.find(text):null;
+  if(W)return{lat:W.lat,lon:W.lon,cc:W.cc,name:W.name};
   var cap=text.match(/(?:^|[^\wà-ÿ])[A-ZÀ-Þ][a-zà-ÿ'’.-]+(?:\s+[A-ZÀ-Þ][a-zà-ÿ'’.-]+)*/g)||[];
   for(i=0;i<cap.length;i++){var w=cap[i].replace(/^[^A-ZÀ-Þ]+/,''),lw=w.toLowerCase();
     if(i===0&&text.trim().indexOf(w)===0)w=w.split(/\s+/).slice(1).join(' '),lw=w.toLowerCase();  /* the first word is just a capital */
@@ -201,7 +204,7 @@ var ROUTES={
      return(nm?Promise.resolve(nm):call('usgs',O+'monitoring-locations/items/USGS-'+x.site+'?f=json',s).then(function(m){
          var n=(((m||{}).properties)||{}).monitoring_location_name;if(n)save('usgsname.'+x.site,n);return n},function(){return null}))
        .then(function(n){return{value:x.code==='00060'?num(x.v)+' ft³/s':num(x.v,2)+' ft',
-         what:x.code==='00060'?(lv?'flowing (this gauge reports flow, not level)':'flowing'):'gage height',station:n?usgsName(n):'USGS gauge '+x.site,km:pick.d,t:x.t,
+         what:x.code==='00060'?(lv?'flowing (this gauge reports flow, not level)':'flowing'):'gage height',station:n?usgsName(n):'USGS gauge '+x.site,km:pick.d,t:x.t,v:x.v,code:x.code,lv:lv,
          link:'https://waterdata.usgs.gov/monitoring-location/'+x.site+'/'}})})}},
  'nws':{pid:'nws',name:'NWS',every:20,radius:60,cc:['us'],noun:'weather station',area:'the US',eg:'weather, Austin, Texas',
    get:function(p,s){var B='https://api.weather.gov';
@@ -209,7 +212,7 @@ var ROUTES={
        return call('nws',u,s)}).then(function(st){var f=st&&((st.features||[])[0]);if(!f)return null;var sp=f.properties,g=f.geometry.coordinates;
        return call('nws',B+'/stations/'+encodeURIComponent(sp.stationIdentifier)+'/observations/latest',s).then(function(o){var q=(o||{}).properties||{},c=(q.temperature||{}).value;
          if(c==null&&!q.textDescription)return null;
-         return{value:c==null?q.textDescription:num(c)+' °C'+(q.textDescription?', '+q.textDescription.toLowerCase():''),what:'',station:sp.name,km:km(p.lat,p.lon,g[1],g[0]),t:q.timestamp,
+         return{value:c==null?q.textDescription:num(c)+' °C'+(q.textDescription?', '+q.textDescription.toLowerCase():''),what:'',station:sp.name,km:km(p.lat,p.lon,g[1],g[0]),t:q.timestamp,c:c,desc:q.textDescription||'',
            link:'https://www.weather.gov/'}})})}},
  'uk-ea-flood':{pid:'ea',name:'Environment Agency',every:15,radius:15,cc:['gb'],noun:'gauge',area:'England',eg:'river, York, England',
    get:function(p,s){var B='https://environment.data.gov.uk/flood-monitoring';
@@ -217,23 +220,23 @@ var ROUTES={
        var n=near((d||{}).items||[],p,function(x){return +x.lat},function(x){return +x.long}).filter(function(n){return isFinite(n.d)})[0];if(!n)return null;var st=n.x;
        return call('ea',B+'/id/stations/'+encodeURIComponent(st.notation||st.stationReference)+'/readings?latest',s).then(function(r){
          var it=((r||{}).items||[]).filter(function(x){return typeof x.value==='number'&&/level/.test(x.measure||'')})[0];if(!it)return null;
-         return{value:num(it.value,2)+' m',what:'water level',station:st.label+(st.riverName?' ('+st.riverName+')':''),km:n.d,t:it.dateTime,
+         return{value:num(it.value,2)+' m',what:'water level',station:st.label+(st.riverName?' ('+st.riverName+')':''),km:n.d,t:it.dateTime,v:it.value,
            link:'https://check-for-flooding.service.gov.uk/station/'+(st.RLOIid||'')}})})}},
  'pegelonline':{pid:'pegel',name:'PEGELONLINE',every:15,radius:25,cc:['de','at'],noun:'gauge',area:'German federal waterways and a few Danube gauges in Austria',eg:'river, Cologne, Germany',
    get:function(p,s){if(p.cc==='at'){var g=AT[p.name];if(!g)return Promise.resolve(null);
        return call('pegel','https://pegelonline.wsv.de/webservices/rest-api/v2/stations/'+g[0]+'.json?includeTimeseries=true&includeCurrentMeasurement=true',s).then(function(x){
          var w=((x||{}).timeseries||[]).filter(function(t){return t.shortname==='W'&&t.currentMeasurement})[0];if(!w)return null;
-         return{value:num(w.currentMeasurement.value)+' '+(w.unit||'cm'),what:'water level',station:title(x.longname)+' ('+title((x.water||{}).longname||'Donau')+'), '+g[1]+' '+p.name,km:null,sep:true,
+         return{value:num(w.currentMeasurement.value)+' '+(w.unit||'cm'),what:'water level',station:title(x.longname)+' ('+title((x.water||{}).longname||'Donau')+'), '+g[1]+' '+p.name,km:null,sep:true,v:+w.currentMeasurement.value,unit:w.unit||'cm',
            t:w.currentMeasurement.timestamp,link:'https://www.pegelonline.wsv.de/gast/stammdaten?pegelnr='+encodeURIComponent(x.number||'')}})}
      return call('pegel','https://pegelonline.wsv.de/webservices/rest-api/v2/stations.json?includeTimeseries=true&includeCurrentMeasurement=true&radius=25&latitude='+r2(p.lat)+'&longitude='+r2(p.lon),s).then(function(d){
      var n=near((d||[]).filter(function(x){return x.latitude!=null&&(x.timeseries||[]).some(function(t){return t.shortname==='W'&&t.currentMeasurement})}),p,function(x){return x.latitude},function(x){return x.longitude})[0];
      if(!n)return null;var w=n.x.timeseries.filter(function(t){return t.shortname==='W'})[0],cm=w.currentMeasurement;
-     return{value:num(cm.value)+' '+(w.unit||'cm'),what:'water level',station:title(n.x.longname)+((n.x.water||{}).longname?' ('+title(n.x.water.longname)+')':''),km:n.d,t:cm.timestamp,
+     return{value:num(cm.value)+' '+(w.unit||'cm'),what:'water level',station:title(n.x.longname)+((n.x.water||{}).longname?' ('+title(n.x.water.longname)+')':''),km:n.d,t:cm.timestamp,v:+cm.value,unit:w.unit||'cm',
        link:'https://www.pegelonline.wsv.de/gast/stammdaten?pegelnr='+encodeURIComponent(n.x.number||'')}})}},
  'digitraffic-marine-ais':{pid:'digitraffic',name:'Digitraffic',every:1,radius:20,cc:['fi'],noun:'ships',area:'Finland',eg:'ships, Helsinki, Finland',
    get:function(p,s){var rad=p.r||20;return call('digitraffic','https://meri.digitraffic.fi/api/ais/v1/locations?radius='+rad+'&latitude='+r2(p.lat)+'&longitude='+r2(p.lon),s).then(function(d){
      var f=(d||{}).features||[];if(!f.length)return null;var t=Math.max.apply(null,f.map(function(x){return +(x.properties||{}).timestampExternal||0}));
-     return{value:f.length+(f.length===1?' ship':' ships'),what:'reporting',station:p.r?'on '+p.name+', within '+rad+' km of its middle':'within '+rad+' km of '+p.name,km:null,t:new Date(t).toISOString(),
+     return{value:f.length+(f.length===1?' ship':' ships'),what:'reporting',station:p.r?'on '+p.name+', within '+rad+' km of its middle':'within '+rad+' km of '+p.name,km:null,t:new Date(t).toISOString(),n:f.length,rad:rad,
        link:'https://www.digitraffic.fi/en/marine-traffic/'}})}},
  'fintraffic-weathercams':{pid:'fintraffic',name:'Fintraffic',every:10,radius:40,cc:['fi','ax'],noun:'road camera',area:'Finland',eg:'road camera, Helsinki, Finland',
    get:function(p,s){var B='https://tie.digitraffic.fi/api/weathercam/v1';
@@ -253,7 +256,7 @@ var ROUTES={
      return list.then(function(cs){var n=near(cs,p,function(x){return x.lat},function(x){return x.lon})[0];if(!n||n.d>60)return null;var st=n.x;
        return call('coops',B+'/api/prod/datagetter?station='+encodeURIComponent(st.id)+'&product=water_level&date=latest&datum='+(st.gl?'IGLD':'MLLW')+'&units=metric&time_zone=gmt&format=json&application=irlpls',s).then(function(d){
          var x=((d||{}).data||[])[0];if(!x||x.v===''||x.v==null||!isFinite(+x.v))return null;
-         return{value:num(x.v,2)+' m',what:st.gl?'water level (IGLD datum)':'water level above mean lower low water',station:st.name+(st.state?', '+st.state:''),km:n.d,
+         return{value:num(x.v,2)+' m',what:st.gl?'water level (IGLD datum)':'water level above mean lower low water',station:st.name+(st.state?', '+st.state:''),km:n.d,v:+x.v,gl:st.gl,
            t:String(x.t).replace(' ','T')+':00Z',link:'https://tidesandcurrents.noaa.gov/stationhome.html?id='+encodeURIComponent(st.id)}})})}},
  /* earthquakes: the catalogue's events of the past 24 h within 250 km, counted, with the largest named. None is an answer. */
  'usgs-earthquakes':{pid:'usgsq',name:'USGS Earthquakes',every:1,radius:250,cc:null,noun:'catalogue',area:'the world',eg:'earthquakes near Anchorage, Alaska',
@@ -280,7 +283,7 @@ var ROUTES={
        return call('hubeau',B+'/observations_tr?code_entite='+ns.map(function(n){return encodeURIComponent(n.x.code_station)}).join(',')+'&grandeur_hydro=H&date_debut_obs='+since(2)+'Z&size=1000&sort=desc&fields=code_station,date_obs,resultat_obs',s).then(function(o){
          var last={};((o||{}).data||[]).forEach(function(x){if(!last[x.code_station]&&typeof x.resultat_obs==='number')last[x.code_station]=x});
          var n=ns.filter(function(n){return last[n.x.code_station]})[0];if(!n)return null;var x=last[n.x.code_station];
-         return{value:num(x.resultat_obs/1000,2)+' m',what:'water height',station:String(n.x.libelle_station||'').split(' - ').slice(0,2).join(' - '),km:n.d,t:x.date_obs,link:'https://hubeau.eaufrance.fr/page/api-hydrometrie'}})})}},
+         return{v:x.resultat_obs/1000,value:num(x.resultat_obs/1000,2)+' m',what:'water height',station:String(n.x.libelle_station||'').split(' - ').slice(0,2).join(' - '),km:n.d,t:x.date_obs,link:'https://hubeau.eaufrance.fr/page/api-hydrometrie'}})})}},
  /* Sensor.Community: citizen sensors' PM2.5 (value_type P2) of the last 5 minutes within 5 km, as the median of the sensors */
  'sensor-community':{pid:'sc',name:'Sensor.Community',every:5,radius:5,cc:null,noun:'sensor',area:'the world',eg:'air quality, Berlin, Germany',
    fallback:{cc:['us'],id:'airnow'},plan:noAir,
@@ -296,7 +299,7 @@ var ROUTES={
        mem.airnow={at:now(),rows:rows};return rows});
      return f.then(function(rows){var n=near(rows,p,function(c){return +c[9]},function(c){return +c[10]})[0];if(!n||n.d>80)return null;var a=n.x[7],st=n.x[8];
        var top=rows.filter(function(c){return c[7]===a&&c[8]===st}).sort(function(x,y){return +y[12]-+x[12]})[0],t=anTime(top);if(!t)return null;
-       return{value:'AQI '+Math.round(+top[12]),what:'('+top[13].toLowerCase()+', '+(top[11]==='OZONE'?'ozone':top[11])+')',station:a+', '+st,km:n.d,t:t,link:'https://www.airnow.gov/'}})}},
+       return{aqi:Math.round(+top[12]),cat:top[13],pol:top[11]==='OZONE'?'ozone':top[11],value:'AQI '+Math.round(+top[12]),what:'('+top[13].toLowerCase()+', '+(top[11]==='OZONE'?'ozone':top[11])+')',station:a+', '+st,km:n.d,t:t,link:'https://www.airnow.gov/'}})}},
  /* TfL JamCams: the nearest camera reporting available, and its still; the still's own Last-Modified is the capture time */
  'tfl-jamcams':{pid:'tfl',name:'TfL',every:3,radius:2,cc:['gb'],noun:'camera',area:'London',eg:'traffic camera, London',
    get:function(p,s){return call('tfl','https://api.tfl.gov.uk/Place?lat='+r2(p.lat)+'&lon='+r2(p.lon)+'&radius=2000&type=JamCam',s).then(function(d){
@@ -314,7 +317,7 @@ var ROUTES={
          var pos=g('pos'),v=+g('ParameterValue'),tm=g('Time'),k=g('ParameterName');if(!pos||!isFinite(v)||g('ParameterValue')==='NaN')return;
          var o=st[pos]=st[pos]||{lat:+pos.split(/\s+/)[0],lon:+pos.split(/\s+/)[1]};if(!o[k]||o[k].t<tm)o[k]={v:v,t:tm}});
        var n=near(Object.keys(st).map(function(k){return st[k]}).filter(function(o){return o.t2m}),p,function(o){return o.lat},function(o){return o.lon})[0];if(!n||n.d>40)return null;var o=n.x;
-       return{value:num(o.t2m.v)+' °C'+(o.ws_10min?', wind '+num(o.ws_10min.v)+' m/s':''),what:'',station:'FMI weather station',km:n.d,t:o.t2m.t,link:'https://en.ilmatieteenlaitos.fi/'}})}}};
+       return{c:o.t2m.v,ws:o.ws_10min?o.ws_10min.v:null,value:num(o.t2m.v)+' °C'+(o.ws_10min?', wind '+num(o.ws_10min.v)+' m/s':''),what:'',station:'FMI weather station',km:n.d,t:o.t2m.t,link:'https://en.ilmatieteenlaitos.fi/'}})}}};
 
 /* Sensor.Community PM2.5 as one answer, robust to a broken sensor:
    - a reading at the sensor's ceiling (999.9 on an SDS011, 1000 on others) is a saturated or failed sensor, never air: dropped;
@@ -331,7 +334,7 @@ function airMedian(xs,p){xs=xs.filter(function(x){return x.v<PM_CEIL});if(!xs.le
   var n=vs.length,t=xs.map(function(x){return x.t}).sort().pop(),one=n===1?' citizen sensor':' citizen sensors';
   var what=n>=3?'PM2.5, the median of '+n+one+(dropped?' ('+dropped+' outlier'+(dropped===1?'':'s')+' left out)':''):
     'PM2.5 from '+n+one+(m>PM_EXTREME?', unconfirmed: no other sensor nearby agrees':'');
-  return{value:num(m)+' µg/m³',what:what,station:'within 5 km of '+p.name,km:null,t:t,link:'https://maps.sensor.community/',unconfirmed:n<3&&m>PM_EXTREME}}
+  return{v:m,n:n,dropped:dropped,value:num(m)+' µg/m³',what:what,station:'within 5 km of '+p.name,km:null,t:t,link:'https://maps.sensor.community/',unconfirmed:n<3&&m>PM_EXTREME}}
 /* no free browser source for air here: the plan, in words (the OpenAQ card carries official stations, free with a key) */
 function noAir(p){return['No free live source for air near '+p.name+'.','None that a browser can read reports there. Your agent can ask OpenAQ: it carries official stations, free with a key.']}
 /* ISO time h hours ago, to the minute (so a repeat ask within the minute is the same URL) */
@@ -340,13 +343,92 @@ function since(h){return new Date(Math.floor((now()-h*3600000)/60000)*60000).toI
 function quakes(f,p,t,link,h,scope){h=h||24;f=f.filter(function(x){return x.mag!=null&&isFinite(+x.mag)});
   var w='in the past '+h+' h within 250 km of '+p.name;
   /* none is an answer, but its time is when the catalogue was checked (checked:true), never a quake's */
-  if(!f.length)return{value:'No earthquakes',what:'recorded '+w+(scope?' ('+scope+')':''),station:'',km:null,t:t,link:link,checked:true};
+  if(!f.length)return{value:'No earthquakes',what:'recorded '+w+(scope?' ('+scope+')':''),station:'',km:null,t:t,link:link,checked:true,n:0,h:h,scope:scope||''};
   var big=f.slice().sort(function(a,b){return b.mag-a.mag})[0];
-  return{value:f.length+(f.length===1?' earthquake':' earthquakes'),what:w,station:(f.length===1?'':'largest ')+'M\u00a0'+(+big.mag).toFixed(1)+(big.place?', '+big.place:''),km:null,sep:true,t:t,link:link}}
+  return{value:f.length+(f.length===1?' earthquake':' earthquakes'),what:w,station:(f.length===1?'':'largest ')+'M\u00a0'+(+big.mag).toFixed(1)+(big.place?', '+big.place:''),km:null,sep:true,t:t,link:link,
+    n:f.length,h:h,scope:scope||'',big:{mag:+big.mag,place:big.place||'',t:big.t==null?null:new Date(typeof big.t==='number'||/^\d+$/.test(big.t)?+big.t:big.t).toISOString()}}}
 /* AirNow's local valid date (mm/dd/yy), hour and time-zone name as UTC; an unknown zone name gives no time (and no answer) */
 var TZ={EST:-5,EDT:-4,CST:-6,CDT:-5,MST:-7,MDT:-6,PST:-8,PDT:-7,AKST:-9,AKDT:-8,HST:-10,AST:-4};
 function anTime(c){if(!c)return null;var d=c[1].split('/'),hm=(c[2]||'').split(':'),z=c[3]==='ADT'?(c[8]==='AK'?-8:-3):TZ[c[3]];
   if(z==null||d.length!==3||hm.length<2)return null;var t=Date.UTC(2000+ +d[2],+d[0]-1,+d[1],+hm[0]-z,+hm[1]);return isNaN(t)?null:new Date(t).toISOString()}
+
+/* ---------- the free services, as the landing's screen 3 offers them: a short label, one everyday question and a topic each ----------
+   (every one is a route above: free, keyless and readable by a browser) */
+var SERVICES=[
+ ['usgs-water','USGS rivers','River level in Austin, Texas?','river'],['nws','NWS weather','Weather in Denver right now?','weather'],
+ ['noaa-tides','NOAA tides','Tide at Santa Monica?','tide'],['usgs-earthquakes','USGS quakes','Earthquakes near Anchorage, Alaska?','quake'],
+ ['airnow','AirNow air','Air quality in Denver?','air'],['tfl-jamcams','London cams','Traffic camera in London?','cam'],
+ ['fintraffic-weathercams','Finnish road cams','Road camera near Tampere?','cam'],['digitraffic-marine-ais','Finnish ships','Ships near Helsinki?','ship'],
+ ['uk-ea-flood','England rivers','River level in York?','river'],['pegelonline','German rivers','Rhine level at Cologne?','river'],
+ ['hubeau-hydrometrie','French rivers','River level in Paris?','river'],['sensor-community','Citizen air sensors','Air quality in Berlin?','air'],
+ ['emsc-seismicportal','EMSC quakes','Earthquakes near Athens, Greece?','quake'],['geonet-nz','GeoNet quakes','Earthquakes near Wellington?','quake'],
+ ['fmi-open-data','FMI weather','Weather in Helsinki?','weather']].filter(function(s){return ROUTES[s[0]]}).map(function(s){return{id:s[0],label:s[1],q:s[2],t:s[3]}});
+
+/* ---------- one ask, start to finish, in the words both pages show (plain text; the page escapes it) ----------
+   ask(cardId, text, parsed, onStart) -> Promise of
+     {kind:'answer', id (the card that answered), asked (the tapped route's name), name, r, p, why}
+     {kind:'msg', head, rest, again?, sug?, wait?}   wait: seconds before Try again may be tapped (busy, budget)
+   onStart(status line, place) is called just before the first request, so the page can say who it is asking. */
+var VIA={'geonet-nz':'New Zealand’s own catalogue lists smaller quakes','emsc-seismicportal':'Europe’s catalogue lists smaller quakes there',
+  'airnow':'no Sensor.Community sensor nearby gave a trustworthy reading','usgs-earthquakes':'GeoNet covers New Zealand only'};
+/* the world table, loaded once, before the first place is read (a failed load still answers, from the small table above) */
+function ready(){return window.IRLPlaces?window.IRLPlaces.load().then(function(){},function(){}):Promise.resolve()}
+function ask(id,q,parsed,onStart){return ready().then(function(){return ask1(id,q,parsed,onStart)})}
+function ask1(id,q,parsed,onStart){var R=ROUTES[id];if(!R)return Promise.resolve({kind:'msg',head:'No live route for this provider.'});
+  var p=place(q,parsed||{}),n=R.name;
+  /* a place this page can't put on the map: offer a big city it can, in the same state when the ask names one */
+  if(p.missing){var sc=parsed&&parsed.state&&place(parsed.state),sug=R.eg;
+    if(p.missing==='known'&&sc&&!sc.missing)sug=q.replace(p.heard,sc.name.split(',')[0]);
+    return Promise.resolve(p.missing==='known'?{kind:'msg',head:'Couldn’t place '+p.heard+'.',rest:'Add the country, e.g. “Munich, Germany”. Or try:',sug:sug}:{kind:'msg',head:'Add a place.',rest:'Try:',sug:sug})}
+  if(R.cc&&R.cc.indexOf(p.cc)<0)return Promise.resolve({kind:'msg',head:n+' covers '+R.area+' only.',rest:'Add a place there, e.g. “'+R.eg+'”.'});
+  if(onStart)onStart('Asking '+n+' near '+p.name+'…',p);
+  return get(id,p,null,{ask:q}).then(function(x){
+    if(!x.ok){
+      if(x.kind==='busy'||x.kind==='budget')return{kind:'msg',head:x.kind==='busy'?n+' is busy.':'Paused, to go easy on providers.',rest:'',again:true,wait:x.wait||60};
+      if(x.kind==='none'){if(x.plan)return{kind:'msg',head:x.plan[0],rest:x.plan[1]};
+        return{kind:'msg',head:R.noun==='ships'?'No ships reporting within '+(p.r||20)+' km of '+p.name+'.':'No '+n+' '+R.noun+' reporting near '+p.name+'.',rest:'Try a nearby city.'}}
+      return{kind:'msg',head:n+' didn’t answer.',rest:'It may be down.',again:true}}
+    var by=x.via&&ROUTES[x.via]?x.via:id;
+    return{kind:'answer',id:by,asked:n,name:ROUTES[by].name,r:x.r,p:p,why:by!==id?(VIA[by]||''):'',cached:x.cached}})}
+/* the answer as words: "<value>" and the rest ("flowing · Colorado River at Austin, TX"); the place once */
+function where(r,p){var city=p.name.split(',')[0];return r.km==null||(r.km<15&&r.station.toLowerCase().indexOf(city.toLowerCase())>-1)?r.station:r.station+', '+(r.km<1?'under 1':Math.round(r.km))+' km from '+p.name}
+function sentence(r,p){var w=where(r,p);return{value:r.value,rest:(r.what?' '+r.what:'')+(w?(r.km!=null||r.sep?' · ':' ')+w:'')}}
+/* the answer as a reply (the owner, 2026-10-30): a sentence an assistant would write, built only from the reading. One
+   template per service. A short bold verdict only where the data itself gives one (a count of quakes: yes or no; AirNow's own
+   category); otherwise the figure is the bold part. Then the units, the place, how fresh, and context the provider gives.
+   Never a verdict the data doesn't support (no "high" or "normal" without a reference the provider states).
+   reply(answer) -> [segments]: a string is plain text, {b:text} is bold. Plain text; the page escapes it. */
+function the(s){return /^(USGS|the |[a-z])/.test(s)||!/\b(River|Rv|Creek|Brook|Bayou|Canal|Fork|Branch|Lake|Reservoir|Slough|Run)\b/.test(String(s).split(/ (at|near|above|below) /)[0])?s:'the '+s}
+function fresh(t,verb){return (verb||'measured')+' '+ago(t)+' ago'}
+function far(r,p){return r.km!=null&&r.km>=15?' The station is '+Math.round(r.km)+' km from '+p.name+'.':''}
+function cap(s){s=String(s||'');return s.charAt(0).toUpperCase()+s.slice(1)}
+function plural(n,one,many){return n+' '+(n===1?one:many)}
+var REPLY={
+ 'usgs-water':function(r,p){var st=the(r.station);
+   if(r.code==='00065')return['The gauge on '+st+' reads ',{b:num(r.v,2)+' ft'},' (gage height), '+fresh(r.t)+'.'+far(r,p)];
+   return['Right now '+st+' is flowing at ',{b:num(r.v)+' ft³/s'},(r.lv?' (this gauge reports flow, not level)':'')+', '+fresh(r.t)+'.'+far(r,p)]},
+ 'nws':function(r,p){var d=r.desc?r.desc.toLowerCase():'';
+   if(r.c==null)return[{b:cap(d)},' at '+r.station+', '+fresh(r.t,'observed')+'.'+far(r,p)];
+   return['It’s ',{b:num(r.c)+' °C'},(d?' and '+d:'')+' at '+r.station+', '+fresh(r.t,'observed')+'.'+far(r,p)]},
+ 'fmi-open-data':function(r,p){return['It’s ',{b:num(r.c)+' °C'},(r.ws!=null?' with wind at '+num(r.ws)+' m/s':'')+' at the FMI weather station '+(r.km<1?'in':'near')+' '+p.name+', '+fresh(r.t,'observed')+'.'+far(r,p)]},
+ 'uk-ea-flood':function(r,p){return['The water level at '+r.station+' is ',{b:num(r.v,2)+' m'},', '+fresh(r.t)+'.'+far(r,p)]},
+ 'pegelonline':function(r,p){return['The water level at '+r.station+' reads ',{b:num(r.v)+' '+r.unit},' on the gauge, '+fresh(r.t)+'.'+far(r,p)]},
+ 'hubeau-hydrometrie':function(r,p){return['The water height at '+r.station+' is ',{b:num(r.v,2)+' m'},', '+fresh(r.t)+'.'+far(r,p)]},
+ 'noaa-tides':function(r,p){return['The water at '+r.station+' is ',{b:num(r.v,2)+' m'},' '+(r.gl?'on the IGLD datum':'above mean lower low water')+', '+fresh(r.t)+'.'+far(r,p)]},
+ 'quake':function(r,p){var w='within 250 km of '+p.name+' in the past '+r.h+' h';
+   if(!r.n)return[{b:'No earthquakes'},' recorded '+w+'.'+(r.scope?' ('+cap(r.scope)+'.)':'')];
+   var b=r.big||{},m='M'+(+b.mag).toFixed(1)+(b.place?', '+b.place:'')+(b.t?', '+ago(b.t)+' ago':'');
+   return[{b:'Yes, '+plural(r.n,'earthquake','earthquakes')},' '+w+(r.n===1?': ':'; the largest was ')+m+'.']},
+ 'airnow':function(r,p){var c=String(r.cat||'').toLowerCase();return c?['Air quality in '+r.station+' is ',{b:c},': AQI '+r.aqi+' ('+r.pol+'), '+fresh(r.t,'observed')+'.'+far(r,p)]:['Air quality in '+r.station+': ',{b:'AQI '+r.aqi},' ('+r.pol+'), '+fresh(r.t,'observed')+'.'+far(r,p)]},
+ 'sensor-community':function(r,p){var h=r.n>=3?'the median of '+r.n+' citizen sensors'+(r.dropped?' ('+plural(r.dropped,'outlier','outliers')+' left out)':''):'from '+plural(r.n,'citizen sensor','citizen sensors');
+   return['PM2.5 within 5 km of '+p.name+' is ',{b:num(r.v)+' µg/m³'},', '+h+', '+fresh(r.t)+'.'+(r.unconfirmed?' Unconfirmed: no other sensor nearby agrees.':'')]},
+ 'cam':function(r,p){return[{b:'The latest still'},' from the '+r.station+' camera, taken '+ago(r.t)+' ago.'+far(r,p)]},
+ 'digitraffic-marine-ais':function(r,p){return[{b:plural(r.n,'ship is','ships are')},' reporting '+r.station+'; the latest position came in '+ago(r.t)+' ago.']}};
+REPLY['usgs-earthquakes']=REPLY['emsc-seismicportal']=REPLY['geonet-nz']=REPLY.quake;REPLY['tfl-jamcams']=REPLY['fintraffic-weathercams']=REPLY.cam;
+function reply(x){var f=REPLY[x.id],s=sentence(x.r,x.p);return f?f(x.r,x.p):[{b:s.value},s.rest]}
+function ago(t){var m=Math.max(1,Math.round((now()-Date.parse(t))/60000));return m<90?m+' min':m<2880?Math.round(m/60)+' h':Math.round(m/1440)+' d'}
+function clock(t){var d=new Date(t),s;try{s=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}catch(e){s=''}
+  return new Date().toDateString()===d.toDateString()?s:s+', '+d.toLocaleDateString([],{month:'short',day:'numeric'})}
 
 function route(id){return ROUTES[id]||null}
 /* the regional catalogue answers a quake ask where it sees more than the global one: GeoNet for New Zealand, EMSC for Europe
@@ -370,5 +452,6 @@ function one(id,p,step,opt){var R=ROUTES[id];if(!R)return Promise.resolve({ok:fa
   return R.get(p,step,o).then(function(r){if(!r)return{ok:false,kind:'none'};var v={r:r,at:now()};mem[key]=v;save('r.'+key,v);return{ok:true,r:r,cached:false}},
     function(e){return e instanceof Busy?{ok:false,kind:e.kind,wait:e.wait}:{ok:false,kind:'down'}})}
 window.IRLLive={route:route,place:place,get:get,blocked:blocked,regional:regional,airMedian:airMedian,ids:Object.keys(ROUTES),
+  services:SERVICES,ask:ask,ready:ready,sentence:sentence,reply:reply,ago:ago,clock:clock,
   reset:function(){next={};block={};mem={};try{Object.keys(ST||{}).forEach(function(k){if(k.indexOf('irlpls.live.')===0)ST.removeItem(k)})}catch(e){}}};
 })();

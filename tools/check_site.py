@@ -3,9 +3,11 @@
     python3 tools/check_site.py site                    # a local `python3 build.py --public` output
     python3 tools/check_site.py https://irlpls.com      # the live site (GET only, ~100 requests)
 
-Crawls every page reachable from / and sitemap.xml, following href/src on the same site. Fails (exit 1) on:
-a broken internal link, a prototype or preview-only file (pitch/, headlines.html, fb.js), or a preview host or
-local path in any text file. Stdlib only.
+Crawls every page reachable from / and sitemap.xml, following href/src on the same site, plus asset paths written as
+strings in scripts and styles (an <img src> built in JS, a url() in CSS). Fails (exit 1) on: a broken internal link or
+asset, a reference into a private-only folder (media/live/: the private refresh job's gitignored snapshots), a
+prototype or preview-only file (pitch/, headlines.html, fb.js), or a preview host or local path in any text file.
+Stdlib only.
 """
 import html.parser
 import pathlib
@@ -18,7 +20,16 @@ import urllib.request
 FORBIDDEN_RX = re.compile(r"(^|/)(pitch/|headlines\.html$|_*fb\.js$|(portal|decisions|board)(\.html|/)?$)")
 LEAK_RX = re.compile(r"\b100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.\d{1,3}\.\d{1,3}\b|\.ts\.net\b|//(localhost|127\.0\.0\.1)\b"
                      r"|(?<![\w.-])(?:/Users/[A-Za-z]|/home/[a-z]|/private/tmp/)")
+# a site-local asset named in a script or style: quoted or in url(), relative or root-relative, never with a scheme
+ASSET_RX = re.compile(r"""(?:["'`]|url\()((?:\.{0,2}/)?(?:[\w.-]+/)*[\w-][\w.-]*\.(?:jpe?g|png|gif|webp|avif|svg|mp4|webm|mov|json|js|css|woff2?))(?=["'`)?#])""")
+PRIVATE_RX = re.compile(r"(^|/)media/live/")  # gitignored, private refresh job output
 TEXT = (".html", ".js", ".css", ".json", ".txt", ".md", ".xml", ".svg", "")
+
+
+def asset_tail(text, at):
+    """A quoted path that is only the tail of another URL ('…'+B+'/x.json') or a suffix test (endsWith('x.json')), not an asset."""
+    before = text[max(0, at - 12):at].rstrip()
+    return before.endswith("+") or re.search(r"(endsWith|includes|indexOf|test)\($", before) is not None
 
 
 class Links(html.parser.HTMLParser):
@@ -89,11 +100,16 @@ def main(argv):
         text = body.decode("utf-8", errors="replace")
         if pathlib.PurePosixPath(path).suffix in TEXT:
             problems += [f"{path}: leak {m.group(0)}" for m in LEAK_RX.finditer(text)]
-        if not (path.endswith((".html", "/")) or "." not in path.rsplit("/", 1)[-1]):
-            continue
-        p = Links()
-        p.feed(text)
-        for v in p.found:
+        page = path.endswith((".html", "/")) or "." not in path.rsplit("/", 1)[-1]
+        found = []
+        if page or path.endswith((".js", ".css")):
+            found = [m.group(1) for m in ASSET_RX.finditer(text) if not asset_tail(text, m.start())]
+            problems += [f"{path}: references private-only {v}" for v in found if PRIVATE_RX.search(v)]
+        if page:
+            p = Links()
+            p.feed(text)
+            found += p.found
+        for v in found:
             u = urllib.parse.urlparse(urllib.parse.urljoin("https://x" + path, v.strip()))
             if u.scheme not in ("http", "https") or (u.netloc not in ("x", host) and not (host and u.netloc == "www." + host)):
                 continue

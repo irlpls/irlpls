@@ -123,7 +123,7 @@ def test_find_strip_order_and_mark(site):
     land = page(site, "index.html")   # the landing's line is the last thing in its footer
     if 'class="publ"' in land:
         f = land[land.index('<footer class="site-foot">'):]
-        assert f.index('class="publ"') > f.index("llms.txt") and land.index('class="publ"') > land.index('id="try"')
+        assert f.index('class="publ"') > f.index('class="fm"') and land.index('class="publ"') > land.index('id="try"')
     assert re.search(r'<span class="nm">ProxyPics<span class="pmk">', h)
     pub = json.loads(page(site, "published.json"))
     assert set(pub["cards"]) == {"proxypics", "getterdone", "skyfi"} and "domains" not in pub
