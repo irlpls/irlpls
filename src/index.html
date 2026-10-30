@@ -702,17 +702,28 @@ $('svc').innerHTML=S.map(function(s){return '<button class="sv" type="button" da
 /* before any pick or typing: three asks that work, one tap each; after: what the picked service covers */
 var EGS=[['Austin river','River level in Austin, Texas?','usgs-water'],['Denver weather','Weather in Denver right now?','nws'],['Tokyo quakes','Earthquakes near Tokyo, Japan?','usgs-earthquakes']],touched=false;
 function byId(id){return SA.filter(function(s){return s.id===id})[0]}
+/* hs: where the typed ask goes right now (a service, or 'plan': no browser route, Go shows your agent's call); null: the picked pill */
+var hs=null,hsT=0,shown=false;  /* shown: an answer is on screen (its line names the browser; the hint then doesn't) */
 function hint(){if(!touched){$('hint').innerHTML='Try: '+EGS.map(function(x,i){return '<button type="button" class="eg" data-i="'+i+'">'+E(x[0])+'</button>'}).join('<i aria-hidden="true">·</i>');
     [].forEach.call($('hint').querySelectorAll('.eg'),function(b){b.onclick=function(){var x=EGS[+b.getAttribute('data-i')];touched=true;pick(byId(x[2])||sel,false);qa.value=x[1];fit();go()}});return}
-  $('hint').innerHTML='Covers '+E(cov(sel))+'. Go asks <b>'+E(L.route(sel.id).name)+'</b> straight from your browser.'}
-function pick(s,fill){sel=s;[].forEach.call($('svc').querySelectorAll('.sv'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-id')===s.id))});
+  var s=qa.value.trim()?hs||sel:sel;
+  $('hint').innerHTML=s==='plan'?'Go shows the call your agent would make.':'Covers '+E(cov(s))+'.'+(shown?'':' Go asks <b>'+E(L.route(s.id).name)+'</b> straight from your browser.')}
+function pick(s,fill){sel=s;if(fill){hs=null;shown=false}[].forEach.call($('svc').querySelectorAll('.sv'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-id')===s.id))});
   qa.placeholder=s.q;hint();if(fill){qa.value=s.q;fit()}}
 [].forEach.call($('svc').querySelectorAll('.sv'),function(b){b.onclick=function(){touched=true;pick(byId(b.getAttribute('data-id')),true);clearInterval(tick);$('out').innerHTML='';
   qa.focus({preventScroll:true});try{qa.setSelectionRange(qa.value.length,qa.value.length)}catch(e){}}});
 /* the field grows with a long question instead of hiding most of it; Enter asks (the form submits on a phone's Go), it never adds a line */
 function fit(){qa.style.height='auto';qa.style.height=qa.scrollHeight+'px';$('ask').classList.toggle('tall',qa.scrollHeight>48)}
 qa.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();go()}});
-qa.addEventListener('input',function(){if(!touched){touched=true;hint()}if(/\n/.test(this.value))this.value=this.value.replace(/\s*\n\s*/g,' ');fit()});
+qa.addEventListener('input',function(){if(!touched){touched=true;hint()}if(shown){shown=false;hint()}if(/\n/.test(this.value))this.value=this.value.replace(/\s*\n\s*/g,' ');fit();
+  clearTimeout(hsT);if(!qa.value.trim()){hs=null;hint();return}hsT=setTimeout(rehint,250)});
+/* the hint follows the typed ask's routing (the same decision go1 makes, nothing fetched or sent) */
+function rehint(){var q=qa.value.trim();if(!q){hs=null;hint();return}
+  L.ready().then(function(){if(qa.value.trim()!==q)return;hs=routeOf(q);hint()})}
+function routeOf(q){var r=IRLMatch.parse(q,U.cards);if(r.targets_person||NEAR.test(q))return null;
+  var p=L.place(q,r),t=topic(q),f=function(k){return S.filter(function(x){return x.t===k})[0]||sel};
+  if(p.missing==='known')return t&&t!==sel.t?f(t):sel;
+  return best(q,r,p)||(t&&p.missing?(t===sel.t?sel:f(t)):'plan')}
 /* asks about a person (the matcher's own check, plus asks about someone close) are refused, as everywhere on the site */
 var NEAR=/\b(my|our)\s+(neighbou?rs?|ex|wife|husband|partner|girlfriend|boyfriend|spouse|boss|landlord|tenant|roommate|flatmate|co-?worker|colleague)\b|\b(where|what)\s+is\s+(he|she)\b|\bwho\s+lives\b/i;
 /* routing, within the examples: an ask on a topic one of them reads (rivers, weather, tides, quakes, air, cameras) goes to
@@ -729,7 +740,7 @@ var CV='<svg class="cv" viewBox="0 0 16 16" width="12" height="12" fill="none" s
 var RT='<svg class="cv" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg>';
 function nm(c){return c.name.replace(/\s*\(.*\)/,'')}
 var seq=0;
-function go(){var q=qa.value.trim();if(!q){qa.value=sel.q;fit();q=sel.q}clearInterval(tick);var n=++seq;
+function go(){var q=qa.value.trim();if(!q){qa.value=sel.q;fit();q=sel.q}clearInterval(tick);var n=++seq;if(shown){shown=false;hint()}
   shell(q);lstat(tx('Reading your ask…'));impl('<p class="rt">Reading your ask in this browser. Nothing has been sent.</p>',tx('Reading your ask…'));
   L.ready().then(function(){if(n===seq)go1(q)})}
 function go1(q){var r=IRLMatch.parse(q,U.cards);
@@ -737,10 +748,10 @@ function go1(q){var r=IRLMatch.parse(q,U.cards);
     impl('<p class="rt">Nothing was called: irlpls refuses asks that watch or follow a person.</p>',tx('Nothing called'));return}
   var p=L.place(q,r),t=topic(q);
   /* a place nobody can find: IRLLive.ask says so, with a city it can place (nothing is fetched) */
-  if(p.missing==='known'){var s0=t&&t!==sel.t?(S.filter(function(s){return s.t===t})[0]||sel):sel;if(s0!==sel)pick(s0,false);live(s0.id,q,r);return}
-  var s=best(q,r,p);if(s){if(s!==sel)pick(s,false);live(s.id,q,r);return}
+  if(p.missing==='known'){var s0=t&&t!==sel.t?(S.filter(function(s){return s.t===t})[0]||sel):sel;hs=s0;if(s0!==sel)pick(s0,false);else hint();live(s0.id,q,r);return}
+  var s=best(q,r,p);if(s){hs=s;if(s!==sel)pick(s,false);else hint();live(s.id,q,r);return}
   /* a live topic with no place: the topic's example asks for one */
-  if(t&&p.missing){var s1=t===sel.t?sel:(S.filter(function(x){return x.t===t})[0]||sel);if(s1!==sel)pick(s1,false);live(s1.id,q,r);return}
+  if(t&&p.missing){var s1=t===sel.t?sel:(S.filter(function(x){return x.t===t})[0]||sel);hs=s1;if(s1!==sel)pick(s1,false);else hint();live(s1.id,q,r);return}
   plan(q,r,p,t)}
 /* the frame: the chat on the left (or first), what irlpls did on the right (or folded below) */
 function shell(q){$('out').innerHTML='<article class="duo glass" id="duo" aria-label="Your ask, and what irlpls did">'+
@@ -757,12 +768,12 @@ function host(u){return u.replace(/^https?:\/\//,'').replace(/\?.*$/,'')}
 var LOOK=/monitoring-locations\/items\/|\/mdapi\/|\/points\/|\/stations(\.json)?(\?|$)|\/Place\?/;
 /* the calls this page made for the ask, as they run: the main one (the reading, not a name or station lookup) in the
    highlighted pane, every one in a short list with its status and time */
-function calls(cs,name,id){if(!cs||!cs.length)return;var main=cs.filter(function(c){return !LOOK.test(c.url)}).pop()||cs[cs.length-1];
+function calls(cs,name,id,cache){if(!cs||!cs.length)return;var main=cs.filter(function(c){return !LOOK.test(c.url)}).pop()||cs[cs.length-1];
   var st=function(c){return c.status===0?'running…':c.status<0?'failed':c.status+' · '+c.ms+' ms'};
   var h='<p class="rt">Your agent asks irlpls once; irlpls matched <b>'+E(name)+'</b> and called it, here straight from this browser. No key, no irlpls server.</p>';
-  if(window.IRLCall)h+=IRLCall.html({provider:name,readiness:{state:'ready_now'},price:'Free',free:true,text:curQ,rc:{method:main.method,url:main.url,headers:{},auth:{},safe_to_run_without_approval:true},kicker:'What irlpls sent for you',ran:{status:main.status,ms:main.ms},note:''});
+  if(window.IRLCall)h+=IRLCall.html({provider:name,readiness:{state:'ready_now'},price:'Free',free:true,text:curQ,rc:{method:main.method,url:main.url,headers:{},auth:{},safe_to_run_without_approval:true},kicker:'What irlpls sent for you',ran:{status:main.status,ms:main.ms},cache:cache||'',note:''});
   if(cs.length>1)h+='<ul class="cls" aria-label="Every call">'+cs.map(function(c){return '<li><span>'+E(c.method+' '+host(c.url))+'</span><b class="'+(c.status>=200&&c.status<300?'ok':'')+'">'+E(st(c))+'</b></li>'}).join('')+'</ul>';
-  impl(h,'<span class="m">'+E(main.method)+'</span><span class="u">'+E(host(main.url))+'</span><span class="s'+(main.status>=200&&main.status<300?' ok':'')+'">'+E(st(main))+'</span>');
+  impl(h,'<span class="m">'+E(main.method)+'</span><span class="u">'+E(host(main.url))+'</span><span class="s'+(main.status>=200&&main.status<300?' ok':'')+'">'+E(st(main))+'</span>'+(cache?'<span class="s">cached</span>':''));
   if(window.IRLCall)IRLCall.bind($('rb'))}
 function msg(b,rest,o){o=o||{};var t=$('lvt');if(!t)return;
   t.innerHTML='<p class="lvm'+(o.stop?' stop':'')+'"><b>'+E(b)+'</b>'+(rest?' '+E(rest):'')+'</p>'+(o.again?'<button class="again" id="again" type="button">Try again</button>':'')+
@@ -779,6 +790,7 @@ function live(id,q,r){shell(q);curQ=q;var t=$('lvt'),R=L.route(id),slow=0;
    function(cs){if($('lvt')===t)calls(cs,R.name,id)}).then(function(x){
     clearTimeout(slow);if($('lvt')!==t)return;
     if(x.calls&&x.calls.length)calls(x.calls,x.name||R.name,x.id||id);
+    else if(x.kind==='answer'&&x.cached&&x.orig&&x.orig.length)calls(x.orig,x.name||R.name,x.id||id,L.cacheNote(x));
     else if(x.kind==='answer')impl('<p class="rt"><b>'+E(x.name)+'</b>: this browser asked it moments ago, and it can’t have a newer reading yet (it updates every '+L.route(x.id).every+' min). No new call made.</p>',tx('Cached · no new call'));
     else impl('<p class="rt">Nothing was called: '+E(x.head.replace(/\.$/,''))+'.</p>',tx('Nothing called'));
     /* no free browser source here, but a provider can answer through an agent: its ready call, never a dead end */
@@ -794,6 +806,7 @@ function live(id,q,r){shell(q);curQ=q;var t=$('lvt'),R=L.route(id),slow=0;
       (rd.photo?'<figure class="att"><div class="media"><img src="'+E(rd.photo)+'" alt="'+E(rd.alt||'')+'"></div></figure>':'')+
       '<div class="cites"><button class="cite" id="lvc" type="button" aria-expanded="false" aria-controls="lvp" title="'+E((rd.checked?'Checked at ':'Reading at ')+L.clock(rd.t))+'" aria-label="'+E('Source: '+x.name+', '+(rd.checked?'checked at ':'reading at ')+L.clock(rd.t)+', '+age+'. '+(c?U.tally(c)+', '+U.who(c)+'. ':'')+'Show provenance')+'"><span class="chip">'+dots+'<span class="nm"><b>'+n+'</b> · '+E(age)+'</span>'+CV+'</span></button></div>'+
       '<p class="via">'+(x.why?n+' answered, not '+E(x.asked)+': '+E(x.why)+'. ':'')+'Fetched by your browser, straight from '+n+'.</p>';
+    shown=true;hint();
     $('lvp').innerHTML=U.pane(c,c?nm(c):x.name,x.id);$('lvp').setAttribute('aria-label','Provenance: '+x.name);
     $('lvc').onclick=function(){sheet(this.getAttribute('aria-expanded')!=='true')};
     $('lvp').addEventListener('click',function(e){if(e.target.closest('.px,.pxb'))sheet(false)});
@@ -804,7 +817,7 @@ var CAT=null,catP=null;
 /* a street address in the ask fills the call's {STREET_ADDRESS} (the same pattern as Find data, src/app.js) */
 var STREET=/\b\d{1,6}[A-Za-z]?(?:-\d{1,5})?\s+(?:[NSEW]\.?\s+)?[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}?\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Way|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Ter|Terrace|Cir|Circle|Sq|Square|Trl|Trail|Row|Alley|Broadway)\b\.?[^]*$/i;
 function catalog(){return catP||(catP=fetch('catalog.json').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(d){CAT=d.providers||{};return CAT},function(){catP=null;return CAT={}}))}
-function plan(q,r,p,t,prefer,head0){shell(q);var t0=$('lvt');
+function plan(q,r,p,t,prefer,head0){shell(q);var t0=$('lvt');if(qa.value.trim()){hs='plan';hint()}
   var list=U.cards.map(function(c){return{c:c,s:IRLMatch.score(c,r)}}).filter(function(x){return x.s.total>0}).sort(IRLMatch.compare);
   var top=prefer&&U.card(prefer)?{c:U.card(prefer)}:list[0];
   if(!top){msg(p.missing?'No provider matches this.':'No free live source covers '+p.name+'.',p.missing?'Try a broader ask.':'No provider in the registry states coverage there yet.');
@@ -843,7 +856,7 @@ if('IntersectionObserver' in window)new IntersectionObserver(function(es,o){if(e
 qa.addEventListener('focus',function(){L.ready()},{once:true});
 /* ?svc=<id> picks a service (any free route, not only the examples), ?q= fills the question, &go=1 asks at once (links from Find data and the docs) */
 var P=new URLSearchParams(location.search),s0=byId(P.get('svc'));
-if(s0)touched=true;pick(s0||sel,true);if(P.get('q')){qa.value=P.get('q').slice(0,200);fit()}
+if(s0)touched=true;pick(s0||sel,true);if(P.get('q')){qa.value=P.get('q').slice(0,200);fit();rehint()}
 /* tests and links: choose any free route as the picked service */
 window.IRLTry={use:function(id){var s=byId(id);if(s){touched=true;pick(s,false)}return !!s}};
 addEventListener('resize',fit);

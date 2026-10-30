@@ -165,7 +165,13 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
         var ac=byId(x.id)||c,seg=LV.reply(x),age=(x.r.checked?'checked ':'')+LV.ago(x.r.t)+' ago';  /* the same reply as the landing's screen 3 */
         box.innerHTML='<p class="lva">'+seg.map(function(s){return typeof s==='string'?E(s):'<b>'+E(s.b)+'</b>'}).join('')+'</p>'+(x.r.photo?'<img class="lvi" src="'+E(x.r.photo)+'" alt="'+E(x.r.alt||'')+'">':'')+
           '<p class="lvsrc">'+dots(ac).replace('role="img"','aria-hidden="true"')+'<span><b>'+E(x.name)+'</b> · '+E(age)+'</span></p>'+
-          '<p class="via">'+(x.why?E(x.name)+' answered, not '+E(x.asked)+': '+E(x.why)+'. ':'')+'Fetched by your browser, straight from '+E(x.name)+'.</p>'})}
+          '<p class="via">'+(x.why?E(x.name)+' answered, not '+E(x.asked)+': '+E(x.why)+'. ':'')+'Fetched by your browser, straight from '+E(x.name)+'.</p>';
+        /* the two layers, always (the owner, 2026-10-30): the irlpls call and plan, then the provider call with its own status;
+           a reading from this browser's cache keeps its original call, with the cache as a small note, never in its place */
+        var C=window.IRLCall,cs=x.calls&&x.calls.length?x.calls:(x.cached&&x.orig)||[],m=LV.mainCall(cs);
+        if(C&&m){var cp=document.createElement('div');cp.className='bcp';
+          cp.innerHTML=C.html({provider:x.name,readiness:{state:'ready_now'},price:'Free',free:true,text:text,rc:{method:m.method,url:m.url,headers:{},auth:{},safe_to_run_without_approval:true},
+            kicker:'What irlpls sent for you',ran:{status:m.status,ms:m.ms},cache:LV.cacheNote(x),note:''});box.appendChild(cp);C.bind(cp)}})}
     /* what irlpls won't do, or can't, said plainly above the matches (the landing said it before; Find data is where asks go now) */
     var notes=document.getElementById('notes');
     function noteFor(text,req,top){if(!notes)return false;var h='';

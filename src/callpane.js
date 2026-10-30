@@ -55,6 +55,7 @@ var CSS='.ircp{margin:10px 0 0;padding:12px 12px 6px;border-radius:20px;backgrou
  '.ircp-x svg{flex:none;transition:transform .2s ease}.ircp-x[aria-expanded="true"] svg{transform:rotate(90deg)}'+
  '.ircp-x:focus-visible{outline:2px solid var(--pol,#1b5fd6);outline-offset:2px;border-radius:8px}'+
  '.ircp-bb[hidden]{display:none}'+
+ '.ircp-c{margin:-2px 0 6px;font:500 12px/1.35 var(--sans,Inter,system-ui,sans-serif);color:var(--fg3,#5b6574)}'+
  '.ircp-q{margin:0;padding:12px 0;font:500 13px/1.4 var(--sans,Inter,system-ui,sans-serif);color:var(--fg3,#5b6574)}';
 function css(){if(document.getElementById('ircp-css'))return;var s=document.createElement('style');s.id='ircp-css';s.textContent=CSS;(document.head||document.documentElement).appendChild(s)}
 
@@ -152,7 +153,7 @@ function html(o){css();o=o||{};var rd=o.readiness||{},lv=rd.level||rd.state,pill
   /* layer 2: what irlpls sends the provider for you (the wrapper's translation), folded to one line until opened */
   var c=filled(o),V={http:vHttp(c),curl:vCurl(c),python:vPy(c)},id='ircp'+(++n),code=V.http.text(),ok=o.ran&&o.ran.status>=200&&o.ran.status<300;
   h+='<div class="ircp-b"><button type="button" class="ircp-x" aria-expanded="'+(o.open?'true':'false')+'" aria-controls="'+id+'-b"><span class="xl">'+E(o.kicker||'What irlpls sends for you')+'</span>'+
-    '<span class="xu"><span class="m">'+E(c.method)+'</span>'+E(host(c.url))+'</span>'+(o.ran?'<span class="ircp-st'+(ok?' ok':'')+'">'+E(o.ran.status>0?o.ran.status+' · '+o.ran.ms+' ms':o.ran.status<0?'failed':'running…')+'</span>':'')+CHEV+'</button>'+
+    '<span class="xu"><span class="m">'+E(c.method)+'</span>'+E(host(c.url))+'</span>'+(o.ran?'<span class="ircp-st'+(ok?' ok':'')+'">'+E(o.ran.status>0?o.ran.status+' · '+o.ran.ms+' ms':o.ran.status<0?'failed':'running…')+'</span>':'')+CHEV+'</button>'+(o.cache?'<p class="ircp-c">'+E(o.cache)+'</p>':'')+
     '<div class="ircp-bb" id="'+id+'-b" data-grp'+(o.open?'':' hidden')+'>'+tabs(id,[['http','HTTP'],['curl','curl'],['python','Python']],'Copy the HTTP call','ircp-cp');
   ['http','curl','python'].forEach(function(v,i){h+='<pre class="ircp-code'+(i?'':' call')+'" id="'+id+'-'+v+'" role="tabpanel" aria-labelledby="'+id+'-t'+v+'" tabindex="0" data-copy="'+E(V[v].text())+'"'+(i?' hidden':'')+' aria-label="The provider call">'+V[v].html()+'</pre>'});
   var lines=[];

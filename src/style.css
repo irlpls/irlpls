@@ -75,6 +75,7 @@ html{scroll-padding-top:68px}
 .blv:empty{display:none}
 .blv{margin:10px 0 0;padding:10px 12px;border-radius:14px;background:#fff;border:1px solid var(--line)}
 .blv p{margin:0}
+.blv .bcp{margin-top:10px;padding-top:4px;border-top:1px solid var(--line)}.blv .bcp .ircp-c{margin:-2px 0 6px}.blv .bcp .ircp{margin:0;padding:8px 0 0;border:0;border-radius:0;background:none;box-shadow:none}
 .blv .lvs{font:500 14px/1.4 var(--sans);color:var(--fg3)}
 .blv .lva,.blv .lvm{font:400 16px/1.45 var(--sans);color:var(--fg)}.blv .lva b,.blv .lvm b{font-weight:600}
 .blv .lvi{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;margin:8px 0 0;border-radius:10px;background:var(--card2)}

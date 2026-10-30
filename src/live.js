@@ -394,7 +394,13 @@ function ask1(id,q,parsed,onStart){var R=ROUTES[id];if(!R)return Promise.resolve
         return{kind:'msg',head:R.noun==='ships'?'No ships reporting within '+(p.r||20)+' km of '+p.name+'.':'No '+n+' '+R.noun+' reporting near '+p.name+'.',rest:'Try a nearby city.'}}
       return{kind:'msg',head:n+' didn’t answer.',rest:'It may be down.',again:true}}
     var by=x.via&&ROUTES[x.via]?x.via:id;
-    return{kind:'answer',id:by,asked:n,name:ROUTES[by].name,r:x.r,p:p,why:by!==id?(VIA[by]||''):'',cached:x.cached}})}
+    return{kind:'answer',id:by,asked:n,name:ROUTES[by].name,r:x.r,p:p,why:by!==id?(VIA[by]||''):'',cached:x.cached,orig:x.orig||null,at:x.at||null}})}
+/* the call that read the answer (not a name or station lookup) */
+var LOOKUP=/monitoring-locations\/items\/|\/mdapi\/|\/points\/|\/stations(\.json)?(\?|$)|\/Place\?/;
+function mainCall(cs){return cs&&cs.length?cs.filter(function(c){return !LOOKUP.test(c.url)}).pop()||cs[cs.length-1]:null}
+/* a cached answer, said as a small note beside its original call: "Served from this browser’s cache, 40 s old; TfL updates every 3 min." */
+function cacheNote(x){if(!x||!x.cached)return '';var R=ROUTES[x.id]||{},s=Math.max(1,Math.round((now()-(x.at||now()))/1000));
+  return 'Served from this browser’s cache, '+(s<90?s+' s':Math.round(s/60)+' min')+' old; '+(R.name||x.name)+' updates every '+R.every+' min.'}
 /* the answer as words: "<value>" and the rest ("flowing · Colorado River at Austin, TX"); the place once */
 function where(r,p){var city=p.name.split(',')[0];return r.km==null||(r.km<15&&r.station.toLowerCase().indexOf(city.toLowerCase())>-1)?r.station:r.station+', '+(r.km<1?'under 1':Math.round(r.km))+' km from '+p.name}
 function sentence(r,p){var w=where(r,p);return{value:r.value,rest:(r.what?' '+r.what:'')+(w?(r.km!=null||r.sep?' · ':' ')+w:'')}}
@@ -452,11 +458,14 @@ function get(id,p,step,opt){var to=regional(id,p);
 function one(id,p,step,opt){var R=ROUTES[id];if(!R)return Promise.resolve({ok:false,kind:'none'});
   var o={level:LEVEL.test(String((opt||{}).ask||''))};
   var key=id+'|'+p.lat.toFixed(3)+','+p.lon.toFixed(3)+(o.level&&id==='usgs-water'?'|level':''),c=mem[key]||load('r.'+key,null);
-  if(c&&c.r&&now()<Math.max(Date.parse(c.r.t)+R.every*60000,c.at+MIN))return Promise.resolve({ok:true,r:c.r,cached:true});
+  /* a cached reading keeps the calls that fetched it (method, url, original status and time), so a page can still show them */
+  if(c&&c.r&&now()<Math.max(Date.parse(c.r.t)+R.every*60000,c.at+MIN))return Promise.resolve({ok:true,r:c.r,cached:true,orig:c.calls||null,at:c.at});
   var w=blocked(id);if(w)return Promise.resolve({ok:false,kind:'busy',wait:w});
-  return R.get(p,step,o).then(function(r){if(!r)return{ok:false,kind:'none'};var v={r:r,at:now()};mem[key]=v;save('r.'+key,v);return{ok:true,r:r,cached:false}},
+  var lg=LOG,i0=lg?lg.length:0;
+  return R.get(p,step,o).then(function(r){if(!r)return{ok:false,kind:'none'};
+    var v={r:r,at:now(),calls:lg?lg.slice(i0).map(function(x){return{method:x.method,url:x.url,status:x.status,ms:x.ms}}):null};mem[key]=v;save('r.'+key,v);return{ok:true,r:r,cached:false}},
     function(e){return e instanceof Busy?{ok:false,kind:e.kind,wait:e.wait}:{ok:false,kind:'down'}})}
 window.IRLLive={route:route,place:place,get:get,blocked:blocked,regional:regional,airMedian:airMedian,ids:Object.keys(ROUTES),
-  services:SERVICES,ask:ask,ready:ready,sentence:sentence,reply:reply,ago:ago,clock:clock,
+  services:SERVICES,ask:ask,ready:ready,cacheNote:cacheNote,mainCall:mainCall,sentence:sentence,reply:reply,ago:ago,clock:clock,
   reset:function(){next={};block={};mem={};try{Object.keys(ST||{}).forEach(function(k){if(k.indexOf('irlpls.live.')===0)ST.removeItem(k)})}catch(e){}}};
 })();

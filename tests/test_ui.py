@@ -719,6 +719,71 @@ def test_long_asks_wrap_inside_the_field(browser, base):
     assert p.input_value("#q") == q
 
 
+def test_hint_follows_the_typed_asks_routing(browser, base):
+    """The hint names where the CURRENT ask goes, not the picked pill: another service, the agent's call, or the pill when empty."""
+    p = landing(browser, base, q="?still=1#try")
+    p.click('#svc .sv[data-id="usgs-water"]')
+    assert "Go asks USGS" in p.inner_text("#hint")
+    p.fill("#q", "")
+    p.type("#q", "storefront photo of 12 Elm St, Austin, Texas", delay=5)
+    p.wait_for_function("document.getElementById('hint').innerText.includes('call your agent would make')", timeout=5000)
+    assert "straight from your browser" not in p.inner_text("#hint")
+    p.fill("#q", "")
+    p.type("#q", "Weather in Denver right now?", delay=5)
+    p.wait_for_function("/Go asks .*straight from your browser/.test(document.getElementById('hint').innerText) && !document.getElementById('hint').innerText.includes('USGS')", timeout=5000)
+    p.fill("#q", "")
+    p.dispatch_event("#q", "input")
+    p.wait_for_function("document.getElementById('hint').innerText.includes('Go asks USGS')", timeout=5000)
+    p.type("#q", "storefront photo of 12 Elm St, Austin, Texas", delay=5)
+    p.press("#q", "Enter")
+    p.wait_for_selector("#lv .lvm")
+    assert "call your agent would make" in p.inner_text("#hint")
+
+
+def test_browser_phrase_shows_once_after_an_answer(browser, base):
+    """The owner (phone screenshot, 2026-10-30): 'straight from <provider>' sits under the answer; the hint keeps only the coverage."""
+    p = landing(browser, base, q="?still=1#try")
+    fake_usgs(p, [(200, usgs_iv(), {})])
+    try_(p, "usgs-water", "river, Austin, Texas")
+    p.wait_for_selector("#lv .ans")
+    assert "Fetched by your browser, straight from USGS." in p.inner_text("#lv .via")
+    assert p.inner_text("#hint").strip() == "Covers the US."
+    p.type("#q", "x", delay=5)  # typing again: the hint says where Go goes
+    assert "straight from your browser" in p.inner_text("#hint")
+
+
+def test_cached_answer_still_shows_both_layers(browser, base):
+    """The same ask twice: the second answer comes from this browser's cache, and the pane still shows the irlpls call and
+    plan (layer 1) and the provider call with its original status (layer 2), the cache only a small note on layer 2."""
+    p = landing(browser, base, q="?still=1#try")
+    seen = fake_usgs(p, [(200, usgs_iv(), {})])
+    for i in range(2):
+        try_(p, "usgs-water", "river, Austin, Texas")
+        p.wait_for_selector("#lv .ans")
+        p.wait_for_function("document.querySelector('#rb .ircp-b')", timeout=5000)
+        rb = p.inner_text("#rb")
+        assert "irlpls_request" in rb and "irlpls plans" in rb, rb
+        assert "WHAT IRLPLS SENT FOR YOU" in rb.upper() and "200 ·" in p.inner_text("#rb .ircp-x"), rb
+    assert len(seen) == 1, seen  # the second run made no new call
+    note = p.inner_text("#rb .ircp-b .ircp-c")
+    assert re.match(r"Served from this browser’s cache, \d+ s old; USGS updates every 15 min\.", note), note
+    assert "cached" in p.inner_text("#rl") and "no new call" not in p.inner_text("#rl").lower()
+    # Find data: the same, under its inline answer
+    f = page(browser)
+    seen = fake_usgs(f, [(200, usgs_iv(), {})])
+    f.goto(base + "/find.html?q=river%20level%20in%20Austin%2C%20Texas")
+    f.wait_for_selector("#brun")
+    f.press("#q", "Enter")
+    f.wait_for_selector("#blv .bcp .ircp-b", timeout=8000)
+    assert not f.locator("#blv .ircp-c").count()
+    f.wait_for_function("!document.getElementById('brun').disabled")
+    f.wait_for_timeout(2100)
+    f.click("#brun")
+    f.wait_for_selector("#blv .bcp .ircp-c", timeout=8000)
+    t = f.inner_text("#blv .bcp")
+    assert "irlpls_request" in t and "200 ·" in t and "Served from this browser’s cache" in t and len(seen) == 1, t
+
+
 def test_screen_three_ends_on_see_the_docs(browser, base):
     """The owner, 2026-10-30: the last call to action at the bottom of the landing reads 'See the docs' (docs.html)."""
     p = landing(browser, base, q="?still=1#try")
