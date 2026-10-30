@@ -140,7 +140,9 @@ html{scroll-padding-top:68px}
 .row .main{min-width:0;display:flex;flex-direction:column;gap:2px}
 .nm{font:600 16px/1.25 var(--head);letter-spacing:-.01em}
 .sub{font:500 13px/1.35 var(--sans);color:var(--fg3)}
-.proof{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;min-width:0;font:500 13px/1.3 var(--sans);color:var(--fg3)}
+/* the right column: the eight dots, then the tally under them on narrow screens, beside them on one line on a desktop:
+   the same layout on every row (the tally never wraps) */
+.proof{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0;font:500 13px/1.3 var(--sans);color:var(--fg3)}.proof .tl{white-space:nowrap}
 /* the landing's eight stage dots: green evidenced, blue claimed, an ink ring for a time only reported, a grey ring when not stated */
 .dots{display:inline-flex;gap:3px;flex:none;vertical-align:middle}.dots i{width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--dot)}
 .dots i.e{background:var(--live);box-shadow:none}.dots i.c{background:var(--pol);box-shadow:none}.dots i.r,.kd i.r{box-shadow:inset 0 0 0 1.5px var(--fg2)}
@@ -152,8 +154,8 @@ html{scroll-padding-top:68px}
 .stg-o span{font:600 14px var(--sans)}.stg-o b{font:500 13px var(--sans);color:var(--fg3)}.stg-o .claimed b{color:var(--pol)}.stg-o .evidenced b{color:var(--live)}
 .stg-o small{flex-basis:100%;font:500 12px var(--sans);color:var(--fg3)}
 @media(min-width:720px){
-  .row{grid-template-columns:minmax(0,1fr) 250px}
-  .proof{justify-content:flex-start}
+  .row{grid-template-columns:minmax(0,1fr) 270px}
+  .proof{flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:10px}
 }
 
 /* sheet: opaque and full screen, a page of its own */
@@ -295,7 +297,9 @@ button:focus-visible,a:focus-visible,summary:focus-visible,select:focus-visible{
   .tbl.c2 td:not(:first-child):before{display:none}
 }
 @media(min-width:960px){
-  .spec-wrap{grid-template-columns:220px minmax(0,1fr);column-gap:48px;padding-top:16px}
+  /* the contents and the text, one group centred on the page (every long document, as the standard); without contents, the text column centred */
+  .spec-wrap{grid-template-columns:220px minmax(0,760px);justify-content:center;column-gap:48px;padding-top:16px}
+  .spec-wrap.solo{grid-template-columns:minmax(0,760px)}.spec-wrap.solo .spec-head,.spec-wrap.solo .std{grid-column:1}
   .spec-head{grid-column:2}
   .toc{grid-column:1;grid-row:1 / span 2;align-self:start;position:sticky;top:68px;max-height:calc(100vh - 84px);overflow:auto;border:0;background:none;box-shadow:none}
   .toc summary{pointer-events:none;padding:0 10px;min-height:32px;font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--fg3)}

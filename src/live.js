@@ -135,7 +135,7 @@ function place(text,r){text=String(text||'');var t=' '+text.toLowerCase()+' ',i,
   return{missing:r.country_code==='us'?'state':'place'}}
 
 /* ---------- etiquette: spacing, budget, Retry-After, cache ---------- */
-var next={},block={},mem={},ST=null;
+var next={},block={},mem={},ST=null,LOG=null,ONC=null;
 try{ST=window.sessionStorage}catch(e){}
 function load(k,d){try{var v=ST&&ST.getItem('irlpls.live.'+k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{ST&&ST.setItem('irlpls.live.'+k,JSON.stringify(v))}catch(e){}}
@@ -152,11 +152,14 @@ function call(pid,url,step,how){
   return sleep(w).then(function(){
     var c=spent();if(c.length>=BUDGET)throw new Busy('budget',Math.ceil((c[0]+WINDOW-now())/1000));
     c.push(now());save('calls',c);if(step)step();
+    /* every request this page makes is logged for the ask that made it (screen 3 shows each call, its status and time) */
+    var rec={method:'GET',url:url,pid:pid,t0:now(),status:0,ms:0},lg=LOG,cb=ONC;if(lg){lg.push(rec);if(cb)cb(lg)}
     var o={headers:{Accept:how?'*/*':'application/json'}},ab='AbortController' in window?new AbortController():null,tm;
     if(ab){o.signal=ab.signal;tm=setTimeout(function(){ab.abort()},TIMEOUT)}
-    return fetch(url,o).then(function(res){clearTimeout(tm);
+    var end=function(s){rec.status=s;rec.ms=now()-rec.t0;if(lg&&cb)cb(lg)};
+    return fetch(url,o).then(function(res){clearTimeout(tm);end(res.status);
       if(res.status===429||res.status===503){var s=retryAfter(res.headers);block[pid]=now()+s*1000;save('block.'+pid,block[pid]);throw new Busy('busy',s)}
-      if(!res.ok)throw new Busy('down');return how?how(res):res.json()},function(e){clearTimeout(tm);throw e instanceof Busy?e:new Busy('down')})})}
+      if(!res.ok)throw new Busy('down');return how?how(res):res.json()},function(e){clearTimeout(tm);if(!rec.status)end(-1);throw e instanceof Busy?e:new Busy('down')})})}
 function text(res){return res.text()}
 function blocked(id){var R=ROUTES[id];if(!R)return 0;var b=Math.max(block[R.pid]||0,load('block.'+R.pid,0));return b>now()?Math.ceil((b-now())/1000):0}
 
@@ -336,7 +339,7 @@ function airMedian(xs,p){xs=xs.filter(function(x){return x.v<PM_CEIL});if(!xs.le
     'PM2.5 from '+n+one+(m>PM_EXTREME?', unconfirmed: no other sensor nearby agrees':'');
   return{v:m,n:n,dropped:dropped,value:num(m)+' µg/m³',what:what,station:'within 5 km of '+p.name,km:null,t:t,link:'https://maps.sensor.community/',unconfirmed:n<3&&m>PM_EXTREME}}
 /* no free browser source for air here: the plan, in words (the OpenAQ card carries official stations, free with a key) */
-function noAir(p){return['No free live source for air near '+p.name+'.','None that a browser can read reports there. Your agent can ask OpenAQ: it carries official stations, free with a key.']}
+function noAir(p){return['No free live source for air near '+p.name+'.','None that a browser can read reports there. Your agent can ask OpenAQ: it carries official stations, free with a key.','openaq']}
 /* ISO time h hours ago, to the minute (so a repeat ask within the minute is the same URL) */
 function since(h){return new Date(Math.floor((now()-h*3600000)/60000)*60000).toISOString().slice(0,19)}
 /* a catalogue's events as one answer: how many, and the largest; none is an answer too */
@@ -373,7 +376,9 @@ var VIA={'geonet-nz':'New Zealand’s own catalogue lists smaller quakes','emsc-
   'airnow':'no Sensor.Community sensor nearby gave a trustworthy reading','usgs-earthquakes':'GeoNet covers New Zealand only'};
 /* the world table, loaded once, before the first place is read (a failed load still answers, from the small table above) */
 function ready(){return window.IRLPlaces?window.IRLPlaces.load().then(function(){},function(){}):Promise.resolve()}
-function ask(id,q,parsed,onStart){return ready().then(function(){return ask1(id,q,parsed,onStart)})}
+/* onCall(calls): each request as it starts and ends, [{method, url, status (0 running, -1 failed), ms}]; the answer carries calls too */
+function ask(id,q,parsed,onStart,onCall){return ready().then(function(){var lg=[];LOG=lg;ONC=onCall||null;
+  return ask1(id,q,parsed,onStart).then(function(x){if(LOG===lg){LOG=null;ONC=null}x.calls=lg;return x},function(e){if(LOG===lg){LOG=null;ONC=null}throw e})})}
 function ask1(id,q,parsed,onStart){var R=ROUTES[id];if(!R)return Promise.resolve({kind:'msg',head:'No live route for this provider.'});
   var p=place(q,parsed||{}),n=R.name;
   /* a place this page can't put on the map: offer a big city it can, in the same state when the ask names one */
@@ -385,7 +390,7 @@ function ask1(id,q,parsed,onStart){var R=ROUTES[id];if(!R)return Promise.resolve
   return get(id,p,null,{ask:q}).then(function(x){
     if(!x.ok){
       if(x.kind==='busy'||x.kind==='budget')return{kind:'msg',head:x.kind==='busy'?n+' is busy.':'Paused, to go easy on providers.',rest:'',again:true,wait:x.wait||60};
-      if(x.kind==='none'){if(x.plan)return{kind:'msg',head:x.plan[0],rest:x.plan[1]};
+      if(x.kind==='none'){if(x.plan)return{kind:'msg',head:x.plan[0],rest:x.plan[1],plan:x.plan[2]||null};  /* plan[2]: the card whose ready call the page can show instead */
         return{kind:'msg',head:R.noun==='ships'?'No ships reporting within '+(p.r||20)+' km of '+p.name+'.':'No '+n+' '+R.noun+' reporting near '+p.name+'.',rest:'Try a nearby city.'}}
       return{kind:'msg',head:n+' didn’t answer.',rest:'It may be down.',again:true}}
     var by=x.via&&ROUTES[x.via]?x.via:id;

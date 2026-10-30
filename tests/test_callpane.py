@@ -51,7 +51,10 @@ def finder(browser, base, q, w=390, h=844):
     p.on("request", lambda r: sent.append(r.url))
     p.route("https://**/*", lambda r: r.abort())  # nothing leaves for a provider
     p.goto(base + "/find.html?q=" + urllib.parse.quote(q))
-    p.wait_for_selector("#bcall [data-ircp] pre.call", timeout=6000)
+    p.wait_for_selector("#bcall [data-ircp] pre.call", state="attached", timeout=6000)
+    # layer 1 (your agent -> irlpls) shows; layer 2 (what irlpls sends the provider) is folded to one line: unfold it
+    assert "irlpls_request(" in p.inner_text("#bcall .ircp-ask")
+    p.click("#bcall .ircp-x")
     return p, sent
 
 
@@ -85,7 +88,7 @@ def test_pane_renders_highlighted_and_never_sends(browser, base, q):
 def test_tabs_switch_and_copy_copies_the_visible_view(browser, base):
     p, _ = finder(browser, base, STORE)
     pane = p.locator("#bcall [data-ircp]")
-    pre = lambda: pane.locator("pre.ircp-code:not([hidden])")
+    pre = lambda: pane.locator(".ircp-bb pre.ircp-code:not([hidden])")
     assert pre().count() == 1 and pre().inner_text().startswith("POST ")
     pane.get_by_role("tab", name="curl").click()
     t = pre().inner_text()
@@ -113,7 +116,7 @@ def test_code_scrolls_inside_never_the_page(browser, base, w):
         for tab in ("HTTP", "curl", "Python"):
             p.locator("#bcall").get_by_role("tab", name=tab).click()
             assert p.evaluate("document.documentElement.scrollWidth") <= w, (q, tab)
-            r = p.evaluate("""(() => { const e = document.querySelector('#bcall pre.ircp-code:not([hidden])'), cs = getComputedStyle(e), b = e.getBoundingClientRect();
+            r = p.evaluate("""(() => { const e = document.querySelector('#bcall .ircp-bb pre.ircp-code:not([hidden])'), cs = getComputedStyle(e), b = e.getBoundingClientRect();
               return {sw: e.scrollWidth, cw: e.clientWidth, ox: cs.overflowX, ws: cs.whiteSpace, right: b.right, fs: parseFloat(cs.fontSize)} })()""")
             assert r["ox"] == "auto" and r["ws"] == "pre" and r["right"] <= w and r["fs"] >= 12, r
         # the long lines are there, scrolled inside the block

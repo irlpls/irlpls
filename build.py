@@ -584,7 +584,7 @@ def index_page(cards):
     return page("Find data · irlpls", body, 0, "p-finder", desc="Find who can capture real-world data, and what each provider evidences or only claims.", canon="find.html", head=head)
 
 
-# ---------- the ready call per provider (Find data's "The call your agent would make") ----------
+# ---------- the ready call per provider (Find data's "What irlpls sends for you", src/callpane.js layer 2) ----------
 # From each adapter's own prepare() (the call the library and the broker hand an agent), for a generic ask. Built offline;
 # nothing is sent and no credential is filled in (keys stay named placeholders). Where the call only puts the ask's point,
 # words and place in as they are, they become {LAT} {LON} {NEED} {PLACE} and the page fills them from the person's ask;
@@ -747,12 +747,21 @@ def agents_md(cards):
             "| Provider | Routes | Speed | Price | Time · place · content |\n|---|---|---|---|---|\n" + rows)
 
 
+def toc_html(toc):
+    """A long document's contents (its ## headings), as on the standard: a sticky column on a desktop, folded on a phone
+    (src/bar.js opens it on a desktop and marks the section in view). Fewer than three headings: none, the column centred."""
+    if len(toc) < 3:
+        return ""
+    return ('<details class="toc" id="toc" data-toc><summary>Contents</summary><nav aria-label="Contents"><ol>'
+            + "".join(f'<li><a href="#{s}">{md_inline(h)}</a></li>' for s, h in toc) + '</ol></nav></details>')
+
+
 def doc_page(md, title, canon, desc, aud=""):
     """A plain document page (changelog, governance) from Markdown, in the spec layout. aud: one plain line under the
     title saying who the page is for (the owner, 2026-10-30: providers, agents, the standard)."""
-    body, _ = md_html(md)
+    body, toc = md_html(md)
     h1 = re.search(r"^# (.*)", md, re.M).group(1)
-    head = (f'{nav("")}<div class="spec-wrap"><div class="spec-head"><h1 class="hl hl-doc all">{e(h1)}</h1>{f"<p class=aud>{e(aud)}</p>" if aud else ""}</div>'
+    head = (f'{nav("")}<div class="spec-wrap{"" if len(toc) >= 3 else " solo"}">{toc_html(toc)}<div class="spec-head"><h1 class="hl hl-doc all" data-t="{e(h1)}">{e(h1)}</h1>{f"<p class=aud>{e(aud)}</p>" if aud else ""}</div>'
             f'<main id="main" class="std">\n{body}\n</main></div>{foot()}')
     return page(title, head, cls="doc", desc=desc, canon=canon, head="")
 
@@ -777,7 +786,7 @@ def docs_page():
 def agents_page(md):
     body, toc = md_html(md)
     ask = "Read https://irlpls.com/agents.md before you use irlpls for me."
-    head = (f'{nav("", "agents")}<div class="spec-wrap"><div class="spec-head agents-head"><h1 class="hl all" data-t="irlpls for agents">irlpls for agents</h1><p class="aud">The manual your AI agent reads.</p>'
+    head = (f'{nav("", "agents")}<div class="spec-wrap{"" if len(toc) >= 3 else " solo"}">{toc_html(toc)}<div class="spec-head agents-head"><h1 class="hl all" data-t="irlpls for agents">irlpls for agents</h1><p class="aud">The manual your AI agent reads.</p>'
             f'<div class="handoff"><code id="ask">{e(ask)}</code><button type="button" id="copy">Copy</button></div>'
             '<p class="raw">Plain text: <a href="agents.md">agents.md</a></p></div>'
             f'<main id="main" class="std">\n{body}\n</main></div>{foot()}')

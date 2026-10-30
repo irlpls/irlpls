@@ -55,7 +55,7 @@ EXAMPLES = 5
 
 # blocks that must never overlap one another (ancestor/descendant pairs are skipped)
 BLOCKS = ("h1, h2, .kick, .lede, .chat, .pager, .cta, .you, .tool, .ans, .media, .cites, .pv li, #chain > li, .bm, .dn, .info, .ask, .priv,"
-          " .note, .sv, .hint, .lv, .ircp")
+          " .note, .sv, .hint, .lv, .rl, .rt, .ircp")
 TAPS = "a[href], button, input, textarea, summary, select"
 
 PROBE = r"""([sel, BLOCKS, TAPS]) => {
@@ -394,7 +394,8 @@ def main():
                 fails.append(f"{name} how: {x}")
             pg.click("#to3")
             pg.wait_for_timeout(1200)
-            if pg.evaluate("(()=>{const t=document.getElementById('h3').getBoundingClientRect().top,hb=document.querySelector('.top').getBoundingClientRect().bottom;return t<hb-1||t>hb+90})()"):
+            # screen 3's title lands just under the header (or, where the page ends sooner, in view with the page scrolled to its end)
+            if pg.evaluate("(()=>{const t=document.getElementById('h3').getBoundingClientRect().top,hb=document.querySelector('.top').getBoundingClientRect().bottom,end=scrollY+innerHeight>=document.documentElement.scrollHeight-2;return t<hb-1||(t>hb+90&&!(end&&t<innerHeight/2))})()"):
                 fails.append(f"{name} how: the arrow down does not bring screen 3 to the top")
             # screen 3: reached by hash; pick a service, ask, Go (the providers are faked: fake_live)
             fake_live(pg)
@@ -403,7 +404,7 @@ def main():
             for x in pg.evaluate(UNDER_HEADER, "#try"):
                 fails.append(f"{name} try: {x}")
             screen("#try", "try (by hash)")
-            if pg.locator("#svc .sv").count() < 15 or pg.get_attribute("#svc .sv:first-child", "aria-pressed") != "true" or not pg.input_value("#q"):
+            if pg.locator("#svc .sv").count() != 6 or pg.get_attribute("#svc .sv:first-child", "aria-pressed") != "true" or not pg.input_value("#q"):
                 fails.append(f"{name} try: the services, the picked one and its question do not all show")
             probe("#try", "try (at rest)")
             pg.screenshot(path=f"{OUT}/{name}-try.png")
@@ -416,7 +417,7 @@ def main():
                 try:
                     pg.wait_for_selector("#lv .ans, #lv .lvm", timeout=8000)
                     if "Elm St" in q:
-                        pg.wait_for_selector("#lv .ircp", timeout=8000)
+                        pg.wait_for_selector("#duo .ircp", state="attached", timeout=8000)
                 except Exception:
                     fails.append(f"{name} try {q!r}: no answer or message")
                 pg.wait_for_timeout(700)
@@ -512,6 +513,21 @@ def main():
             if pg.evaluate("document.getElementById('lv').getBoundingClientRect().bottom > innerHeight + 1 || document.getElementById('ask').getBoundingClientRect().top < document.querySelector('.top').getBoundingClientRect().bottom - 1"):
                 fails.append(f"{name} try answered: the field and the answer are not both in view")
             pg.screenshot(path=f"{OUT}/{name}-try-answered.png")
+            pg.close()
+        # the owner, 2026-10-30: screen 2's benchmark line in two clean lines beside its icon on phones, and the two
+        # next-screen calls to action (screen 1's 'How it's proven', screen 2's 'Try it live') one component, identical
+        for w in (360, 375, 390):
+            pg = b.new_context(viewport={"width": w, "height": 800}, **PHONE).new_page()
+            pg.goto(f"{BASE}?still=1")
+            pg.wait_for_timeout(700)
+            n = pg.evaluate("(()=>{const r=document.createRange();r.selectNodeContents(document.getElementById('bm'));return new Set([...r.getClientRects()].map(x=>Math.round(x.top))).size})()")
+            if n > 2:
+                fails.append(f"phone {w}: screen 2's benchmark line runs to {n} lines (want 2)")
+            d = pg.evaluate("""(()=>{const k=['color','backgroundColor','borderTopColor','borderTopWidth','borderRadius','fontWeight','fontSize','height','paddingLeft'],
+              a=getComputedStyle(document.querySelector('#s1 .cta')),c=getComputedStyle(document.getElementById('to3'));
+              return k.filter(x=>a[x]!==c[x]).map(x=>x+': '+a[x]+' vs '+c[x])})()""")
+            for x in d:
+                fails.append(f"phone {w}: the two next-screen calls to action differ ({x})")
             pg.close()
         b.close()
     seen = set()

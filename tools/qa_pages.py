@@ -498,6 +498,19 @@ def main():
                     res["problems"].append(f"{res['first']} words on the first screen (budget {BUDGET['card_first_screen']})")
                 fails += [f"{dev} {name}: {x}" for x in res["problems"]]
                 fails += [f"{dev} {name}: {x}" for x in pg.evaluate(CENTRE, {"tol": 1.5})]
+                if kind in ("doc", "finder") and name not in ("404", "check-id"):  # the owner, 2026-10-30: every page title in the shared gradient (phones too)
+                    g = pg.evaluate("(()=>{const h=document.querySelector('h1');if(!h)return null;const c=getComputedStyle(h);return [c.backgroundImage, c.webkitBackgroundClip||c.backgroundClip]})()")
+                    if not g or g[0] == "none" or g[1] != "text":
+                        fails.append(f"{dev} {name}: the title has no shared gradient ({g})")
+                if not phone and kind == "doc" and name not in ("404", "check-id"):  # the text (with its contents column) centred on the page
+                    off = pg.evaluate("""(()=>{const w=document.querySelector('.spec-wrap');const els=(w&&!w.classList.contains('solo')?[w.querySelector('.toc'),w.querySelector('.std')]:[document.querySelector('.std')||document.querySelector('main')]).filter(Boolean);
+                      if(!els.length)return 0;const r=els.map(e=>e.getBoundingClientRect());return (Math.min(...r.map(x=>x.left))+Math.max(...r.map(x=>x.right)))/2-innerWidth/2})()""")
+                    if abs(off) > 24:
+                        fails.append(f"{dev} {name}: the content column is {round(off)}px off the page's centre")
+                if not phone and kind == "finder":  # the owner, 2026-10-30: every row's right column (dots + tally) has one layout
+                    hs = pg.evaluate("[...document.querySelectorAll('#grid a.row .proof')].map(e=>e.getBoundingClientRect().height)")
+                    if hs and max(hs) - min(hs) > 2:
+                        fails.append(f"{dev} {name}: finder rows' dots and tally differ in layout (heights {round(min(hs))}..{round(max(hs))}px)")
                 if not phone:  # the owner, 2026-10-30: the footer is a full-width band; its content at least 80% of the main column's width
                     fw = pg.evaluate("""(()=>{const f=document.querySelector('.site-foot'),m=document.querySelector('main, #main');if(!f||!m)return null;
                       const cs=getComputedStyle(f);return [f.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight), m.getBoundingClientRect().width]})()""")

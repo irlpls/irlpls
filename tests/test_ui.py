@@ -1100,8 +1100,12 @@ def fake_usgs(p, replies, name="Colorado Rv at Austin, TX"):
 
 
 def try_(p, svc, q):
-    """Screen 3: pick a free service (its capsule), ask it this question, Go."""
-    p.click(f'#svc .sv[data-id="{svc}"]')
+    """Screen 3: pick a free service (its capsule; a route that is not one of the six examples, by IRLTry.use, as a
+    ?svc= link does), ask it this question, Go."""
+    if p.locator(f'#svc .sv[data-id="{svc}"]').count():
+        p.click(f'#svc .sv[data-id="{svc}"]')
+    else:
+        assert p.evaluate("id=>IRLTry.use(id)", svc)
     p.fill("#q", q)
     p.click("#ask button")
 
@@ -1123,10 +1127,14 @@ def test_screen_three_is_services_a_field_and_one_line(browser, base):
     kids = p.evaluate("[...document.querySelectorAll('#try > *')].filter(e=>e.tagName!=='STYLE'&&e.tagName!=='SCRIPT'&&!e.classList.contains('sr')&&getComputedStyle(e).display!=='none').map(e=>e.id||e.className)")
     assert kids[:4] == ["h3", "svc", "ask", "hint"], kids
     ids = p.evaluate("[...document.querySelectorAll('#svc .sv')].map(b=>b.dataset.id)")
-    assert len(ids) >= 15 and p.evaluate("ids=>ids.every(i=>IRLLive.route(i)&&IRL3.card(i)&&IRL3.card(i).access.cost==='free')", ids), ids  # each really runs in a browser
+    assert len(ids) == 6 and p.evaluate("ids=>ids.every(i=>IRLLive.route(i)&&IRL3.card(i)&&IRL3.card(i).access.cost==='free')", ids), ids  # each really runs in a browser
     assert p.get_attribute("#svc .sv:first-child", "aria-pressed") == "true" and p.input_value("#q") == p.evaluate("IRLLive.services[0].q")
-    assert p.inner_text("#hint") == "Go asks USGS straight from your browser."
+    # before any pick or typing: three asks that work, one tap each (the owner, 2026-10-30: 'no idea what I can search')
+    assert p.inner_text("#hint").startswith("Try:") and p.locator("#hint .eg").count() == 3
+    assert p.get_attribute("#q", "placeholder") == p.evaluate("IRLLive.services[0].q")
     assert p.locator("#lv").count() == 0  # nothing is fetched until Go
+    p.click('#svc .sv[data-id="noaa-tides"]')
+    assert p.inner_text("#hint") == "Covers US coasts. Go asks NOAA Tides & Currents straight from your browser."
 
 
 def test_picking_a_service_fills_its_question_and_focuses_the_field(browser, base):
@@ -1228,7 +1236,7 @@ def test_made_to_order_top_match_shows_its_plan_and_never_orders(browser, base):
     plan = p.locator("#best .bp").first.inner_text()
     assert plan.startswith("Made to order · "), plan
     assert p.locator("#brun").count() == 0
-    p.wait_for_selector("#bcall .call, #bcall .bq", timeout=4000)
+    p.wait_for_selector("#bcall .call, #bcall .bq", state="attached", timeout=4000)
 
 
 @pytest.mark.parametrize("q,reply,want", [
@@ -1521,7 +1529,10 @@ def test_finder_shows_the_call_an_agent_would_make(browser, base):
     p.on("request", lambda r: sent.append(r.url))
     p.route("https://**/*", lambda r: r.abort())
     p.goto(base + "/find.html?q=" + "storefront%20photo%20of%2050%20Elm%20St%2C%20Burlington%2C%20VT")
-    p.wait_for_selector("#bcall .call", timeout=5000)
+    p.wait_for_selector("#bcall .call", state="attached", timeout=5000)
+    # first the uniform irlpls call (the product), then, folded, what irlpls sends ProxyPics
+    assert "irlpls_request(" in p.inner_text("#bcall .ircp-ask") and "storefront photo of 50 Elm St" in p.inner_text("#bcall .ircp-ask")
+    open_provider_call(p)
     assert p.inner_text("#best .bn") == "ProxyPics"
     call = p.inner_text("#bcall .call")
     assert call.startswith("POST https://api.proxypics.com/api/v3/photo-requests") and "x-api-key: {PROXYPICS_API_KEY}" in call, call
@@ -1622,7 +1633,7 @@ def test_free_live_top_matches_without_a_browser_route_show_their_call(browser, 
         ids = p.evaluate("[...document.querySelectorAll('#grid .row')].map(a=>a.dataset.id)")
         if ids and ids[0] == cid:
             assert p.locator("#brun").count() == 0
-            p.wait_for_selector("#bcall .call, #bcall .bq", timeout=4000)
+            p.wait_for_selector("#bcall .call, #bcall .bq", state="attached", timeout=4000)
 
 
 def test_price_words_are_the_same_on_the_landing_and_the_finder(browser, base):
@@ -1851,9 +1862,12 @@ def test_no_browser_source_shows_the_ready_call_and_never_orders(browser, base, 
     p.route("**/*", lambda r: r.continue_() if r.request.url.startswith(base) else (out.append(r.request.url), r.abort()))
     p.fill("#q", q)
     p.click("#ask button")
-    p.wait_for_selector("#lv .ircp", timeout=10000)
-    t = p.inner_text("#lv")
-    assert "The best match is" in t and "call your agent would make" in t.lower() and (who is None or who in t)
+    open_impl(p)
+    t = p.inner_text("#duo")
+    assert "Here’s the exact call." in p.inner_text("#lv") and (who is None or who in t)
+    # two layers (the owner, 2026-10-30): the uniform irlpls call first, then what irlpls sends the provider, folded
+    assert "your agent → irlpls" in t.lower() and "irlpls_request(" in t and "what irlpls sends for you" in t.lower()
+    p.click("#duo .ircp-x")
     assert out == [], out
     for k in p.evaluate("[...document.querySelectorAll('#lv pre.call .t-ph')].map(e=>e.textContent)"):
         assert k.startswith("{") and k.endswith("}"), k
@@ -1878,3 +1892,63 @@ def test_footer_is_formal_and_the_same_on_every_page(browser, base):
         assert re.findall(r'<nav class="fl"[^>]*>(.*?)</nav>', f) and [re.sub("<.*?>", "", a) for a in re.findall(r"<a [^>]*>.*?</a>", re.search(r'<nav class="fl"[^>]*>(.*?)</nav>', f).group(1))] == want, path
         assert "Code Apache-2.0 · Cards CC BY 4.0" in f and "hello@irlpls.com" in f and "© irlpls maintainers" in f, path
         assert "github" not in f.lower() and "!" not in re.sub("<!--.*?-->", "", f), path
+
+
+def open_impl(p):
+    """Screen 3's right side (what irlpls did): on a phone it is folded to one line; unfold it."""
+    p.wait_for_selector("#duo .ircp", state="attached", timeout=10000)
+    if p.is_hidden("#rb"):
+        p.click("#rl")
+
+
+def open_provider_call(p, root="#bcall"):
+    """The call pane's layer 2 (what irlpls sends the provider) is folded to one line; unfold it."""
+    x = p.locator(f"{root} .ircp-x").first
+    if x.count() and x.get_attribute("aria-expanded") != "true":
+        x.click()
+
+
+def _no_net(p, base, out):
+    p.route("**/*", lambda r: r.continue_() if r.request.url.startswith(base) else (out.append(r.request.url), r.abort()))
+
+
+def test_air_quality_in_tokyo_shows_the_openaq_call(browser, base):
+    """Owner bug (live site, 2026-10-30): 'air quality in Tokyo' showed nothing. No free browser source covers air there,
+    so the page shows OpenAQ (official stations, free with a key) and the call an agent would make. Never blank."""
+    import json as js
+    p = landing(browser, base, q="?still=1#try")
+    p.route("**/data.sensor.community/**", lambda r: r.fulfill(status=200, body="[]", headers={"content-type": "application/json", "access-control-allow-origin": "*"}))
+    p.fill("#q", "air quality in Tokyo")
+    p.press("#q", "Enter")
+    open_impl(p)
+    t = p.inner_text("#duo")
+    assert "No free live source for air near Tokyo." in t and "OpenAQ" in t, t
+
+
+@pytest.mark.parametrize("q", ["river level in Osaka, Japan", "weather in Nairobi, Kenya", "tide in Lisbon, Portugal",
+                               "traffic camera in Madrid, Spain", "ships near Sydney, Australia"])
+def test_places_no_browser_source_covers_never_end_blank(browser, base, q):
+    """Five places no free browser source covers, across services: each Go ends in a ready call or a plain message."""
+    p = landing(browser, base, q="?still=1#try")
+    out = []
+    _no_net(p, base, out)
+    p.fill("#q", q)
+    p.click("#ask button")
+    p.wait_for_selector("#lv .lvm", timeout=10000)
+    p.wait_for_timeout(300)
+    t = p.inner_text("#lv .turn")
+    assert len(t.strip()) > 20 and "Reading your ask" not in t, t
+    assert out == [], out  # no provider was asked: none covers the place
+
+
+def test_enter_runs_go_like_the_button(browser, base):
+    """Enter in the field (the phone keyboard's Go too: the field is in a form) gives the same answer as tapping Go."""
+    got = []
+    for how in ("enter", "click"):
+        p = landing(browser, base, q="?still=1#try")
+        fake_usgs(p, [(200, usgs_iv(), {})])
+        p.fill("#q", "river, Texas")
+        p.press("#q", "Enter") if how == "enter" else p.click("#ask button")
+        p.wait_for_selector("#lv .ans")
+        got.append(p.inner_text("#lv .ans"))
+    assert got[0] == got[1] and p.evaluate("document.getElementById('q').closest('form').id") == "ask"

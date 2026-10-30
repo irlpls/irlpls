@@ -549,7 +549,7 @@ U.on(function(fresh){if(fresh)paint()});
 <section class="scr" id="how" aria-labelledby="h2">
 <style>
 /* icon size follows the screen's height: the whole screen shows at 390x844; heading + six links at 375x667 */
-#how{--is:clamp(40px,calc((100svh - var(--hh) - 334px)/8 - 8px),54px);--bad2:#b91c1c;--step:520ms}
+#how{--is:clamp(40px,calc((100svh - var(--hh) - 334px)/8 - 8px),54px);--bad2:#b91c1c;--step:330ms}
 #how .kick{font-size:11.5px;letter-spacing:.09em}
 #how h2{margin-top:8px}
 #how h2 em{font-style:normal;color:var(--bad2)}
@@ -571,7 +571,7 @@ U.on(function(fresh){if(fresh)paint()});
  html.rail .lk i svg{opacity:.3;transition:opacity .45s}
  html.rail .lk li.on i svg{opacity:1}}
 .lkf{margin-top:clamp(14px,2.6svh,24px);display:flex;flex-direction:column;gap:6px;align-items:stretch}
-.bm{margin:0;font:500 clamp(14px,3.9vw,15.5px)/1.4 var(--sans);color:var(--fg2);text-wrap:balance}.bm br{display:none}@media(max-width:560px){.bm br{display:inline}}
+.bm{margin:0;font:500 clamp(14px,3.9vw,15.5px)/1.4 var(--sans);color:var(--fg2);text-wrap:balance}.bm br{display:none}@media(max-width:560px){.bm br{display:inline}#how .bm{font-size:clamp(12.5px,calc((100vw - 84px)/20.6),15.5px)}}  /* two clean lines: the first sentence fits beside the icon */
 /* the screen's foot (the owner, 2026-10-30): the benchmark line with a small info icon at its right (chain.html), then on its
    own row a quiet arrow down to screen 3, centred (screen 1's call to action, quieter: no fill, a hairline) */
 .bmr{display:flex;align-items:center;gap:8px}
@@ -579,20 +579,20 @@ U.on(function(fresh){if(fresh)paint()});
    column's right edge, the arrow centred under it) with an even rhythm, and the screen ends where its content does: no
    full-screen height pushing the foot down, so no empty band before screen 3 */
 @media(min-width:760px) and (min-height:700px){#how{min-height:0;padding-bottom:40px}#how>*{width:100%;max-width:640px;margin-left:auto;margin-right:auto}
-  #how .lede{margin-top:10px}.lk{margin-top:24px;flex:none}.lkf{margin-top:28px}.dn{margin-top:16px}}.bmr .bm{flex:1 1 auto;min-width:0}
-.dn{align-self:center;margin-top:10px;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);font:500 14px var(--sans);color:var(--fg2);text-decoration:none}
+  #how .lede{margin-top:10px}.lk{margin-top:24px;flex:none}.lkf{margin-top:28px}.dn{margin-top:18px}}.bmr .bm{flex:1 1 auto;min-width:0}
+.dn{margin-top:14px}
 .info{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--fg3)}
-@media(hover:hover){.dn:hover{color:var(--fg);border-color:var(--line2)}.info:hover{color:var(--fg);background:rgba(20,30,50,.05)}}
+@media(hover:hover){.info:hover{color:var(--fg);background:rgba(20,30,50,.05)}}
 /* a short phone (375x667, 390x709): the screen still shows whole, the closing lines included: rows at the 44px
    floor with no extra gap, tighter spacing */
 @media(max-height:760px){#how{padding-bottom:10px}#how .lede{margin-top:6px}
-  .lk{gap:0;margin-top:10px}.lkf{margin-top:8px;gap:2px}.dn{margin-top:4px}}
+  .lk{gap:0;margin-top:10px}.lkf{margin-top:8px;gap:2px}.dn{margin-top:6px}}
 </style>
 <h2 class="hl" id="h2" data-t="A standard of provenance.">A standard of <span class="k5">provenance</span>.</h2>
 <p class="lede">Humans and machines need an authentic view of the world, from source to receipt.</p>
 <ol class="lk" id="chain" aria-label="Eight links"></ol>
 <div class="lkf"><div class="bmr"><p class="bm" id="bm" aria-live="polite"></p><a class="info" id="bmc" href="chain.html" aria-label="What each link means" title="What each link means"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".6" fill="currentColor"/></svg></a></div>
-<a class="dn" id="to3" href="#try">Try it live<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 6 5 5 5-5"/></svg></a></div>
+<a class="cta dn" id="to3" href="#try">Try it live<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 6 5 5 5-5"/></svg></a></div>
 <script>
 (function(){var U=IRL3,E=U.E,$=U.$,ol=$('chain');
 /* each link: its line icon, its title (IRL3.TITLES) and, quiet under it, the technical term (IRL3.STAGES; chain.html defines it) */
@@ -609,7 +609,10 @@ U.on(function(){var t=bench(U.cards);$('bm').hidden=!t;$('bm').innerHTML=E(t).re
 var root=document.documentElement,lis=ol.querySelectorAll('li');
 if(matchMedia('(prefers-reduced-motion: reduce)').matches||/[?&]still=1/.test(location.search)||!('IntersectionObserver' in window))return;
 root.classList.add('rail');
-new IntersectionObserver(function(es,o){if(!es[0].isIntersecting)return;o.disconnect();
+var first=true;
+new IntersectionObserver(function(es,o){var f0=first;first=false;if(!es[0].isIntersecting)return;o.disconnect();
+  /* already in view when the page loads (a link to #how): drawn whole at once, never re-played */
+  if(f0){root.classList.remove('rail');return}
   var step=parseFloat(getComputedStyle($('how')).getPropertyValue('--step'))||520;
   lis[0].classList.add('on');requestAnimationFrame(function(){requestAnimationFrame(function(){root.classList.add('go')})});
   for(var i=1;i<8;i++)(function(i){setTimeout(function(){lis[i].classList.add('on')},i*step)})(i)},{threshold:.5}).observe($('how'));
@@ -619,11 +622,11 @@ new IntersectionObserver(function(es,o){if(!es[0].isIntersecting)return;o.discon
 
 <section class="scr" id="try" aria-labelledby="h3">
 <style>
-/* screen 3: try a free service live. Pick a service (capsules), ask (the field fills with its example), Go: the answer
-   is fetched by this browser straight from the provider and shown as a chat turn. It reuses screen 1's chat classes
-   (.chat .you .turn .ans .att .media .cites .cite .chip .pvw .pv) and IRL3.pane for the provenance sheet. */
-/* the services (the owner, 2026-10-30): an orderly grid of equal capsules, a line icon (the topic) and a short name each;
-   two columns on a phone, three on a desktop; one height, never a ragged wrap */
+/* screen 3 (the owner, 2026-10-30): try it live. A few free services known to work well from a browser, as examples
+   (pills); the field takes any ask. Side by side, in one glass frame: left, what a person sees (the chat: question, then
+   the answer with its source chip, as on screen 1); right, what irlpls does (the provider it matched and the exact call,
+   highlighted: the call this page ran, with its status and time, or, for an ask no free browser source answers, the call
+   your agent would make, the key only named). Phones stack them: the chat, then the call folded to one line. */
 .svc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:12px 0 0;padding:0;list-style:none}
 @media(min-width:600px){.svc{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
 .sv{display:flex;align-items:center;justify-content:flex-start;gap:7px;min-width:0;height:44px;margin:0;padding:0 12px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.75);font:600 13.5px/1.2 var(--sans);color:var(--fg2);cursor:pointer;white-space:nowrap;text-align:left}
@@ -632,12 +635,21 @@ new IntersectionObserver(function(es,o){if(!es[0].isIntersecting)return;o.discon
 .sv[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:#fff}.sv[aria-pressed="true"] svg{color:#fff}
 @media(hover:hover){.sv:not([aria-pressed="true"]):hover{color:var(--fg);border-color:var(--fg3)}}
 @media(max-width:370px){.sv{padding:0 10px;gap:6px;font-size:12.5px}}
-#try .docs{margin-top:18px}
 #try .ask{margin-top:12px}
 .hint{margin:10px 16px 0;font:500 14px/1.4 var(--sans);color:var(--fg3)}
 .hint b{font-weight:600;color:var(--fg2)}
-/* the live answer */
-.lv{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px;transition:min-height .3s ease}
+.hint .eg{min-height:44px;margin:-12px 0;padding:0 2px;border:0;background:none;font:600 14px/1.4 var(--sans);color:var(--pol);cursor:pointer}
+.hint i{font-style:normal;padding:0 6px;color:var(--dot)}
+@media(hover:hover){.hint .eg:hover{text-decoration:underline}}
+#try .docs{margin-top:18px}
+#try .out{margin-top:12px}
+#try .out:empty{display:none}
+/* the frame: two columns on a desktop, stacked on a phone */
+.duo{display:grid;grid-template-columns:minmax(0,1fr);border-radius:24px;overflow:hidden}
+@media(min-width:900px){.duo{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}.impl{border-top:0!important;border-left:1px solid var(--line)}}
+.dk{margin:0 0 8px;font:600 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+/* left: the chat (screen 1's classes) */
+.lv{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px;background:none;box-shadow:none;transition:min-height .3s ease}
 .lv .turn{flex:none}
 .lv .media{flex:none;aspect-ratio:16/9;max-height:none;min-height:0}
 .lvs{margin:0;font:500 14px/1.4 var(--sans);color:var(--fg3)}
@@ -649,12 +661,22 @@ new IntersectionObserver(function(es,o){if(!es[0].isIntersecting)return;o.discon
 .again:disabled{border-color:transparent;background:#f1f2f4;color:var(--fg3);cursor:default}
 .again:not(:disabled):not(.sug){background:var(--fg);border-color:var(--fg);color:#fff}
 .lv .cites+.via{margin-top:-4px}
-#try .out{margin-top:12px}
-#try .out:empty{display:none}
+/* right: what irlpls did */
+.impl{min-width:0;padding:14px;border-top:1px solid var(--line);background:rgba(255,255,255,.45)}
+.rl{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;margin:-6px 0;padding:0;border:0;background:none;text-align:left;cursor:pointer;font:500 13px/1.3 var(--mono);color:var(--fg2)}
+.rl .m{flex:none;padding:2px 7px;border-radius:6px;background:rgba(10,110,52,.1);color:var(--live);font:700 11px/1.4 var(--mono)}
+.rl .u{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rl .s{flex:none;font:600 12px var(--sans);color:var(--fg3)}.rl .s.ok{color:var(--live)}
+.rl .cv{flex:none;transition:transform .2s ease;color:var(--fg3)}.rl[aria-expanded="true"] .cv{transform:rotate(90deg)}
+.rb{margin-top:10px}.rb[hidden]{display:none}
+.rt{margin:0;font:500 14px/1.45 var(--sans);color:var(--fg2)}.rt b{color:var(--fg)}
+.cls{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px;font:500 12px/1.35 var(--mono);color:var(--fg3)}
+.cls li{display:flex;gap:8px;min-width:0}.cls li span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.cls li b{font-weight:600;color:var(--fg2)}.cls li b.ok{color:var(--live)}
+@media(min-width:900px){.rl{display:none}.rb{display:block!important;margin-top:0}}
 </style>
-<h2 class="hl" id="h3" data-t="Try a free service, live.">Try a free service, <span class="k4">live</span>.</h2>
-<div class="svc" id="svc" role="group" aria-label="Free services"></div>
-<form class="ask glass" id="ask" autocomplete="off"><label class="sr" for="q">Your question</label><textarea id="q" rows="1" placeholder="Ask it anything it measures" enterkeyhint="go" maxlength="200" spellcheck="false"></textarea><button type="submit">Go</button></form>
+<h2 class="hl" id="h3" data-t="Try it live.">Try it <span class="k4">live</span>.</h2>
+<div class="svc" id="svc" role="group" aria-label="Free services that answer from your browser"></div>
+<form class="ask glass" id="ask" autocomplete="off"><label class="sr" for="q">Your question</label><textarea id="q" rows="1" placeholder="Ask about a river, the weather, a tide, quakes, the air" enterkeyhint="go" maxlength="200" spellcheck="false"></textarea><button type="submit">Go</button></form>
 <p class="hint" id="hint"></p>
 <p class="sr" id="ann" role="status"></p>
 <div class="out" id="out"></div>
@@ -663,82 +685,104 @@ new IntersectionObserver(function(es,o){if(!es[0].isIntersecting)return;o.discon
 <script src="callpane.js"></script>
 <script>
 (function(){var U=IRL3,E=U.E,$=U.$,RM=matchMedia('(prefers-reduced-motion: reduce)').matches,L=window.IRLLive;if(!L)return;
-var S=L.services,sel=S[0],qa=$('q'),tick=0;
-/* the services as capsules: picking one fills the field with its question and focuses it, ready to edit or Go */
+/* the examples: six free services that answered reliably from a browser in testing (2026-10-30). Every other route in
+   live.js stays reachable by a link (?svc=) and from Find data, but screen 3 routes only within these. */
+var PILLS=['usgs-water','nws','noaa-tides','usgs-earthquakes','sensor-community','tfl-jamcams'];
+var SA=L.services,S=PILLS.map(function(id){return SA.filter(function(s){return s.id===id})[0]}).filter(Boolean),sel=S[0],qa=$('q'),tick=0;
+var LAB={'usgs-water':'US rivers','nws':'US weather','noaa-tides':'US tides','usgs-earthquakes':'Earthquakes','sensor-community':'Air quality','tfl-jamcams':'London cameras'};
 var ICON={river:'<path d="M3 9c2 0 2-1.5 4.5-1.5S9.5 9 12 9s2.5-1.5 4.5-1.5S19 9 21 9"/><path d="M3 15c2 0 2-1.5 4.5-1.5S9.5 15 12 15s2.5-1.5 4.5-1.5S19 15 21 15"/>',
   weather:'<path d="M10 14.5V5a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><path d="M12 11v6"/>',
   tide:'<path d="M3 18c2 0 2-1.5 4.5-1.5S9.5 18 12 18s2.5-1.5 4.5-1.5S19 18 21 18"/><path d="M12 4v9M8.5 9.5 12 13l3.5-3.5"/>',
   quake:'<path d="M3 12h4l2-5 3 10 2.5-7 1.5 2H21"/>',air:'<path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 15h15a3 3 0 1 1-3 3"/>',
   cam:'<rect x="3" y="7" width="13" height="10" rx="2"/><path d="m16 11 5-3v8l-5-3"/>',ship:'<path d="M4 15l1.5 4h13L20 15z"/><path d="M7 15V9h10v6M12 5v4"/>'};
-$('svc').innerHTML=S.map(function(s){return '<button class="sv" type="button" data-id="'+E(s.id)+'" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true">'+(ICON[s.t]||'')+'</svg><span>'+E(s.label)+'</span></button>'}).join('');
-function pick(s,fill){sel=s;[].forEach.call($('svc').children,function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-id')===s.id))});
-  $('hint').innerHTML='Go asks <b>'+E(L.route(s.id).name)+'</b> straight from your browser.';if(fill){qa.value=s.q;fit()}}
-[].forEach.call($('svc').children,function(b){b.onclick=function(){var s=S.filter(function(x){return x.id===b.getAttribute('data-id')})[0];
-  pick(s,true);clearInterval(tick);$('out').innerHTML='';qa.focus({preventScroll:true});try{qa.setSelectionRange(qa.value.length,qa.value.length)}catch(e){}}});
-/* the field grows with a long question instead of hiding most of it; Enter asks, it never adds a line */
+/* what each service covers, in a few words */
+var COV={'pegelonline':'Germany and Austria','noaa-tides':'US coasts','sensor-community':'worldwide','usgs-earthquakes':'worldwide','emsc-seismicportal':'Europe and worldwide'};
+function cov(s){var a=COV[s.id]||L.route(s.id).area;return a==='the world'?'worldwide':a}
+$('svc').innerHTML=S.map(function(s){return '<button class="sv" type="button" data-id="'+E(s.id)+'" aria-pressed="false" title="'+E((LAB[s.id]||s.label)+': '+cov(s))+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+(ICON[s.t]||'')+'</svg><span>'+E(LAB[s.id]||s.label)+'</span></button>'}).join('');
+/* before any pick or typing: three asks that work, one tap each; after: what the picked service covers */
+var EGS=[['Austin river','River level in Austin, Texas?','usgs-water'],['Denver weather','Weather in Denver right now?','nws'],['Tokyo quakes','Earthquakes near Tokyo, Japan?','usgs-earthquakes']],touched=false;
+function byId(id){return SA.filter(function(s){return s.id===id})[0]}
+function hint(){if(!touched){$('hint').innerHTML='Try: '+EGS.map(function(x,i){return '<button type="button" class="eg" data-i="'+i+'">'+E(x[0])+'</button>'}).join('<i aria-hidden="true">·</i>');
+    [].forEach.call($('hint').querySelectorAll('.eg'),function(b){b.onclick=function(){var x=EGS[+b.getAttribute('data-i')];touched=true;pick(byId(x[2])||sel,false);qa.value=x[1];fit();go()}});return}
+  $('hint').innerHTML='Covers '+E(cov(sel))+'. Go asks <b>'+E(L.route(sel.id).name)+'</b> straight from your browser.'}
+function pick(s,fill){sel=s;[].forEach.call($('svc').querySelectorAll('.sv'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-id')===s.id))});
+  qa.placeholder=s.q;hint();if(fill){qa.value=s.q;fit()}}
+[].forEach.call($('svc').querySelectorAll('.sv'),function(b){b.onclick=function(){touched=true;pick(byId(b.getAttribute('data-id')),true);clearInterval(tick);$('out').innerHTML='';
+  qa.focus({preventScroll:true});try{qa.setSelectionRange(qa.value.length,qa.value.length)}catch(e){}}});
+/* the field grows with a long question instead of hiding most of it; Enter asks (the form submits on a phone's Go), it never adds a line */
 function fit(){qa.style.height='auto';qa.style.height=qa.scrollHeight+'px';$('ask').classList.toggle('tall',qa.scrollHeight>48)}
 qa.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();go()}});
-qa.addEventListener('input',function(){if(/\n/.test(this.value))this.value=this.value.replace(/\s*\n\s*/g,' ');fit()});
+qa.addEventListener('input',function(){if(!touched){touched=true;hint()}if(/\n/.test(this.value))this.value=this.value.replace(/\s*\n\s*/g,' ');fit()});
 /* asks about a person (the matcher's own check, plus asks about someone close) are refused, as everywhere on the site */
 var NEAR=/\b(my|our)\s+(neighbou?rs?|ex|wife|husband|partner|girlfriend|boyfriend|spouse|boss|landlord|tenant|roommate|flatmate|co-?worker|colleague)\b|\b(where|what)\s+is\s+(he|she)\b|\bwho\s+lives\b/i;
-/* which free service answers (the owner, 2026-10-30, as Find data does): a question on a topic a browser can read (rivers,
-   weather, tides, quakes, air, cameras, ships) goes to the service for that topic that covers the place, the picked one first;
-   its capsule lights. Anything else (no such topic, a place no browser source covers, or a match that needs a key, an
-   account or an order) shows the best matching provider and the call an agent would make (IRLCall), never sent from here.
-   Only a place nobody can find stops at a message. Every Go ends in an answer, a call, or a plain message. */
+/* routing, within the examples: an ask on a topic one of them reads (rivers, weather, tides, quakes, air, cameras) goes to
+   it when it covers the place; anything else (another topic, a place none covers, or a match that needs a key, an account
+   or an order) shows the best provider in the whole catalogue: the irlpls call your agent makes, and what irlpls sends it. Only a place nobody
+   can find stops at a message. Every Go ends in an answer, a call, or a plain message. */
 var TOP={river:/\b(rivers?|levels?|flows?|gauges?|gages?|stages?|streams?|floods?)\b/i,weather:/\b(weather|temperatures?|wind|rain|cold|hot|snow)\b/i,tide:/\btides?\b/i,
   quake:/\b(earth)?quakes?\b|\bseismic/i,air:/\b(air|aqi|pm2\.?5|smog|pollution|smoke)\b/i,cam:/\b(cams?|cameras?|webcams?|traffic)\b/i,ship:/\b(ships?|vessels?|boats?|ais)\b/i};
-function topic(q){return TOP[sel.t].test(q)?sel.t:Object.keys(TOP).filter(function(k){return TOP[k].test(q)})[0]}
+function topic(q){return TOP[sel.t]&&TOP[sel.t].test(q)?sel.t:Object.keys(TOP).filter(function(k){return TOP[k].test(q)})[0]}
 function covers(s,p){var R=L.route(s.id);return !p.missing&&(!R.cc||R.cc.indexOf(p.cc)>-1)}
-function best(q,r,p){var t=topic(q);if(!t)return null;
-  var C=S.filter(function(s){return s.t===t});if(t===sel.t&&covers(sel,p))return sel;return C.filter(function(s){return covers(s,p)})[0]||null}
-var BACK='<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>';
+function best(q,r,p){var t=topic(q);if(!t)return null;if(t===sel.t&&covers(sel,p))return sel;
+  return S.filter(function(s){return s.t===t&&covers(s,p)})[0]||null}
 var CV='<svg class="cv" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>';
+var RT='<svg class="cv" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg>';
+function nm(c){return c.name.replace(/\s*\(.*\)/,'')}
 var seq=0;
 function go(){var q=qa.value.trim();if(!q){qa.value=sel.q;fit();q=sel.q}clearInterval(tick);var n=++seq;
-  shell(q);$('lvt').innerHTML='<p class="lvs"><span>Reading your ask…</span></p>';
+  shell(q);lstat(tx('Reading your ask…'));impl('<p class="rt">Reading your ask in this browser. Nothing has been sent.</p>',tx('Reading your ask…'));
   L.ready().then(function(){if(n===seq)go1(q)})}
 function go1(q){var r=IRLMatch.parse(q,U.cards);
-  if(r.targets_person||NEAR.test(q)){shell(q);msg('irlpls won’t route this.','Requests that watch or follow a person are refused.',{stop:true});return}
+  if(r.targets_person||NEAR.test(q)){shell(q);msg('irlpls won’t route this.','Requests that watch or follow a person are refused.',{stop:true});
+    impl('<p class="rt">Nothing was called: irlpls refuses asks that watch or follow a person.</p>',tx('Nothing called'));return}
   var p=L.place(q,r),t=topic(q);
-  /* a place nobody can find: say so, and how to fix it (only when the ask needs a place) */
-  if(p.missing==='known'){var s0=t&&t!==sel.t?S.filter(function(s){return s.t===t})[0]:sel;if(s0!==sel)pick(s0,false);live(s0.id,q,r);return}  /* IRLLive.ask says it, with a city it can place */
+  /* a place nobody can find: IRLLive.ask says so, with a city it can place (nothing is fetched) */
+  if(p.missing==='known'){var s0=t&&t!==sel.t?(S.filter(function(s){return s.t===t})[0]||sel):sel;if(s0!==sel)pick(s0,false);live(s0.id,q,r);return}
   var s=best(q,r,p);if(s){if(s!==sel)pick(s,false);live(s.id,q,r);return}
-  /* a live topic with no place: the picked (or topic's) service asks for one */
-  if(t&&p.missing){var s1=t===sel.t?sel:S.filter(function(x){return x.t===t})[0];if(s1!==sel)pick(s1,false);live(s1.id,q,r);return}
+  /* a live topic with no place: the topic's example asks for one */
+  if(t&&p.missing){var s1=t===sel.t?sel:(S.filter(function(x){return x.t===t})[0]||sel);if(s1!==sel)pick(s1,false);live(s1.id,q,r);return}
   plan(q,r,p,t)}
-/* the best matching provider, as Find data ranks them (IRLMatch.score/compare), and its ready call */
-var CAT=null,catP=null;
-/* a street address in the ask fills the call's {STREET_ADDRESS} (the same pattern as Find data, src/app.js) */
-var STREET=/\b\d{1,6}[A-Za-z]?(?:-\d{1,5})?\s+(?:[NSEW]\.?\s+)?[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}?\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Way|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Ter|Terrace|Cir|Circle|Sq|Square|Trl|Trail|Row|Alley|Broadway)\b\.?[^]*$/i;
-function catalog(){return catP||(catP=fetch('catalog.json').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(d){CAT=d.providers||{};return CAT},function(){catP=null;return CAT={}}))}
-function plan(q,r,p,t){shell(q);var t0=$('lvt');
-  var list=U.cards.map(function(c){return{c:c,s:IRLMatch.score(c,r)}}).filter(function(x){return x.s.total>0}).sort(IRLMatch.compare);
-  var top=list[0];
-  if(!top){msg(p.missing?'No provider matches this.':'No free live source covers '+p.name+'.',p.missing?'Try a broader ask.':'No provider in the registry states coverage there yet.');return}
-  t0.innerHTML='<p class="lvs"><span>Finding the call for '+E(top.c.name.replace(/\s*\(.*\)/,''))+'…</span></p>';
-  catalog().then(function(cat){if($('lvt')!==t0)return;var pr=cat[top.c.id]||{};
-    var head=t&&!p.missing?'No free live source covers '+p.name+' for this.':'This one isn’t free to run from a browser.';
-    t0.innerHTML='<p class="lvm"><b>'+E(head)+'</b> The best match is '+E(top.c.name.replace(/\s*\(.*\)/,''))+'. Here is the call your agent would make.</p><div id="lvcall"></div>';
-    var box=$('lvcall');
-    if(window.IRLCall){box.innerHTML=IRLCall.html({provider:top.c.name.replace(/\s*\(.*\)/,''),readiness:pr.readiness||null,price:IRLLabels.priceText(top.c),rc:pr.ready_call||null,text:q,req:r,place:p,street:STREET.exec(q),showLine:true,docs:(pr.api||{}).docs_url});IRLCall.bind(box)}
-    else box.innerHTML='<p class="via">No ready call for this provider yet.</p>';
-    box.insertAdjacentHTML('beforeend','<p class="via"><a class="lnk" href="c/'+E(top.c.id)+'.html">'+E(top.c.name.replace(/\s*\(.*\)/,''))+'’s Capture Card</a></p>');
-    $('lv').classList.add('plan');say(head+' The best match is '+top.c.name+'.')})}
-/* the chat turn: the question, then the answer (or what happened), then the source chip that opens the eight links */
-function shell(q){$('out').innerHTML='<article class="chat glass lv" id="lv" aria-label="Live answer"><p class="you">'+E(q)+'</p><div class="turn" id="lvt"></div>'+
-  '<div class="pvw"><div class="pv" id="lvp" role="region" aria-label="Provenance" inert></div></div></article>'}
+/* the frame: the chat on the left (or first), what irlpls did on the right (or folded below) */
+function shell(q){$('out').innerHTML='<article class="duo glass" id="duo" aria-label="Your ask, and what irlpls did">'+
+  '<div class="chat lv" id="lv" aria-label="What you see"><p class="dk" aria-hidden="true">You see</p><p class="you">'+E(q)+'</p><div class="turn" id="lvt"></div>'+
+  '<div class="pvw"><div class="pv" id="lvp" role="region" aria-label="Provenance" inert></div></div></div>'+
+  '<div class="impl" id="impl" aria-label="What irlpls does"><p class="dk" aria-hidden="true">irlpls does</p><button class="rl" id="rl" type="button" aria-expanded="false" aria-controls="rb"></button><div class="rb" id="rb" hidden></div></div></article>';
+  $('rl').onclick=function(){var o=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',o);$('rb').hidden=!o}}
+function lstat(t){var x=$('lvt');if(x)x.innerHTML='<p class="lvs"><span>'+E(t)+'</span></p>'}
+/* the right side: its body, and its one-line summary (the folded row on a phone) */
+function impl(body,line,ok){var b=$('rb'),l=$('rl');if(!b)return;b.innerHTML=body;
+  l.innerHTML=line+RT}
+function tx(s){return '<span class="u">'+E(s)+'</span>'}
+function host(u){return u.replace(/^https?:\/\//,'').replace(/\?.*$/,'')}
+var LOOK=/monitoring-locations\/items\/|\/mdapi\/|\/points\/|\/stations(\.json)?(\?|$)|\/Place\?/;
+/* the calls this page made for the ask, as they run: the main one (the reading, not a name or station lookup) in the
+   highlighted pane, every one in a short list with its status and time */
+function calls(cs,name,id){if(!cs||!cs.length)return;var main=cs.filter(function(c){return !LOOK.test(c.url)}).pop()||cs[cs.length-1];
+  var st=function(c){return c.status===0?'running…':c.status<0?'failed':c.status+' · '+c.ms+' ms'};
+  var h='<p class="rt">Your agent asks irlpls once; irlpls matched <b>'+E(name)+'</b> and called it, here straight from this browser. No key, no irlpls server.</p>';
+  if(window.IRLCall)h+=IRLCall.html({provider:name,readiness:{state:'ready_now'},price:'Free',free:true,text:curQ,rc:{method:main.method,url:main.url,headers:{},auth:{},safe_to_run_without_approval:true},kicker:'What irlpls sent for you',ran:{status:main.status,ms:main.ms},note:''});
+  if(cs.length>1)h+='<ul class="cls" aria-label="Every call">'+cs.map(function(c){return '<li><span>'+E(c.method+' '+host(c.url))+'</span><b class="'+(c.status>=200&&c.status<300?'ok':'')+'">'+E(st(c))+'</b></li>'}).join('')+'</ul>';
+  impl(h,'<span class="m">'+E(main.method)+'</span><span class="u">'+E(host(main.url))+'</span><span class="s'+(main.status>=200&&main.status<300?' ok':'')+'">'+E(st(main))+'</span>');
+  if(window.IRLCall)IRLCall.bind($('rb'))}
 function msg(b,rest,o){o=o||{};var t=$('lvt');if(!t)return;
   t.innerHTML='<p class="lvm'+(o.stop?' stop':'')+'"><b>'+E(b)+'</b>'+(rest?' '+E(rest):'')+'</p>'+(o.again?'<button class="again" id="again" type="button">Try again</button>':'')+
-    (o.sug?'<button class="again sug" id="sug" type="button">'+E(o.sug)+'</button>':'');say(b);
+    (o.sug?'<button class="again sug" id="sug" type="button">'+E(o.sug)+'</button>':'');say(b+(rest?' '+rest:''));
   if(o.again)$('again').onclick=function(){go()};
   if(o.sug)$('sug').onclick=function(){qa.value=o.sug;fit();go()}}
-function live(id,q,r){shell(q);var t=$('lvt');
-  var slow=0;
-  L.ask(id,q,r,function(line){t.innerHTML='<p class="lvs"><span>'+E(line)+'</span></p>';say(line);
+var curQ='';
+function live(id,q,r){shell(q);curQ=q;var t=$('lvt'),R=L.route(id),slow=0;
+  lstat('Asking irlpls · matching your ask');
+  impl('<p class="rt"><b>'+E(R.name)+'</b>: matched to your ask.</p>',tx('Matching…'));
+  L.ask(id,q,r,function(line){lstat(line);
     /* a slow provider (USGS can take seconds): after 3 s the status says it is still waiting, so the wait reads as one */
-    slow=setTimeout(function(){var s=t.querySelector('.lvs span');if(s&&$('lvt')===t)s.textContent='Still waiting for '+L.route(id).name+'. Public services can take a few seconds…'},3000)}).then(function(x){
+    slow=setTimeout(function(){var s=t.querySelector('.lvs span');if(s&&$('lvt')===t)s.textContent='Still waiting for '+R.name+'. Public services can take a few seconds…'},3000)},
+   function(cs){if($('lvt')===t)calls(cs,R.name,id)}).then(function(x){
     clearTimeout(slow);if($('lvt')!==t)return;
+    if(x.calls&&x.calls.length)calls(x.calls,x.name||R.name,x.id||id);
+    else if(x.kind==='answer')impl('<p class="rt"><b>'+E(x.name)+'</b>: this browser asked it moments ago, and it can’t have a newer reading yet (it updates every '+L.route(x.id).every+' min). No new call made.</p>',tx('Cached · no new call'));
+    else impl('<p class="rt">Nothing was called: '+E(x.head.replace(/\.$/,''))+'.</p>',tx('Nothing called'));
+    /* no free browser source here, but a provider can answer through an agent: its ready call, never a dead end */
+    if(x.kind==='msg'&&x.plan&&U.card(x.plan)){plan(q,r,L.place(q,r),sel.t,x.plan,x.head);return}
     if(x.kind==='msg'){msg(x.head,x.rest,{again:x.again,sug:x.sug});
       if(x.wait){var end=Date.now()+x.wait*1000,a=$('again'),lab=function(s){return s>=90?Math.ceil(s/60)+' min':s+' s'};a.disabled=true;a.textContent='Try again in '+lab(x.wait);
         tick=setInterval(function(){var s=Math.ceil((end-Date.now())/1000),b=$('again');if(!b){clearInterval(tick);return}
@@ -750,11 +794,31 @@ function live(id,q,r){shell(q);var t=$('lvt');
       (rd.photo?'<figure class="att"><div class="media"><img src="'+E(rd.photo)+'" alt="'+E(rd.alt||'')+'"></div></figure>':'')+
       '<div class="cites"><button class="cite" id="lvc" type="button" aria-expanded="false" aria-controls="lvp" title="'+E((rd.checked?'Checked at ':'Reading at ')+L.clock(rd.t))+'" aria-label="'+E('Source: '+x.name+', '+(rd.checked?'checked at ':'reading at ')+L.clock(rd.t)+', '+age+'. '+(c?U.tally(c)+', '+U.who(c)+'. ':'')+'Show provenance')+'"><span class="chip">'+dots+'<span class="nm"><b>'+n+'</b> · '+E(age)+'</span>'+CV+'</span></button></div>'+
       '<p class="via">'+(x.why?n+' answered, not '+E(x.asked)+': '+E(x.why)+'. ':'')+'Fetched by your browser, straight from '+n+'.</p>';
-    $('lvp').innerHTML=U.pane(c,c?c.name.replace(/\s*\(.*\)/,''):x.name,x.id);$('lvp').setAttribute('aria-label','Provenance: '+x.name);
+    $('lvp').innerHTML=U.pane(c,c?nm(c):x.name,x.id);$('lvp').setAttribute('aria-label','Provenance: '+x.name);
     $('lvc').onclick=function(){sheet(this.getAttribute('aria-expanded')!=='true')};
     $('lvp').addEventListener('click',function(e){if(e.target.closest('.px,.pxb'))sheet(false)});
     $('lv').addEventListener('keydown',function(e){if(e.key==='Escape'&&$('lv').classList.contains('pvo')){e.preventDefault();sheet(false)}});
-    say(said.replace(/\.$/,'')+', from '+x.name+'.')}).catch(function(){clearTimeout(slow);if($('lvt')===t)msg(L.route(id).name+' didn’t answer.','It may be down.',{again:true})})}
+    say(said.replace(/\.$/,'')+', from '+x.name+'.')}).catch(function(){clearTimeout(slow);if($('lvt')===t){msg(R.name+' didn’t answer.','It may be down.',{again:true});impl('<p class="rt">'+E(R.name)+' didn’t answer.</p>',tx('No answer'))}})}
+/* the best matching provider in the whole catalogue (IRLMatch.score/compare, as Find data ranks), and its ready call */
+var CAT=null,catP=null;
+/* a street address in the ask fills the call's {STREET_ADDRESS} (the same pattern as Find data, src/app.js) */
+var STREET=/\b\d{1,6}[A-Za-z]?(?:-\d{1,5})?\s+(?:[NSEW]\.?\s+)?[A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+){0,4}?\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Way|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Ter|Terrace|Cir|Circle|Sq|Square|Trl|Trail|Row|Alley|Broadway)\b\.?[^]*$/i;
+function catalog(){return catP||(catP=fetch('catalog.json').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(d){CAT=d.providers||{};return CAT},function(){catP=null;return CAT={}}))}
+function plan(q,r,p,t,prefer,head0){shell(q);var t0=$('lvt');
+  var list=U.cards.map(function(c){return{c:c,s:IRLMatch.score(c,r)}}).filter(function(x){return x.s.total>0}).sort(IRLMatch.compare);
+  var top=prefer&&U.card(prefer)?{c:U.card(prefer)}:list[0];
+  if(!top){msg(p.missing?'No provider matches this.':'No free live source covers '+p.name+'.',p.missing?'Try a broader ask.':'No provider in the registry states coverage there yet.');
+    impl('<p class="rt">Nothing to call: no provider in the registry matches this ask yet.</p>',tx('Nothing called'));return}
+  lstat('Asking irlpls · finding who can do this');
+  impl('<p class="rt"><b>'+E(nm(top.c))+'</b>: the best match in the registry.</p>',tx('Matching…'));
+  catalog().then(function(cat){if($('lvt')!==t0)return;var pr=cat[top.c.id]||{},rc=pr.ready_call||null,key=rc&&rc.auth&&rc.auth.key_name;
+    var head=head0||(t&&!p.missing?'No free live source covers '+p.name+' for this.':'');
+    t0.innerHTML='<p class="lvm">'+(head?'<b>'+E(head)+'</b> ':'')+E(nm(top.c))+' can'+(head?'':' do this')+(head?' answer':'')+' through your agent'+(key?', with a key':'')+'. Here’s the exact call.</p>'+
+      '<p class="via"><a class="lnk" href="c/'+E(top.c.id)+'.html">'+E(nm(top.c))+'’s Capture Card</a></p>';
+    var body='';if(window.IRLCall)body=IRLCall.html({provider:nm(top.c),readiness:pr.readiness||null,price:IRLLabels.priceText(top.c),rc:rc,text:q,req:r,place:p,street:STREET.exec(q),showLine:true,docs:(pr.api||{}).docs_url});
+    impl(body||'<p class="rt">No ready call for this provider yet.</p>',rc?'<span class="m">'+E(rc.method)+'</span><span class="u">'+E(host(rc.url))+'</span><span class="s">your agent</span>':tx('No ready call yet'));
+    if(window.IRLCall)IRLCall.bind($('rb'));
+    say((head?head+' ':'')+nm(top.c)+' can do this through your agent. Here’s the exact call.')})}
 /* the provenance sheet, as on screen 1: it opens from the chip and closes back into it. The card grows first if the
    eight links need more room than the answer takes, so every link shows without scrolling. */
 function fromChip(){var pv=$('lvp'),a=pv.getBoundingClientRect(),c=$('lvc').querySelector('.chip').getBoundingClientRect();if(!a.width)return;
@@ -770,16 +834,18 @@ function sheet(open){var sl=$('lv'),pv=$('lvp'),btn=$('lvc');if(!sl||sl.classLis
 /* say it for screen readers, and keep the answer in view (smoothly, unless motion is reduced) */
 function say(t){var a=$('ann');a.textContent='';setTimeout(function(){a.textContent=t},30);
   if(matchMedia('(pointer: coarse)').matches)qa.blur();
-  /* the field and the answer together when they fit (the field at the top, under the header); else the answer from its top */
-  var r=$('out').getBoundingClientRect(),f=$('ask').getBoundingClientRect(),hb=document.querySelector('.top').getBoundingClientRect().bottom;
+  /* the field and the chat together when they fit (the field at the top, under the header); else the chat from its top */
+  var o=$('lv')||$('out'),r=o.getBoundingClientRect(),f=$('ask').getBoundingClientRect(),hb=document.querySelector('.top').getBoundingClientRect().bottom;
   if(r.bottom>innerHeight-8||r.top<hb)scrollTo({top:scrollY+(r.bottom-f.top<=innerHeight-hb-20?f.top:r.top)-hb-10,behavior:RM?'auto':'smooth'})}
 $('ask').onsubmit=function(e){e.preventDefault();go()};
 /* the world place table loads only when screen 3 comes near (or the field is used) */
 if('IntersectionObserver' in window)new IntersectionObserver(function(es,o){if(es[0].isIntersecting){o.disconnect();L.ready()}},{rootMargin:'400px'}).observe($('try'));else L.ready();
 qa.addEventListener('focus',function(){L.ready()},{once:true});
-/* ?svc=<id> picks a service, ?q= fills the question, &go=1 asks at once (links from Find data and the docs) */
-var P=new URLSearchParams(location.search),s0=S.filter(function(x){return x.id===P.get('svc')})[0];
-pick(s0||sel,true);if(P.get('q')){qa.value=P.get('q').slice(0,200);fit()}
+/* ?svc=<id> picks a service (any free route, not only the examples), ?q= fills the question, &go=1 asks at once (links from Find data and the docs) */
+var P=new URLSearchParams(location.search),s0=byId(P.get('svc'));
+if(s0)touched=true;pick(s0||sel,true);if(P.get('q')){qa.value=P.get('q').slice(0,200);fit()}
+/* tests and links: choose any free route as the picked service */
+window.IRLTry={use:function(id){var s=byId(id);if(s){touched=true;pick(s,false)}return !!s}};
 addEventListener('resize',fit);
 if(P.get('go')==='1')U.on(function(){if(!$('lv'))go()});
 })();
