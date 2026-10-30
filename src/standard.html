@@ -1,0 +1,1965 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>irlpls standard 2026-10-26</title>
+<meta name="description" content="The irlpls 2026-10-26 specification: the Capture Card, discovery, the Request, Policy and Job messages, matching and conformance.">
+<meta name="theme-color" content="#f6f8fb"><meta name="color-scheme" content="light">
+<link rel="canonical" href="https://irlpls.com/standard.html">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/fonts.css"><link rel="stylesheet" href="/style.css">
+<style>html,body{overflow-x:clip}</style></head>
+<body class="doc"><a class="skip" href="#main">Skip to content</a>
+<header class="top ctr"><nav aria-label="Main"><a class="nl" href="find.html">Find data</a><a class="brand" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><a class="nr" href="agents.html">For agents</a></nav></header>
+<div class="spec-wrap">
+<div class="spec-head"><h1>irlpls standard</h1><p>2026-10-26 · draft · private preview</p></div>
+<details class="toc" id="toc"><summary>Contents</summary><nav aria-label="Contents"><ol><li><a href="#abstract">Abstract</a></li><li><a href="#1-terminology">1. Terminology</a></li><li><a href="#2-capture-card">2. Capture Card</a></li><li><a href="#3-guarantees">3. Guarantees</a></li><li><a href="#4-request">4. Request</a></li><li><a href="#5-policy">5. Policy</a></li><li><a href="#6-job-lifecycle">6. Job lifecycle</a></li><li><a href="#7-matching-reference-implementation-informative">7. Matching (reference implementation, informative)</a></li><li><a href="#8-conformance">8. Conformance</a></li><li><a href="#9-non-goals">9. Non-goals</a></li><li><a href="#10-versioning">10. Versioning</a></li><li><a href="#11-known-gaps-2026-10-26">11. Known gaps (2026-10-26)</a></li><li><a href="#12-security-and-privacy-considerations">12. Security and privacy considerations</a></li><li><a href="#13-references">13. References</a></li><li><a href="#14-protocol">14. Protocol</a></li></ol></nav></details>
+<main id="main" class="std">
+<p>Status: draft, private preview. Version <code>2026-10-26</code> (replaces v0.1; Section 10). Capability names: <code>com.irlpls.capture.*</code>. Schemas: <code>schema/*.json</code> and <code>schema/protocol/*.json</code>, to be served at <code>https://irlpls.com/2026-10-26/schemas/</code> and <code>…/schemas/protocol/</code>. Reference implementation: <code>irlpls/</code>.</p>
+<h2 id="abstract">Abstract</h2>
+<p>irlpls is a universal interface for acquiring new observations of the physical world, with a record of where each one came from. It defines a provider description (the Capture Card) and three messages (Request, Policy, Job), so that any requester, broker and provider can interoperate without sharing code, and an optional wire protocol (Section 14) for quoting, ordering and delivery over HTTPS. A Capture Card states, guarantee by guarantee, what a provider can evidence about capture, device or app attestation, signing, time, place, integrity and corroboration, and what it only claims.</p>
+<h2 id="1-terminology">1. Terminology</h2>
+<p>The key words MUST, MUST NOT, SHOULD, SHOULD NOT and MAY are to be interpreted as described in BCP 14 (RFC 2119, RFC 8174) when, and only when, they appear in capitals. Unknown members in any irlpls document MUST be ignored, and unknown enum values MUST be treated as unsupported (Section 10).</p>
+<div class="tbl c2"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Term"><strong>Provider</strong></td>
+<td data-l="Meaning">A source of new observations: people, drones, satellites, cameras, sensors.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Capture Card</strong></td>
+<td data-l="Meaning">A JSON document describing one provider. Schema: <code>capture-card.schema.json</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Requester</strong></td>
+<td data-l="Meaning">An agent, or a person through their agent, that needs an observation.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Broker</strong></td>
+<td data-l="Meaning">Software that turns a Request into a Job: it plans against cards, applies the Policy and calls providers.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Request</strong></td>
+<td data-l="Meaning">What the requester needs, in natural language, plus optional hints. Schema: <code>request.schema.json</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Policy</strong></td>
+<td data-l="Meaning">Rules set by the requester's owner, executed by the broker. Schema: <code>policy.schema.json</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Job</strong></td>
+<td data-l="Meaning">The broker's response to a Request, updated through its lifecycle. Schema: <code>job.schema.json</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Route</strong></td>
+<td data-l="Meaning">How a Job is fulfilled: <code>live</code> (an observation reporting now) or <code>commission</code> (a capture made to order).</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Guarantee</strong></td>
+<td data-l="Meaning">One of seven independent properties a provider may prove about its data (Section 3).</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Level</strong></td>
+<td data-l="Meaning">How a guarantee is supported: <code>evidenced</code>, <code>claimed</code> or <code>none</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Attestation</strong></td>
+<td data-l="Meaning">A record that an independent third party checked a provider's claim.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Standing mandate</strong></td>
+<td data-l="Meaning">A Policy with <code>auto_submit</code> and <code>max_order_usd</code>, under which the broker may place orders without asking.</td>
+</tr>
+<tr>
+<td data-l="
+
+Term"><strong>Adapter</strong></td>
+<td data-l="Meaning">Code in the reference library that calls one provider's API. Not part of the standard.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="2-capture-card">2. Capture Card</h2>
+<p><em>In short: one JSON file per provider, in the provider's own words, with the evidence for each guarantee stated separately.</em></p>
+<p>A Capture Card states what a provider can capture, where, how fast, at what price, under what rights, how to call it, and what it can prove. All claims belong to the provider (or, for unclaimed cards, to the cited public sources). A card has no overall quality score. A broker MUST NOT publish, display or rank by any value that aggregates guarantees across keys as a property of a provider. The only permitted use of several guarantees together is the per-request <code>fit</code> of Section 7, which is a ranking aid for one Job and never a trust score.</p>
+<h3 id="21-required-fields">2.1 Required fields</h3>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Field"><code>id</code></td>
+<td data-l="Type">string, <code>^[a-z0-9-]+$</code></td>
+<td data-l="Meaning">Stable identifier.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>name</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">Provider name.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>summary</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">What the provider does, in plain language.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>status</code></td>
+<td data-l="Type">enum</td>
+<td data-l="Meaning"><code>sample</code> (fictional), <code>unclaimed</code> (compiled from public sources, not confirmed by the provider), <code>provider-maintained</code> (claimed and kept current by the provider), <code>defunct</code> (no longer operating).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>capabilities</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning"><code>modalities</code> (array of <code>photo</code>, <code>video</code>, <code>audio</code>, <code>aerial</code>, <code>sensor</code>, <code>text-report</code>) and <code>tasks</code> (array of strings), both required; <code>capture_types</code> (optional finer kinds: <code>egocentric</code>, <code>depth</code>, <code>mocap</code>, <code>teleoperation</code>, <code>tactile</code>, <code>multispectral</code>, <code>sar</code>, <code>thermal</code>, ...).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>pricing</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning"><code>model</code> (string), <code>from_usd</code> (number, ≥ 0; <code>0</code> means the price is not published, see Section 2.3), <code>unit</code> (string), all required; <code>notes</code> (string) optional.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>latency</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning"><code>typical</code> and <code>notes</code> (strings), both required. Informational: brokers display it; matching uses <code>delivery.speed</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>coverage</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning"><code>regions</code> (array of strings) and <code>notes</code> (string), both required; <code>areas</code> (array of ISO 3166-1 alpha-2 countries or ISO 3166-2 subdivisions, e.g. <code>US</code>, <code>US-WA</code>; <code>["*"]</code> = no country limit stated) optional. When <code>areas</code> is present it decides coverage; the text says how dense.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>licensing</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning"><code>summary</code> (string, required); <code>ai_training</code> and <code>resale</code> (<code>allowed</code> | <code>forbidden</code>; absent = not stated); <code>buyer_owns_output</code> (boolean); <code>vendor_trains_on_data</code> (<code>yes</code> | <code>no</code> | <code>unless_opted_out</code>); <code>terms</code> (booleans <code>commercial_use</code>, <code>redistribution</code>, <code>attribution_required</code>, <code>share_alike</code>, <code>modification</code>; absent = not stated).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>verification</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning">One entry per guarantee. Exactly the seven keys of Section 3, all required; no other key is allowed.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>delivery</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning"><code>modes</code> (array of <code>live</code>, <code>commission</code>; required), <code>speed</code> (<code>minutes</code>, <code>hours</code>, <code>days</code>, <code>weeks</code>, <code>unknown</code>; required; as stated by the provider), <code>basis</code> (string, required; the provider statement the speed rests on), <code>formats</code> (optional: <code>jpeg</code>, <code>mp4</code>, <code>geotiff</code>, <code>cog</code>, <code>stac-item</code>, <code>lerobot</code>, <code>rlds</code>, <code>csv</code>, <code>json</code>, ...).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>updated</code></td>
+<td data-l="Type">string, date</td>
+<td data-l="Meaning">Date the card was last revised.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>spec_version</code></td>
+<td data-l="Type"><code>"2026-10-26"</code></td>
+<td data-l="Meaning">Version of this standard the card follows.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>capability</code></td>
+<td data-l="Type"><code>"com.irlpls.capture.card"</code></td>
+<td data-l="Meaning">The capability this document implements (Section 2.4).</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="22-optional-fields">2.2 Optional fields</h3>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Field"><code>provider_url</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">Provider home page.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>short</code></td>
+<td data-l="Type">string, max 120 chars</td>
+<td data-l="Meaning">One sentence for lists.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>tags</code></td>
+<td data-l="Type">array of strings</td>
+<td data-l="Meaning">Free-form keywords.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>freshness</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning"><code>mode</code> (<code>on_demand</code>, <code>live</code>, <code>archive</code>, <code>mixed</code>), <code>typical_age</code> (string), <code>notes</code> (string). How old delivered observations can be. Informational: matching uses <code>delivery</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>api</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning">How an agent calls the provider, from public docs only: <code>available</code> (boolean), <code>docs_url</code>, <code>base_url</code>, <code>auth</code> (array, every way to authenticate: <code>type</code> [<code>none</code>, <code>api_key_header</code>, <code>api_key_query</code>, <code>bearer</code>, <code>oauth2</code>, <code>basic</code>, <code>other</code>], <code>header</code>, <code>env_var</code>, <code>how_to_get</code>; for <code>oauth2</code> also <code>resource_metadata</code> (RFC 9728 URL), <code>scopes</code>, <code>cimd</code> (boolean: the provider accepts MCP Client ID Metadata Documents, so an agent identifies itself by a URL and a person links an account with one consent; the way the MCP specification of 2026-07-28 recommends), <code>dynamic_registration</code> (boolean: the provider offers RFC 7591 dynamic client registration; <strong>deprecated</strong> for MCP clients by that specification in favour of <code>cimd</code>, kept so cards can state it), <code>pkce</code> (string, the code-challenge method: <code>S256</code> or <code>plain</code>; not a boolean), <code>transport</code> [<code>rest</code>, <code>mcp</code>]), <code>mcp</code> (<code>remote</code>, <code>registry_name</code>, <code>auth</code>, <code>first_party</code>, <code>community</code>), <code>openapi_url</code>, <code>notes</code>, <code>endpoints</code> (array of <code>action</code> [<code>search</code>, <code>order</code>, <code>quote</code>, <code>status</code>, <code>fetch</code>, <code>list</code>], <code>method</code>, <code>path</code>, all required; <code>params</code>, <code>notes</code> optional), <code>sdk</code>, <code>rate_limits</code> (strings), <code>self_serve</code> (boolean: usable without contacting sales).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>access</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning"><code>cost</code> (<code>free</code>, <code>free with key</code>, <code>freemium</code>, <code>paid</code>, <code>quote</code>), <code>key_required</code> (boolean), <code>tested_live</code> (<code>YYYY-MM-DD</code> date string or null: when an irlpls health check last received real data), <code>automation_allowed</code> (boolean: the provider's terms allow agents; <code>false</code> rules it out), <code>gate</code> (<code>none</code>, <code>approval</code>, <code>contract</code>, <code>enterprise</code>: what stands between sign-up and the first call), <code>rate_limit</code> (optional object: the provider's published limit, Section 2.5).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>payment</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning">How a buyer pays the provider directly: <code>methods</code> (<code>card</code>, <code>hosted_checkout</code>, <code>prepaid_balance</code>, <code>invoice</code>, <code>x402</code>, <code>mpp</code>, <code>ucp_checkout</code>, <code>acp_checkout</code>, <code>crypto</code>), <code>agent_rails</code> (the agent payment rails it accepts: <code>x402</code>, <code>mpp</code> (Machine Payments Protocol), <code>spt</code> (Stripe shared payment token), <code>link_card</code> (a one-time card from Stripe Link), <code>card_on_file_api</code> (the API charges the person's stored card or billing method)), <code>agent_can_pay</code> (boolean), <code>prepaid</code> (boolean), <code>notes</code>. irlpls never handles money.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>account</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning">Opening an account with the provider: <code>headless_signup</code> (boolean: an agent can create the account through the API), <code>kyc</code> (<code>none</code>, <code>email</code>, <code>id</code>, <code>business</code>: the strongest check on the buyer before a first order), <code>agent_may_act</code> (<code>allowed</code> boolean and <code>source_url</code>, both required, plus an optional short <code>quote</code>: the provider's terms or docs let, or do not let, an AI agent act or post for the person), <code>notes</code>. Every member is optional and comes only from a cited public source; absent means not stated.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>capture</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning"><code>consent</code> (<code>documented</code>, <code>method</code>, <code>evidence_url</code>, <code>unknown</code>: how the people captured, and bystanders, consent) and <code>worker_pay</code> (<code>model</code>, <code>disclosed</code>, <code>notes</code>) for people-based capture; <code>by</code>: <code>people</code> (the provider's workers or pilots), <code>contributors</code> (a crowd capturing on its own initiative), <code>devices</code> (sensors, cameras, satellites, dashcams) or <code>subject</code> (the person at the place, from a link).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>requester</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning">What the provider checks about who is ordering: <code>checks</code>, <code>unknown</code>. Matters whenever a person is sent to a place.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>expires</code></td>
+<td data-l="Type">string, date</td>
+<td data-l="Meaning">Recommended. After this date the card is stale and brokers skip it; absent means the broker applies its own maximum age. At most a year after <code>updated</code> (a validator checks this; the schema cannot).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>providers</code></td>
+<td data-l="Type">array</td>
+<td data-l="Meaning">Who does what, in STAC's roles: each <code>name</code>, <code>roles</code> (<code>producer</code>, <code>licensor</code>, <code>processor</code>, <code>host</code>, <code>reseller</code>), <code>url</code>. A reseller card names the producers it sells.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>adapter</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">Name of the reference-library adapter, if any.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>sources</code></td>
+<td data-l="Type">array</td>
+<td data-l="Meaning">Each: <code>claim</code> (what the source supports) and <code>url</code>, both required. Required, non-empty, on <code>unclaimed</code> cards.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>attestations</code></td>
+<td data-l="Type">array</td>
+<td data-l="Meaning">Each: <code>verifier</code>, <code>scope</code> (which guarantee or claim was checked), <code>url</code> (all required); <code>result</code> (string), <code>date</code> (date) optional.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>protocol</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning">The provider speaks the wire protocol: <code>versions</code>, <code>endpoint</code> (both required), <code>mcp</code>, <code>jwks_uri</code>, <code>quote</code>, <code>public_quotes</code>, <code>webhooks</code>, <code>cancel</code>, <code>operator</code>, <code>sandbox</code>. Section 14.2; schema <code>protocol/common.json#/$defs/protocol_block</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>provenance</code></td>
+<td data-l="Type">object</td>
+<td data-l="Meaning">Optional: what tracks the result after capture. <code>custody</code> (a record of who held it, with which hash, and when) and <code>receipt</code> (a signed statement over what was delivered), each an entry of Section 3.1. An absent entry counts as not stated.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="23-scope">2.3 Scope</h3>
+<p>Only providers that deliver <strong>new</strong> observations are in scope. A card with empty <code>delivery.modes</code> (archive-only) or <code>status: defunct</code> MUST NOT be matched.</p>
+<p><code>pricing.from_usd: 0</code> means "price not published", not "free": a price ceiling checked against it is a violation, and brokers show it as "quote". Whether a provider is free is stated only by <code>access.cost</code>: it is <strong>free to use</strong> when <code>access.cost</code> is <code>free</code> or <code>free with key</code>; <code>freemium</code> is not free to use. A free feed therefore says <code>access.cost: free</code> and, because it has no price to publish, <code>from_usd: 0</code>; a broker MUST NOT read <code>from_usd: 0</code> as free on its own.</p>
+<h3 id="24-discovery">2.4 Discovery</h3>
+<p>A provider publishes its own card at <code>https://&lt;provider-domain&gt;/.well-known/irlpls</code>. The resource is one card, or <code>{"cards":[...]}</code> when a host publishes several (a marketplace); media type <code>application/json</code>; HTTPS; no redirects; <code>Cache-Control: public</code> with <code>max-age</code> of at least 60 seconds. <code>&lt;provider-domain&gt;</code> is the host named in the card's <code>provider_url</code> (the exact host: <code>www.example.com</code> and <code>example.com</code> are different domains, and a card is <code>provider-maintained</code> only when fetched from the host in its own <code>provider_url</code>). A provider that also runs the Universal Commerce Protocol lists the capability <code>com.irlpls.capture.card</code> in its <code>/.well-known/ucp</code> profile, with <code>config.card</code> set to that URL. Every card not fetched that way is <code>unclaimed</code> and MUST cite sources. A local file claiming <code>provider-maintained</code> is checked against its domain only when fetched by URL.</p>
+<p>A broker MUST skip a card past its <code>expires</code> date and MUST NOT accept a card for a known <code>id</code> from another domain <strong>if it keeps an id-to-domain list</strong>. The list is a reviewed JSON object mapping each provider <code>id</code> to its canonical host (<code>{"skyhop":"skyhop.example"}</code>); keeping one is a SHOULD for a broker, and the MUST binds every broker that claims the "domain-bound" conformance class (Section 8). The reference implementation does not yet keep such a list (Section 11). A broker fetches cards and registries only over HTTPS from public hosts (Section 12), with a response size limit and a timeout, and treats a changed <code>api</code>, <code>payment</code> or <code>access</code> field as needing re-approval before it spends.</p>
+<p><strong>Well-known URI registration (RFC 8615), to be requested from IANA.</strong> URI suffix: <code>irlpls</code>. Change controller: irlpls (hello@irlpls.com until a body exists). Specification: this document, Section 2.4. Status: provisional.</p>
+<h3 id="25-rate-limits-optional">2.5 Rate limits (optional)</h3>
+<p>A card MAY state the provider's published rate limit and fair-use terms in <code>access.rate_limit</code>, for the tier a keyless or default caller gets:</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Member"><code>requests</code>, <code>per_seconds</code></td>
+<td data-l="Type">integers ≥ 1, together</td>
+<td data-l="Meaning"><code>requests</code> allowed per window of <code>per_seconds</code> (60 per minute, 3600 per hour, 86400 per day).</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>scope</code></td>
+<td data-l="Type"><code>per-key</code>, <code>per-ip</code>, <code>per-account</code>, <code>global</code>, <code>unknown</code></td>
+<td data-l="Meaning">What the provider counts against.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>burst</code></td>
+<td data-l="Type">integer ≥ 1</td>
+<td data-l="Meaning">Requests allowed back to back, when stated.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>batch_max</code></td>
+<td data-l="Type">integer ≥ 1</td>
+<td data-l="Meaning">Most items (sites, stations, ids) one request may name, when stated.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>cache_seconds</code></td>
+<td data-l="Type">integer ≥ 1</td>
+<td data-l="Meaning">How long one reading stays current: the provider's stated update interval.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>notes</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">Anything else the provider asks (cache, poll no faster than the data changes, send a contact).</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>source_url</code></td>
+<td data-l="Type">https URL</td>
+<td data-l="Meaning">Where the provider states it. Required whenever a number is given.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>with_key</code></td>
+<td data-l="Type">object, same members</td>
+<td data-l="Meaning">The limit when the caller sends their own key, if different.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Only stated numbers go in, each with its source; an estimate never does. An absent <code>rate_limit</code> (or member) means "not published", not "unlimited". <code>api.rate_limits</code> keeps the provider's own wording.</p>
+<p>Because irlpls has no hosted API, the requester's process calls each provider directly, so its limits apply per requester. A broker SHOULD pace its calls to each provider under the stated limit, and under a conservative default where none is stated (the reference library: 1 request per second, burst 5); SHOULD honour <code>429</code> and <code>503</code> with <code>Retry-After</code>, with a capped backoff, pausing that provider for every caller in the process; SHOULD reuse an identical request's answer within <code>cache_seconds</code>; SHOULD combine many asks to one provider into as few requests as its API allows (within <code>batch_max</code>); and MUST NOT drop asks silently: what a limit leaves unsent is returned as still queued, with a warning naming the limit. Requests SHOULD identify the software and a contact in <code>User-Agent</code>.</p>
+<h2 id="3-guarantees">3. Guarantees</h2>
+<p><em>In short: seven questions about where a result came from, each answered on its own as evidenced, claimed or none (shown to people as Evidenced, Claimed or Not stated). They are the card fields behind the eight provenance links that people see (Real person, Captured locally, Genuine device, Sealed capture, Known timestamp, Tracked in transit, Independently verified, Delivered to you; Section 14.5 and the glossary give the mapping). The glossary names each link and what it cannot show.</em></p>
+<p><code>verification</code> holds exactly seven guarantees. Each is reported separately; a broker MUST NOT combine them into a single score, label or ordering of providers (see Section 2). A guarantee key other than these seven is invalid, and extensions use <code>x-</code> members elsewhere in the card, not new guarantee keys.</p>
+<div class="tbl c2"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Key"><code>human</code></td>
+<td data-l="Question">Did a person whose identity was checked at enrolment, with documented re-verification, do this?</td>
+</tr>
+<tr>
+<td data-l="
+
+Key"><code>application</code></td>
+<td data-l="Question">Was it captured with an app or device that passed a server-verified attestation?</td>
+</tr>
+<tr>
+<td data-l="
+
+Key"><code>camera</code></td>
+<td data-l="Question">Was it signed by a conforming capture product on genuine hardware?</td>
+</tr>
+<tr>
+<td data-l="
+
+Key"><code>time</code></td>
+<td data-l="Question">Did it exist no later than the time it states?</td>
+</tr>
+<tr>
+<td data-l="
+
+Key"><code>location</code></td>
+<td data-l="Question">Does the capture carry a position that was authenticated, not just reported?</td>
+</tr>
+<tr>
+<td data-l="
+
+Key"><code>content</code></td>
+<td data-l="Question">Is it unchanged since signing (integrity), and does it show what it claims (depiction)?</td>
+</tr>
+<tr>
+<td data-l="
+
+Key"><code>corroboration</code></td>
+<td data-l="Question">Do independent sources confirm it?</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Shown as.</strong> Sites and agents label the guarantees for people. The labels map to the keys one to one, and a display MUST NOT merge them:</p>
+<div class="tbl c2"><table>
+<thead>
+<tr>
+<th>Shown as</th>
+<th>Key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Shown as">Person</td>
+<td data-l="Key"><code>human</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Shown as">App</td>
+<td data-l="Key"><code>application</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Shown as">Camera</td>
+<td data-l="Key"><code>camera</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Shown as">Time</td>
+<td data-l="Key"><code>time</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Shown as">Place</td>
+<td data-l="Key"><code>location</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Shown as">Content</td>
+<td data-l="Key"><code>content</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Shown as">Cross-check</td>
+<td data-l="Key"><code>corroboration</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Each entry is an object:</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Field"><code>level</code></td>
+<td data-l="Type"><code>evidenced</code> | <code>claimed</code> | <code>none</code></td>
+<td data-l="Meaning">Required.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>unknown</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">Required. What remains uncertain, in plain words.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>method</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">How the provider supports the guarantee.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>evidence_url</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">Public proof that anyone can check.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>standard</code></td>
+<td data-l="Type"><code>c2pa</code></td>
+<td data-l="Meaning">The provenance standard that makes the guarantee checkable.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>assurance_level</code></td>
+<td data-l="Type">integer</td>
+<td data-l="Meaning">C2PA conformance assurance level of the signing product.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>attestation_methods</code></td>
+<td data-l="Type">array of strings</td>
+<td data-l="Meaning">C2PA attestation strings, e.g. <code>Android_KeyAttestation</code>, <code>Apple_AppAttest</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>conforming_product</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">The product's entry on the C2PA Conforming Products List.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Level semantics:</p>
+<ul>
+<li><strong><code>evidenced</code></strong>: the provider documents its method and publishes proof anyone can check. The entry MUST include <code>method</code> and <code>evidence_url</code> (the schema enforces this). The <code>evidence_url</code> MUST be an <code>https</code> URL on a public host (not a loopback, private, link-local or other RFC 6890 special-purpose address), reachable without a login. The schema checks only the <code>https://</code> prefix; host class and reachability are checked by validators and brokers, which reject any other. A broker or verifier SHOULD record the content hash and retrieval date of what it finds there. <code>evidenced</code> means "checkable by anyone", not "true": no level means a capture is authentic, unmodified or not AI-generated, and no display may say so.</li>
+<li><strong><code>claimed</code></strong>: the provider states a method but publishes no checkable proof. The entry SHOULD include <code>method</code>.</li>
+<li><strong><code>none</code></strong>: not offered, or nothing stated.</li>
+</ul>
+<p><strong>C2PA.</strong> For <code>camera</code>, <code>application</code> and <code>time</code>, the following counts as <code>evidenced</code> evidence:
+- a C2PA manifest that validates as Trusted against the C2PA Trust List;
+- from a product on the C2PA Conforming Products List;
+- with an RFC 3161 time-stamp from an authority on the C2PA TSA Trust List.</p>
+<p><code>time</code> evidenced this way means "signed no later than". <code>location</code> stays <code>claimed</code> unless the capture device itself signs it. A manifest trusted only through the frozen Interim Trust List is <code>claimed</code>. <code>human</code> needs an identity assertion beyond C2PA, and <code>corroboration</code> is outside it.</p>
+<p><strong>What each guarantee can honestly say.</strong> An <code>unknown</code> entry states what the method does not cover.</p>
+<ul>
+<li><strong><code>camera</code></strong>: signed by a conforming capture product on genuine hardware. It does not detect a re-photographed screen or an exploit of the signing path; the card's <code>unknown</code> says so unless a named method addresses each. A card that cites C2PA MUST state how a revoked signer is handled, and validators SHOULD check revocation.</li>
+<li><strong><code>application</code></strong>: <code>evidenced</code> needs a server-verified attestation (for example an Android Key Attestation chain to a current Google root and not revoked, or Apple App Attest), with the app version in <code>method</code>. A display SHOULD show the date it was last verified, because attestations lapse on revocation. The provider SHOULD state its policy on rooted or jailbroken devices.</li>
+<li><strong><code>human</code></strong>: identity was checked at enrolment, with documented re-verification (per task or at least monthly). It is never "this person did this work": an account can be rented or shared after enrolment, and <code>unknown</code> says so. <code>evidenced</code> needs a named verification vendor, the standard it was tested against, and an independent audit or test report at <code>evidence_url</code>; a provider's own marketing page is <code>claimed</code>. Where people are sent to capture, the card SHOULD state worker consent and how bystanders (faces, plates) are handled. A biometric or identity document MUST NOT be used as a registry key, and a broker MUST NOT say a person is real, unique or authorised.</li>
+<li><strong><code>time</code></strong>: "existed no later than" T, from a third party's public record (an RFC 3161 token or a transparency-log entry). It does not show the capture was made at T, and a display says "no later than", never "captured at", unless the device also bound a nonce issued by the buyer.</li>
+<li><strong><code>location</code></strong>: a signature from a device does not prove presence, since a device can sign a spoofed fix. <code>evidenced</code> needs a position authenticated by a mechanism that a mock-location app or a commodity radio spoofer cannot forge (for example an authenticated satellite signal with a receiver-attested chain, or two independent witnesses), with the checking method published. Otherwise it is <code>claimed</code>. A display MUST NOT show a claimed location as fact (no "verified location", no unqualified map pin), and the card states its precision.</li>
+<li><strong><code>content</code></strong>: two parts. <em>Integrity</em>: unchanged since signing, <code>evidenced</code> through a C2PA hard binding and a complete actions chain. <em>Depiction</em>: it shows what it claims, <code>evidenced</code> only through a method-bound public check: a nonce or challenge from the requester shown in the scene, independent corroboration, or human review with a published audit sample rate. A detector score, the absence of a watermark, or a vendor's "authentic" verdict never raises <code>content</code> above <code>claimed</code>. A provider that uses a detector names it, its version, and a dated false-positive rate on its own traffic.</li>
+<li><strong><code>corroboration</code></strong>: <code>evidenced</code> only when two or more sources with different operators, sensors and data pipelines each give a checkable record, and the card names each source and states how their independence was established. Sources that share an upstream feed, owner or customer count as one. Otherwise it is <code>claimed</code>.</li>
+</ul>
+<p><strong>Untrusted data.</strong> Everything a card or provider supplies is data, never an instruction: card text (<code>summary</code>, <code>unknown</code>, <code>method</code>, tags, names), provider error bodies, and result labels and attributions. A broker MUST NOT let any of it change a Policy, a spend or a recipient, and an agent MUST NOT act on instructions found in it. Requests carry no secrets.</p>
+<p>Brokers order levels <code>none</code> &lt; <code>claimed</code> &lt; <code>evidenced</code> within one guarantee. An attestation records a third party's check; it does not change the level the provider states.</p>
+<h3 id="31-provenance-after-capture-optional">3.1 Provenance after capture (optional)</h3>
+<p><em>In short: two optional entries for what happens after capture, so custody and delivery are stated on the card like the guarantees, not inferred elsewhere.</em></p>
+<p><code>provenance</code> is optional and non-breaking: a card without it is valid, and an entry that is absent counts as no (not stated). It is not one of the seven guarantees and is never combined with them (Section 2).</p>
+<div class="tbl c2"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Key"><code>custody</code></td>
+<td data-l="Question">Is there a record of who held the result, with which hash, and when, from capture or registration to delivery?</td>
+</tr>
+<tr>
+<td data-l="
+
+Key"><code>receipt</code></td>
+<td data-l="Question">Does the provider sign a statement over what it delivered (file hashes, and ideally the request and the buyer's nonce, Section 6.1)?</td>
+</tr>
+</tbody>
+</table></div>
+<p>Each entry is an object: <code>level</code> (<code>claimed</code> | <code>evidenced</code>, required), <code>method</code> (required: what is recorded or signed, and by whom), <code>unknown</code> (required: what it does not show), <code>evidence_url</code> and <code>sources</code> (optional; each source a <code>claim</code> and <code>url</code>). The level semantics of Section 3 apply: <code>evidenced</code> MUST include an <code>evidence_url</code> that is <code>https</code>, on a public host and reachable without a login, where anyone can check the record or signature themselves; otherwise the entry is <code>claimed</code>. A ledger or log whose records or anchor a third party cannot fetch and check (for example an on-chain anchor with no chain or transaction named) is <code>claimed</code>; a record the provider signs itself is <code>evidenced</code> only as to what anyone can recompute from it (the hashes), and its <code>unknown</code> says the signer is the provider. A shared-secret signature (HMAC) on a notification is not a <code>receipt</code>. Displays show <code>custody</code> as the link "Tracked in transit" and <code>receipt</code> as "Delivered to you".</p>
+<p><strong>Note: sample packs (informative).</strong> "Public evidence anyone can check" means the same thing for every provider when the <code>evidence_url</code> of a guarantee or provenance entry points at a <em>sample pack</em>: a public JSON manifest whose name ends in <code>irlpls-sample.json</code>, with these members (relative URLs resolve against the manifest's URL; every URL is <code>https</code>, on a public host, without a login):</p>
+<div class="tbl c2"><table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Member"><code>irlpls_sample_pack</code></td>
+<td data-l="Meaning">The standard version, e.g. <code>2026-10-26</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>type</code></td>
+<td data-l="Meaning">The proof type: <code>jws-receipt</code>, <code>jwks</code>, <code>rfc3161</code>, <code>rekor</code>, <code>c2pa</code>, <code>merkle</code>, <code>x509-signature</code> or <code>detached-signature</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>stage</code></td>
+<td data-l="Meaning">The entry it supports, e.g. <code>receipt</code> or <code>time</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>artefact</code></td>
+<td data-l="Meaning">A sample artefact: a delivered file, or the bytes that were signed, time-stamped or logged.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>proof</code></td>
+<td data-l="Meaning">Its proof: a receipt, a time-stamp token, a log entry with its inclusion proof, a Merkle proof, a signature.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>trust_anchor</code></td>
+<td data-l="Meaning">The key or trust anchor: the JWK Set (for receipts it MUST be the card's <code>jwks_uri</code> when the card has one), a public key, the TSA or log certificate or key, or the CA.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>params</code></td>
+<td data-l="Meaning">What a verifier needs and cannot guess, e.g. for <code>merkle</code> the <code>hash</code> (<code>keccak256</code>, <code>sha256</code>), the <code>pair</code> rule (<code>sorted</code>, <code>ordered</code>), the <code>odd</code>-node rule (<code>explicit</code>, <code>duplicate</code>, <code>promote</code>) and the <code>leaf</code> encoding.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>readme</code></td>
+<td data-l="Meaning">How to verify it by hand, step by step, with a command that uses no irlpls code.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>verify</code></td>
+<td data-l="Meaning">Optional: that command on one line.</td>
+</tr>
+</tbody>
+</table></div>
+<p>A sample pack shows that the mechanism works on one public sample. It does not show that every delivery is covered, and a verifier MUST NOT raise a level because a pack verifies. The reference checker (<code>python -m irlpls.conformance &lt;card&gt; --evidence</code>) runs one verifier per type, reports each entry as verified, failed or not checkable with its reasons, and records the hash and retrieval time of everything it read. A validator warns when an <code>evidenced</code> entry's <code>evidence_url</code> is not a sample pack.</p>
+<h2 id="4-request">4. Request</h2>
+<p><em>In short: say what you need in a sentence; everything else is an optional hint.</em></p>
+<p>A Request is natural language first. Only <code>need</code> is required; every other field is a hint the requester already knows.</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Field"><code>need</code></td>
+<td data-l="Type">string, required</td>
+<td data-l="Meaning">What to observe or capture.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>why</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">The decision or purpose it serves. Lets a broker propose substitutes and set tolerances.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>place</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">Place name or address.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>lat</code>, <code>lon</code></td>
+<td data-l="Type">number</td>
+<td data-l="Meaning">Coordinates (-90..90, -180..180).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>country_code</code></td>
+<td data-l="Type">string</td>
+<td data-l="Meaning">Two uppercase letters: an ISO 3166-1 alpha-2 country code.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>within_minutes</code></td>
+<td data-l="Type">integer</td>
+<td data-l="Meaning">Delivery deadline.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>quantity</code></td>
+<td data-l="Type">integer, ≥ 1, default 1</td>
+<td data-l="Meaning">Number of items.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>mode</code></td>
+<td data-l="Type"><code>live</code> | <code>commission</code></td>
+<td data-l="Meaning">Usually inferred by the broker. When set it is a requirement: the broker MUST NOT plan another route.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>terms</code></td>
+<td data-l="Type">array of strings</td>
+<td data-l="Meaning">What the provider must be able to do.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>modalities</code></td>
+<td data-l="Type">array of modality enums</td>
+<td data-l="Meaning">Requested formats (Section 2.1).</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>require</code></td>
+<td data-l="Type">array of guarantee keys</td>
+<td data-l="Meaning">Guarantees whose proof the requester needs.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>max_price_usd</code></td>
+<td data-l="Type">number</td>
+<td data-l="Meaning">Budget hint. Affects fit; it is not a policy limit.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>policy</code></td>
+<td data-l="Type">Policy</td>
+<td data-l="Meaning">Inline policy (Section 5). A broker MUST apply it; a policy passed separately takes precedence.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>targets_person</code></td>
+<td data-l="Type">boolean</td>
+<td data-l="Meaning">The request watches, follows or photographs a specific person. Set by the requester or detected in the need.</td>
+</tr>
+</tbody>
+</table></div>
+<p>A broker MUST add <code>time</code>, <code>location</code> and <code>content</code> to <code>require</code>. A broker SHOULD NOT require its own model: the requester's model writes the need and answers questions. Without <code>mode</code>, the broker infers it (Section 7); the reference parser defaults to <code>commission</code>.</p>
+<h2 id="5-policy">5. Policy</h2>
+<p><em>In short: the requester's owner sets the evidence, rights and spend they accept, once. What a card leaves unstated counts as no.</em></p>
+<p>A Policy is set once by the requester's owner and evaluated against each card. All fields are optional.</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Field"><code>require</code></td>
+<td data-l="Type">object: guarantee key → <code>claimed</code> | <code>evidenced</code></td>
+<td data-l="Meaning">Minimum level per guarantee.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>max_unit_price_usd</code></td>
+<td data-l="Type">number</td>
+<td data-l="Meaning">Ceiling on the card's <code>pricing.from_usd</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>max_order_usd</code></td>
+<td data-l="Type">number</td>
+<td data-l="Meaning">Ceiling on a made-to-order request's quoted total.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>free_only</code></td>
+<td data-l="Type">boolean, default false</td>
+<td data-l="Meaning">Only providers whose card says they are free to use.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>need_ai_training</code></td>
+<td data-l="Type">boolean</td>
+<td data-l="Meaning">Card must state AI training is allowed.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>need_resale</code></td>
+<td data-l="Type">boolean</td>
+<td data-l="Meaning">Card must state resale is allowed.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>allow</code></td>
+<td data-l="Type">array of card ids</td>
+<td data-l="Meaning">Only these providers.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>deny</code></td>
+<td data-l="Type">array of card ids</td>
+<td data-l="Meaning">Never these providers.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>include_unclaimed</code></td>
+<td data-l="Type">boolean, default true</td>
+<td data-l="Meaning">Whether cards not confirmed by the provider may be used.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>auto_submit</code></td>
+<td data-l="Type">boolean, default false</td>
+<td data-l="Meaning">Standing mandate: the broker may confirm orders within <code>max_order_usd</code> without asking. Without <code>max_order_usd</code> it has no effect.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>require_c2pa</code></td>
+<td data-l="Type">boolean, default false</td>
+<td data-l="Meaning">Satisfied only when the card's <code>camera</code> has level <code>evidenced</code> and <code>standard: c2pa</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>min_assurance_level</code></td>
+<td data-l="Type">integer</td>
+<td data-l="Meaning">The <code>camera</code> entry's <code>assurance_level</code> must be at least this. On its own (without <code>require_c2pa</code>) it still requires a stated <code>assurance_level</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Field"><code>allow_person_targeting</code></td>
+<td data-l="Type">boolean, default false</td>
+<td data-l="Meaning">A request with <code>targets_person</code> may go to providers whose <code>capture.by</code> is <code>people</code> or <code>contributors</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Rules:</p>
+<ol>
+<li>A broker MUST evaluate a Policy only against what cards state. An unstated right, an unpublished price checked against a ceiling, or a guarantee below the required level is a <strong>violation</strong>, never a pass.</li>
+<li>A broker MUST NOT send an order that violates the Policy. It MUST report the violations instead, in the Job, without raising: a chosen option that violates the Policy ends the Job <code>failed</code>; a quote over <code>max_order_usd</code> (or with no total to check) leaves it <code>quoted</code>, marked blocked.</li>
+<li>Without a standing mandate, a broker MUST stop every made-to-order request at a quote for a person to approve.</li>
+<li>A broker MUST NOT send a request with <code>targets_person</code> to a provider whose <code>capture.by</code> is <code>people</code> or <code>contributors</code> unless the Policy sets <code>allow_person_targeting</code>. A standing mandate SHOULD NOT cover such requests.</li>
+<li>A broker MUST NOT use a provider whose card says <code>access.automation_allowed: false</code>.</li>
+<li>An open payment mandate (AP2 <code>amount_range</code>, <code>allowed_payees</code>) MAY carry the Policy's money limits to the payment network; rights, proof and denials stay broker checks.</li>
+</ol>
+<h2 id="6-job-lifecycle">6. Job lifecycle</h2>
+<p><em>In short: a Job moves from question to plan to result. Live routes deliver at once; made-to-order requests stop at a quote until someone says yes.</em></p>
+<pre><code>clarifying → proposed
+proposed   → delivered
+proposed   → quoted
+proposed   → submitted
+quoted     → submitted
+submitted  → in_flight | delivered | failed
+in_flight  → in_flight | delivered | failed
+proposed   → failed
+quoted     → failed
+</code></pre>
+<p>To place an order a broker MUST have an idempotency key, from the requester or derived from the Job for a standing mandate, and MUST pass it to the provider when the provider accepts one. A retry with the same key never places a second order.</p>
+<p>A live route goes from <code>proposed</code> straight to <code>delivered</code>. A made-to-order (<code>commission</code>) Job stops at <code>quoted</code> unless a person confirms it or a standing mandate covers it; then it moves to <code>submitted</code>. After that, each status poll maps the provider's own status to <code>in_flight</code>, <code>delivered</code> or <code>failed</code>. A broker MUST NOT invent a provider status: a status it cannot map (or none at all) keeps the Job <code>in_flight</code>, and the provider's status string is reported as sent (<code>provider_status</code>).</p>
+<div class="tbl c2"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+State"><code>clarifying</code></td>
+<td data-l="Meaning">At least one <code>blocking</code> question is open.</td>
+</tr>
+<tr>
+<td data-l="
+
+State"><code>proposed</code></td>
+<td data-l="Meaning">A ranked <code>plan</code> exists; nothing has been sent.</td>
+</tr>
+<tr>
+<td data-l="
+
+State"><code>quoted</code></td>
+<td data-l="Meaning">A made-to-order request was priced (dry run) but not placed, or was blocked by the Policy.</td>
+</tr>
+<tr>
+<td data-l="
+
+State"><code>submitted</code></td>
+<td data-l="Meaning">The provider accepted an order.</td>
+</tr>
+<tr>
+<td data-l="
+
+State"><code>in_flight</code></td>
+<td data-l="Meaning">The provider reports the order in progress, or its status could not be mapped.</td>
+</tr>
+<tr>
+<td data-l="
+
+State"><code>delivered</code></td>
+<td data-l="Meaning"><code>results</code> are present. For a made-to-order Job, the provider reports the order delivered; if its status carries no items, the single result points to the provider's order (<code>kind: order</code>).</td>
+</tr>
+<tr>
+<td data-l="
+
+State"><code>failed</code></td>
+<td data-l="Meaning">No policy-compliant option, the chosen option violates the Policy, or the provider reports the order failed, expired or cancelled. A chosen option with no callable adapter is not a failure: the plan marks it <code>by_hand</code> (Section 7).</td>
+</tr>
+</tbody>
+</table></div>
+<p>Job fields (required: <code>id</code>, <code>state</code>, <code>need</code>, <code>plan</code>):</p>
+<ul>
+<li><code>questions[]</code>: <code>field</code>, <code>ask</code>, <code>blocking</code> (required); <code>why</code>. A broker SHOULD ask only what changes the provider, the price or the feasibility.</li>
+<li><code>plan[]</code>: <code>card_id</code>, <code>route</code>, <code>fit</code> (integer 0–100 or null; this request only), all required; <code>gaps</code> (strings), <code>policy</code> (violations; empty means compliant), <code>proof</code> (the card's levels for <code>time</code>, <code>location</code>, <code>content</code>), <code>name</code>, <code>price</code> (the card's <code>from_usd</code>, null when not published), <code>price_unit</code>, <code>speed</code> (the card's <code>delivery.speed</code>), <code>sdk</code> (reference library: <code>callable</code>, <code>needs_key</code>, <code>needs_wallet</code>, <code>env</code>), <code>continue_url</code> (where a person goes for what an agent can't do: sign up, get a key, ask for a quote), <code>prepared_call</code> and <code>prepared_calls</code> (reference library: the provider's own API call filled in from the ask, per operation <code>read</code>, <code>quote</code>, <code>order</code>, <code>status</code>; credentials only named, never included; <code>safe_to_run_without_approval</code> is false for <code>quote</code> and <code>order</code>).</li>
+<li><code>ruled_out[]</code>: <code>card_id</code>, <code>name</code>, <code>reason</code>, <code>label</code>, <code>why</code>, <code>reasons</code> (every code that applies), <code>continue_url</code> (when an account or key is missing). Codes, best first: <code>policy:&lt;rule&gt;</code>, <code>terms</code> (the provider's terms ban agents), <code>outside_coverage</code>, <code>too_slow</code>, <code>no_match</code>, <code>needs_key</code>.</li>
+<li><code>request</code> (the structured request the broker derived; besides the Request fields it may carry <code>specifics</code>, <code>regions</code>, <code>state</code> and <code>default_proof</code>, see Section 7), <code>why</code>, <code>policy</code> (the Policy applied), <code>choice</code>, <code>quote</code> (the dry run; its <code>price</code> <code>{amount, currency, firm}</code> is firm only in USD, and a price in any other currency stays indicative, unconverted, and fails every USD ceiling), <code>provider_response</code>, <code>status</code> (the provider's last status response), <code>provider_status</code> (its status string, unmapped), <code>approvals</code> (a placed order's second, paid step waiting for a person's explicit, per-order approval, never covered by a standing mandate), <code>log</code>.</li>
+<li><code>results[]</code>: <code>provider</code>, <code>kind</code>, <code>phenomenon_time</code> (when the observed thing happened; date-time or null), all required. Optional:</li>
+<li><code>result_time</code> (when the provider produced the result), <code>retrieved_at</code></li>
+<li><code>lat</code>, <code>lon</code>, <code>value</code>, <code>unit</code>, <code>label</code>, <code>url</code></li>
+<li><code>sensor.kind</code> (<code>device</code>, <code>human</code> or <code>software</code>; SOSA counts people as sensors)</li>
+<li><code>provider_proof</code> (the card's levels at delivery)</li>
+<li><code>c2pa</code> (validation state of delivered media: <code>trusted</code>, <code>valid</code>, <code>well-formed</code>, <code>absent</code>)</li>
+<li><code>receipt</code> (Section 6.1)</li>
+</ul>
+<p>Geospatial results MAY embed a STAC Item.</p>
+<h3 id="61-capture-receipts">6.1 Capture receipts</h3>
+<p><em>In short: an optional signed delivery that binds the files, the time and place, and the buyer's request together. No listed provider issues an irlpls receipt (this section and Section 14.7) yet; three cards claim to sign deliveries their own way (Human For AI, Execution Market, Satellogic: <code>provenance.receipt</code>, level <code>claimed</code>).</em></p>
+<p>A provider MAY sign each delivered item with a key published at its card's <code>protocol.jwks_uri</code> (a JWK Set). Section 14.7 fixes the wire form, the allowed algorithms, the key rules and every check a verifier makes. The receipt is a detached JWS (RFC 7515) over the RFC 8785-canonical JSON of:
+- the SHA-256, media type and size of the item's media file (or of its value document, for a reading);
+- the capture time and place as delivered, and how each was measured;
+- the SHA-256 of the Request the provider priced for the order;
+- the nonce the buyer sent with the order.</p>
+<p>A receipt proves that the key holder made these claims and that they have not changed since; it does not prove the claims are true. Verifiers MUST follow Section 14.7: <code>alg</code> equal to the key's JWK <code>alg</code> (ES256 or EdDSA), <code>jwk</code>, <code>jku</code> and <code>x5u</code> headers ignored, and the key taken only from the card's <code>jwks_uri</code>. A receipt is <code>evidenced</code> as to time only when its hash is covered by an RFC 3161 token or a public transparency-log entry showing it existed before a stated time. Providers retire a key by publishing its <code>not_after</code> date-time and never deleting it. It raises a guarantee to <code>evidenced</code> only when it ties the claim to something independent, for example C2PA, an RFC 3161 time-stamp, the nonce visible in the capture, or a second provider's receipt. Verifiers SHOULD archive the key set, the log inclusion proof and the time-stamp token with each receipt, since keys rotate, and a display shows the checks it ran (signature valid, key listed, proof present) beside the claim.</p>
+<p>Unless the Request sets <code>mode</code>, the requester does not choose the route; a set <code>mode</code> is a requirement. The broker uses <code>live</code> when the request is about now and the card has a live mode; otherwise <code>commission</code> if the card offers it; otherwise <code>live</code>. A card with neither is dropped from the plan.</p>
+<h2 id="7-matching-reference-implementation-informative">7. Matching (reference implementation, informative)</h2>
+<p><em>In short: fit ranks options for one request. It is never a score for a provider.</em></p>
+<p>This section is informative: <code>fit</code> is broker-defined, and a different broker may compute it differently. <code>fit</code> is a per-request ranking aid. It is comparable only within one Job, is never stored on a card or shown as a property of a provider, and is never an overall trust score. <code>fit: null</code> means no fit was computed for that option (for example, a Policy violation ruled it out before matching). The reference computation is in <code>irlpls/match.py</code> (mirrored in <code>src/match.js</code>).</p>
+<p><strong>Parsing</strong> (<code>irlpls/need.py</code>). Without a model, the parser extracts <code>terms</code>, <code>modalities</code>, <code>require</code> (always including <code>time</code>, <code>location</code>, <code>content</code>), deadline, quantity, budget and place. Place names, addresses, states and countries set coverage and are not terms. A term is a <em>specific</em> (weight 0.5) if it follows "photos of" / "clips of" or a spot word ("at", "near", ...), or if no card uses it. <code>mode</code> is <code>live</code> for "now"-type words or a deadline of 60 minutes or less, and <code>commission</code> for quantities above 1 or dataset words. The default is <code>commission</code>.</p>
+<p><strong>Description match <code>d</code></strong> (0–1). Each term weighs 1 (specifics 0.5) and counts if the card's name, summary, tags, tasks or modalities mention it or a mapped concept. A <em>custom-capture</em> card (has the <code>commission</code> mode, and its tasks mention "custom", "upload" or "submission") offering every requested modality earns 0.75 of the weight for specifics it does not mention, except imaging-sensor terms (<code>optical</code>, <code>radar</code>, <code>thermal</code>, <code>allweather</code>): a provider can take a custom task but cannot change its sensor. Each requested modality weighs 1 and counts only if the card lists it and either a term matched, the card is custom-capture, or there are no terms.</p>
+<p><strong>Guarantees <code>g</code></strong> (0–1). Mean over the guarantees in this Request's <code>require</code> only (never all seven): <code>evidenced</code> 1, <code>claimed</code> 0.5, <code>none</code> 0.</p>
+<p><strong>Coverage <code>c</code></strong> (0–1). Mean of the available factors:
+- place: 1 if the card covers the country (and US state), 0 if it clearly does not, 0.5 if unclear. <code>coverage.areas</code> decides when present (<code>*</code> covers everywhere); otherwise regions naming "Global" or "Worldwide" cover everywhere;
+- timing: for <code>live</code>, 1 if the card is live or delivers in minutes, 0.4 for hours, 0 otherwise. For <code>commission</code>, the base is 1 if the card offers <code>commission</code> (0.75 if live only). The base is kept if the stated speed meets the deadline or there is no deadline; it is multiplied by 0.6 if the speed is <code>unknown</code>, and by 0.25 if the speed misses the deadline;
+- price: if <code>max_price_usd</code> is set and the card publishes a nonzero <code>from_usd</code>, 1 if within budget, else 0.</p>
+<p><strong>Total.</strong></p>
+<pre><code>s   = (0.4·1 + 0.4·g + 0.2·c) / W
+fit = round(100 · s · d²)
+</code></pre>
+<p><code>W</code> is the sum of the weights of the parts present; a part that cannot be computed (no terms, no required guarantees, no coverage factor) is left out of both numerator and <code>W</code>, and without a description part there is no <code>d²</code> gate. The description enters the weighted sum as 1; it acts only through the <code>d²</code> gate, so proof and coverage cannot rescue a provider that does not do what was asked. Fit is 0 when <code>d &lt; 0.35</code> or the card does not cover the place. Cards with fit 0 are dropped. For a <code>live</code> request, a card with no <code>live</code> mode whose speed is not <code>minutes</code> has its fit multiplied by 0.85, so a source that can answer now ranks above one that can't.</p>
+<p><strong>Ranking.</strong> By fit, then cards with <code>access.cost: free</code> first (free and keyless, so callable at once; a narrower test than "free to use" in Section 2.3, on purpose), then, as a last tiebreak only, by the proof levels of the guarantees in <code>require</code> (sum of <code>evidenced</code> 2, <code>claimed</code> 1). That sum is never shown, stored or published, and it never outranks fit. After it, a card published by its provider (<code>provider-maintained</code>) goes before a compiled one; publishing adds no fit, and placement is never paid for. The broker's default choice is the best policy-compliant option with a callable adapter when one is within 15 fit points of the top (10 on a live route); otherwise the top option wins even without an adapter, and the plan marks it <code>by_hand</code> (a message, the provider's docs and its documented endpoint: the person orders it from the provider directly). Among callable options, one that needs no API key wins if it is within 5 fit points of the lead (10 on a live route, where an answer now beats a slightly better match that first needs an account). Last, <strong>one-yes readiness</strong> breaks a near-tie within 5 fit points: a provider the person can use with one yes goes before one that needs an account first, and never before a much better fit.</p>
+<p><strong>One-yes readiness</strong> (derived from the card, never stored on it; <code>irlpls/readiness.py</code>). <code>contract</code> if <code>access.gate</code> is <code>approval</code>, <code>contract</code> or <code>enterprise</code>, or the terms do not let an agent act (<code>access.automation_allowed</code> or <code>account.agent_may_act.allowed</code> is false); else <code>ready_now</code> if <code>access.key_required</code> is false, or <code>payment.agent_rails</code> has <code>x402</code> or <code>mpp</code> and <code>account.headless_signup</code> is true and <code>account.agent_may_act.allowed</code> is true; else <code>one_consent</code> if <code>account.agent_may_act.allowed</code> is true and an <code>oauth2</code> method has <code>cimd</code> or <code>dynamic_registration</code>, or <code>account.headless_signup</code> is true; else <code>account_first</code>. An unstated field never moves a provider up. A broker shows it in each plan option as a plain line ("One sign-in the first time.", "Needs an account first.").</p>
+<p>Each match explains itself through <code>parts</code> (<code>description</code>, <code>matched</code>, <code>custom</code>, <code>specifics</code>, <code>guarantees</code>, <code>missing</code>, <code>claimed_only</code>, <code>coverage</code>) and <code>gaps</code>.</p>
+<h2 id="8-conformance">8. Conformance</h2>
+<p><em>In short: a provider conforms by publishing one valid card at a known address.</em></p>
+<p><strong>What a provider implements.</strong> Serve one valid Capture Card at <code>https://&lt;your-domain&gt;/.well-known/irlpls</code> (HTTPS, <code>application/json</code>, no redirects, <code>Cache-Control: public, max-age=60</code> or more). That alone is conformant: Request, Policy and Job are broker messages, and a provider never receives or produces them. Brokers read your card and call your own API (<code>api.endpoints</code>) in your own format. Start from <code>docs/examples/minimal-card.json</code> and run <code>irlpls validate</code>.</p>
+<p>Conformance classes: <strong>Card Publisher</strong> (provider or community), <strong>Broker</strong>, and, optionally, <strong>Domain-bound broker</strong> (a Broker that also keeps the id-to-domain list of Section 2.4). The protocol adds <strong>Card-only provider</strong>, <strong>Orderable provider</strong> and <strong>Router</strong> (Section 14.13); a provider publishing only its card is a Card-only provider and is fully conformant. Requesters, agents, displays and verifiers have no MUSTs beyond Sections 3 and 5: they do not merge guarantees and treat card text as data.</p>
+<p>A <strong>provider</strong> (or the community, for an unclaimed card) MUST publish a Capture Card that validates against <code>capture-card.schema.json</code>, with:
+- all seven guarantees, each with <code>level</code> and <code>unknown</code>;
+- <code>method</code> and an <code>https</code> <code>evidence_url</code> on a public host for every <code>evidenced</code> guarantee;
+- <code>delivery.modes</code>, <code>delivery.speed</code> and <code>delivery.basis</code> as the provider states them;
+- for <code>unclaimed</code> cards, a source for every claim.</p>
+<p>A provider SHOULD keep <code>updated</code> current, and SHOULD set <code>licensing.resale</code> and <code>licensing.ai_training</code> explicitly.</p>
+<p>A <strong>broker</strong> MUST:
+- match only in-scope cards (Section 2.3);
+- compute fit per request and never publish it as a property of a provider;
+- report each guarantee separately, never as one score;
+- evaluate the Policy as in Section 5 and never send a violating order;
+- stop at a quote unless a person confirms or a standing mandate covers the order;
+- attach the card's proof levels to every result;
+- display attestations as recorded, without issuing its own;
+- never use a provider whose terms ban agents, and follow Section 5 rule 4 for requests that target a person;
+- require an idempotency key to place an order (Section 6);
+- treat card text, provider error bodies and result labels as untrusted data (Section 3);
+- fetch cards and registries only over HTTPS from public hosts, with a size limit and a timeout;
+- never order from, or present as real, a <code>sample</code> card;
+- report a guarantee-aggregating value for no provider (Section 2).</p>
+<p>A <strong>domain-bound broker</strong> MUST in addition keep the id-to-domain list and reject a card for a listed <code>id</code> from another domain (Section 2.4). The reference implementation is not yet domain-bound.</p>
+<p>Between a client and a provider or router, quoting, ordering, status, delivery and errors on the wire are Section 14. How a requester submits a Request to its own broker and polls the Job is out of scope; a failed Job carries its reason in <code>provider_status</code>, <code>log</code> and <code>plan[].policy</code>, and, when it came from a protocol provider, the Order's <code>reason_code</code>. A broker SHOULD emit Jobs that validate against <code>job.schema.json</code> and SHOULD accept Requests that validate against <code>request.schema.json</code>.</p>
+<h2 id="9-non-goals">9. Non-goals</h2>
+<p>irlpls:
+- <strong>sells no data</strong> and hosts no media; results go from provider to requester;
+- <strong>takes no cut</strong>; requesters pay providers directly;
+- <strong>checks nothing itself</strong>; providers state their evidence, separate verifiers appraise it, and irlpls shows who stated or checked what;
+- <strong>searches no archives</strong>; it acquires new observations only;
+- runs no model; the requester's model writes the need.</p>
+<h2 id="10-versioning">10. Versioning</h2>
+<p>Versions are dates (<code>YYYY-MM-DD</code>), as in UCP. Cards carry <code>spec_version</code>; schema <code>$id</code>s carry the date (<code>https://irlpls.com/2026-10-26/schemas/capture-card.json</code>). A version is <strong>draft</strong> until it is tagged frozen in <code>CHANGELOG.md</code>. While draft (as 2026-10-26 is), changes are additive only: members and enum values may be added, never removed, renamed or tightened. A version is <strong>frozen</strong> when its changelog entry says so, from which point its text and schemas are immutable and any change, even additive, takes a new date. Removing or renaming a field always needs a new date and a migration note here. Consumers MUST ignore unknown members and MUST treat unknown enum values as unsupported (skip the card or option, never guess). Extensions use members named <code>x-&lt;reverse-dns&gt;</code> (for example <code>x-com.example.rating</code>); they carry no standard meaning. A broker that pins UCP pins a commit, since UCP's version tags move.</p>
+<p><strong>2026-10-26 (from v0.1):</strong>
+- <code>licensing.ai_training</code> and <code>resale</code> change from booleans to <code>allowed</code>/<code>forbidden</code>.
+- <code>api.auth</code> changes from an object to an array, and its <code>oauth</code> type is renamed <code>oauth2</code>.
+- <code>results[].observed_at</code> is renamed <code>phenomenon_time</code>.
+- Added:
+  - on cards: <code>capability</code>, <code>expires</code>, <code>coverage.areas</code>, <code>api.mcp</code>, <code>api.auth[].cimd</code>, <code>payment</code> (and <code>payment.agent_rails</code>), <code>account</code>, <code>capture</code>, <code>requester</code>, <code>access.automation_allowed</code> and <code>access.gate</code>, the C2PA fields on guarantees, and discovery (Section 2.4);
+  - in the Policy: <code>require_c2pa</code>, <code>min_assurance_level</code> and <code>allow_person_targeting</code>;
+  - in the Request: <code>targets_person</code>;
+  - in the Job: idempotency keys, <code>continue_url</code>, the <code>terms</code> reason, and the result fields <code>result_time</code>, <code>retrieved_at</code>, <code>sensor</code>, <code>c2pa</code> and <code>receipt</code>.
+  - the optional wire protocol (Section 14): the card member <code>protocol</code> and the schemas in <code>schema/protocol/</code>.</p>
+<p><code>tools/migrate_v02.py</code> migrates v0.1 cards.</p>
+<h2 id="11-known-gaps-2026-10-26">11. Known gaps (2026-10-26)</h2>
+<p><em>In short: what this version does not yet cover, listed so no one has to discover it.</em></p>
+<ul>
+<li><strong>Signing cards</strong> (as A2A signs agent cards) is not yet specified. A provider-maintained card rests on HTTPS from the provider's domain.</li>
+<li><strong>Receipts</strong> are optional. No listed provider issues an irlpls receipt yet; three cards claim their own signed deliveries (level <code>claimed</code>, none checkable against the Section 14.7 rules).</li>
+<li><strong>The protocol (Section 14) has no provider implementation yet.</strong> The reference adapters are being turned into in-process shims; whether a hosted router may ever place orders is open (Section 14.11 allows it only in the agent's own process).</li>
+<li><strong>Between a requester and its own broker</strong>, submitting a Request and polling a Job has no wire format; a broker API that is not a router (Section 14) is out of scope.</li>
+<li><strong>Handing a quote to a provider's UCP or ACP checkout</strong> is not yet specified; <code>payment.methods</code> names the rails.</li>
+<li><strong>Reported by the security review</strong>, not yet fixed in the standard or the reference code:</li>
+<li>The reference broker keeps no id-to-domain list (Section 2.4), so it is not domain-bound: a lookalike domain can publish a card for a known provider; there is no card hash pinning or change alert.</li>
+<li>Fit rewards a card's own description (<code>d</code> is squared), so keyword stuffing is cheap; <code>claimed</code> earns half the weight of <code>evidenced</code>.</li>
+<li>The person-targeting filter is a fixed-verb text match in English and is a speed bump, not a guarantee; repeated made-to-order requests to one address are not limited.</li>
+<li>A standing mandate caps each order, not cumulative spend, and <code>spec</code> on submit is free-form.</li>
+<li>Place strings go to a geocoder, and adapter calls (providers without the protocol) carry the exact place. Protocol quotes from a router are coarsened (Section 14.12), but free text such as <code>need</code> is sent as written.</li>
+<li><code>evidence_url</code> is checked only for form: no one fetches it, hashes it or checks that it is stable.</li>
+<li><code>human</code> has no structured fields (enrolment check, re-verification, injection defence, uniqueness scope) and <code>time</code> and <code>location</code> have no <code>bound</code> or <code>precision</code> fields; <code>content</code> is one key although it holds integrity and depiction.</li>
+<li>Receipts are not logged centrally, and revocation is only a key's <code>not_after</code>; no revocation list is checked.</li>
+<li>Outbound requests are checked before connecting (an unresolvable name is refused), not pinned to the checked address, so DNS rebinding is not fully excluded.</li>
+<li><strong>Not specified:</strong> a Job field for a Policy-blocked quote (the protocol carries it as a <code>policy:&lt;rule&gt;</code> problem, Section 14.9).</li>
+<li><strong>No hosted broker exists</strong>, so agents use the reference library or call providers directly.</li>
+</ul>
+<p><code>docs/BROKER.md</code> is a non-normative design note written before v0.1. Its lifecycle words map onto Section 6 as: <code>draft</code> is a Request not yet sent; <code>authorized</code> is <code>submitted</code> (a person confirmed, or a standing mandate covered it); <code>partial</code> is not a state (a partly delivered made-to-order Job stays <code>in_flight</code>). This document and the schemas govern.</p>
+<h2 id="12-security-and-privacy-considerations">12. Security and privacy considerations</h2>
+<p>Summary of the threats and the rules above that answer them. What the reference library actually sends, and to whom: <code>docs/PRIVACY.md</code>.</p>
+<ul>
+<li><strong>Cards are untrusted input.</strong> Card text, provider error bodies and result labels can carry prompt injection or tool poisoning. They are data, never instructions (Section 3); a broker MUST NOT let them change a Policy, spend or recipient.</li>
+<li><strong>Fake and lookalike cards.</strong> Anyone can host a card on a fresh or lookalike domain. HTTPS from the card's own <code>provider_url</code> proves only control of that domain, so <code>provider-maintained</code> is not a trust signal. Mitigations: the id-to-domain list (Section 2.4), <code>unclaimed</code> for everything else, a person approving the first order to a new payee, and <code>allow</code> lists for automatic spend. A changed <code>api</code>, <code>payment</code> or <code>access</code> field (rug pull) needs re-approval. Card signing and hash pinning are not yet specified (Section 11).</li>
+<li><strong>Outbound fetches (SSRF).</strong> A broker fetches card, registry, <code>evidence_url</code> and provider URLs only over HTTPS, from public hosts (not loopback, private, link-local, multicast or other RFC 6890 special-purpose addresses, also after DNS resolution), without following redirects to a different host, with size and time limits and bounded decompression. A broker SHOULD pin the connection to the checked address, since checking before connecting does not exclude DNS rebinding.</li>
+<li><strong>Self-description gaming.</strong> <code>fit</code> rewards a card's own words; keyword stuffing is cheap. <code>fit</code> is therefore a ranking aid only, <code>claimed</code> is not <code>evidenced</code>, and no display may present either as authenticity.</li>
+<li><strong>Spend.</strong> A standing mandate caps each order, not cumulative spend; a broker SHOULD also cap per period. Free-form <code>spec</code> on submit is a data channel: a broker SHOULD send only the fields its plan produced and MUST NOT let <code>spec</code> change recipient, delivery address or payee. Idempotency keys (Section 6) prevent double orders.</li>
+<li><strong>Abuse.</strong> Capture made to order can surveil people. <code>targets_person</code> filtering (Section 5 rule 4) is a speed bump on English text, not a guarantee; providers' <code>requester</code> field says what they check, and a broker SHOULD log requester and target place for the requester.</li>
+<li><strong>Privacy.</strong> Place names, addresses and coordinates go to a geocoder and to every provider asked. A broker SHOULD coarsen them (coordinates to a 0.01° grid, no address) until a person has chosen a provider, and Requests carry no secrets. What the protocol can and cannot promise is in Section 14.12. A biometric or identity document MUST NOT be used as a registry key (Section 3).</li>
+<li><strong>Receipts and keys.</strong> Section 6.1 rules on algorithms, header handling and key sources apply; keys rotate, so archive the key set with each receipt.</li>
+<li><strong>Evidence.</strong> <code>evidenced</code> means checkable by anyone, not true. A verifier SHOULD record the hash and retrieval date of an <code>evidence_url</code>, since content at a URL can change.</li>
+</ul>
+<h2 id="13-references">13. References</h2>
+<p>Normative: BCP 14 (RFC 2119, RFC 8174); RFC 3161 (time-stamp protocol); RFC 3339 (date-times); RFC 6454 (origins); RFC 7515 (JWS); RFC 7517 (JWK); RFC 7518 (JWA: ES256); RFC 8037 (EdDSA in JOSE); RFC 8615 (well-known URIs); RFC 8785 (JSON canonicalization); RFC 9110 (HTTP semantics); RFC 9457 (problem details); RFC 9535 (JSONPath); ISO 3166-1 and -2; ISO 4217 (currency codes); JSON Schema 2020-12; draft-ietf-httpapi-idempotency-key-header-08 (Idempotency-Key); Standard Webhooks (webhook headers and <code>v1a</code> signatures).</p>
+<p>Informative: RFC 6750 (bearer tokens); RFC 6890 (special-purpose addresses); RFC 7591 (dynamic client registration, deprecated for MCP clients); MCP specification 2026-07-28, authorization: client registration (Client ID Metadata Documents); RFC 9421 (HTTP message signatures); RFC 9728 (protected resource metadata); STAPI; Model Context Protocol; C2PA specification, Conforming Products List and Trust Lists; Universal Commerce Protocol (UCP); AP2; STAC; SOSA/SSN.</p>
+<h2 id="14-protocol">14. Protocol</h2>
+<p><em>In short: six HTTPS+JSON operations (discover, quote, order, status, deliver, cancel) that let any client order from any provider that implements them, with the same shapes at a provider and at a router. Optional: a card alone stays conformant.</em></p>
+<p>This section is normative. Its message shapes are fixed by the schemas in <code>schema/protocol/</code>, served at <code>https://irlpls.com/2026-10-26/schemas/protocol/</code>:</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Schema</th>
+<th><code>$id</code> suffix</th>
+<th>Defines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Schema"><code>common.schema.json</code></td>
+<td data-l="$id suffix"><code>protocol/common.json</code></td>
+<td data-l="Defines"><code>money</code>, <code>idempotency_key</code>, <code>proof_levels</code>, the eight provenance links, <code>provenance</code>, <code>party</code>, <code>receipt</code>, <code>receipt_payload</code>, <code>jwk</code> and <code>jwk_set</code>, the card's <code>protocol</code> block, <code>question</code>, <code>ruled_out</code>, <code>code</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Schema"><code>quote.schema.json</code></td>
+<td data-l="$id suffix"><code>protocol/quote.json</code></td>
+<td data-l="Defines">Quote request, <code>constraints</code>, <code>offer</code>, Quote.</td>
+</tr>
+<tr>
+<td data-l="
+
+Schema"><code>order.schema.json</code></td>
+<td data-l="$id suffix"><code>protocol/order.json</code></td>
+<td data-l="Defines">Order request (accepted offer, or direct).</td>
+</tr>
+<tr>
+<td data-l="
+
+Schema"><code>status.schema.json</code></td>
+<td data-l="$id suffix"><code>protocol/status.json</code></td>
+<td data-l="Defines">The Order resource, its states, <code>order_list</code> and the webhook event.</td>
+</tr>
+<tr>
+<td data-l="
+
+Schema"><code>delivery.schema.json</code></td>
+<td data-l="$id suffix"><code>protocol/delivery.json</code></td>
+<td data-l="Defines">Delivery, its items and per-item provenance.</td>
+</tr>
+<tr>
+<td data-l="
+
+Schema"><code>problem.schema.json</code></td>
+<td data-l="$id suffix"><code>protocol/problem.json</code></td>
+<td data-l="Defines">Every error (RFC 9457 problem details).</td>
+</tr>
+</tbody>
+</table></div>
+<p>The schemas carry every shape rule this text states; where the two still disagree, this text governs. The background, worked examples and open questions are in <code>docs/protocol/PROTOCOL-DRAFT.md</code> (informative).</p>
+<h3 id="141-roles">14.1 Roles</h3>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Speaks the protocol as</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Role"><strong>Provider</strong></td>
+<td data-l="Speaks the protocol as">server</td>
+<td data-l="Notes">Its card's <code>protocol.endpoint</code> is its base URL. A provider never receives a Policy.</td>
+</tr>
+<tr>
+<td data-l="
+
+Role"><strong>Router</strong></td>
+<td data-l="Speaks the protocol as">server and client</td>
+<td data-l="Notes">A Broker that quotes on the protocol: it plans against cards, applies the Policy locally and fans quotes out to providers. Its offers point at each provider's own <code>order_url</code> and quote.</td>
+</tr>
+<tr>
+<td data-l="
+
+Role"><strong>Shim</strong></td>
+<td data-l="Speaks the protocol as">server</td>
+<td data-l="Notes">Puts the protocol in front of a provider's proprietary API, in process (the reference library), at the provider, or at a disclosed third party (<code>protocol.operator</code>).</td>
+</tr>
+<tr>
+<td data-l="
+
+Role"><strong>Client</strong></td>
+<td data-l="Speaks the protocol as">client</td>
+<td data-l="Notes">An agent, or a router acting for one.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="142-discovery">14.2 Discovery</h3>
+<p><code>discover</code> is the card fetch of Section 2.4. A card whose provider speaks the protocol carries the optional member <code>protocol</code> (<code>common.json#/$defs/protocol_block</code>):</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Member"><code>versions</code></td>
+<td data-l="Type">array of dates, required</td>
+<td data-l="Meaning">Protocol versions served, e.g. <code>["2026-10-26"]</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>endpoint</code></td>
+<td data-l="Type"><code>https</code> URL, required</td>
+<td data-l="Meaning">Base URL, no trailing slash. MUST be on the same registrable domain as <code>provider_url</code>, as the Public Suffix List defines it (ICANN and PRIVATE sections; equal hosts always match).</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>mcp</code></td>
+<td data-l="Type"><code>https</code> URL</td>
+<td data-l="Meaning">A remote MCP server exposing the tools of Section 14.10.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>jwks_uri</code></td>
+<td data-l="Type"><code>https</code> URL</td>
+<td data-l="Meaning">JWK Set (<code>common.json#/$defs/jwk_set</code>) holding the provider's receipt and webhook keys. MUST be same-origin with <code>provider_url</code>. REQUIRED when <code>webhooks</code> is true or the provider signs receipts.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>quote</code></td>
+<td data-l="Type"><code>required</code> | <code>optional</code></td>
+<td data-l="Meaning"><code>required</code>: every order that could cost anything needs a firm <code>quote_id</code>. An order could cost anything unless its total is known to be <code>"0"</code> before it is placed (a firm offer of <code>"0"</code>, or a live reading the card says is free).</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>public_quotes</code></td>
+<td data-l="Type">boolean</td>
+<td data-l="Meaning">Quotes need no credentials. Orders are always authenticated.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>webhooks</code></td>
+<td data-l="Type">boolean</td>
+<td data-l="Meaning">The provider sends webhook events (Section 14.8).</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>cancel</code></td>
+<td data-l="Type">boolean</td>
+<td data-l="Meaning">The provider implements cancel.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>operator</code></td>
+<td data-l="Type">party</td>
+<td data-l="Meaning">Set when a shim, not the provider, runs the endpoint: who runs it (<code>name</code>, <code>role: shim</code>, <code>url</code>) and, when it signs, <code>jwks_uri</code> (same-origin with <code>operator.url</code>) for its own keys.</td>
+</tr>
+<tr>
+<td data-l="
+
+Member"><code>sandbox</code></td>
+<td data-l="Type">boolean</td>
+<td data-l="Meaning">The endpoint is a test endpoint: orders placed there never dispatch anyone and never charge. A production endpoint MUST NOT set it.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Every key in a JWK Set served here has <code>kid</code> (unique in the set), <code>alg</code> (<code>ES256</code> with an EC P-256 key, or <code>EdDSA</code> with an OKP Ed25519 key) and <code>irlpls_use</code>. irlpls registers two JWK members: <code>irlpls_use</code> (<code>receipt</code>: verifies receipts only; <code>webhook</code>: verifies webhook signatures only, always <code>EdDSA</code>) and <code>not_after</code> (an RFC 3339 date-time after which nothing the key signs is accepted). Keys retire with <code>not_after</code> and are never deleted. A UCP provider publishes these keys at a JWK Set URL; <code>keys[]</code> inside <code>/.well-known/ucp</code> is not used.</p>
+<p>A client MUST NOT use a protocol endpoint from a card that was not fetched from its provider's domain, unless its user accepts the card as <code>unclaimed</code> (Section 2.4). Before it orders, a client MUST refetch the card (honouring its <code>Cache-Control: max-age</code>) and MUST ask the person again if <code>endpoint</code>, <code>jwks_uri</code> or <code>operator</code> changed since the quote (the rug-pull rule of Section 12).</p>
+<h3 id="143-operations">14.3 Operations</h3>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Op</th>
+<th>HTTP</th>
+<th>Success</th>
+<th>Side effects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Op">discover</td>
+<td data-l="HTTP"><code>GET https://&lt;provider-domain&gt;/.well-known/irlpls</code></td>
+<td data-l="Success">200 card</td>
+<td data-l="Side effects">none</td>
+</tr>
+<tr>
+<td data-l="
+
+Op">quote</td>
+<td data-l="HTTP"><code>POST {endpoint}/quotes</code></td>
+<td data-l="Success">201 Quote, <code>Location: {endpoint}/quotes/{id}</code></td>
+<td data-l="Side effects">none: no money, no dispatch</td>
+</tr>
+<tr>
+<td data-l="
+
+Op">(read quote)</td>
+<td data-l="HTTP"><code>GET {endpoint}/quotes/{id}</code></td>
+<td data-l="Success">200 Quote</td>
+<td data-l="Side effects">none</td>
+</tr>
+<tr>
+<td data-l="
+
+Op">order</td>
+<td data-l="HTTP"><code>POST {endpoint}/orders</code> with <code>Idempotency-Key</code></td>
+<td data-l="Success">202 Order with <code>Location</code> and <code>Retry-After</code>; 200 Order when already <code>delivered</code> (a live reading)</td>
+<td data-l="Side effects"><strong>may cost money and may dispatch a person</strong></td>
+</tr>
+<tr>
+<td data-l="
+
+Op">(find orders)</td>
+<td data-l="HTTP"><code>GET {endpoint}/orders?client_reference=&lt;ref&gt;</code></td>
+<td data-l="Success">200 <code>{orders}</code> (<code>status.json#/$defs/order_list</code>): this client's orders with that reference, newest first</td>
+<td data-l="Side effects">none</td>
+</tr>
+<tr>
+<td data-l="
+
+Op">status</td>
+<td data-l="HTTP"><code>GET {endpoint}/orders/{id}</code></td>
+<td data-l="Success">200 Order, with <code>Retry-After</code> while not terminal</td>
+<td data-l="Side effects">none</td>
+</tr>
+<tr>
+<td data-l="
+
+Op">deliver</td>
+<td data-l="HTTP"><code>GET {endpoint}/orders/{id}/delivery</code></td>
+<td data-l="Success">200 Delivery in every state (<code>items: []</code> before the first, <code>complete: false</code> until <code>delivered</code>)</td>
+<td data-l="Side effects">none</td>
+</tr>
+<tr>
+<td data-l="
+
+Op">cancel</td>
+<td data-l="HTTP"><code>POST {endpoint}/orders/{id}/cancel</code> with <code>Idempotency-Key</code></td>
+<td data-l="Success">200 Order (the state may still be <code>in_flight</code>)</td>
+<td data-l="Side effects">may stop work; refunds follow the provider's terms</td>
+</tr>
+</tbody>
+</table></div>
+<p>discover, quote, find, status and deliver MUST NOT cost money or dispatch anyone.</p>
+<p><strong>Problem or Order.</strong> A problem from <code>POST /orders</code> means no order exists and nothing was charged. Once the provider has created an order, it answers with that Order, and every later failure is <code>state: failed</code> with a <code>reason_code</code>:</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Answer</th>
+<th>Order exists</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Situation">Body, version, <code>Content-Length</code> or idempotency fault</td>
+<td data-l="Answer"><code>400</code>, <code>411</code>, <code>413</code>, <code>415</code> or <code>422</code> problem</td>
+<td data-l="Order exists">no</td>
+</tr>
+<tr>
+<td data-l="
+
+Situation">Credentials, scope, account, payment, terms</td>
+<td data-l="Answer"><code>401</code>, <code>402</code> or <code>403</code> problem</td>
+<td data-l="Order exists">no</td>
+</tr>
+<tr>
+<td data-l="
+
+Situation">Unknown quote or offer; the quote lapsed before the order (<code>quote_expired</code>)</td>
+<td data-l="Answer"><code>404</code> or <code>410</code> problem</td>
+<td data-l="Order exists">no</td>
+</tr>
+<tr>
+<td data-l="
+
+Situation"><code>quote_required</code>, <code>needs_input</code>, <code>no_match</code>, <code>outside_coverage</code>, <code>too_slow</code>, <code>over_max_total</code>, <code>rights_unavailable</code>, <code>proof_unavailable</code>, <code>person_targeting_refused</code></td>
+<td data-l="Answer"><code>422</code> problem</td>
+<td data-l="Order exists">no</td>
+</tr>
+<tr>
+<td data-l="
+
+Situation">Same key still running; rate limit; provider down; any server error</td>
+<td data-l="Answer"><code>409</code>, <code>429</code>, <code>503</code> or other <code>5xx</code> problem; retry with the same key</td>
+<td data-l="Order exists">no</td>
+</tr>
+<tr>
+<td data-l="
+
+Situation">Accepted, then the work fails, including a synchronous live reading whose source fails or returns nothing</td>
+<td data-l="Answer"><code>200</code> or <code>202</code> Order; then <code>state: failed</code> with <code>undeliverable</code>, <code>provider_error</code>, <code>rejected</code>, <code>expired</code> (an accepted order whose deadline passed) or <code>cancelled</code></td>
+<td data-l="Order exists">yes</td>
+</tr>
+</tbody>
+</table></div>
+<p>A server MUST NOT answer <code>POST /orders</code> with a <code>5xx</code> after creating the order; if it cannot tell, a retry with the same key MUST return that order.</p>
+<h3 id="144-common-rules">14.4 Common rules</h3>
+<ul>
+<li><strong>Transport.</strong> HTTPS only (TLS 1.2 or later; 1.3 SHOULD). Requests and successful responses are <code>application/json</code>; errors are <code>application/problem+json</code>. A request body MUST carry <code>Content-Length</code> (a <code>Transfer-Encoding</code> body gets <code>411 length_required</code>); a server MAY cap the size (<code>413 payload_too_large</code>) and MUST NOT read more than its cap. Numbers MUST be finite and integers within ±2^53; otherwise <code>400 invalid_request</code>.</li>
+<li><strong>Version.</strong> A client MUST send <code>Irlpls-Version: &lt;date&gt;</code> on every request. Every response, problems included, carries <code>Irlpls-Version</code> with the version used. A request without the header is answered under the newest version the server serves. A version not in <code>protocol.versions</code> gets <code>400 unsupported_version</code> with <code>supported_versions</code>. Versions are draft or frozen as in Section 10, and the unknown-member, unknown-enum and <code>x-</code> rules of Section 10 apply to every message.</li>
+<li><strong>Idempotency.</strong> <code>POST /orders</code> and <code>POST /orders/{id}/cancel</code> MUST carry an <code>Idempotency-Key</code> header (<code>common.json#/$defs/idempotency_key</code>: 1–255 printable ASCII characters; clients SHOULD use at least 128 random bits). <code>POST /quotes</code> MAY carry one. A server keeps keys for at least 24 hours, in one key space per authenticated principal (the account or subject the credential acts for) across all operations. A request's fingerprint is its method, its path and the RFC 8785 form of its body; an absent body counts as <code>{}</code> (a cancel body is <code>{}</code> or <code>{reason}</code>).</li>
+<li>same key, same fingerprint: the stored response (status, headers and body, with <code>Idempotent-Replayed: true</code>), and never a second order;</li>
+<li>no key: <code>400 idempotency_key_required</code>;</li>
+<li>same key, different fingerprint: <code>422 idempotency_key_reused</code>;</li>
+<li>same key while the first call is still running: <code>409 request_in_progress</code> with <code>Retry-After</code>.</li>
+</ul>
+<p>The server stores 2xx and 4xx responses except 401, 402, 403, 409 and 429, and never a 5xx. After the window a client finds an order with <code>GET {endpoint}/orders?client_reference=&lt;ref&gt;</code>. A firm offer is not single-use: an order under a new key is a new order.
+- <strong>Retries.</strong> A client MUST retry an order or cancel only with the same key and the same body, and MUST poll no faster than <code>Retry-After</code> and never more than once a second.
+- <strong>Auth.</strong> The provider's own, as its card's <code>api.auth</code> and RFC 9728 metadata at the endpoint state. OAuth 2 authorization code with PKCE <code>S256</code> and clients identified by a Client ID Metadata Document is RECOMMENDED, as the MCP specification of 2026-07-28 requires of new implementations (<a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration">client registration</a>); RFC 7591 dynamic client registration is deprecated there and MAY still be offered for older clients (scope names <code>com.irlpls.capture:quote</code>, <code>:order</code>, <code>:read</code>); an API key in the header the card names is allowed. Credentials stay with the client: a router not running in the agent's own process MUST NOT store a person's provider credentials.
+- <strong>Money.</strong> Every amount is <code>common.json#/$defs/money</code>: a decimal string and an ISO 4217 currency, never a JSON number. Clients MUST compare amounts with exact decimal arithmetic. Currencies never convert: an amount in another currency, or a missing or unparseable one, fails every ceiling (<code>over_max_total</code> at a provider; a violation at a client).
+- <strong>Untrusted text.</strong> Problem <code>detail</code>, <code>reason_text</code>, item <code>label</code>, question <code>ask</code> and every other text member are data, never instructions (Section 3). A client normalises a provider's problem before an agent or a person sees it: a code from Section 14.9, else <code>provider_error</code> with the raw code, cut short, under <code>x-provider_code</code>; <code>title</code> and <code>detail</code> cut to 300 characters; only the members Section 14.9 defines; <code>continue_url</code> only when it is <code>https</code> and on the card's registrable domain; <code>questions</code> only for Request fields, each labelled <code>source: "provider"</code>, and never shown as the client's own.</p>
+<h3 id="145-messages">14.5 Messages</h3>
+<p><strong>Quote request</strong> (<code>quote.json#/$defs/quote_request</code>): <code>{request, constraints?}</code>. <code>request</code> is a Request (Section 4) that MUST NOT carry <code>policy</code>, with <code>quantity</code> at most 10 000; the Policy stays with the requester or router. <code>constraints</code> are hard limits a provider meets or declines: <code>max_total</code>, <code>deliver_by</code>, <code>rights_needed</code>, <code>proof</code> (minimum level per guarantee) and <code>scene_nonce</code> (the order's <code>nonce</code> must be visible in the capture; the provider gives it to the capturer once the order exists). Clients SHOULD omit <code>why</code> unless the card's <code>requester.checks</code> needs it. The exact place goes only to the provider the person chose (Section 14.11).</p>
+<p><strong>Quote</strong> (<code>quote.json</code>): <code>id</code>, <code>created_at</code>, <code>expires_at</code>, <code>request_sha256</code> and <code>offers[]</code>, all required. <code>request_sha256</code> is the lower-case hex SHA-256 of the RFC 8785 form of the <code>request</code> member this quote request carried, as the server received it. A provider MUST return exactly one offer, or a problem when it can't serve the request. A router returns one or more offers and <code>ruled_out[]</code>, or <code>422 no_offer</code> carrying <code>ruled_out</code>. Blocking clarifications are <code>422 needs_input</code> with <code>questions[]</code>; the client re-quotes with the answers. Each offer states <code>firm</code> (<code>true</code>: the provider's binding price until <code>expires_at</code>; <code>false</code>: indicative, from the card), <code>total</code>, <code>unit_price</code>, <code>deliver_by</code>, <code>rights</code> (absent = not granted), <code>proof</code> (levels per guarantee, never merged) and <code>order_url</code>, which MUST equal the provider card's <code>protocol.endpoint</code> + <code>/orders</code>. A firm offer requires <code>total</code>, <code>expires_at</code> and <code>order_url</code>. Only a router sets <code>fit</code> (Section 7), <code>provider_quote_id</code> and <code>provider_quote_url</code> (Section 14.11).</p>
+<p><strong>Order request</strong> (<code>order.json</code>): exactly one of
+- an accepted offer, <code>{quote_id, offer_id}</code>, where <code>quote_id</code> is a quote this server issued (at a provider, the provider's own quote); or
+- a direct order, <code>{request, constraints: {max_total}}</code>. The provider MUST NOT charge more than <code>max_total</code>, and answers <code>422 quote_required</code> when its card says <code>protocol.quote: required</code> and the order could cost anything. A direct order with <code>max_total</code> <code>"0"</code> is the one-call path for a free live reading.</p>
+<p>Required in both: <code>nonce</code>, 22–128 base64url characters carrying at least 128 random bits, echoed in every receipt. Optional: <code>webhook.url</code>, <code>approval</code> (informative), <code>client_reference</code>. Neither <code>client_reference</code> nor <code>webhook.url</code> may carry personal data.</p>
+<p><strong>Order</strong> (<code>status.json</code>): <code>id</code> (unguessable), <code>state</code>, <code>created_at</code>, <code>updated_at</code>, <code>request_sha256</code> and <code>links</code> (<code>self</code> and <code>delivery</code> always; <code>cancel</code>; <code>continue</code>), all required; <code>total</code>, <code>progress {ordered, delivered}</code>, append-only <code>status_history[]</code>, <code>provider_status</code> (the provider's own word, verbatim) and, for a synchronous live order, an inline <code>delivery</code>.
+- <code>request_sha256</code> is the hash of the request the provider priced for this order: for an accepted offer, the quote's <code>request_sha256</code>; for a direct order, the SHA-256 of the RFC 8785 form of the order's <code>request</code>. Every receipt carries it. A client MUST check that it equals the hash of the request the client sent to this provider; otherwise the order's receipts cannot verify (<code>request_mismatch</code>).
+- <code>total</code> is the amount the provider will charge for this order. A provider MUST NOT charge more than the accepted offer's <code>total</code> or the direct order's <code>max_total</code>, in the same currency, and a client MUST check <code>Order.total</code> against what was approved.
+- <code>progress.ordered</code> is the request's <code>quantity</code>; <code>progress.delivered</code> counts the items delivered so far (a live reading may return more items than <code>quantity</code>, one per observed property).
+- A failed order MUST carry <code>reason_code</code> and SHOULD carry <code>reason_text</code>.</p>
+<p><strong>Delivery</strong> (<code>delivery.json</code>): <code>order_id</code>, <code>complete</code>, <code>items[]</code>, <code>provenance</code> and <code>relayed_by[]</code>. <code>complete</code> is true exactly when the order is <code>delivered</code>. Items extend Job <code>results[]</code> (Section 6) with <code>id</code>, <code>url</code>, <code>url_expires_at</code>, <code>media_type</code>, <code>bytes</code>, <code>sha256</code>, <code>precision_m</code>, <code>c2pa</code>, an optional <code>stac</code> Item, optional per-item <code>provenance</code> and an optional <code>receipt</code>.
+- Item ids are unique within an order. A delivery that repeats an id is malformed, and a client MUST NOT show any of its items as verified.
+- <code>url</code> is the item's media file and nothing else; other links go in <code>x-</code> members. An item with <code>url</code> MUST carry <code>sha256</code>, <code>media_type</code> and <code>bytes</code>, whatever the media type. The client MUST check <code>sha256</code> after download and treat a mismatch as a failed item.</p>
+<p><strong>Provenance</strong> lists the eight links; each link states its own guarantees, each with <code>level</code> and <code>basis</code>, and no value aggregates guarantees or links (Sections 2 and 3):</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Link</th>
+<th>Shown as</th>
+<th>Guarantees it may state</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Link"><code>enrolment</code></td>
+<td data-l="Shown as">Real person</td>
+<td data-l="Guarantees it may state"><code>human</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Link"><code>capture</code></td>
+<td data-l="Shown as">Captured locally</td>
+<td data-l="Guarantees it may state"><code>camera</code>, <code>location</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Link"><code>device_attestation</code></td>
+<td data-l="Shown as">Genuine device</td>
+<td data-l="Guarantees it may state"><code>application</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Link"><code>signing</code></td>
+<td data-l="Shown as">Sealed capture</td>
+<td data-l="Guarantees it may state"><code>camera</code>, <code>location</code>, <code>content</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Link"><code>timestamp</code></td>
+<td data-l="Shown as">Known timestamp</td>
+<td data-l="Guarantees it may state"><code>time</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Link"><code>custody</code></td>
+<td data-l="Shown as">Tracked in transit</td>
+<td data-l="Guarantees it may state">none (evidence only; and <code>relayed_by</code>)</td>
+</tr>
+<tr>
+<td data-l="
+
+Link"><code>appraisal</code></td>
+<td data-l="Shown as">Independently verified</td>
+<td data-l="Guarantees it may state"><code>corroboration</code></td>
+</tr>
+<tr>
+<td data-l="
+
+Link"><code>delivery</code></td>
+<td data-l="Shown as">Delivered to you</td>
+<td data-l="Guarantees it may state">none (evidence: the receipt)</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>basis: card</code> is the card's level for every capture; a shim MUST use it and MUST NOT state a level above the card's. <code>basis: this_capture</code> is stated for this item; with level <code>evidenced</code> it MUST carry at least one checkable <code>evidence</code> entry. A client shows a <code>this_capture</code> level beside the card's level, never in place of it, and a broker still attaches <code>provider_proof</code> (Section 8), never above the registry's copy of the card.</p>
+<h3 id="146-states">14.6 States</h3>
+<p>Order states are the Job's words: <code>submitted</code>, <code>in_flight</code>, <code>delivered</code>, <code>failed</code>. Transitions: <code>submitted → in_flight | delivered | failed</code>; <code>in_flight → in_flight | delivered | failed</code>. <code>delivered</code> and <code>failed</code> are terminal and never change; a follow-up is a new order. Known <code>reason_code</code> values for <code>failed</code> are <code>rejected</code>, <code>cancelled</code>, <code>expired</code>, <code>undeliverable</code> and <code>provider_error</code>; an unknown value is unsupported and never re-mapped. A partial delivery keeps the order <code>in_flight</code>, grows <code>progress.delivered</code>, and makes <code>/delivery</code> return <code>complete: false</code>. If the order then fails, the items already delivered stay readable, and <code>total</code> states what is charged. A shim maps only the statuses its provider documents; an unmapped word stays <code>in_flight</code> with <code>provider_status</code> verbatim (Section 6).</p>
+<p>Cancel is cooperative: it returns the Order, which may still be <code>in_flight</code> and later ends <code>failed</code> with <code>reason_code: cancelled</code>, or <code>delivered</code> if it was too late. Cancelling a terminal order returns it unchanged with 200. A provider that cannot stop the work, or whose card says <code>protocol.cancel: false</code>, answers a cancel of a non-terminal order with <code>409 not_cancellable</code>.</p>
+<p>Clients poll <code>status</code> as Section 14.4 says (60 seconds by default for made-to-order Jobs), with backoff. A router maps Order states onto its Job verbatim: <code>clarifying</code> is a <code>422 needs_input</code> quote; <code>proposed</code> a Quote with no offer accepted; <code>quoted</code> a firm offer held for approval or blocked by the router's own <code>policy:&lt;rule&gt;</code>; <code>submitted</code>, <code>in_flight</code>, <code>delivered</code> and <code>failed</code> are the Order's <code>state</code>.</p>
+<h3 id="147-receipts">14.7 Receipts</h3>
+<p>The receipt of Section 6.1, on the wire (<code>common.json#/$defs/receipt</code>), is <code>{jws, payload, tsa_token?, log_entry?}</code>:
+- <code>jws</code> is a detached compact JWS (RFC 7515 Appendix F), <code>header..signature</code>. The protected header is <code>{"alg", "kid", "typ": "irlpls-receipt+jws"}</code>; all three are required, and <code>crit</code> is not allowed. The key id lives only in this header; a top-level <code>kid</code> member is not part of the format and is ignored.
+- The signed payload is the RFC 8785 form of <code>payload</code>. Required: <code>iss</code>, <code>order_id</code>, <code>item_id</code>, <code>nonce</code>, <code>request_sha256</code> (the Order's), <code>media {sha256, media_type, bytes}</code>, <code>phenomenon_time</code> (the item's, as delivered) and <code>issued_at</code>. Optional: <code>time_method</code>, <code>lat</code>, <code>lon</code>, <code>precision_m</code>, <code>place_method</code>; <code>lat</code>, <code>lon</code> and <code>precision_m</code> appear exactly when the item carries them, with the same values.
+- <code>iss</code> is the RFC 6454 ASCII serialisation of the signer's origin: <code>scheme://host[:port]</code>, lower case, the scheme's default port omitted, no path and no trailing slash. A provider's is the origin of its card's <code>provider_url</code>; a shim's is the origin of <code>protocol.operator.url</code>.
+- <code>tsa_token</code> (RFC 3161) and <code>log_entry</code> are optional.</p>
+<p><code>media</code> binds the delivered content. For an item with <code>sha256</code> (a media file), <code>media</code> is that file's <code>sha256</code>, <code>media_type</code> and <code>bytes</code>. For a value item (a reading with no file, so no <code>sha256</code>), <code>media</code> binds the value document: the RFC 8785 form of an object with exactly the members <code>kind</code>, <code>value</code>, <code>unit</code> and <code>phenomenon_time</code> (the observed-at time), each copied from the delivered item unchanged and set to <code>null</code> when the item omits it, and no other member. Then <code>media.media_type</code> is <code>application/json</code>, <code>media.bytes</code> is the document's length in bytes and <code>media.sha256</code> its lower-case hex SHA-256. For example <code>{"kind":"gage-height","phenomenon_time":"2026-10-28T19:30:00Z","unit":"ft","value":3.4}</code> is 87 bytes, and its SHA-256 is:</p>
+<pre><code>383d9858481e67f712e4d74234c637a71a17a8a2f42a3bf87b75fdfaf6340406
+</code></pre>
+<p>A verifier MUST:
+- accept <code>alg</code> <code>ES256</code> (MUST support) or <code>EdDSA</code> (MAY support) only, and only when it equals the <code>alg</code> of the key's JWK;
+- ignore <code>jwk</code>, <code>jku</code> and <code>x5u</code>, and take the key named by <code>kid</code> only from the provider card's <code>jwks_uri</code>, or, for an endpoint with <code>protocol.operator</code>, only from <code>operator.jwks_uri</code>; the key MUST have <code>irlpls_use: "receipt"</code>, and a receipt whose <code>issued_at</code> is after its <code>not_after</code> fails;
+- check that <code>iss</code>, <code>order_id</code>, <code>nonce</code> and <code>request_sha256</code> equal its own order's (<code>iss</code> compared as a string);
+- check that the item as shown is the item as signed: <code>item_id</code>; <code>media</code> against the downloaded file (or the value document it rebuilds from the item), including <code>media_type</code> and <code>bytes</code>; <code>phenomenon_time</code>, string-equal; and <code>lat</code>, <code>lon</code> and <code>precision_m</code>, present in the payload exactly when on the item, and equal.</p>
+<p>Verifiers archive the key set with the receipt. A shim MUST NOT sign as the provider; it MAY sign as itself (<code>iss</code> = the operator's origin, keys at <code>operator.jwks_uri</code>), which attests custody only and never raises a provider guarantee. A valid receipt shows who asserted what (Section 6.1).</p>
+<h3 id="148-webhooks-optional">14.8 Webhooks (optional)</h3>
+<p>An order's <code>webhook.url</code> receives a thin event (<code>status.json#/$defs/webhook_event</code>: <code>{type: "order.updated", timestamp, data: {order_id, state, order_url}}</code>) with the Standard Webhooks headers <code>webhook-id</code> (the dedupe key, stable across retries), <code>webhook-timestamp</code> and <code>webhook-signature: v1a,&lt;base64 Ed25519 signature over id.timestamp.body&gt;</code>, plus <code>irlpls-webhook-kid</code>, which names the signing key in <code>jwks_uri</code> (for a shim, <code>operator.jwks_uri</code>). That key MUST have <code>irlpls_use: "webhook"</code> and <code>alg: "EdDSA"</code>.</p>
+<p>The receiver MUST verify the signature over the raw bytes with the named key, MUST reject a <code>webhook-timestamp</code> more than 5 minutes from now, MUST drop a <code>webhook-id</code> it has seen within the last 10 minutes, and MUST check that <code>data.order_url</code> equals <code>{endpoint}/orders/{data.order_id}</code> exactly, compared as a string, where <code>endpoint</code> is the one it ordered from. It then MUST re-read the order with <code>GET</code> before acting: a webhook never changes state by itself. The provider retries with backoff and applies the outbound rules of Section 12 to the URL (HTTPS, public host, no redirects).</p>
+<h3 id="149-errors">14.9 Errors</h3>
+<p>Every non-2xx response is a problem (<code>problem.json</code>, RFC 9457) with a <code>type</code> URI of the form <code>…/&lt;version&gt;/problems/</code> plus the code, under <code>https://irlpls.com</code> (every <code>policy:&lt;rule&gt;</code> uses <code>…/problems/policy</code>), and <code>title</code>, <code>status</code>, <code>code</code> and <code>resolution</code> (<code>recoverable</code>, <code>requires_buyer_input</code>, <code>requires_buyer_review</code>, <code>retry_later</code>, <code>unrecoverable</code>), all required; as relevant, <code>detail</code>, <code>instance</code>, <code>continue_url</code>, <code>errors[]</code> (RFC 9535 JSONPath <code>path</code>), <code>questions</code>, <code>violations</code>, <code>ruled_out</code>, <code>supported_versions</code>, <code>quote_id</code>, <code>order_id</code> and, from a router, <code>upstream</code> (the provider's problem, as data). The HTTP status MUST equal <code>status</code>. For a code it does not know, a client acts on <code>resolution</code>; with no known <code>resolution</code>, on the status class (<code>429</code> and <code>5xx</code>: retry later; any other <code>4xx</code>: do not retry unchanged).</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>HTTP</th>
+<th>Resolution</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Code"><code>invalid_request</code></td>
+<td data-l="HTTP">400</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning">Body fails the schema, or a number is not finite or not within ±2^53; <code>errors[]</code> has paths.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>unsupported_version</code></td>
+<td data-l="HTTP">400</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning"><code>Irlpls-Version</code> not served; <code>supported_versions</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>idempotency_key_required</code></td>
+<td data-l="HTTP">400</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning">Order or cancel without the header.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>unauthorized</code></td>
+<td data-l="HTTP">401</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning">Missing or bad credentials; <code>WWW-Authenticate</code> per RFC 6750 and RFC 9728.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>payment_required</code></td>
+<td data-l="HTTP">402</td>
+<td data-l="Resolution">requires_buyer_input</td>
+<td data-l="Meaning">No payment method or balance; <code>continue_url</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>needs_account</code></td>
+<td data-l="HTTP">403</td>
+<td data-l="Resolution">requires_buyer_input</td>
+<td data-l="Meaning">A person must sign up, add billing or pass a check; <code>continue_url</code> required. (The Job reason <code>needs_key</code> maps here.)</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>insufficient_scope</code></td>
+<td data-l="HTTP">403</td>
+<td data-l="Resolution">requires_buyer_input</td>
+<td data-l="Meaning">The token lacks a scope such as <code>:order</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>terms</code></td>
+<td data-l="HTTP">403</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">The provider's terms forbid this use or automated ordering.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>not_found</code></td>
+<td data-l="HTTP">404</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">Unknown quote or order, or not this client's.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>method_not_allowed</code></td>
+<td data-l="HTTP">405</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">Wrong method for the path; <code>Allow</code> header.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>not_acceptable</code></td>
+<td data-l="HTTP">406</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">The <code>Accept</code> header excludes both <code>application/json</code> and <code>application/problem+json</code> (no <code>Accept</code> accepts anything; media downloads are exempt). The 406 is itself sent as a problem.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>quote_expired</code></td>
+<td data-l="HTTP">410</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning">The quote lapsed before an order was placed; re-quote; <code>quote_id</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>length_required</code></td>
+<td data-l="HTTP">411</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning">No <code>Content-Length</code>, or a <code>Transfer-Encoding</code> body.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>payload_too_large</code></td>
+<td data-l="HTTP">413</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning">The body is over the server's limit.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>unsupported_media_type</code></td>
+<td data-l="HTTP">415</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning">The body is not <code>application/json</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>idempotency_key_reused</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">Same key, different method, path or body.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>quote_required</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning">A direct order where a firm quote is required.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>needs_input</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">requires_buyer_input</td>
+<td data-l="Meaning">Blocking <code>questions[]</code>; re-quote with answers.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>no_match</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">This provider does not capture this.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>outside_coverage</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">Place not covered.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>too_slow</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">recoverable</td>
+<td data-l="Meaning">Can't meet <code>deliver_by</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>over_max_total</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">requires_buyer_review</td>
+<td data-l="Meaning">The cheapest possible total exceeds <code>max_total</code>, or is in another currency.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>rights_unavailable</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">requires_buyer_review</td>
+<td data-l="Meaning">A <code>rights_needed</code> right can't be granted.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>proof_unavailable</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">requires_buyer_review</td>
+<td data-l="Meaning">A <code>constraints.proof</code> level can't be met.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>person_targeting_refused</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">The request watches, follows or photographs a specific person. A provider MAY refuse regardless of the buyer's Policy.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>policy:&lt;rule&gt;</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">requires_buyer_review</td>
+<td data-l="Meaning">Router only: the requester's Policy forbids it; <code>violations[]</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>no_offer</code></td>
+<td data-l="HTTP">422</td>
+<td data-l="Resolution">requires_buyer_review</td>
+<td data-l="Meaning">Router only: no provider fits; <code>ruled_out[]</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>request_in_progress</code></td>
+<td data-l="HTTP">409</td>
+<td data-l="Resolution">retry_later</td>
+<td data-l="Meaning">Same key still being processed.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>not_cancellable</code></td>
+<td data-l="HTTP">409</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">The work can no longer be stopped, or the provider does not cancel; <code>order_id</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>rate_limited</code></td>
+<td data-l="HTTP">429</td>
+<td data-l="Resolution">retry_later</td>
+<td data-l="Meaning"><code>Retry-After</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>provider_error</code></td>
+<td data-l="HTTP">500</td>
+<td data-l="Resolution">retry_later</td>
+<td data-l="Meaning">Unexpected server error; no order was created.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>upstream_error</code></td>
+<td data-l="HTTP">502</td>
+<td data-l="Resolution">retry_later</td>
+<td data-l="Meaning">Router only: a provider failed; its problem in <code>upstream</code>.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>provider_unavailable</code></td>
+<td data-l="HTTP">503</td>
+<td data-l="Resolution">retry_later</td>
+<td data-l="Meaning"><code>Retry-After</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Client-local codes.</strong> A client library or an in-process router produces these; no provider sends them.</p>
+<div class="tbl c3"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Status</th>
+<th>Resolution</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-l="
+
+Code"><code>no_protocol</code></td>
+<td data-l="Status">422</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">The chosen offer's provider does not speak the protocol (an indicative offer); order it through the provider's own API or the reference library.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>price_changed</code></td>
+<td data-l="Status">422</td>
+<td data-l="Resolution">requires_buyer_review</td>
+<td data-l="Meaning">A re-quote came back higher than the total the person approved; nothing was ordered, ask again.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>request_mismatch</code></td>
+<td data-l="Status">422</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">The Order's <code>request_sha256</code> is not the hash of the request the client sent; its receipts cannot verify.</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>unsafe_endpoint</code></td>
+<td data-l="Status">400</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">Refused before any request: an endpoint, key or order URL breaks the discovery rules (Section 14.2) or the outbound-request rules (Section 14.12).</td>
+</tr>
+<tr>
+<td data-l="
+
+Code"><code>media_mismatch</code></td>
+<td data-l="Status">502</td>
+<td data-l="Resolution">unrecoverable</td>
+<td data-l="Meaning">A downloaded media file's SHA-256 does not match the item's <code>sha256</code>; the item is failed.</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>ruled_out[].reasons</code> uses the same codes, plus the broker-only <code>needs_key</code>, so Job reasons (Section 6) and protocol problems share one vocabulary.</p>
+<h3 id="1410-mcp-binding">14.10 MCP binding</h3>
+<p>Tools map one to one to the operations: <code>irlpls_discover {domain}</code>, <code>irlpls_quote {quote_request, card_id?}</code> or <code>{quote_id}</code>, <code>irlpls_order {order_request, card_id?}</code>, <code>irlpls_status {order_id}</code>, <code>irlpls_deliver {order_id}</code>, <code>irlpls_cancel {order_id}</code>. <code>card_id</code> is for an in-process router only: quote one provider, or name the provider of a direct order. Each tool also takes <code>meta: {irlpls_version, idempotency_key?}</code>, and <code>idempotency_key</code> is required for <code>irlpls_order</code> and <code>irlpls_cancel</code>. A result is the HTTP response body as <code>structuredContent</code> (and as text in <code>content[]</code>), with the matching schema as <code>outputSchema</code>. An error is a tool result with <code>isError: true</code> and the problem as <code>structuredContent</code>; JSON-RPC errors are for protocol faults only. <code>discover</code>, <code>quote</code>, <code>status</code> and <code>deliver</code> are <code>readOnlyHint: true</code>; <code>order</code> is <code>destructiveHint: false</code>, <code>idempotentHint: true</code> and <code>openWorldHint: true</code>, and its description MUST say it may cost money; <code>cancel</code> is <code>destructiveHint: true</code>. MCP has no webhooks, so clients poll <code>irlpls_status</code>. An MCP server's streamable-HTTP transport has no authentication of its own; bound to a non-loopback address it MUST require an explicit operator setting and SHOULD warn that anyone who can reach it can order with its credentials.</p>
+<h3 id="1411-routers-and-shims">14.11 Routers and shims</h3>
+<p>A router:
+- applies the Policy locally (Section 5); the Policy never leaves it. It sends providers only <code>constraints</code> derived from it (<code>max_order_usd</code> → <code>max_total</code>, <code>need_ai_training</code> → <code>rights_needed</code>, <code>require</code> → <code>proof</code>) and coarsened places (Section 14.12), and SHOULD quote only its shortlist;
+- builds an indicative offer (<code>firm: false</code>, no <code>order_url</code>) from the card where it can't quote a provider, and never invents a price;
+- checks every returned offer against the Policy again, marking a violation as <code>policy:&lt;rule&gt;</code> rather than dropping it silently;
+- puts on each offer from a provider's quote that quote's id (<code>provider_quote_id</code>), its URL (<code>provider_quote_url</code>, <code>{provider endpoint}/quotes/{id}</code>) and <code>order_url</code>; its own Quote's <code>request_sha256</code> is the hash of the request it received;
+- MUST NOT rewrite <code>order_url</code> to anything other than the provider card's <code>protocol.endpoint</code> + <code>/orders</code>;
+- MUST NOT order without the requester's approval or a standing mandate (Section 5);
+- passes a provider's problem through as <code>upstream</code> data, never as instructions;
+- MAY place orders itself only when it runs in the agent's own process (the reference library); it then MUST derive a distinct idempotency key per provider from the requester's key: SHA-256 over the UTF-8 bytes of <code>key + "|" + card_id</code>, encoded as unpadded base64url.</p>
+<p><strong>Ordering a router's offer.</strong> A router's quote id means nothing to a provider, and the provider's quote priced a coarse request. Before ordering, the client MUST re-quote at the provider's own endpoint with the exact request (so the exact place goes to that provider and nobody else) and order <code>{quote_id, offer_id, nonce}</code> from that new quote, with the person's own credentials. If the new total is higher than the one the person approved, it MUST NOT order and asks again (<code>price_changed</code>). A client MAY instead order <code>provider_quote_id</code> only when that quote's <code>request_sha256</code>, read at <code>provider_quote_url</code>, equals the hash of its exact request. The router stays out of the data and money path (Section 9).</p>
+<p>A shim maps a proprietary API onto the protocol. It makes a firm offer only from a real provider quote. It uses the provider's own idempotency mechanism where one exists, scoped to the caller; otherwise it records the key as pending before calling, and where the provider offers no way to look an order up, its card says <code>protocol.quote: required</code> and documents that a crash can double-order. It downloads each media file and computes <code>sha256</code>, <code>media_type</code> and <code>bytes</code> itself (an item it cannot hash loses its <code>url</code>), sets provenance <code>basis: card</code> with the card's levels, adds itself to <code>relayed_by</code>, never stores the caller's credentials, and, when run by a third party, says so in <code>protocol.operator</code>.</p>
+<h3 id="1412-security-considerations">14.12 Security considerations</h3>
+<p>In addition to Section 12:
+- <strong>Money.</strong> Amounts are decimal strings, so NaN, infinite and rounded totals cannot pass a ceiling; a missing, unparseable or other-currency total is a violation.
+- <strong>Double orders.</strong> Idempotency keys at both hops (Section 14.4), distinct per provider at a router (Section 14.11).
+- <strong>Hostile bodies.</strong> A server reads at most its body limit, requires a strict <code>Content-Length</code>, and refuses non-finite numbers and integers outside ±2^53, so a request can neither exhaust memory nor crash canonicalisation.
+- <strong>Redirected money and data.</strong> A client orders only at the <code>order_url</code> equal to the card's <code>protocol.endpoint</code> + <code>/orders</code>, from a card fetched from the provider's domain. No router or error body can change the payee, the endpoint or the recipient.
+- <strong>SSRF.</strong> Providers fetching <code>webhook.url</code>, and clients fetching cards, media and evidence URLs, MUST use HTTPS to public hosts only (RFC 6890 special-purpose addresses excluded after DNS resolution; a name that does not resolve is refused), MUST NOT follow cross-host redirects, MUST apply size and time limits, and SHOULD pin the connection to the checked address. A client that follows a redirect to another origin MUST drop every credential header.
+- <strong>Webhooks are hints.</strong> Verified with the named webhook key, time-boxed, deduplicated, <code>order_url</code> matched exactly, then followed by a <code>GET</code>; a forged webhook can at worst cause a read.
+- <strong>Media.</strong> <code>sha256</code> is checked after download; a mismatch is a failed item. Media URLs are short-lived capability URLs and MUST NOT appear in logs that leave the client. A provider serving media from its API origin MUST send <code>X-Content-Type-Options: nosniff</code> and <code>Content-Security-Policy: sandbox</code>, and <code>Content-Disposition: attachment</code> for anything but <code>image/</code>, <code>video/</code> and <code>audio/</code> types (<code>image/svg+xml</code> included), so delivered content never runs as script on that origin.
+- <strong>Receipts.</strong> The algorithm, key and binding rules of Section 14.7. A key marked for webhooks cannot sign a receipt. A receipt proves who claimed what, not that it is true.
+- <strong>Privacy: what irlpls can promise.</strong> The Policy never leaves the requester's side, and <code>why</code> is sent only when a card's <code>requester.checks</code> needs it. A router's quotes never carry the <code>place</code> field and round <code>lat</code> and <code>lon</code> to a 0.01° grid (no jitter, which averages away). The exact place goes only to the provider the person chose, in its own quote and order. Idempotency keys and nonces are random.
+- <strong>Privacy: what irlpls cannot promise.</strong> Orders are made with the person's own provider account, so that provider learns who the account holder is, and also sees the IP address, the webhook host and <code>client_reference</code> (neither may carry personal data). <code>need</code> and other free text are sent as written and may name a place or a person; irlpls cannot strip them reliably, so a requester who wants coarse quotes keeps the address out of <code>need</code>. What a provider logs is up to the provider.
+- <strong>Person targeting.</strong> A provider MAY refuse any request with <code>person_targeting_refused</code>. A router follows Section 5 rule 4, and a standing mandate SHOULD NOT cover such orders.
+- <strong>Sandbox.</strong> <code>protocol.sandbox</code> is the provider's own statement. A tool that places test orders only against sandbox endpoints still relies on that statement, so the person running it accepts the risk; a production endpoint MUST NOT declare it.
+- <strong>Abuse.</strong> Providers answer <code>429</code> with <code>Retry-After</code>; clients back off and SHOULD cap spend per period as well as per order.</p>
+<h3 id="1413-conformance-classes">14.13 Conformance classes</h3>
+<p>These extend Section 8. Each class includes the rules of the class it builds on.</p>
+<ul>
+<li><strong>Card-only provider.</strong> A Card Publisher (Section 8) whose card has no <code>protocol</code> block. Nothing in this section applies to it; it is fully conformant to this standard.</li>
+<li><strong>Orderable provider.</strong> A Card-only provider whose card has a valid <code>protocol</code> block, and which implements discover, quote, order, find, status and deliver as in Sections 14.2–14.9, cancel when <code>protocol.cancel</code> is true (<code>409 not_cancellable</code> otherwise), receipts as in Section 14.7 when it issues them, and webhooks as in Section 14.8 when <code>protocol.webhooks</code> is true. In particular it MUST: honour <code>Irlpls-Version</code>; enforce the idempotency rules; return exactly one offer per quote, with <code>order_url</code> equal to <code>endpoint</code> + <code>/orders</code>; echo <code>request_sha256</code> in every Order; never charge more than the accepted offer or <code>max_total</code>; answer <code>POST /orders</code> with a problem only when no order exists; use only the four order states, with <code>reason_code</code> on <code>failed</code> and terminal states never changing; carry <code>sha256</code>, <code>media_type</code> and <code>bytes</code> with every item <code>url</code>; and answer every error with a problem whose <code>status</code> equals the HTTP status.</li>
+<li><strong>Router.</strong> A Broker (Section 8) that serves quotes on this protocol and follows Section 14.11. A router that runs shims is responsible for them meeting the Orderable provider rules.</li>
+</ul>
+<p>Clients have no MUSTs beyond those stated in Sections 14.2 and 14.4–14.12.</p>
+<p><strong>Checking.</strong> <code>python -m irlpls.conformance &lt;domain&gt; --protocol</code> checks an Orderable provider without side effects: discovery, the <code>protocol</code> block, version negotiation, a quote and its <code>request_sha256</code>, problem shapes for bad requests and unknown ids. It never places an order unless it is also given <code>--sandbox</code> <strong>and</strong> the card declares <code>protocol.sandbox: true</code>; then it also orders, checks the Order's <code>request_sha256</code>, replays the idempotency key, polls status, reads the delivery, checks media hashes and verifies receipts (with the item bindings) against <code>jwks_uri</code>.</p>
+</main>
+</div>
+<footer class="spec-foot"><span>Source: docs/STANDARD.md. Schemas: schema/*.json. Reference implementation: irlpls/.</span><span>No data sold, no cut. Buy from providers directly.</span><span class="fl"><a href="standard.html">standard</a><a href="changelog.html">changelog</a><a href="providers.html">for providers</a><a href="governance.html">governance</a><a href="privacy.html">privacy</a><a href="chain.html">the chain</a><a href="glossary.html">glossary</a><a href="cards.json">cards.json</a><a href="llms.txt">llms.txt</a></span></footer>
+<script>
+(function(){
+  var toc=document.getElementById('toc'),mq=matchMedia('(min-width:960px)');
+  function sync(){toc.open=mq.matches;}
+  sync();(mq.addEventListener?mq.addEventListener('change',sync):mq.addListener(sync));
+  toc.addEventListener('click',function(e){if(e.target.closest('a')&&!mq.matches)toc.open=false;});
+  var links=[].slice.call(toc.querySelectorAll('a')),heads=links.map(function(a){return document.getElementById(a.hash.slice(1));});
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.toggle('on',a.hash==='#'+e.target.id);});}});},{rootMargin:'0px 0px -70% 0px'});
+    heads.forEach(function(h){h&&io.observe(h);});
+  }
+})();
+</script>
+<script src="/bar.js"></script>
+</body></html>

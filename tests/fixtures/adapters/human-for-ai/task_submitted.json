@@ -1,0 +1,6 @@
+{"task_id": "HFAI-2026-97BBAB04C15D2E63", "status": "submitted", "task_type": "real_world_verification",
+ "description": "Verify whether a specific product exists in a local store and photograph the shelf price.",
+ "location_required": true, "location_detail": "Springfield, IL", "deadline": null, "output_format": "text_report",
+ "requester": "irlpls", "source": "api", "created_at": "2026-10-28T10:00:00Z", "updated_at": "2026-10-28T10:00:00Z",
+ "status_history": [{"status": "submitted", "at": "2026-10-28T10:00:00Z"}], "operator_notes": null, "receipt": null,
+ "deliverable_sha256": null, "receipt_issued_at": null}

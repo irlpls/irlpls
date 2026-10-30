@@ -1,0 +1,16 @@
+{
+ "projectDetails": {
+  "id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+  "name": "Swahili read speech",
+  "projectType": "DataCollection",
+  "status": "Running",
+  "dateTimeCreated": "2026-10-01T12:00:00Z",
+  "dateTimeLastRun": null,
+  "progress": 24,
+  "estimatedDateToComplete": "2026-11-15T00:00:00Z",
+  "totalNumberInputUnitsSubmitted": 5000,
+  "totalNumberOutputUnitsCompleted": 1200,
+  "targetNumberOutputDataUnits": 5000,
+  "uploadInputUnitsError": []
+ }
+}

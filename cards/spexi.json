@@ -1,0 +1,335 @@
+{
+  "id": "spexi",
+  "name": "Spexi",
+  "provider_url": "https://www.spexi.com",
+  "status": "unclaimed",
+  "tags": [
+    "drone",
+    "aerial",
+    "oblique",
+    "orthomosaic",
+    "panorama",
+    "tasking",
+    "pilot network",
+    "layerdrone",
+    "property",
+    "insurance",
+    "construction",
+    "north america",
+    "us",
+    "canada",
+    "api",
+    "h3"
+  ],
+  "summary": "Drone imagery company whose pilots fly standardized, app-automated missions over H3 hexagon zones with sub-250 g DJI Mini drones. Its Developer API searches existing drone imagery and, through a Tasking API, orders new captures (images, panoramas, orthomosaics) of a polygon or set of zones, tracked per product from submission to delivery.",
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "photo"
+    ],
+    "tasks": [
+      "new drone capture of an area (tasking)",
+      "oblique and nadir drone images",
+      "panoramas",
+      "orthomosaics (standard, or aligned to customer ground control)",
+      "search existing drone imagery by point, bbox or polygon",
+      "coverage lookup by H3 zone"
+    ]
+  },
+  "pricing": {
+    "model": "quote / contract; reseller list price per km2 for tasked ortho",
+    "from_usd": 450,
+    "unit": "km2 of tasked Spexi-Ortho (3 cm) via SkyWatch, minimum order 0.5 km2",
+    "notes": "Spexi does not publish prices on its own site or API docs; new-capture requests are 'typically linked to your service agreement', and Charges are set in an Order Form (rising 5% at each 12-month renewal). The $450/km2 figure is SkyWatch's indicative reseller rate for Spexi-Ortho tasking as of June 2026, not a direct Spexi price. A free-trial account exists with a limited image-search quota and view-only rights."
+  },
+  "latency": {
+    "typical": "Hours to weeks depending on area size (provider: 'typically delivers datasets as small as 25 acres, and as big as full cities in hours to weeks'; fastest to date 11 hours). Homepage: 'days, not months'.",
+    "notes": "No SLA for capture time. Orders pass through review, feasibility check (site access, airspace, terrain), customer confirmation, planning, capture, processing and QA. Spexi decides flight timing; preferred capture windows are honoured where possible but 'cannot be guaranteed due to weather and operational conditions'. The Data Terms note collection timelines may be affected by adverse weather."
+  },
+  "coverage": {
+    "regions": [
+      "US",
+      "Canada"
+    ],
+    "notes": "Pilots must be located in the United States or Canada; API docs describe 'high-resolution aerial coverage across North America', and Spexi's location pages list only US and Canadian cities. Archive of 6.5M+ acres (company claim). Restricted airspace may be unfulfillable or need exemptions. Per-area fill rates are not published; coverage endpoints show existing coverage only.",
+    "areas": [
+      "US",
+      "CA"
+    ]
+  },
+  "licensing": {
+    "summary": "Spexi Data Terms (updated 2025-12-03): a paid Order grants a non-exclusive, worldwide licence for the Term to copy, store, edit and make derivative works for the customer's internal business purposes. The customer must not publish, sell, license, sub-license or redistribute the Content, and must not use it to compete with Spexi or to train, verify or test AI systems that compete with Spexi's services. All Content, including bespoke captures the customer ordered, stays owned by Spexi, and access ends at termination. Free-trial users may only view. Other AI training is not addressed, so treat it as not granted.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Pilots apply with an onboarding quiz and their Part 107 certificate number where required (US); Canadian sub-250 g pilots need no certificate. Pilots must be in the US or Canada and represent they hold the licences required; Spexi 'reserves the right to verify your eligibility'.",
+      "evidence_url": "https://www.spexi.com/blog/the-spexi-network-pilot-eligibility-compatible-drones",
+      "unknown": "Whether Spexi actually checks certificate numbers or pilot identity; no public record of pilot vetting"
+    },
+    "application": {
+      "level": "claimed",
+      "method": "Missions are flown through the Spexi App, which runs an automated, standardized flight; uploads are matched server-side to the app's flight record before a capture is marked 'verified' (a flight-record match, not attestation).",
+      "evidence_url": "https://docs.spexi.com/fly-and-earn/after-you-fly.md",
+      "unknown": "Images are copied manually from the drone's SD card and uploaded via the Spexi Explorer, so the matching method's resistance to substituted files is not documented. No C2PA signing documented; Spexi is not on the C2PA Conforming Products List"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Only supported DJI Mini 2/3/3 Pro/4 Pro drones with phone-based controllers; images delivered as JPEG with EXIF. Whether images are signed or tamper-evident; no C2PA signing documented and neither Spexi nor DJI is on the C2PA Conforming Products List"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each image carries a capture timestamp ('precise date and time of image acquisition') and EXIF data, returned as capturedAt by the API; uploads are matched to the app's flight record",
+      "evidence_url": "https://learn.spexi.com/api-reference/core-concepts.md",
+      "unknown": "How the timestamp is produced (drone clock or phone) and whether it is checked against the flight record; nothing signed or publicly checkable"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Per-image camera position, altitude, heading, pitch and footprint geometry; uploads matched to the flight record of the automated mission over the assigned zone",
+      "evidence_url": "https://learn.spexi.com/api-reference/core-concepts.md",
+      "unknown": "GPS-spoofing resistance; standard orthomosaics are accurate only to about 5 m absolute"
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Every ordered product passes a 'qa' status before 'delivered'; FAQ lists lighting and flight-time controls",
+      "evidence_url": "https://learn.spexi.com/api-reference/order-api/tasking-api.md",
+      "unknown": "QA criteria and rejection rates"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No documented independent re-capture or cross-check. LayerDrone markets 'blockchain verification' of uploads but publishes no method or public record a buyer can check; overlapping images of the same feature exist but are not presented as verification"
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://learn.spexi.com/api-reference/introduction",
+    "base_url": "https://world.spexi.com/developer-api",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "x-api-key",
+        "env_var": "SPEXI_API_KEY",
+        "how_to_get": "Log in to Spexi World (https://world.spexi.com; free-trial signup at /auth/signup), Settings > API Keys > Create New Key; shown once. Keys inherit the account's permissions; submitting tasking orders needs the org_owner or org_admin role or a Developer API key, and new-capture access is 'typically linked to your service agreement'."
+      },
+      {
+        "type": "api_key_query",
+        "env_var": "SPEXI_API_KEY",
+        "how_to_get": "The same key, passed as the api_key query parameter (OpenAPI ApiKeyQuery)."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/api/v1/order/tasking",
+        "params": "intent 'new_capture', products [{product_type: image|panorama|orthomosaic, product_sub_type: standard|aligned for ortho}], zones (H3 ids) OR geometry (GeoJSON Feature Polygon), customer_org_name, customer_first_name, customer_last_name, customer_email (required); preferred_capture_start/end, external_order_id, control_data_url, notes",
+        "notes": "Returns spexi_order_id with status 'submitted'. Each product moves independently through submitted > in_review > feasibility_check > pending_confirmation > in_planning > capture_in_progress > processing > qa > delivered (or cancelled/unfulfillable)."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/api/v1/order/tasking/{spexi_order_id}",
+        "notes": "Per-product status and per-zone status (uncaptured, captured, delivered, removed)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/api/v1/order/tasking",
+        "params": "limit (max 100), cursor, search, status (current|past), sort",
+        "notes": "Your organisation's tasking orders."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/api/v1/image",
+        "params": "p (lon,lat[,radius m]) or bbox or polygon (WKT, max 1 km2 bbox), heading, pitch, altitude, captured_at, capture_type, focused, pixel_bounds, limit (max 1000), cursor",
+        "notes": "Existing drone images with camera pose, capture time and S3 URL. Free-trial accounts have a search quota."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/coverage-map/query",
+        "params": "bbox or p (radius max 1000 m) or polygon; captureTypes, startDate, endDate, limit, entitled",
+        "notes": "H3 zones with existing coverage, latest capture date and mission count."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/v1/order/{spexi_order_id}/images",
+        "params": "limit (max 1000), cursor",
+        "notes": "Images delivered against an order, as GeoJSON with download links; empty until delivered."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/v1/order/{spexi_order_id}/orthomosaic",
+        "notes": "Presigned download URLs for delivered orthomosaic products, with sub type and status."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/v1/image/{imageId}/download",
+        "params": "zoom, highlight, aoi (WKT), marker, padding",
+        "notes": "Downloads one JPEG, optionally cropped to or marked with an area of interest."
+      }
+    ],
+    "rate_limits": "Not published; usage limits depend on account tier",
+    "self_serve": false,
+    "notes": "Endpoint paths are relative to base_url. The OGC examples in the quick start use https://api-world.spexi.com/api/ogc/v1 with Authorization: Bearer, but that host did not resolve on 2026-10-26. The API host sits behind an AWS WAF that answered a keyless GET with a 202 challenge. The Data Terms allow API use only by applications Spexi has approved in writing. learn.spexi.com and docs.spexi.com run GitBook documentation MCP servers (docs search only, no ordering); Spexi has no entry in the MCP Registry. The Data Terms also bar systematic or automated scraping, mining or extraction through the service (4.4.15); automation_allowed is left unstated because API use needs an application Spexi has approved in writing (4.3.4)."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Tasked captures are new (days after order); archive images have a capturedAt date",
+    "notes": "Archive orders through the API are marked 'coming soon'; archive images can be searched and downloaded via the Image API."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "Spexi homepage: 'From request to real-world data in days, not months.'"
+  },
+  "updated": "2026-10-28",
+  "sources": [
+    {
+      "claim": "API intro: drone imagery across North America; Coverage, Image and Order APIs; Order API requests new drone captures",
+      "url": "https://learn.spexi.com/api-reference/introduction.md"
+    },
+    {
+      "claim": "Authentication: keys from Spexi World Settings > API Keys, x-api-key header, base https://world.spexi.com/developer-api; limits by account tier",
+      "url": "https://learn.spexi.com/api-reference/authentication.md"
+    },
+    {
+      "claim": "Tasking API: zones or GeoJSON polygon, per-product status lifecycle including feasibility_check and qa; Archived Orders 'coming soon'",
+      "url": "https://learn.spexi.com/api-reference/order-api/tasking-api.md"
+    },
+    {
+      "claim": "POST /developer-api/api/v1/order/tasking schema; only org_owner/org_admin or a Developer API key may submit",
+      "url": "https://learn.spexi.com/api-reference/order-api/tasking-api/submit-tasking-order.md"
+    },
+    {
+      "claim": "GET tasking order details and list endpoints, per-zone status",
+      "url": "https://learn.spexi.com/api-reference/order-api/tasking-api/list-tasking-order-details.md"
+    },
+    {
+      "claim": "Image search endpoint parameters and free-trial search quota",
+      "url": "https://learn.spexi.com/api-reference/image-api/search-images.md"
+    },
+    {
+      "claim": "Coverage query endpoint",
+      "url": "https://learn.spexi.com/api-reference/coverage-api/query-coverage.md"
+    },
+    {
+      "claim": "Requesting new imagery is typically linked to the service agreement; preferred dates not guaranteed; ortho standard accuracy within 5 m",
+      "url": "https://learn.spexi.com/spexi-world-viewer/requesting-new-imagery.md"
+    },
+    {
+      "claim": "Customer-docs FAQ: DJI Mini drones; QC procedures; GSD about 2.8 cm; public sharing depends on contract; imagery altitude prevents identifying faces",
+      "url": "https://learn.spexi.com/spexi-world-viewer/faqs.md"
+    },
+    {
+      "claim": "Homepage: 'From request to real-world data in days, not months', 1-3 cm pixels, 6.5M+ acres archive, LayerDrone pilot network, delivery via API",
+      "url": "https://www.spexi.com"
+    },
+    {
+      "claim": "Pilot requirements: Part 107 in the US, supported DJI Mini models, Spexi App on Android",
+      "url": "https://docs.spexi.com/get-started/what-you-need-to-fly.md"
+    },
+    {
+      "claim": "Automated missions via the Spexi App; uploads matched to flight record and marked verified",
+      "url": "https://docs.spexi.com/fly-and-earn/after-you-fly.md"
+    },
+    {
+      "claim": "SkyWatch lists Spexi-Ortho 3 cm tasking at $450/km2, min 0.5 km2, indicative as of June 2026",
+      "url": "https://skywatch.com/geospatial-data-providers/spexi/"
+    },
+    {
+      "claim": "Core concepts: per-image camera position, altitude, footprint, capture timestamp and EXIF; JPEG delivery",
+      "url": "https://learn.spexi.com/api-reference/core-concepts.md"
+    },
+    {
+      "claim": "Spexi Data Terms (2025-12-03): internal-business licence, no redistribution or resale, no competing AI training, Spexi owns all Content incl. Bespoke, API only by approved applications, invoice payment within 10 business days, 5% renewal increase",
+      "url": "https://www.spexi.com/policy/terms-spexi-data"
+    },
+    {
+      "claim": "Free Trial Terms (2026-07-31): view-only licence; no copying or storing; competitors barred; 18+",
+      "url": "https://www.spexi.com/policy/free-trial-terms-and-conditions"
+    },
+    {
+      "claim": "Spexi Platform Terms (2026-03-17): pilots assign all rights in Mapped Data to LayerDrone and Spexi; eligibility may be verified; sanctions and 18+ rules",
+      "url": "https://www.spexi.com/policy/terms-spexi-platform"
+    },
+    {
+      "claim": "Customer FAQ: new areas delivered in hours to weeks depending on size, fastest 11 hours; Spexi decides flight timing",
+      "url": "https://www.spexi.com/faq"
+    },
+    {
+      "claim": "Pilots must be located in the US or Canada",
+      "url": "https://docs.spexi.com/get-started/become-a-drone-pilot-on-the-spexi-app.md"
+    },
+    {
+      "claim": "Pilot application includes Part 107 certificate number where required",
+      "url": "https://www.spexi.com/blog/the-spexi-network-pilot-eligibility-compatible-drones"
+    },
+    {
+      "claim": "Missions flown at 80 m AGL with terrain following",
+      "url": "https://docs.spexi.com/beyond-the-basics/flight-execution.md"
+    },
+    {
+      "claim": "Order API: list images in an order; Archived Orders coming soon",
+      "url": "https://learn.spexi.com/api-reference/order-api.md"
+    },
+    {
+      "claim": "GET /developer-api/api/v1/order/{id}/images",
+      "url": "https://learn.spexi.com/api-reference/order-api/list-images-order.md"
+    },
+    {
+      "claim": "GET /developer-api/api/v1/order/{id}/orthomosaic",
+      "url": "https://learn.spexi.com/api-reference/order-api/list-orthomosaics-order.md"
+    },
+    {
+      "claim": "GET /developer-api/api/v1/image/{imageId}/download",
+      "url": "https://learn.spexi.com/api-reference/image-api/download-image.md"
+    },
+    {
+      "claim": "List tasking orders: limit max 100, status current|past, sort",
+      "url": "https://learn.spexi.com/api-reference/order-api/tasking-api/list-all-tasking-orders.md"
+    },
+    {
+      "claim": "GitBook documentation MCP server card for learn.spexi.com (docs search only)",
+      "url": "https://learn.spexi.com/.well-known/ai-catalog.json"
+    },
+    {
+      "claim": "Spexi is not on the C2PA Conforming Products List",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "adapter": "spexi",
+  "short": "Drone pilots flying standard missions over US and Canadian neighbourhoods.",
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "people"
+  },
+  "payment": {
+    "methods": [
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Charges are set in an Order Form agreed with Spexi or an authorized reseller (e.g. SkyWatch) and paid within 10 business days of invoice by direct debit or bank transfer."
+  },
+  "requester": {
+    "checks": "Tasking orders must name the customer organisation and a contact (first and last name, email); only org owners and admins, or a Developer API key, may submit. Access follows a signed Order Form. Platform users must be 18+ and not in sanctioned territories; Spexi's direct competitors are barred from the free trial.",
+    "unknown": "Whether Spexi verifies the customer's identity or screens what an area is being captured for. Spexi says imagery is flown at about 80 m and cannot identify faces, but publishes no policy on requests aimed at a specific person or property."
+  }
+}

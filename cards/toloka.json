@@ -1,0 +1,293 @@
+{
+  "id": "toloka",
+  "name": "Toloka",
+  "provider_url": "https://toloka.ai",
+  "status": "unclaimed",
+  "tags": [
+    "egocentric video",
+    "first-person video",
+    "head-mounted camera",
+    "robotics",
+    "physical AI",
+    "household tasks",
+    "crowd",
+    "contributors",
+    "self-serve",
+    "training data",
+    "custom collection",
+    "API"
+  ],
+  "summary": "Self-serve data platform: a requester describes a collection task, an AI assistant builds the pipeline (instructions, contributor audience by country and language, price, quality criteria), and ID-verified contributors record and upload the data, checked by an LLM reviewer and optionally by human reviewers. The documented collection template is egocentric (first-person, head-mounted) household-activity video; other collection (images, audio, in-the-field capture) is built from a description. Funded from a prepaid balance topped up by card; projects, runs and exports can also be driven through a beta REST API, a TypeScript SDK and a CLI. Toloka's older mobile field-task app (geotagged photos of places) is no longer documented and is not described here.",
+  "short": "A self-serve platform where vetted contributors record first-person task video to your brief.",
+  "capabilities": {
+    "modalities": [
+      "video",
+      "photo",
+      "audio"
+    ],
+    "tasks": [
+      "custom egocentric (first-person, head-mounted) video filmed to a written brief, uploaded by contributors (Egocentric Activity Video Collection template: 50 to 1,000 videos, 13 default household activity categories)",
+      "household and manual task video for robotics and physical AI training",
+      "other new data collection (images, audio, in-the-field capture) set up by the platform assistant from a description; no template for these is documented",
+      "custom data collection or workflows outside self-service, on request"
+    ]
+  },
+  "pricing": {
+    "model": "Per run: a cost forecast (Expected and Maximum) is approved before deploy, then charged pay-as-you-go against a prepaid team balance",
+    "from_usd": 0,
+    "unit": "run (one pipeline run of up to 10,000 items)",
+    "notes": "from_usd 0 means no unit price is published. You set the per-task price paid to each contributor; Toloka adds a fixed 33% commission, plus LLM QA per review call, human QA per sampled review (payout scaled to review time plus 10%), and a video-review charge (base rate plus per-minute rate) where the LLM reviewer watches video. The real per-task and per-call prices appear only in the in-app cost breakdown. Deploying freezes the run's prices. No minimums or contracts. HomER (63 head-mounted household videos, 17 categories) cost about $50 in total; that is one example, not a rate. New accounts get $50 credit after the first $50 of qualifying spend."
+  },
+  "latency": {
+    "typical": "First batch in about 3 hours; results in 24 hours (provider marketing)",
+    "notes": "The egocentric video page lists '3 hrs' to first batch and 'production-ready results in 24 hours'; HomER took 3 hours to collect. A template deploy usually takes 5 to 15 minutes before tasks are live. No SLA; real time depends on brief, volume, price and contributor availability."
+  },
+  "coverage": {
+    "regions": [
+      "100+ countries (not listed)"
+    ],
+    "notes": "Toloka cites 200,000+ contributors in 100+ countries and 40 languages, but publishes no country list, only exclusions: contributors cannot be resident in sanctioned jurisdictions (e.g. Russia, China, Iran, Belarus, Cuba, North Korea, Syria) or in places its ID-verification or payment providers do not cover (including Switzerland, Taiwan and Kenya). The requester can limit the contributor audience by country and language. Recording happens wherever contributors live (mostly their homes), not at a place the requester picks."
+  },
+  "licensing": {
+    "summary": "Self-Service Agreement (22 Apr 2026). §7.1: the buyer owns Output created specifically for it once Fees are fully paid (§7.2 excludes the seller's Background IP); §7.3: contributors must assign those rights to the buyer. The terms assume buyers train AI models on Output (§2.6, §8.4.1) but contain no express training grant but forbid using it to build or train products that compete with Toloka (§6.2(vii)). §6.2(iv) forbids reselling Output, and §6.2(iii) forbids making it available for the benefit of unaffiliated third parties. §7.4/§7.9: Toloka may train its internal models on your Data and Output unless you opt out in writing; the opt-out is prospective only and does not cover derived de-identified 'Toloka Data'. §5: Data and Output from a free trial are licensed to Toloka irrevocably and perpetually for any purpose, including model training, and the opt-out does not apply.",
+    "ai_training": "allowed",
+    "resale": "forbidden",
+    "buyer_owns_output": true,
+    "vendor_trains_on_data": "unless_opted_out"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Contributors must pass Toloka's identity, residency and eligibility verification (an identity document showing country of residence); labeling tasks default to experts who have passed ID verification.",
+      "unknown": "Whether the verified account holder is the person who filmed each clip, how multi-account use is detected, and whether collection templates (not only labeling nodes) require ID-verified contributors. No public evidence. The eligibility terms name no identity-verification vendor ('our identity verification provider') and document no liveness check or re-verification; an account can be shared after enrolment."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Contributors record with their own smartphones or cameras and upload files; no capture-app or device attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No check that a video came from a real camera rather than a screen, edit or generator is described; HomER rejected re-used clips by rule, not by a documented detector."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No trusted capture time is documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location capture or check is documented. The audience filter restricts contributors by country of residence, not where a clip was recorded."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "An LLM reviewer checks every submission against the requester's written quality criteria (e.g. head-mounted, both hands visible 95%+ of the time, no third-person footage), with a verdict and reason per criterion, and watches video fields; rejected work goes back for correction or reassignment. Optional human review checks a 10 to 100% sample. Toloka cites 89.1% accuracy at catching failures.",
+      "unknown": "How the 89.1% figure was measured, the false-accept rate, and whether people review anything the model passes when human review is not switched on."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check of a collected recording is described. Multi-contributor agreement (Quorum nodes) is documented for labeling, not for confirming a capture."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://platform.toloka.ai/docs/integration/programmatic-access/",
+    "base_url": "https://platform.toloka.ai/api/v2-beta",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "Authorization",
+        "env_var": "TOLOKA_API_KEY",
+        "how_to_get": "Sign up at platform.toloka.ai, then in the Business Console open your company, go to API keys and click Generate API key. Send it as 'Authorization: ApiKey <key>'. The key acts as its user and does not expire until deleted."
+      },
+      {
+        "type": "api_key_header",
+        "header": "X-Scoped-Token",
+        "how_to_get": "A project-scoped token issued with POST /api/v2-beta/projects/{projectId}/tokens by an API-key holder; revocable."
+      },
+      {
+        "type": "other",
+        "how_to_get": "Interactive use: 'toloka login --browser' signs the CLI in through the browser (Google or Microsoft); the session renews for up to 14 days. Toloka's agent skill says never to ask a person to paste a key into chat."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/projects",
+        "notes": "Lists projects across your teams; read-only connection check."
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/pipelines/{pipelineId}/cost-estimate",
+        "notes": "Cost forecast for a pipeline before a run."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/pipelines/{pipelineId}/runs",
+        "params": "JSON body; Content-Type: application/json required",
+        "notes": "Starts a paid run. A pipeline must first be imported or copied (no endpoint assembles nodes), with a dataset bound via POST /pipelines/{pipelineId}/dataset. Blocked for teams that have not completed identity or business verification."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/runs/{runId}",
+        "notes": "Poll until succeeded or failed; a cancelled run reports failed with 'Run canceled'. GET /runs/{runId}/cost gives the run's cost."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/runs/{runId}/items",
+        "notes": "Run items. Full results: POST /datasets/{datasetId}/exports, then poll GET /exports/{exportId} for a download link (expires after 30 minutes)."
+      }
+    ],
+    "sdk": "@toloka-platform/sdk (TypeScript, 0.x) and the toloka CLI; Toloka publishes agent runbooks at platform.toloka.ai/agents/SKILL.md. The older Python toloka-kit targeted the legacy API.",
+    "rate_limits": "60 requests per minute per endpoint; RateLimit-* headers; 429 when exceeded. A run processes at most 10,000 items; a dataset holds at most 150,000.",
+    "mcp": {
+      "registry_name": "io.github.Toloka/tendem-mcp",
+      "remote": "https://mcp.tendem.ai/mcp",
+      "auth": "OAuth 2 (protected-resource metadata at https://mcp.tendem.ai/.well-known/oauth-protected-resource/mcp; Keycloak at auth.tendem.ai publishes a dynamic client registration endpoint and PKCE S256) or 'Authorization: ApiKey' for headless use",
+      "first_party": true,
+      "notes": "This is Tendem, Toloka's expert-task product ('research, writing, analysis, and data work'), not the Toloka Platform data-collection crowd. No MCP server for the data-collection platform was found."
+    },
+    "notes": "The Pipeline API is beta: request and response shapes may change without notice. OpenAPI 3.1 document at https://platform.toloka.ai/api/v2-beta/doc. State-changing requests need Content-Type: application/json. Payments and top-ups are not in the API."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Recorded after you launch the run",
+    "notes": "Toloka also sells existing datasets; only the commissioned collection is described here."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Egocentric video page: '3 hrs' to first batch, 'production-ready results in 24 hours'."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "approval",
+    "rate_limit": {
+      "requests": 60,
+      "per_seconds": 60,
+      "scope": "unknown",
+      "notes": "Per endpoint; RateLimit-* headers; 429 when exceeded. A run processes at most 10,000 items.",
+      "source_url": "https://platform.toloka.ai/docs/integration/programmatic-access/"
+    }
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "prepaid_balance"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "A team keeps a prepaid USD balance, topped up by card (Stripe) in the Business Console; bank transfer on request. A run reserves its cost from the balance and pauses if it runs out. The API can spend an existing balance but cannot top it up. All purchases are final and non-refundable."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Before adding funds or placing paid orders, a requester must give a valid payment method and pass KYB and sanctions/export screening; a team that has not completed identity or business verification cannot start a run. Some jurisdictions get enhanced due diligence (ID and proof of address for owners and directors). Toloka may review and moderate any project before or after publication, and the terms forbid using the service for unlawful surveillance, biometric identification or doxxing.",
+    "unknown": "Whether a collection brief that targets a specific place or person is reviewed before contributors see it."
+  },
+  "sources": [
+    {
+      "claim": "Self-serve egocentric video collection: describe the task, set a quality bar; no sales cycle, no minimums; 200,000+ contributors, 100+ countries; 3 hrs to first batch, results in 24 hours; LLM QA validates every submission, 89.1% accuracy at catching failures; HomER: 63 videos, 17 categories, 3 hours, $50",
+      "url": "https://toloka.ai/egocentric-video"
+    },
+    {
+      "claim": "HomER built with the self-service platform; head-mounted forward-facing camera, both hands visible 95%+ of the time, handheld footage rejected; verified crowd in 100+ countries and 40 languages; 1,800+ contributors matched; LLM QA rejects or flags failures against rubrics",
+      "url": "https://toloka.ai/blog/homer-building-an-open-source-egocentric-robotics-dataset-with-toloka/"
+    },
+    {
+      "claim": "Projects run via API, TypeScript SDK and CLI; Pipeline API in beta; price calculated after setup, no hidden fees, minimums or contracts; no onboarding; card via Stripe, bank transfer on request; $50 credit match; egocentric video and utterance recording listed; custom data collection on request; agent bootstrap at platform.toloka.ai/agents/SKILL.md",
+      "url": "https://toloka.ai/mturk-migration"
+    },
+    {
+      "claim": "API base URL, 'Authorization: ApiKey' header, key generated in the Business Console; long-running jobs polled; 60 requests/minute per endpoint; 10,000 items per run; unverified teams are on a trial and cannot start a run",
+      "url": "https://platform.toloka.ai/docs/integration/programmatic-access/"
+    },
+    {
+      "claim": "OpenAPI 3.1 for the beta Pipeline API: apiKeyAuth (Authorization) and scopedTokenAuth (X-Scoped-Token); endpoints for projects, cost-estimate, runs, run items, exports",
+      "url": "https://platform.toloka.ai/api/v2-beta/doc"
+    },
+    {
+      "claim": "CLI: toloka login --browser, API key alternative for scripts and agents, TOLOKA_API_KEY",
+      "url": "https://platform.toloka.ai/docs/integration/cli/"
+    },
+    {
+      "claim": "TypeScript SDK @toloka-platform/sdk, 0.x",
+      "url": "https://platform.toloka.ai/docs/integration/sdk/"
+    },
+    {
+      "claim": "Agent skill: never ask a person to paste an API key; show the plan or maximum charge before a paid mutation",
+      "url": "https://platform.toloka.ai/agents/SKILL.md"
+    },
+    {
+      "claim": "Run pricing: per-task price plus fixed 33% commission, LLM QA per call, human QA per review, video tool base plus per-minute; Expected and Maximum forecast; price frozen at deploy; pay-as-you-go from balance; run pauses when funds run out",
+      "url": "https://platform.toloka.ai/docs/explanation/pricing-and-billing/"
+    },
+    {
+      "claim": "Prepaid team balance in USD; top-up and payment methods in the Business Console; platform takes no payments",
+      "url": "https://platform.toloka.ai/docs/how-to/account-team-balance/"
+    },
+    {
+      "claim": "Data collection templates: Egocentric Activity Video Collection (50 to 1,000 videos, 13 default household categories, audience countries and languages); data collection covers video, audio, images, in-the-field capture; deploy takes 5 to 15 minutes",
+      "url": "https://platform.toloka.ai/docs/cookbook/preset-project/"
+    },
+    {
+      "claim": "LLM review grades every item against written criteria; optional human review of a 10 to 100% sample; rejected expert work returned or reassigned; Quorum nodes for multi-expert agreement",
+      "url": "https://platform.toloka.ai/docs/explanation/quality-control/"
+    },
+    {
+      "claim": "Audience by language, country and specialization; labeling tasks default to ID-verified experts; export links expire after 30 minutes",
+      "url": "https://platform.toloka.ai/docs/explanation/security-and-data-handling/"
+    },
+    {
+      "claim": "Contributor eligibility: restricted and unsupported jurisdictions (incl. Switzerland, Taiwan, Kenya); identity, residency and eligibility verification with an identity document; project-level country limits",
+      "url": "https://toloka.ai/legal/eligibility-and-geographic-restrictions"
+    },
+    {
+      "claim": "Self-Service Agreement (22 Apr 2026): API use (§2.4); prepaid balance, purchases final (§4); KYB and sanctions screening before paid orders (§5.3); trial Data and Output licensed to Toloka perpetually, opt-out does not apply (§5); no reselling Output, no automated accounts, no competing-model training (§6.2); buyer owns paid Output subject to Seller Background IP (§7.1, §7.2); contributors assign rights (§7.3); Toloka trains on Data and Output unless opted out; opt-out written, prospective, excludes derived Toloka Data (§7.4, §7.9); project moderation (§3.8); EDD (§2.2)",
+      "url": "https://toloka.ai/legal/self-service-agreement"
+    },
+    {
+      "claim": "Contributor posting: smartphone or camera at 1080p/30fps or better, mounted at forehead or eye level, recording household activities",
+      "url": "https://www.builtinaustin.com/job/video-ai-data-associate/8820646"
+    },
+    {
+      "claim": "Older field-task docs (geotagged photos in the Toloka mobile app) are no longer current; the old docs path redirects to the homepage",
+      "url": "https://toloka.ai/docs/template-builder/templates/spatial-crowdsourcing"
+    },
+    {
+      "claim": "Tendem MCP in the official registry: io.github.Toloka/tendem-mcp 1.0.1 active, remote streamable-http at mcp.tendem.ai/mcp",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=toloka"
+    },
+    {
+      "claim": "Tendem MCP protected-resource metadata: authorization server auth.tendem.ai/realms/tendem",
+      "url": "https://mcp.tendem.ai/.well-known/oauth-protected-resource/mcp"
+    },
+    {
+      "claim": "Tendem authorization server publishes a registration endpoint and PKCE S256",
+      "url": "https://auth.tendem.ai/realms/tendem/.well-known/openid-configuration"
+    },
+    {
+      "claim": "Tendem MCP: OAuth on first use or 'Authorization: ApiKey' for headless use",
+      "url": "https://github.com/Toloka/tendem-mcp"
+    },
+    {
+      "claim": "Identity document must reflect country of residence; checked by 'our identity verification provider'",
+      "url": "https://toloka.ai/legal/eligibility-and-geographic-restrictions"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "adapter": "toloka"
+}

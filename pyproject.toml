@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "irlpls"
+version = "0.1.0"
+description = "Find and call providers that collect real-world observations (people, drones, satellites, sensors). Open registry of Capture Cards plus provider adapters."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+dependencies = []
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.2"]
+check = ["jsonschema"]
+dev = ["pytest", "jsonschema"]
+
+[project.scripts]
+irlpls = "irlpls.cli:main"
+irlpls-mcp = "irlpls.mcp_server:main"
+
+[tool.setuptools.packages.find]
+include = ["irlpls*"]
+
+[tool.setuptools.package-data]
+irlpls = ["data/*.json", "data/*.dat"]

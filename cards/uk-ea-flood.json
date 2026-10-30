@@ -1,0 +1,236 @@
+{
+  "id": "uk-ea-flood",
+  "name": "Environment Agency real-time flood-monitoring API",
+  "status": "unclaimed",
+  "provider_url": "https://environment.data.gov.uk/flood-monitoring/doc/reference",
+  "short": "England's river, groundwater and rain gauges, UK tide gauges and live flood warnings. Free, no key.",
+  "summary": "The Environment Agency's beta real-time API serves water level and flow from about 5,500 monitoring stations in England, about 1,000 rain gauges, the UK National Tide Gauge Network, and current flood alerts and warnings for England, all keyless under the Open Government Licence. Levels and flows are measured usually every 15 minutes, but the Agency says stations typically send data once or twice a day, more often when flood risk is high; on 2026-10-26 most latest readings were under an hour old.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "find gauges within N km of a point, by river, town, catchment, type or status",
+      "latest river, groundwater and tidal water level",
+      "latest river flow (some stations)",
+      "15-minute rainfall totals from tipping-bucket rain gauges",
+      "tide gauge levels (15-minute mean) around the UK coast",
+      "wind and air temperature at a few stations",
+      "current flood alerts and warnings with severity and situation message",
+      "flood alert and warning area polygons",
+      "readings for the last four weeks; older readings as daily CSV archives"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "England (rivers, groundwater, rainfall, flood warnings)",
+      "UK coast (tide gauges)"
+    ],
+    "areas": [
+      "GB-ENG"
+    ],
+    "notes": "The station list returned 5,539 stations on 2026-10-26 (5,318 level, 1,055 rainfall and 394 flow measures, plus a few wind and temperature). River, rain and groundwater stations are in England; queries around Cardiff, Aberystwyth and Glasgow found none except Newport tide gauges. The tide gauge network (the Agency says 44 locations) also covers Wales, Scotland, Northern Ireland and the Isle of Man; Lerwick, Portrush and Port Erin returned 04:15 UTC readings, while Jersey is listed but returned no readings. coverage.areas lists England only, since the coastal sites are a thin network. Flood warnings are the Agency's, for England. Rain gauge locations are rounded to a 100 m grid and the stations are unnamed."
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Free open data under the Open Government Licence, with no requirement for registration."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-26",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "batch_max": 10000,
+      "scope": "unknown",
+      "notes": "No request rate published. Readings: 500 items by default, at most 10,000 via _limit; readings?latest returns every station in one call. Responses carry Cache-Control max-age=300.",
+      "source_url": "https://environment.data.gov.uk/flood-monitoring/doc/reference"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Environment Agency: water levels and flows are monitored usually every 15 minutes, but data is transferred typically once or twice per day, more often during heightened flood risk; the readings set is updated every 15 minutes. Tide gauge data typically lags 15 to 30 minutes."
+  },
+  "latency": {
+    "typical": "Usually under an hour for most stations; some only once or twice a day",
+    "notes": "The Agency says levels and flows are measured usually every 15 minutes but transferred typically once or twice per day, more often when flood risk is high; rainfall is also typically transferred once or twice a day; tide gauges lag 15 to 30 minutes. Live check at 05:00 UTC on 27 Oct 2026 (26 Oct US time) of /data/readings?latest: 5,376 latest values, newest 17 minutes old, median 31 minutes, 84% under 60 minutes, 98% under 24 hours, 117 older than a day. Responses are cached (Cache-Control max-age=300). Beta service with no guarantee of service level."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Median about 30 minutes on 2026-10-26; up to a day for stations that send once or twice daily",
+    "notes": "The API holds readings for up to the last four weeks; a reading's URI stops resolving after 28 days. Readings are sometimes updated in batches, so use the since filter on a measure or station to keep a full history. Daily CSV archives are at /flood-monitoring/archive. A flood warning stays at severity 4 ('Warning no longer in force') for about 24 hours, then disappears."
+  },
+  "licensing": {
+    "summary": "Open Government Licence v3.0, no registration. The OGL grants a worldwide, royalty-free, perpetual, non-exclusive licence to copy, publish, distribute, adapt and exploit the information commercially and non-commercially, on condition of attribution. The API asks for the statement 'this uses Environment Agency flood and river level data from the real-time data API (Beta)' (rainfall and tide gauge data have their own wording). The site terms say logos and trademarks are exempt from the OGL. Neither the OGL nor the site terms mention AI or machine-learning training, or resale by name."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each reading carries a dateTime in UTC (Z suffix) for when the reading applies.",
+      "unknown": "Timestamps come from the Agency's own telemetry system and are not signed; how logger clocks are set or checked is not documented. Readings may arrive in late batches."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed stations with published WGS84 lat/long, British National Grid easting/northing and grid reference.",
+      "unknown": "Coordinates are the Agency's own records, not independently checked. Rain gauge locations are deliberately rounded to a 100 m grid."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Each measure states parameter, qualifier, unit and datum (mAOD, mASD or m) and value type (instantaneous, mean, total, maximum, minimum); stations publish typical range and records.",
+      "unknown": "Beta service with no guarantee of service level; the Agency says it should not be relied on for safety-critical uses. No quality flags are published per reading, and NaN values are simply omitted from JSON."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: readings come from automated Environment Agency gauges, not from people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of readings from gauge to API; integrity rests on the Agency operating the network."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://environment.data.gov.uk/flood-monitoring/doc/reference",
+    "base_url": "https://environment.data.gov.uk/flood-monitoring",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key and no registration."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/id/stations",
+        "params": "lat, long, dist (km; may be approximated by a bounding box); parameter (level, flow, rainfall...); qualifier; type (SingleLevel, MultiTraceLevel, Coastal, Groundwater, Meteorological; TideGauge for tide gauges); status (Active, Closed, Suspended); riverName; town; catchmentName; search; _view=full; _limit; _offset",
+        "notes": "Each station lists its measures, coordinates and status."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/data/readings",
+        "params": "latest | today | date | startdate&enddate; parameter; qualifier; stationReference; station; _view=full; _sorted; _limit",
+        "notes": "The Agency recommends one call to /data/readings?latest every 15 minutes rather than crawling stations."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/id/stations/{id}/readings",
+        "params": "latest | today | date | startdate&enddate | since (dateTime); _sorted; _limit; _view=full",
+        "notes": "All readings for one station; /id/measures/{id}/readings does the same for one measure."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/id/floods",
+        "params": "min-severity (1 severe to 4 no longer in force); county; lat, long, dist",
+        "notes": "Current flood alerts and warnings, updated every 15 minutes."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/id/floodAreas",
+        "params": "lat, long, dist; _limit",
+        "notes": "Flood alert and warning areas with a link to each GeoJSON polygon."
+      }
+    ],
+    "rate_limits": "No rate limit published. Readings return 500 items by default (no default limit for latest, today or date queries unless _sorted is set), up to a hard limit of 10,000 via _limit; flood areas default to 500 with no hard limit. Responses may be cached (Cache-Control max-age=300), clients should follow HTTP redirects, and Last-Modified / If-Modified-Since are supported.",
+    "notes": "JSON by default; CSV, RDF, Turtle and HTML via suffix or content negotiation. Version 0.9, status Beta.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "No Environment Agency MCP server in the official MCP Registry. Third-party: io.github.pipeworx-io/uk-flood-monitoring (remote https://gateway.pipeworx.io/uk-flood-monitoring/mcp) and io.github.qinisolabs/floodwise."
+    }
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "adapter": "uk_ea_flood",
+  "tags": [
+    "flood",
+    "river",
+    "river level",
+    "flow",
+    "groundwater",
+    "rainfall",
+    "tide",
+    "flood warning",
+    "england",
+    "uk",
+    "government",
+    "open data",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "API reference: near real time flood warnings, flood areas, levels and flows; monitored usually every 15 minutes, transferred typically once or twice per day, more in heightened flood risk; OGL with no registration and attribution statement; no service-level guarantee, not for safety-critical use; one ?latest call every 15 minutes; caching and redirects; endpoints and filters; 500 default / 10,000 hard limit for readings, no hard limit for flood areas; readings for up to four weeks; warnings updated every 15 minutes and kept at severity 4 for about 24 hours; daily CSV archives",
+      "url": "https://environment.data.gov.uk/flood-monitoring/doc/reference"
+    },
+    {
+      "claim": "About 1,000 telemetered tipping-bucket rain gauges, 15-minute totals, typically transferred once or twice per day; stations unnamed and located to a 100 m grid; rainfall attribution statement; reading URIs valid for 28 days",
+      "url": "https://environment.data.gov.uk/flood-monitoring/doc/rainfall"
+    },
+    {
+      "claim": "UK National Tide Gauge Network, 44 locations around the UK coast, 15-minute mean sea level, latest reading typically lags 15 to 30 minutes, times in UTC; type=TideGauge filter",
+      "url": "https://environment.data.gov.uk/flood-monitoring/doc/tidegauge"
+    },
+    {
+      "claim": "Live keyless GET 2026-10-26 (05:00 UTC 27 Oct): 5,376 latest values, median 31 minutes old, 84% under an hour; meta version 0.9, 'Status: Beta service', OGL v3 licence; Cache-Control max-age=300",
+      "url": "https://environment.data.gov.uk/flood-monitoring/data/readings?latest"
+    },
+    {
+      "claim": "Live GET 2026-10-26: 5,539 stations; measure counts by parameter (level, rainfall, flow, wind, temperature)",
+      "url": "https://environment.data.gov.uk/flood-monitoring/id/stations?_limit=10000"
+    },
+    {
+      "claim": "Live GET 2026-10-26: stations near a point in London",
+      "url": "https://environment.data.gov.uk/flood-monitoring/id/stations?lat=51.5&long=-0.12&dist=5&_limit=2"
+    },
+    {
+      "claim": "Live GET 2026-10-26: tide gauge stations include Lerwick, Ullapool, Aberdeen, Portrush, Bangor (NI), Holyhead, Milford Haven, Port Erin and Jersey",
+      "url": "https://environment.data.gov.uk/flood-monitoring/id/stations?type=TideGauge"
+    },
+    {
+      "claim": "Live GET 2026-10-26: Lerwick tide gauge reading at 04:15 UTC 27 Oct",
+      "url": "https://environment.data.gov.uk/flood-monitoring/id/stations/E74424/readings?_sorted&_limit=1"
+    },
+    {
+      "claim": "Live GET 2026-10-26: 111 flood items (43 flood alerts, 13 flood warnings, 55 no longer in force) with severity and message",
+      "url": "https://environment.data.gov.uk/flood-monitoring/id/floods"
+    },
+    {
+      "claim": "Defra Data Services Platform terms: lawful use; content and data under the OGL unless stated; logos and trademarks exempt; feeds offered for other websites and applications",
+      "url": "https://environment.data.gov.uk/support/faqs/275811163/275811177"
+    },
+    {
+      "claim": "OGL v3.0: worldwide, royalty-free, perpetual, non-exclusive licence to copy, adapt and exploit commercially and non-commercially, with attribution",
+      "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+    },
+    {
+      "claim": "No Environment Agency MCP server in the official registry; third-party uk-flood-monitoring and floodwise servers listed",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=flood"
+    }
+  ]
+}

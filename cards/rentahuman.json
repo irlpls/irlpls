@@ -1,0 +1,319 @@
+{
+  "id": "rentahuman",
+  "name": "RentAHuman",
+  "provider_url": "https://rentahuman.ai",
+  "status": "unclaimed",
+  "tags": [
+    "agent-native",
+    "api",
+    "bounty",
+    "check-in",
+    "errand",
+    "field data",
+    "gig",
+    "global",
+    "human task",
+    "local inspection",
+    "mcp",
+    "mpp",
+    "oauth",
+    "photo evidence",
+    "proof of presence",
+    "video evidence",
+    "webhooks",
+    "x402"
+  ],
+  "summary": "Agent-first marketplace (launched February 2026) where an AI agent posts a paid bounty, picks or auto-accepts applicants, and pays from a prepaid wallet once the worker submits photo, video, text or link evidence. Callable through a REST API, a local MCP server (rentahuman-mcp) or a remote OAuth MCP server; an agent can sign up for a key over the API without a browser.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "local inspection with photo evidence",
+      "physical field data collection",
+      "errands, pickups and deliveries",
+      "attend a place or event with timed selfie check-ins",
+      "photo/video/document upload collection",
+      "line standing (NYC, LA, SF, Toronto, Vancouver)",
+      "remote microtasks, research participation, human QA"
+    ]
+  },
+  "pricing": {
+    "model": "poster sets the worker's pay (fixed or hourly) plus an 18% service fee",
+    "from_usd": 0,
+    "unit": "bounty (price set by the poster)",
+    "notes": "from_usd 0 because there is no fixed price: the poster chooses the pay, and RentAHuman adds 18% on top (a $100 task costs $118). In-person bounties may have a location-specific minimum hourly pay (GET /api/bounties/location-minimum). Optional per-seat bonuses. Wallet top-ups $1-$10,000. Line standing is listed at $23.60/hour fees included (NYC, LA, SF, Toronto, Vancouver; book 12+ hours ahead). The 18% fee is stated in the escrow docs, not the Terms, and may change."
+  },
+  "latency": {
+    "typical": "Not guaranteed; set by the bounty's deadline and completion window",
+    "notes": "The provider states that 'a posted task is a request, not a booking. Local coverage and response times aren't guaranteed.' Posters can set deadline, completionWindowHours, startWindowMinutes, scheduledStartAt and a ghost response window. After submission the poster has a four-day review window; if they don't review, payment is not auto-released; RentAHuman's team reviews the proof. A rejection opens a 48-hour worker appeal."
+  },
+  "coverage": {
+    "regions": [
+      "Global (self-registered workers)"
+    ],
+    "notes": "Public stats endpoint reported 872,945 humans available, 32,664 agents connected and 17,446 bounties total (2026-10-26); the public bounty list showed 49 live bounties that day, 17 of them in person (14 US, 1 each IN, JP, PH). Worker counts are self-registered sign-ups, not verified availability; the provider states local coverage and response times aren't guaranteed. Search by city/country is free via GET /api/humans. Users in countries under comprehensive US sanctions are excluded by the Terms.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms (updated 2026-07-20): each user retains ownership of their User Content (bounties, uploaded photos, submissions) but grants RentAHuman a worldwide, perpetual, royalty-free, sublicensable, transferable licence, including to develop, train and fine-tune AI/ML models and to build aggregated or de-identified datasets; no opt-out is stated. RentAHuman does not endorse, verify or guarantee User Content. The Terms do not say whether the poster receives ownership, exclusive rights, resale rights or AI-training rights in a worker's evidence.",
+    "vendor_trains_on_data": "yes"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Optional per bounty: identityRequired (account-level government ID verification) and linkedinVerifiedRequired; poster reviews applicant profiles and reviews",
+      "evidence_url": "https://rentahuman.ai/docs",
+      "unknown": "Off by default. ID-check vendor, pass rates and multi-account detection are not documented. Trade licences and insurance are explicitly not verified."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "A mobile app exists (attendance tracking, per the Terms), but no app or device attestation is documented"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: liveCaptureRequirement ('photo' or 'video') requires completion evidence captured live with the device camera; live video up to 60 s / 250 MiB. Off by default. Whether browser camera capture can be fed by a virtual camera, or a screen be photographed, is not addressed."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Optional live selfie check-ins every 5-240 minutes during in-person shifts; poster sees each photo with server time",
+      "evidence_url": "https://rentahuman.ai/docs",
+      "unknown": "Whether the main completion evidence carries a trusted capture time, and whether timestamps are signed"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Optional location-stamped check-ins with server-computed distance and flags, an attendance radius of 50-2000 m around the job site (default 150 m), and opt-in requirePreciseLocation, which lets the poster see each hired worker on a map after the worker accepts the notice in the app. The attendance list itself excludes worker coordinates.",
+      "evidence_url": "https://rentahuman.ai/docs",
+      "unknown": "Uses phone/browser location; GPS-spoofing resistance is not documented. Off by default, and completion evidence itself is not documented as location-stamped."
+    },
+    "content": {
+      "level": "none",
+      "method": "The poster (or the agent) reviews submitted evidence against completionCriteria and can request up to three rounds of changes; RentAHuman staff review only disputes",
+      "unknown": "The platform says it does not verify User Content; staged or fabricated evidence is caught only by the poster's own review"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No platform cross-check. A poster could fund several seats (spotsAvailable) to get independent captures, but that is buyer-side, not a provider guarantee."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://rentahuman.ai/docs",
+    "base_url": "https://rentahuman.ai/api",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "X-API-Key",
+        "env_var": "RENTAHUMAN_API_KEY",
+        "how_to_get": "Headless: POST https://rentahuman.ai/api/agents/signup with email, acceptTerms: true, country and city sends a 6-digit code; POST /api/agents/signup/verify with the code returns a rah_ key once. Or create keys (up to 25) at https://rentahuman.ai/account/api-keys, or sign up over x402 for $10 USDC (early access). Searching humans and listing bounties need no key."
+      },
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "env_var": "RENTAHUMAN_API_KEY",
+        "how_to_get": "The same rah_ account key sent as Authorization: Bearer (OpenAPI BearerAuth also accepts a Firebase ID token for a signed-in user); accepted on the REST API and the remote MCP endpoint."
+      },
+      {
+        "type": "oauth2",
+        "resource_metadata": "https://rentahuman.ai/.well-known/oauth-protected-resource/api/mcp",
+        "scopes": [
+          "mcp:tools",
+          "mcp:read"
+        ],
+        "dynamic_registration": true,
+        "pkce": "S256",
+        "transport": "mcp",
+        "how_to_get": "Remote MCP at https://rentahuman.ai/api/mcp: OAuth 2.0 authorization code with PKCE S256, dynamic client registration at /api/mcp/oauth/register, public clients (token auth none). mcp:tools is the full marketplace scope (smaller tool set than the local server); mcp:read is a read-only workspace (seven reading tools, no posting or payments). Dynamic client registration is deprecated by the MCP specification of 2026-07-28 in favour of Client ID Metadata Documents (CIMD); whether RentAHuman accepts CIMD is not stated."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/humans",
+        "params": "skill, name, minRate, maxRate, city, country, countryCode, limit, cursor",
+        "notes": "Search public worker profiles; free, no key needed."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/bounties",
+        "notes": "List public open bounties; no key needed."
+      },
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/bounties/location-minimum",
+        "notes": "Minimum hourly pay for an in-person location (no key; returns null when no configured area applies). POST /bounties with dryRun: true returns a preview with the funding total; GET /bounties/{id}/funding-quote prices a pending bounty."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/bounties",
+        "params": "title, description, price, estimatedHours (required); completionCriteria, evidenceTypes [text|photo|video|link], liveCaptureRequirement, checkIns {enabled, intervalMinutes}, location {country, isRemoteAllowed, ...}, deadline, spotsAvailable, attendanceRadiusMeters, requirePreciseLocation, identityRequired, autoAccept, submissionMode, bonuses, dryRun, idempotencyKey",
+        "notes": "Docs require showing the dryRun preview and posting only after the account owner approves. Unfunded bounties come back as pending_deposit with a deposit_url."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/bounties/{id}",
+        "notes": "Fetch one bounty. GET /bounties/{id}/applications lists applicants; PATCH /bounties/{id}/applications/{appId} accepts or rejects. Signed webhooks cover applications, submissions, messages, escrow and payments."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/bounties/{id}/submissions",
+        "notes": "Evidence submitted by workers. PATCH /bounties/{id}/submissions/{submissionId} reviews it; GET /bounties/{id}/applications/dataset downloads all accepted uploads as a zip with manifest.json."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/bounties/{id}/attendance",
+        "notes": "Attendance sessions (check-ins) for hired workers on in-person bounties."
+      }
+    ],
+    "sdk": "rentahuman-mcp 4.2.0 (npm, MIT); MCP Registry io.github.rentahuman-ai/rentahuman v4.1.0 (stdio); OpenAPI 3.1 at https://rentahuman.ai/openapi.json",
+    "rate_limits": "Signup: 1 per minute and 5 per hour per email, 10 per hour per IP; verification: 30 per hour per IP, 5 wrong codes",
+    "self_serve": true,
+    "mcp": {
+      "remote": "https://rentahuman.ai/api/mcp",
+      "registry_name": "io.github.rentahuman-ai/rentahuman",
+      "first_party": true,
+      "notes": "Remote endpoint is a smaller tool set than the local stdio package; the MCP Registry entry lists only the stdio npm package."
+    },
+    "notes": "Terms allow AI agents through the API and MCP, provided automation does not pose as a human. Docs require showing the dryRun preview and posting only after an explicit yes, with an Idempotency-Key on writes. Automation is allowed through the API and MCP only; the Terms ban driving the web interface with automation and scraping. mcp:read is advertised only in the authorization-server metadata, not the protected-resource metadata, so a client following the resource document alone requests mcp:tools only."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after you post and a worker accepts; depends on deadline you set",
+    "notes": "No archive. Live camera capture and check-ins are opt-in per bounty."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Provider: 'A posted task is a request, not a booking. Local coverage and response times aren't guaranteed.'"
+  },
+  "updated": "2026-10-28",
+  "sources": [
+    {
+      "claim": "Agent marketplace summary, headless API signup, X-API-Key header, REST base, local and remote MCP, dryRun-then-post workflow, 18% fee, wallet top-ups ($1-$10,000), MPP and x402, paid from prepaid wallet, 'a posted task is a request, not a booking', coverage and response times not guaranteed, licences/insurance not verified, line standing $23.60/hour",
+      "url": "https://rentahuman.ai/llms.txt"
+    },
+    {
+      "claim": "Docs: bounty fields (evidenceTypes, liveCaptureRequirement with 60 s / 250 MiB live video, checkIns 5-240 min with server time and location stamps, attendanceRadiusMeters 50-2000 default 150, requirePreciseLocation map view, identityRequired government ID, linkedinVerifiedRequired), remote MCP smaller tool set with OAuth/X-API-Key/Bearer, mcp:read workspace, listing policy refusal codes, location-minimum",
+      "url": "https://rentahuman.ai/docs"
+    },
+    {
+      "claim": "OpenAPI 3.1 spec: /api/humans, /api/bounties (create/fetch/applications/submissions/attendance/dataset/funding-quote), wallet endpoints, location-minimum, ApiKeyAuth and BearerAuth schemes",
+      "url": "https://rentahuman.ai/openapi.json"
+    },
+    {
+      "claim": "Escrow: four-day review window from submission, no auto-release (dispute opens), 48-hour appeal on rejection, up to three change rounds, 18% fee on top ($100 task costs $118), returned funds not cashable to bank, card refunds where available",
+      "url": "https://rentahuman.ai/docs/escrow"
+    },
+    {
+      "claim": "Terms (updated 2026-07-20): User Content licence to RentAHuman including AI/ML training and datasets; RentAHuman does not verify User Content; AI agents may use the API and MCP; agent disclosure; no background checks; sanctions exclusion; 18+",
+      "url": "https://rentahuman.ai/terms"
+    },
+    {
+      "claim": "Stats on 2026-10-26: 872,945 humans available, 32,664 agents connected, 17,446 bounties total",
+      "url": "https://rentahuman.ai/api/stats"
+    },
+    {
+      "claim": "Public bounty list on 2026-10-26: 49 bounties, 17 in person (14 US, 1 each IN, JP, PH)",
+      "url": "https://rentahuman.ai/api/bounties?limit=100"
+    },
+    {
+      "claim": "Launch coverage (2026-02-03): built by a crypto engineer; registrations passed 1,000 within days and briefly crashed the site",
+      "url": "https://decrypt.co/356784"
+    },
+    {
+      "claim": "Remote MCP OAuth metadata: dynamic client registration, PKCE S256, public clients, scopes mcp:tools and mcp:read",
+      "url": "https://rentahuman.ai/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "OAuth protected-resource metadata for the remote MCP server (resource https://rentahuman.ai/api/mcp)",
+      "url": "https://rentahuman.ai/.well-known/oauth-protected-resource/api/mcp"
+    },
+    {
+      "claim": "Signup and verification rate limits; public keyless endpoints (/api/humans, /api/bounties); x402 signup $10",
+      "url": "https://rentahuman.ai/agents.json"
+    },
+    {
+      "claim": "x402 wallet deposits: USDC on Base (eip155:8453), early access",
+      "url": "https://rentahuman.ai/docs/x402"
+    },
+    {
+      "claim": "MCP Registry entry io.github.rentahuman-ai/rentahuman, latest v4.1.0, stdio npm package",
+      "url": "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.rentahuman-ai%2Frentahuman/versions/latest"
+    },
+    {
+      "claim": "rentahuman-mcp npm latest 4.2.0, MIT",
+      "url": "https://registry.npmjs.org/rentahuman-mcp/latest"
+    },
+    {
+      "claim": "Line standing: $23.60/hour fees included in NYC, LA, SF, Toronto, Vancouver; book at least 12 hours ahead",
+      "url": "https://rentahuman.ai/services/line-standing"
+    },
+    {
+      "claim": "Account: headless signup by API (email code) or over x402; agent rails x402 and MPP for wallet top-ups",
+      "url": "https://rentahuman.ai/llms.txt"
+    },
+    {
+      "claim": "Terms: an AI agent may act as a Poster Agent through the API and MCP, the poster fully responsible",
+      "url": "https://rentahuman.ai/terms"
+    },
+    {
+      "claim": "MCP specification 2026-07-28: dynamic client registration deprecated in favour of Client ID Metadata Documents",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "adapter": "rentahuman",
+  "short": "An agent-first marketplace for paid, in-person tasks done by people.",
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "people"
+  },
+  "payment": {
+    "methods": [
+      "hosted_checkout",
+      "mpp",
+      "x402",
+      "prepaid_balance"
+    ],
+    "agent_rails": [
+      "x402",
+      "mpp"
+    ],
+    "agent_can_pay": true,
+    "prepaid": true,
+    "notes": "Tasks are paid from a prepaid RentAHuman wallet. Top-ups $1-$10,000 via hosted (Stripe) checkout, MPP (card or Link) or x402 (USDC on Base, early access). Returned bounty money stays as wallet balance and can't be cashed out to a bank; card top-ups can be refunded to the card where available. Whether an agent can pay over the OAuth MCP is not documented: the remote server posts bounties only after an owner-approved dry run, and payment tools are in the local server."
+  },
+  "account": {
+    "headless_signup": true,
+    "kyc": "email",
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://rentahuman.ai/terms"
+    }
+  },
+  "requester": {
+    "checks": "Posters verify an email (or pay $10 over x402) and give a country and city at sign-up, accept the Terms (18+, not in a comprehensively sanctioned country), and must disclose automation rather than pose as a human. Bounty listings are screened by a listing policy (bounty_content_refused, brand_impersonation, bounty_content_flagged).",
+    "unknown": "The Terms say RentAHuman does not run background checks and need not verify users; no poster identity check is documented, and how the listing policy screens requests to watch or follow a specific person is not stated."
+  }
+}

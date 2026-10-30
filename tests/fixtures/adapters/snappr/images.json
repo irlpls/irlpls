@@ -1,0 +1,20 @@
+{
+ "count": 2,
+ "limit": 1000,
+ "offset": 0,
+ "total": 2,
+ "results": [
+  {
+   "uid": "a1",
+   "file_name": "IMG_0001.jpg",
+   "url_original": "https://assets.example-snappr.test/o/1.jpg?sig=1",
+   "url_thumb": "https://assets.example-snappr.test/t/1.jpg"
+  },
+  {
+   "uid": "a2",
+   "file_name": "IMG_0002.jpg",
+   "url_original": "https://assets.example-snappr.test/o/2.jpg?sig=2",
+   "url_thumb": "https://assets.example-snappr.test/t/2.jpg"
+  }
+ ]
+}

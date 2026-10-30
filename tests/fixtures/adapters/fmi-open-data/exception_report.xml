@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExceptionReport xmlns="http://www.opengis.net/ows/1.1"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.opengis.net/ows/1.1 http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd"
+  version="2.0.0">
+
+
+  <Exception exceptionCode="OperationParsingFailed">
+    <ExceptionText>Invalid bounding box format, expecting xmin,ymin,xmax,ymax[,crs]</ExceptionText>
+    <ExceptionText>URI: /wfs?bbox=bad&amp;request=getFeature&amp;service=WFS&amp;storedquery_id=fmi%3A%3Aobservations%3A%3Aweather%3A%3Asimple&amp;version=2.0.0</ExceptionText>
+    
+  </Exception>
+
+</ExceptionReport>

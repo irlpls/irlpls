@@ -1,0 +1,13 @@
+__pycache__/
+.DS_Store
+*.egg-info/
+.venv/
+.pytest_cache/
+dist/
+build/
+site/
+src/media/live/
+feedback/
+.preview-url
+irlpls/data/health.json
+irlpls/data/published/

@@ -1,0 +1,147 @@
+{
+  "id": "precisely-ground-level-images",
+  "name": "Precisely Ground Level Images (via DoorDash Tasks)",
+  "status": "unclaimed",
+  "provider_url": "https://www.precisely.com/data-guide/products/ground-level-images/",
+  "short": "On-demand exterior photos of US commercial buildings. Quote only.",
+  "summary": "A Precisely 'Places' data product: recent, high-resolution exterior photos of commercial properties 'captured on demand' through the DoorDash Tasks network, delivered with structured metadata and a PreciselyID linking to other property datasets. Pitched at insurance underwriting, real-estate due diligence, retail site evaluation, telecom and utilities planning. Available in select US places; pricing, unit of sale, turnaround and API are not published, and the page asks the reader to request information.",
+  "tags": [
+    "people",
+    "photos",
+    "property",
+    "underwriting",
+    "commercial",
+    "buildings",
+    "us",
+    "gig",
+    "data-product"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo"
+    ],
+    "tasks": [
+      "commercial building exterior photo",
+      "property condition assessment",
+      "storefront condition",
+      "site context for planning"
+    ]
+  },
+  "pricing": {
+    "model": "Not published; request more information",
+    "from_usd": 0,
+    "unit": "image",
+    "notes": "The Specifications table lists 'Unit of Sale' with no value."
+  },
+  "latency": {
+    "typical": "'Fast turnaround' (no figure)",
+    "notes": "Page: 'providing fast turnaround for specific commercial building locations'; update frequency 'On-demand'."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Features: 'On-demand capture ... providing fast turnaround'; no time given.",
+    "formats": [
+      "jpeg",
+      "json"
+    ]
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Recent; not quantified",
+    "notes": "Page says 'recent' photos 'captured on demand'. Whether an order triggers a new visit or draws on prior captures is not stated, so check before relying on freshness."
+  },
+  "coverage": {
+    "regions": [
+      "USA, select places"
+    ],
+    "notes": "Page: 'currently available in select places in the United States'. The DoorDash Tasks programme excludes California, New York City, Seattle and Colorado; whether the same exclusions apply here is not stated.",
+    "areas": [
+      "US"
+    ]
+  },
+  "licensing": {
+    "summary": "No licence terms are on the product page. Rights, AI training and resale are not stated. The page itself says the product is 'designed to power AI and agentic AI workflows', but that is marketing, not a licence grant."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "approval"
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "'Request more information' / 'Get in touch' on the product page."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "Precisely advertises 'MCP-enabled APIs' for its platform in general; the product page does not tie them to this product."
+    },
+    "notes": "No ordering API is documented for this product. The page says deliveries integrate 'into your data workflows' without detail."
+  },
+  "payment": {
+    "methods": [],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Not published."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "unknown": "Not published."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Who took each photo is not shown; the page says only that it is captured through the DoorDash Tasks network."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No app or device attestation is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No capture signing is described."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "Photos are called 'recent'; no capture timestamp method is described, though structured metadata is delivered (fields not listed)."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "Images link to a PreciselyID for the property; how the photo location is proved is not described."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "'Standardized deliverables' are claimed; no check that the photo shows the right building is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "None described."
+    }
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Product page: exterior photos of commercial buildings, captured on demand via DoorDash Tasks, structured metadata, PreciselyID, select US places, on-demand update frequency, unit of sale blank, request more information",
+      "url": "https://www.precisely.com/data-guide/products/ground-level-images/"
+    },
+    {
+      "claim": "DoorDash Tasks programme coverage exclusions (context only)",
+      "url": "https://about.doordash.com/en-us/news/introducing-doordash-tasks"
+    }
+  ]
+}

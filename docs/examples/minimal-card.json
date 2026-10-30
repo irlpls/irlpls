@@ -1,0 +1,27 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "skyhop-sample",
+  "name": "SkyHop (fictional)",
+  "status": "sample",
+  "summary": "Texas roof and construction-site drone photos, captured to order by licensed pilots.",
+  "short": "Drone photos of Texas roofs and sites, to order.",
+  "capabilities": { "modalities": ["photo", "aerial"], "tasks": ["roof inspection photos", "construction site progress photos"] },
+  "pricing": { "model": "per site visit", "from_usd": 150, "unit": "visit" },
+  "latency": { "typical": "2 days", "notes": "Weather permitting." },
+  "coverage": { "regions": ["Texas, USA"], "notes": "Dallas, Austin and Houston metros.", "areas": ["US-TX"] },
+  "licensing": { "summary": "Buyer owns the images.", "ai_training": "allowed", "resale": "allowed", "buyer_owns_output": true },
+  "delivery": { "modes": ["commission"], "speed": "days", "basis": "Provider pricing page: 'photos within 2 business days'.", "formats": ["jpeg"] },
+  "verification": {
+    "human": { "level": "claimed", "method": "Pilots hold an FAA Part 107 licence.", "unknown": "Licence is checked at hiring, not per flight; an account could be shared." },
+    "application": { "level": "none", "unknown": "No app attestation is offered." },
+    "camera": { "level": "none", "unknown": "Images are not signed; the camera model is stated only in EXIF." },
+    "time": { "level": "claimed", "method": "Server timestamp when the pilot uploads.", "unknown": "Shows when the file arrived, not when it was captured." },
+    "location": { "level": "claimed", "method": "Drone GPS fix written to EXIF.", "unknown": "Consumer GPS can be spoofed; the position is reported, not authenticated." },
+    "content": { "level": "none", "unknown": "No signing or integrity check after upload." },
+    "corroboration": { "level": "none", "unknown": "Single source; no independent confirmation." }
+  },
+  "access": { "cost": "quote", "key_required": false, "automation_allowed": false },
+  "updated": "2026-10-27",
+  "expires": "2027-10-27"
+}

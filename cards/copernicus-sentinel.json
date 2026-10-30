@@ -1,0 +1,313 @@
+{
+  "id": "copernicus-sentinel",
+  "name": "Copernicus Sentinel (Copernicus Data Space Ecosystem)",
+  "status": "unclaimed",
+  "provider_url": "https://dataspace.copernicus.eu",
+  "short": "Free EU Sentinel radar and optical satellite imagery, usually online 1-4 hours after each pass.",
+  "summary": "The EU's Copernicus Data Space Ecosystem serves new Sentinel-1 (C-band radar, works day and night through cloud), Sentinel-2 (13-band optical, 10 m best) and other Sentinel products free, via STAC, OData, S3, Sentinel Hub and openEO, with PUSH/PULL catalogue subscriptions and a public Traceability service whose traces carry signed product hashes.",
+  "tags": [
+    "satellite",
+    "sentinel",
+    "copernicus",
+    "SAR",
+    "radar",
+    "multispectral",
+    "optical",
+    "open data",
+    "free",
+    "STAC",
+    "global",
+    "traceability"
+  ],
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "sensor"
+    ],
+    "tasks": [
+      "find the newest Sentinel-1/Sentinel-2 product over a place (STAC or OData search, keyless)",
+      "subscribe to new products matching an area and filter (PUSH or PULL, account needed)",
+      "download full products (token) or render a cropped image or index via the Sentinel Hub Process API",
+      "check a product's BLAKE3 hash against its signed Traceability trace"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "per product",
+    "notes": "Free for Copernicus General Users: 12 TB download per rolling 30 days (then slowed to 1 MB/s and 1 connection, not cut off), 4 concurrent connections; Sentinel Hub 10,000 requests and 10,000 processing units per month."
+  },
+  "latency": {
+    "typical": "about 1 h (Sentinel-1 GRD) to about 3.5-4 h (Sentinel-2 L2A) after sensing",
+    "notes": "Measured on 2026-10-26 (UTC early 27th) by keyless STAC search: a Sentinel-1C GRD COG sensed 03:49:59Z was published 04:44:50Z (55 min); a Sentinel-2C L2A tile sensed 00:58:11Z was published 04:32-04:34Z (about 3 h 35 min). The Sentinel-1 mission page says marine monitoring services need data 'typically in less than 3 hours'. The next pass depends on orbit; there is no tasking."
+  },
+  "coverage": {
+    "regions": [
+      "Global (systematic acquisition plans)"
+    ],
+    "areas": [
+      "*"
+    ],
+    "notes": "No country limit. Sentinel-2 systematically covers land between 56° S and 82.8° N, coastal waters to 20 km, islands over 100 km² and closed seas, not open ocean. Sentinel-1 follows its observation scenario; revisit depends on orbit and there is no tasking."
+  },
+  "licensing": {
+    "summary": "Sentinel Data Legal Notice (EU law): free, full and open access; reproduction, distribution, communication to the public, and adaptation, modification and combination are permitted 'in so far as it is lawful'; credit 'Copernicus Sentinel data [Year]' (or 'Contains modified Copernicus Sentinel data [Year]'). No warranty; rare limits for security, third-party rights or service disruption. Other portal content is non-commercial only, and the Terms say \"ESA and T-Systems do not grant the right to resell or redistribute any information, documents, images or material\" (portal-content context, not the Sentinel Legal Notice). Neither AI training nor resale is named, so both stay unstated."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No people capture the data; satellites operated for the EU by ESA."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No device or app attestation applies; satellites are operated for the EU by ESA. The signed Traceability record is a custody record, not attestation, and is listed under provenance.custody (STANDARD §3, 3.1)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Mission, satellite and instrument (MSI optical, C-SAR radar) are named in the product name and metadata. Instrument identity rests on product metadata; nothing signs it at the sensor."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Sensing start and end times in product name and metadata",
+      "unknown": "Sensing time is in product metadata; not independently attested. The trace timestamp shows only when CDSE registered the product."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Footprint geometry and orbit in product metadata",
+      "unknown": "Geolocation comes from product metadata and orbit data; not independently attested."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No manipulation detection. Integrity since CDSE registered the product can be checked against the signed Traceability record (provenance.custody), but that is not a capture-time seal: there is no C2PA hard binding."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Not cross-checked by a third party."
+    }
+  },
+  "provenance": {
+    "custody": {
+      "level": "claimed",
+      "method": "CDSE's public Traceability service keeps a trace per product: the event (CREATE at registration), a BLAKE3 hash of the product (per-file hashes on most products), the holder (origin cdse_csc@dataspace.copernicus.eu) and the time, signed RSA-SHA256 with an X.509 certificate for trace.dataspace.copernicus.eu. Anyone can fetch the trace without a login, re-hash a download and compare.",
+      "evidence_url": "https://trace.dataspace.copernicus.eu/api/v1/traces/name/S2A_MSIL1C_20230420T100021_N0509_R122_T33UVP_20230420T120027.SAFE.zip",
+      "unknown": "One documented hop (ground segment registration to you), signed by CDSE itself, not an independent party; it shows the bytes match what CDSE registered, not what the sensor saw. The sampled trace is timestamped 2024-06-19 but its signing certificate (GeoTrust TLS RSA CA G1) was valid only 2023-05-16 to 2024-05-15, so a strict X.509 check at signing time fails; the hashes can still be recomputed. Whether the list of traces is append-only is not documented, and some traces carry only the product hash. Kept at claimed: the trace is signed by the operator itself and the sample's signing certificate had expired before the trace date, so a strict public check fails.",
+      "sources": [
+        {
+          "claim": "Traceability: signed traces of a product's lifecycle events let users verify authenticity and integrity",
+          "url": "https://documentation.dataspace.copernicus.eu/APIs/Traceability.html"
+        },
+        {
+          "claim": "Sample trace: CREATE event, BLAKE3 product and file hashes, signature block (certificate expired 2024-05-15, trace 2024-06-19)",
+          "url": "https://trace.dataspace.copernicus.eu/api/v1/traces/name/S2A_MSIL1C_20230420T100021_N0509_R122_T33UVP_20230420T120027.SAFE.zip"
+        }
+      ]
+    }
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "1-4 hours after the latest pass"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "Sentinel-1 mission page: near-real-time data 'typically in less than 3 hours'; measured publication lag 55 min (Sentinel-1 GRD) to about 3.6 h (Sentinel-2 L2A); subscriptions notify on each new product."
+  },
+  "access": {
+    "cost": "free with key",
+    "key_required": true,
+    "tested_live": "2026-10-26",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 60,
+      "per_seconds": 60,
+      "scope": "per-ip",
+      "notes": "Keyless STAC search. With a token: 240 per minute, bursts up to 10/s. Sentinel Hub 300 requests and 300 processing units per minute; downloads 4 connections at 20 MB/s; S3 2,000 requests per minute (Quotas page).",
+      "source_url": "https://dataspace.copernicus.eu/news/2026-10-16-new-sfeos-stac-catalogue-endpoint"
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://documentation.dataspace.copernicus.eu/APIs.html",
+    "base_url": "https://stac.opensearch.dataspace.copernicus.eu/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "STAC and OData catalogue search and Traceability lookups need no account."
+      },
+      {
+        "type": "oauth2",
+        "token_url": "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",
+        "client_id": "cdse-public",
+        "env_var": "CDSE_USER / CDSE_PASSWORD",
+        "transport": "rest",
+        "how_to_get": "Free CDSE account (register, verify e-mail); password grant with client cdse-public (add totp if 2FA is on) returns a bearer token valid 10 minutes plus a refresh token valid 60 minutes. Needed for OData download and subscriptions."
+      },
+      {
+        "type": "oauth2",
+        "token_url": "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",
+        "transport": "rest",
+        "how_to_get": "Sentinel Hub APIs: create an OAuth client (client ID and secret) in the Sentinel Hub dashboard under User Settings, then use the client_credentials grant."
+      },
+      {
+        "type": "other",
+        "how_to_get": "S3 access to eodata.dataspace.copernicus.eu: generate an access key and secret key with an expiry date after logging in to the CDSE account."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/search",
+        "params": "collections, bbox|intersects, datetime, filter, sortby, limit"
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "https://catalogue.dataspace.copernicus.eu/odata/v1/Products",
+        "params": "$filter, $orderby, $top, $expand=Attributes"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://download.dataspace.copernicus.eu/odata/v1/Products({id})/$value",
+        "notes": "Bearer token from the cdse-public password grant"
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "https://sh.dataspace.copernicus.eu/process/v1",
+        "notes": "Sentinel Hub Process API: cropped image or index for an area; Sentinel Hub OAuth client token"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://catalogue.dataspace.copernicus.eu/odata/v1/Subscriptions({subscription_id})/Read",
+        "params": "$top (up to 20)",
+        "notes": "PULL subscription queue of new-product notifications; create with POST /odata/v1/Subscriptions and acknowledge with /Ack?$ackid=; bearer token; at most 2 running subscriptions per user"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://trace.dataspace.copernicus.eu/api/v1/traces/name/{product_name}",
+        "notes": "Keyless; signed trace with BLAKE3 product hash"
+      }
+    ],
+    "rate_limits": "STAC search 60 requests/min per IP keyless, 240/min with a token, bursts up to 10/s; Sentinel Hub 300 requests/min and 300 processing units/min; downloads 4 concurrent connections at 20 MB/s each; S3 2,000 requests/min; subscriptions 2 running (10 total) per user",
+    "mcp": {
+      "first_party": false,
+      "community": "io.github.pipeworx-io/copernicus-dataspace (third-party gateway, https://gateway.pipeworx.io/copernicus-dataspace/mcp)"
+    },
+    "notes": "STAC, OData search and trace lookups are keyless; a key (token) is needed only to download products and for subscriptions. STAC moved to stac.opensearch.dataspace.copernicus.eu/v1 (announced 2026-10-16); the old stac.dataspace.copernicus.eu/v1 runs alongside until 2027-01-12, then is replaced. Free-text search now sorts by relevance by default, so send sortby=-datetime for newest first."
+  },
+  "updated": "2026-10-28",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "A free account with a verified e-mail and accepted terms is needed to download or subscribe; search needs none. One person or organisation must not use many accounts to bypass quotas.",
+    "unknown": "No identity check beyond e-mail is documented; nobody is sent to a place."
+  },
+  "payment": {
+    "methods": [],
+    "agent_can_pay": true,
+    "notes": "Free; no payment."
+  },
+  "sources": [
+    {
+      "claim": "New STAC endpoint stac.opensearch.dataspace.copernicus.eu/v1 (published 2026-10-16); old stac.dataspace.copernicus.eu/v1 runs alongside until 12 January 2027, then is replaced; 60 requests/min per IP unauthenticated, 240/min with a token, bursts 10 requests/s; relevance-based default sort",
+      "url": "https://dataspace.copernicus.eu/news/2026-10-16-new-sfeos-stac-catalogue-endpoint"
+    },
+    {
+      "claim": "APIs: STAC, OData, S3, Sentinel Hub, openEO, Traceability, subscriptions",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs.html"
+    },
+    {
+      "claim": "Traceability service: signed traces, X.509 certificates, CDSE certificate authority, keyless example URL",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/Traceability.html"
+    },
+    {
+      "claim": "Live trace (fetched 2026-10-26): hash_algorithm BLAKE3, product and per-file hashes, signature algorithm RSA-SHA256 with certificate",
+      "url": "https://trace.dataspace.copernicus.eu/api/v1/traces/name/S2A_MSIL1C_20230420T100021_N0509_R122_T33UVP_20230420T120027.SAFE.zip"
+    },
+    {
+      "claim": "Free quotas: 12 TB per rolling 30 days then throttled, 4 connections at 20 MB/s, token 10 min / refresh 60 min; Sentinel Hub 10,000 requests and 10,000 PU per month, 300/min; S3 2,000 requests/min",
+      "url": "https://documentation.dataspace.copernicus.eu/Quotas.html"
+    },
+    {
+      "claim": "Sentinel data licence terms, permitted uses and attribution",
+      "url": "https://sentinels.copernicus.eu/documents/247904/690755/Sentinel_Data_Legal_Notice"
+    },
+    {
+      "claim": "Terms and conditions: Sentinel data under the Legal Notice; portal content non-commercial; registration required for EO data; no multi-account quota bypass; no ban on API use",
+      "url": "https://dataspace.copernicus.eu/terms-and-conditions"
+    },
+    {
+      "claim": "Registration: self-serve form and e-mail verification",
+      "url": "https://documentation.dataspace.copernicus.eu/Registration.html"
+    },
+    {
+      "claim": "Token: password grant, client cdse-public, optional totp",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/Token.html"
+    },
+    {
+      "claim": "OData search keyless; download needs bearer token at download.dataspace.copernicus.eu",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/OData.html"
+    },
+    {
+      "claim": "STAC 1.1.0 catalogue (formerly at stac.dataspace.copernicus.eu/v1, now stac.opensearch.dataspace.copernicus.eu/v1) with search, collections and filter",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/STAC.html"
+    },
+    {
+      "claim": "Keyless STAC search on the new host returned the newest Sentinel-2 L2A product with datetime, eo:cloud_cover, published and a self link (2026-10-28; Sentinel-1 checked on the old host 2026-10-26)",
+      "url": "https://stac.opensearch.dataspace.copernicus.eu/v1/search?collections=sentinel-2-l2a&bbox=6.8889,50.8950,7.0311,50.9850&sortby=-datetime&limit=1"
+    },
+    {
+      "claim": "PUSH/PULL subscriptions, token required, Read/Ack endpoints, 2 running subscriptions per user",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/Subscriptions.html"
+    },
+    {
+      "claim": "Sentinel Hub OAuth clients and client_credentials grant",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Overview/Authentication.html"
+    },
+    {
+      "claim": "Sentinel Hub Process API endpoint (example request)",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/SentinelHub/Process/Examples/S2L2A.html"
+    },
+    {
+      "claim": "S3 endpoint eodata.dataspace.copernicus.eu and access/secret key generation",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/S3.html"
+    },
+    {
+      "claim": "Sentinel-2: 13 bands (four at 10 m), 290 km swath, systematic coverage of land 56° S to 82.8° N",
+      "url": "https://sentiwiki.copernicus.eu/web/s2-mission"
+    },
+    {
+      "claim": "Sentinel-1: C-band SAR, day and night, regardless of weather; near-real-time data typically under 3 hours",
+      "url": "https://sentiwiki.copernicus.eu/web/s1-mission"
+    },
+    {
+      "claim": "Community (third-party) MCP server listed in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=copernicus"
+    },
+    {
+      "claim": "Trace signing certificate subject trace.dataspace.copernicus.eu, issuer DigiCert/GeoTrust; users may use public-CA or CDSE CA certificates",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/Traceability.html"
+    },
+    {
+      "claim": "Quota: over 12 TB, speed 1 MB/s and 1 connection",
+      "url": "https://documentation.dataspace.copernicus.eu/Quotas.html"
+    },
+    {
+      "claim": "Traceability service: signed traces of each product's lifecycle events",
+      "url": "https://documentation.dataspace.copernicus.eu/APIs/Traceability.html"
+    }
+  ],
+  "adapter": "copernicus"
+}

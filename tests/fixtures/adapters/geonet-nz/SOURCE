@@ -1,0 +1,2 @@
+quake_mmi3.json: live GET https://api.geonet.org.nz/quake?MMI=3 (Accept: application/vnd.geo+json;version=2) on 2026-10-28, trimmed to 6 of 100 features.
+volcano_val.json: live GET https://api.geonet.org.nz/volcano/val (same Accept) on 2026-10-28, trimmed to 5 features.

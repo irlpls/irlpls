@@ -1,0 +1,12 @@
+{
+ "data": [
+  {
+   "id": "product-uuid",
+   "productType": "GRD",
+   "status": "available",
+   "url": "https://download.iceye.com/products/...",
+   "expiresAt": "2025-11-15T20:00:00Z",
+   "size": 1234567890
+  }
+ ]
+}

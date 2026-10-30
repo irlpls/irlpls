@@ -1,0 +1,5 @@
+fixture: documented-shape; never called (contract-only). From the OpenAPI 2.0.0-beta.3 examples at https://developers.satellogic.com/aleph-v2/api/satellogic_api_v2.yml:
+analysis_created.json: POST /v2/analysis/opportunities 201 AnalysisCreated
+order_created.json: OrderPOITaskingSinglePOIOnceExample with status received and the OrderReceived event (events example)
+order_closed.json: OrderPOITaskingSinglePOIOnceExample (status closed) with an OrderClosed latest_event (introduction.html event table)
+deliverables.json: DeliverableExample wrapped in PaginatedDeliverableResponse (trimmed)

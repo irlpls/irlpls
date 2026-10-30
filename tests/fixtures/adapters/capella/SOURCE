@@ -1,0 +1,4 @@
+fixture: documented-shape; never called (contract-only). The docs show these fields without their enclosing object; they are wrapped in the GeoJSON Feature properties the request is sent as.
+task_received.json: request from https://docs.capellaspace.com/constellation-tasking/tasking-requests (Point example) + the 'received' entry and empty transactionStatus from the status and cost pages
+task_review.json: order block from https://docs.capellaspace.com/constellation-tasking/cost-review-and-approval
+task_completed.json: statusHistory from https://docs.capellaspace.com/constellation-tasking/tasking-request-status/

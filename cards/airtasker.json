@@ -1,0 +1,310 @@
+{
+  "id": "airtasker",
+  "name": "Airtasker",
+  "provider_url": "https://www.airtasker.com",
+  "status": "unclaimed",
+  "tags": [
+    "errands",
+    "local tasks",
+    "handyman",
+    "photography",
+    "crowd",
+    "mcp",
+    "oauth",
+    "australia",
+    "uk",
+    "us",
+    "ireland",
+    "new zealand",
+    "singapore"
+  ],
+  "summary": "Local task marketplace: post a task with location, timing and budget, Taskers make offers, and accepting one holds the payment in escrow. Official remote MCP server with OAuth can post tasks, read offers and accept one; releasing payment and receiving proof happen in the web app.",
+  "short": "Post a local task; nearby Taskers offer, and payment is held until you release it.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "text-report"
+    ],
+    "tasks": [
+      "errands and deliveries",
+      "local photography",
+      "checking or inspecting something in person",
+      "handyman and home tasks"
+    ]
+  },
+  "pricing": {
+    "model": "offer-based task price plus one-time Connection Fee (waived for members)",
+    "from_usd": 0,
+    "unit": "task",
+    "notes": "from_usd 0 means not published (the task price is set by Taskers' offers). Posting a task is free. Connection Fee by task price, charged on assignment: AU AUD 9.95–59.95 (inc. GST); UK £4.95–39.95 (inc. VAT); US USD 4.90–49.50 (excl. tax); NZ NZD 9.95–59.95 and SG SGD 9.95–59.95 (excl. tax). Waived with a customer membership (AU, UK, US articles). Retained if the customer cancels."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "Depends on Tasker offers and the agreed time. Unreleased payments auto-cancel 30 days after the Tasker marks a task complete."
+  },
+  "coverage": {
+    "regions": [
+      "AU",
+      "GB",
+      "US",
+      "IE",
+      "NZ",
+      "SG"
+    ],
+    "notes": "Country sites exist for these six (/au/, /uk/, /us/, /ie/, /nz/, /sg/; /ca/ returns 404). Density not published.",
+    "areas": [
+      "AU",
+      "GB",
+      "US",
+      "IE",
+      "NZ",
+      "SG"
+    ]
+  },
+  "licensing": {
+    "summary": "The terms (updated 16 Feb 2026) say nothing about who owns a Tasker's photos or reports, and do not mention AI or machine-learning training. Clause 3.2: content on the platform may not be used on third-party sites or for other business purposes without Airtasker's written permission. Clause 3.5: users grant Airtasker an unrestricted, worldwide, royalty-free licence to use, reproduce, modify and adapt content posted on the platform. Read from the AU terms only; other countries' terms may differ. The privacy policy does not mention model training."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Optional ID Verified badge in AU and NZ: government photo ID plus live biometric face scan via Persona. Taskers must complete ID verification before payment is released to them. The face scan includes liveness detection (by a human).",
+      "unknown": "Only documented for AU and NZ. Taskers can make offers without it, the badge is a point-in-time check, and the terms say Airtasker does no checks before someone becomes a user."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Proof is sent as private-message attachments; no capture app is required."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Nothing stops gallery or edited uploads."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No capture timestamp is recorded or checked."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No geo check-in or location check on deliverables."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Under the model Task Contract the Tasker warrants the work is done properly and the information true; the customer releases escrowed payment only when satisfied, with a dispute process.",
+      "unknown": "Airtasker does not review deliverables and disclaims the accuracy of anything users provide; the customer is the only check."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://support.airtasker.com/hc/en-au/articles/58505062391321",
+    "base_url": "https://mcp.airtasker.com/mcp",
+    "auth": [
+      {
+        "type": "oauth2",
+        "how_to_get": "Connect an MCP client to https://mcp.airtasker.com/mcp and complete the OAuth login with an Airtasker account (authorization server https://id.airtasker.com, which advertises a dynamic client registration endpoint and PKCE S256). Posting needs credits, a payment method on file or a membership. Dynamic client registration is deprecated by the MCP specification of 2026-07-28 in favour of Client ID Metadata Documents (CIMD); whether Airtasker accepts CIMD is not stated.",
+        "resource_metadata": "https://mcp.airtasker.com/.well-known/oauth-protected-resource",
+        "scopes": [
+          "airtasker:read",
+          "airtasker:write",
+          "airtasker:payments"
+        ],
+        "dynamic_registration": true,
+        "pkce": "S256",
+        "transport": "mcp"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "MCP",
+        "path": "browse_tasks",
+        "notes": "Search the marketplace"
+      },
+      {
+        "action": "fetch",
+        "method": "MCP",
+        "path": "get_task",
+        "notes": "Full task details"
+      },
+      {
+        "action": "order",
+        "method": "MCP",
+        "path": "post_task",
+        "notes": "Details, location, timing, budget. Posting is free; nothing is charged until an offer is accepted."
+      },
+      {
+        "action": "quote",
+        "method": "MCP",
+        "path": "get_offers",
+        "notes": "Offers on your task"
+      },
+      {
+        "action": "order",
+        "method": "MCP",
+        "path": "accept_offer",
+        "notes": "Hires the Tasker and escrows payment; charges the Connection Fee for non-members"
+      },
+      {
+        "action": "status",
+        "method": "MCP",
+        "path": "get_my_tasks",
+        "notes": "Your tasks and their status"
+      },
+      {
+        "action": "fetch",
+        "method": "MCP",
+        "path": "get_profile",
+        "notes": "A Tasker's public profile and rating"
+      }
+    ],
+    "rate_limits": "Not published",
+    "self_serve": true,
+    "mcp": {
+      "remote": "https://mcp.airtasker.com/mcp",
+      "registry_name": null,
+      "auth": "oauth2",
+      "first_party": true,
+      "notes": "Streamable HTTP; answers 401 with a WWW-Authenticate resource_metadata pointer. Also packaged as a Claude Code plugin (airtasker/airtasker-mcp-server). Not in the official MCP Registry. No tool to release payment, message the Tasker or read proof."
+    }
+  },
+  "adapter": "airtasker",
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after assignment"
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Offer-based; Airtasker publishes no turnaround time."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "prepaid_balance"
+    ],
+    "agent_rails": [
+      "card_on_file_api"
+    ],
+    "agent_can_pay": true,
+    "prepaid": false,
+    "notes": "Card (Visa, Mastercard, AMEX in AU) via Airtasker Pay on Stripe; Airtasker credits are applied first. The MCP accept_offer tool charges the person's saved method and escrows the price; releasing payment to the Tasker is a manual web step."
+  },
+  "account": {
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://support.airtasker.com/hc/en-au/articles/58505062391321"
+    }
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Users must be natural persons over 18. Posting needs credits, a payment method on file or a membership. ID verification is optional for customers (AU, NZ).",
+    "unknown": "No documented review of what a task asks a Tasker to photograph or whom."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "MCP endpoint, tools, requirements to post, accept_offer charges the Connection Fee",
+      "url": "https://support.airtasker.com/hc/en-au/articles/58505062391321"
+    },
+    {
+      "claim": "Official first-party MCP server repo and Claude Code plugin",
+      "url": "https://github.com/airtasker/airtasker-mcp-server"
+    },
+    {
+      "claim": "OAuth protected-resource metadata: authorization server and scopes",
+      "url": "https://mcp.airtasker.com/.well-known/oauth-protected-resource"
+    },
+    {
+      "claim": "Authorization server: registration_endpoint (dynamic registration) and PKCE S256",
+      "url": "https://id.airtasker.com/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Not listed in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=airtasker"
+    },
+    {
+      "claim": "Terms: free posting, 18+ natural persons, no pre-user checks, content-use and licence clauses, 30-day auto-cancel, Stripe payment account, ID verification and badges, model Task Contract",
+      "url": "https://www.airtasker.com/au/terms/"
+    },
+    {
+      "claim": "Privacy policy: no mention of AI or model training",
+      "url": "https://www.airtasker.com/au/privacy/"
+    },
+    {
+      "claim": "Connection Fee in Australia",
+      "url": "https://support.airtasker.com/hc/en-au/articles/360031769372"
+    },
+    {
+      "claim": "Connection Fee in the UK",
+      "url": "https://support.airtasker.com/hc/en-gb/articles/360031769372"
+    },
+    {
+      "claim": "Connection Fee in the US",
+      "url": "https://support.airtasker.com/hc/en-us/articles/360031769372"
+    },
+    {
+      "claim": "Connection Fee in New Zealand",
+      "url": "https://support.airtasker.com/hc/en-au/articles/33394422360985"
+    },
+    {
+      "claim": "Connection Fee in Singapore",
+      "url": "https://support.airtasker.com/hc/en-au/articles/33394261607705"
+    },
+    {
+      "claim": "Payment methods (card via Airtasker Pay and Stripe)",
+      "url": "https://support.airtasker.com/hc/en-au/articles/360040677652"
+    },
+    {
+      "claim": "ID Verified badge: government ID plus biometric scan, required before Tasker payout (AU, NZ)",
+      "url": "https://support.airtasker.com/hc/en-au/articles/115012247667"
+    },
+    {
+      "claim": "Persona is the ID verification provider (AU, NZ)",
+      "url": "https://support.airtasker.com/hc/en-au/articles/42077035636633"
+    },
+    {
+      "claim": "Release payment only when satisfied; dispute resolution",
+      "url": "https://support.airtasker.com/hc/en-au/articles/360021367692"
+    },
+    {
+      "claim": "Payment release is a manual web step after the Tasker requests payment",
+      "url": "https://support.airtasker.com/hc/en-au/articles/24932125831321"
+    },
+    {
+      "claim": "Proof of completion goes by private message",
+      "url": "https://support.airtasker.com/hc/en-au/articles/360001417847"
+    },
+    {
+      "claim": "AU terms cl. 3.2 and 3.5 (licence wording); no AI, scraping or agent clause",
+      "url": "https://www.airtasker.com/au/terms/"
+    },
+    {
+      "claim": "ID Verified badge: government photo ID plus live biometric face scan with liveness detection (by a human); AU/NZ only; Taskers verify before payment release",
+      "url": "https://support.airtasker.com/hc/en-au/articles/115012247667"
+    },
+    {
+      "claim": "Official MCP: an AI assistant posts tasks and accepts offers for the person; accept_offer charges the saved payment method",
+      "url": "https://support.airtasker.com/hc/en-au/articles/58505062391321"
+    },
+    {
+      "claim": "MCP specification 2026-07-28: dynamic client registration deprecated in favour of Client ID Metadata Documents",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration"
+    }
+  ]
+}

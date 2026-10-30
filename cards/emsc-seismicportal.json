@@ -1,0 +1,159 @@
+{
+  "id": "emsc-seismicportal",
+  "name": "EMSC SeismicPortal (FDSN event service and live feed)",
+  "provider_url": "https://www.seismicportal.eu",
+  "short": "Global earthquake catalogue, free keyless FDSN API and websocket.",
+  "summary": "The Euro-Mediterranean Seismological Centre (EMSC-CSEM), a non-governmental organisation founded in 1975, publishes its earthquake catalogue through a keyless FDSN WS-EVENT web service (QuakeML, JSON or CSV, up to 20,000 events per request) and a near-real-time websocket that pushes a JSON message when an event is inserted or updated.",
+  "tags": [
+    "earthquake",
+    "seismic",
+    "fdsn",
+    "global",
+    "websocket",
+    "real-time",
+    "open data",
+    "no key",
+    "quakeml"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "earthquakes in a time window, magnitude and depth range, box or radius around a point",
+      "single event by id",
+      "events updated after a given time",
+      "push notification of new and updated events by websocket",
+      "origins and arrivals for an event on request"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "No price or key is mentioned on the service pages; data are distributed under CC BY 4.0."
+  },
+  "latency": {
+    "typical": "Not published; a websocket message is sent when an event is inserted or updated",
+    "notes": "The terms state: \"Due to the nature of real-time earthquake monitoring, this information may be incomplete, delayed, or contain errors and inaccuracies.\" No delay figure is published. Live check: the newest event, a magnitude 2.3 near Hawaii, had origin 15:30:28Z and lastupdate 15:33:30Z, when the query was made around 15:33Z (one sample)."
+  },
+  "coverage": {
+    "regions": [
+      "Global catalogue"
+    ],
+    "notes": "The live sample included a Hawaii event; the pages read give no list of covered regions, and catalogue completeness varies by region and magnitude. The 'catalog' field has the values EMSC-RTS and EMSC-EMB.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms: \"Datasets and products downloaded from our data services are provided under the Creative Commons Attribution 4.0 International (CC BY 4.0) license, which permits reuse, including commercial use, as long as there is attribution.\" Suggested credit: \"EMSC-CSEM SeismicPortal, https://www.seismicportal.eu\". Data from the websocket is also CC BY 4.0. But \"the data services, and the internal databases as such are not covered by the CC BY 4.0 license\": \"mirroring the site or bulk-copying a database, requires prior written permission\". The disclaimer gives no warranty of accuracy, reliability or completeness and tells users to consult national authorities for critical decisions. The terms do not mention AI training or resale."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Event solutions come from contributing agencies and automatic processing; individual reviewers are not identified."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of events is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each event has a UTC origin time and a lastupdate time.",
+      "unknown": "Times are the catalogue's computed values, unsigned; events are revised."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each event has latitude, longitude, depth and a Flynn-Engdahl region name.",
+      "unknown": "Locations are estimates from the contributing agency ('auth' field names it) and are unsigned."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Each event names its authority ('auth') and magnitude type.",
+      "unknown": "The terms say information may be incomplete, delayed or contain errors; the review process is not described on the pages read."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "The catalogue merges contributors but the API does not expose cross-source confirmation for an event on the pages read."
+    }
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "minutes (one sample 3 minutes; not published)",
+    "notes": "Websocket push for new and updated events; the FDSN service also holds older events."
+  },
+  "delivery": {
+    "speed": "minutes",
+    "basis": "Page: \"Using the Websocket protocol, users can be notified in (near) realtime of new events. A Json message is sent when an event is inserted or updated.\"",
+    "modes": [
+      "live"
+    ]
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.seismicportal.eu/fdsn-wsevent.html",
+    "base_url": "https://www.seismicportal.eu/fdsnws/event/1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No authentication or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/query",
+        "params": "starttime, endtime, minlatitude, maxlatitude, minlongitude, maxlongitude, latitude, longitude, minradius, maxradius (degrees), mindepth, maxdepth, minmagnitude, maxmagnitude, magnitudetype, eventid, evid, limit (max 20000), offset, orderby (time, time-asc, magnitude, magnitude-asc), contributor, catalog, updatedafter, format (xml, text, json), nodata (204 or 404)",
+        "notes": "FDSN WS-EVENT. Default format is xml; use format=json for GeoJSON. Live call with limit=2&format=json returned events with unid, source_catalog, auth, mag, magtype, flynn_region, time, lastupdate."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "wss://www.seismicportal.eu/standing_order (SockJS websocket)",
+        "notes": "Pushes a JSON message when an event is inserted or updated; the page's sample uses a SockJS client."
+      }
+    ],
+    "rate_limits": "Not stated; only a per-request cap of 20,000 events.",
+    "notes": "OpenAPI at openapi.json and a WADL are linked from the docs page. The site's terms bar bulk-copying the database or mirroring the site without permission, so use query filters, not full dumps. The terms do not forbid automated API calls; automation_allowed reflects that."
+  },
+  "adapter": "emsc_seismicportal",
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "gate": "none"
+  },
+  "sources": [
+    {
+      "claim": "FDSN WS-EVENT service: parameters, formats, 20,000 per request, catalogues, CC BY 4.0, OpenAPI/WADL",
+      "url": "https://www.seismicportal.eu/fdsn-wsevent.html"
+    },
+    {
+      "claim": "Websocket real-time notification, CC BY 4.0 for websocket data",
+      "url": "https://www.seismicportal.eu/realtime.html"
+    },
+    {
+      "claim": "Terms: CC BY 4.0 with credit example, database/mirroring exclusion, disclaimer (may be incomplete, delayed or erroneous), EMSC founded 1975 non-governmental",
+      "url": "https://www.seismicportal.eu/terms.html"
+    },
+    {
+      "claim": "Live GET (limit=2, format=json) returned real events",
+      "url": "https://www.seismicportal.eu/fdsnws/event/1/query?limit=2&format=json"
+    }
+  ],
+  "status": "unclaimed",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  }
+}

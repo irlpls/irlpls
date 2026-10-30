@@ -1,0 +1,10 @@
+{"task_id": "HFAI-2026-97BBAB04C15D2E63", "status": "delivered", "task_type": "real_world_verification",
+ "description": "Verify whether a specific product exists in a local store and photograph the shelf price.",
+ "location_required": true, "location_detail": "Springfield, IL", "output_format": "text_report", "requester": "irlpls",
+ "source": "api", "created_at": "2026-10-28T10:00:00Z", "updated_at": "2026-10-28T15:30:00Z",
+ "status_history": [{"status": "submitted", "at": "2026-10-28T10:00:00Z"}, {"status": "accepted", "at": "2026-10-28T11:00:00Z"},
+                    {"status": "delivered", "at": "2026-10-28T15:30:00Z"}],
+ "operator_notes": "Product on shelf, aisle 4. Shelf price $3.49.",
+ "receipt": "eyJhbGciOiJFZERTQSJ9.eyJ0YXNrX2lkIjoiSEZBSS0yMDI2In0.c2ln",
+ "deliverable_sha256": "0d5b1c4ba6f1b0c4a2f6f0b3c1d9e8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1",
+ "receipt_issued_at": "2026-10-28T15:30:01Z"}

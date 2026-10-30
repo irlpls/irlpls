@@ -1,0 +1,1791 @@
+{
+ "what": "irlpls MCP server, stdio, driven by the official mcp Python client; live USGS network",
+ "command": "uv run --with mcp python tools/mcp_demo.py",
+ "server": {
+  "name": "irlpls",
+  "version": "0.1.0",
+  "protocol": "2025-11-25"
+ },
+ "client_python": "3.14.6",
+ "tools_listed": [
+  {
+   "name": "request_data",
+   "description_chars": 1289
+  },
+  {
+   "name": "answer_questions",
+   "description_chars": 159
+  },
+  {
+   "name": "choose_provider",
+   "description_chars": 197
+  },
+  {
+   "name": "submit_job",
+   "description_chars": 400
+  },
+  {
+   "name": "get_job",
+   "description_chars": 307
+  },
+  {
+   "name": "find_providers",
+   "description_chars": 300
+  },
+  {
+   "name": "get_card",
+   "description_chars": 229
+  }
+ ],
+ "trimming": "lists cut to their first N items (plan 8, ruled_out 60, results 12, log 20, other lists 10) with a _trimmed marker; kept values unaltered. response_bytes/response_sha256 describe the full untrimmed response text.",
+ "calls": [
+  {
+   "tool": "request_data",
+   "arguments": {
+    "need": "is the Guadalupe at Comfort, TX good for tubing today",
+    "why": "user deciding whether to go tubing on the Guadalupe today",
+    "policy": {
+     "max_order_usd": 0
+    }
+   },
+   "started_at": "2026-10-25T22:57:47.983Z",
+   "finished_at": "2026-10-25T22:57:48.044Z",
+   "is_error": false,
+   "response_bytes": 11021,
+   "response_sha256": "a8d33a733fdd35f7515e4ab44676434cc8b956e35b2b65b57a4d9341a52c57dd",
+   "response": {
+    "id": "4374a352594b",
+    "need": "is the Guadalupe at Comfort, TX good for tubing today",
+    "why": "user deciding whether to go tubing on the Guadalupe today",
+    "state": "proposed",
+    "request": {
+     "need": "is the Guadalupe at Comfort, TX good for tubing today",
+     "terms": [
+      "tubing"
+     ],
+     "require": [
+      "time",
+      "location",
+      "content"
+     ],
+     "place": "Comfort, TX",
+     "lat": 29.967715,
+     "lon": -98.9050337,
+     "country_code": "us",
+     "state": "texas",
+     "mode": "live",
+     "within_minutes": 720,
+     "quantity": 1,
+     "default_proof": true
+    },
+    "policy": {
+     "max_order_usd": 0,
+     "include_unclaimed": true
+    },
+    "questions": [],
+    "plan": [
+     {
+      "card_id": "usgs-water",
+      "name": "USGS stream gauges",
+      "route": "live",
+      "fit": 73,
+      "gaps": [
+       "no proof of time",
+       "self-reported location, content"
+      ],
+      "policy": [],
+      "price": 0,
+      "price_unit": "per request",
+      "speed": "minutes",
+      "proof": {
+       "time": "none",
+       "location": "claimed",
+       "content": "claimed"
+      },
+      "sdk": {
+       "callable": true,
+       "needs_key": false,
+       "env": null
+      }
+     }
+    ],
+    "ruled_out": [
+     {
+      "card_id": "airnow",
+      "name": "EPA AirNow",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "nasa-firms",
+      "name": "NASA FIRMS active fires",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "ndbc-buoys",
+      "name": "NOAA NDBC buoys",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "noaa-tides",
+      "name": "NOAA tide and current stations",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "nws",
+      "name": "NWS weather stations (NOAA)",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "usgs-earthquakes",
+      "name": "USGS earthquake feed",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "caltrans-cctv",
+      "name": "Caltrans highway cameras",
+      "reason": "outside_coverage",
+      "label": "wrong state",
+      "why": "doesn't cover Texas",
+      "reasons": [
+       "outside_coverage",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "openaq",
+      "name": "OpenAQ",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "tfl-jamcams",
+      "name": "TfL JamCams",
+      "reason": "outside_coverage",
+      "label": "wrong country",
+      "why": "doesn't cover US",
+      "reasons": [
+       "outside_coverage",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "wsdot-cameras",
+      "name": "WSDOT highway cameras",
+      "reason": "outside_coverage",
+      "label": "wrong state",
+      "why": "doesn't cover Texas",
+      "reasons": [
+       "outside_coverage",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "appen",
+      "name": "Appen",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "capella",
+      "name": "Capella Space",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "defined-ai",
+      "name": "Defined.ai",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "empiric-earth",
+      "name": "Empiric Earth (Nexar)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "field-agent",
+      "name": "Field Agent (now Storesight)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "iceye",
+      "name": "ICEYE",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "lxt-clickworker",
+      "name": "LXT (clickworker)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "purpleair",
+      "name": "PurpleAir",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "satellogic",
+      "name": "Satellogic",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "satvu",
+      "name": "SatVu",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "shaip",
+      "name": "Shaip",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "toloka",
+      "name": "Toloka",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "wegolook",
+      "name": "WeGoLook",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "windy-webcams",
+      "name": "Windy Webcams",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "zeitview",
+      "name": "Zeitview",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "hivemapper",
+      "name": "Hivemapper (Bee Maps)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "planet",
+      "name": "Planet (Planet Labs)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "prolific",
+      "name": "Prolific",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "proxypics",
+      "name": "ProxyPics",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "rentahuman",
+      "name": "RentAHuman",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "skyfi",
+      "name": "SkyFi",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "spexi",
+      "name": "Spexi",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "telus-digital",
+      "name": "TELUS Digital (AI Data Solutions)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "outside_coverage",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "umbra",
+      "name": "Umbra",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     }
+    ],
+    "choice": null,
+    "quote": null,
+    "provider_response": null,
+    "status": null,
+    "provider_status": null,
+    "results": [],
+    "warnings": [],
+    "log": [
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "received: 'is the Guadalupe at Comfort, TX good for tubing today'"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "proposed: 1 options, 34 ruled out, best usgs-water via live"
+     }
+    ]
+   }
+  },
+  {
+   "tool": "submit_job",
+   "arguments": {
+    "job_id": "4374a352594b"
+   },
+   "started_at": "2026-10-25T22:57:48.044Z",
+   "finished_at": "2026-10-25T22:57:48.490Z",
+   "is_error": false,
+   "response_bytes": 15048,
+   "response_sha256": "53d5c4217776d340caafb2a9d99606a1bf73caa7331878ffaa5a8e5547bb1d10",
+   "response": {
+    "id": "4374a352594b",
+    "need": "is the Guadalupe at Comfort, TX good for tubing today",
+    "why": "user deciding whether to go tubing on the Guadalupe today",
+    "state": "delivered",
+    "request": {
+     "need": "is the Guadalupe at Comfort, TX good for tubing today",
+     "terms": [
+      "tubing"
+     ],
+     "require": [
+      "time",
+      "location",
+      "content"
+     ],
+     "place": "Comfort, TX",
+     "lat": 29.967715,
+     "lon": -98.9050337,
+     "country_code": "us",
+     "state": "texas",
+     "mode": "live",
+     "within_minutes": 720,
+     "quantity": 1,
+     "default_proof": true
+    },
+    "policy": {
+     "max_order_usd": 0,
+     "include_unclaimed": true
+    },
+    "questions": [],
+    "plan": [
+     {
+      "card_id": "usgs-water",
+      "name": "USGS stream gauges",
+      "route": "live",
+      "fit": 73,
+      "gaps": [
+       "no proof of time",
+       "self-reported location, content"
+      ],
+      "policy": [],
+      "price": 0,
+      "price_unit": "per request",
+      "speed": "minutes",
+      "proof": {
+       "time": "none",
+       "location": "claimed",
+       "content": "claimed"
+      },
+      "sdk": {
+       "callable": true,
+       "needs_key": false,
+       "env": null
+      }
+     }
+    ],
+    "ruled_out": [
+     {
+      "card_id": "airnow",
+      "name": "EPA AirNow",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "nasa-firms",
+      "name": "NASA FIRMS active fires",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "ndbc-buoys",
+      "name": "NOAA NDBC buoys",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "noaa-tides",
+      "name": "NOAA tide and current stations",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "nws",
+      "name": "NWS weather stations (NOAA)",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "usgs-earthquakes",
+      "name": "USGS earthquake feed",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "caltrans-cctv",
+      "name": "Caltrans highway cameras",
+      "reason": "outside_coverage",
+      "label": "wrong state",
+      "why": "doesn't cover Texas",
+      "reasons": [
+       "outside_coverage",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "openaq",
+      "name": "OpenAQ",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "tfl-jamcams",
+      "name": "TfL JamCams",
+      "reason": "outside_coverage",
+      "label": "wrong country",
+      "why": "doesn't cover US",
+      "reasons": [
+       "outside_coverage",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "wsdot-cameras",
+      "name": "WSDOT highway cameras",
+      "reason": "outside_coverage",
+      "label": "wrong state",
+      "why": "doesn't cover Texas",
+      "reasons": [
+       "outside_coverage",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "appen",
+      "name": "Appen",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "capella",
+      "name": "Capella Space",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "defined-ai",
+      "name": "Defined.ai",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "empiric-earth",
+      "name": "Empiric Earth (Nexar)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "field-agent",
+      "name": "Field Agent (now Storesight)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "iceye",
+      "name": "ICEYE",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "lxt-clickworker",
+      "name": "LXT (clickworker)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "purpleair",
+      "name": "PurpleAir",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "satellogic",
+      "name": "Satellogic",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "satvu",
+      "name": "SatVu",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "shaip",
+      "name": "Shaip",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "toloka",
+      "name": "Toloka",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "wegolook",
+      "name": "WeGoLook",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "windy-webcams",
+      "name": "Windy Webcams",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "zeitview",
+      "name": "Zeitview",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "hivemapper",
+      "name": "Hivemapper (Bee Maps)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "planet",
+      "name": "Planet (Planet Labs)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "prolific",
+      "name": "Prolific",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "proxypics",
+      "name": "ProxyPics",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "rentahuman",
+      "name": "RentAHuman",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "skyfi",
+      "name": "SkyFi",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "spexi",
+      "name": "Spexi",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "telus-digital",
+      "name": "TELUS Digital (AI Data Solutions)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "outside_coverage",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "umbra",
+      "name": "Umbra",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     }
+    ],
+    "choice": {
+     "card_id": "usgs-water",
+     "name": "USGS stream gauges",
+     "route": "live",
+     "fit": 73,
+     "gaps": [
+      "no proof of time",
+      "self-reported location, content"
+     ],
+     "policy": [],
+     "price": 0,
+     "price_unit": "per request",
+     "speed": "minutes",
+     "proof": {
+      "time": "none",
+      "location": "claimed",
+      "content": "claimed"
+     },
+     "sdk": {
+      "callable": true,
+      "needs_key": false,
+      "env": null
+     }
+    },
+    "quote": null,
+    "provider_response": null,
+    "status": null,
+    "provider_status": null,
+    "results": [
+     {
+      "provider": "usgs-water",
+      "kind": "sensor",
+      "observed_at": "2026-10-25T17:35:00.000-05:00",
+      "lat": 29.96523889,
+      "lon": -98.8971667,
+      "value": 76.3,
+      "unit": "ft3/s",
+      "label": "discharge",
+      "url": "https://waterdata.usgs.gov/monitoring-location/08167000/",
+      "site": "USGS-08167000",
+      "via": "legacy",
+      "distance_km": 0.8,
+      "daily_median": 103.0,
+      "daily_stats": {
+       "p25": 51.0,
+       "p50": 103.0,
+       "p75": 201.0,
+       "years": "1940-2025",
+       "count": 86,
+       "date": "10-25",
+       "unit": "ft3/s",
+       "source": "https://waterservices.usgs.gov/nwis/stat/"
+      },
+      "age_s": 1368,
+      "provider_proof": {
+       "time": "none",
+       "location": "claimed",
+       "content": "claimed"
+      }
+     },
+     {
+      "provider": "usgs-water",
+      "kind": "sensor",
+      "observed_at": "2026-10-25T17:35:00.000-05:00",
+      "lat": 29.96523889,
+      "lon": -98.8971667,
+      "value": 3.26,
+      "unit": "ft",
+      "label": "gage height",
+      "url": "https://waterdata.usgs.gov/monitoring-location/08167000/",
+      "site": "USGS-08167000",
+      "via": "legacy",
+      "distance_km": 0.8,
+      "daily_median": 2.93,
+      "daily_stats": {
+       "p25": 1.71,
+       "p50": 2.93,
+       "p75": 3.37,
+       "years": "1991-2025",
+       "count": 35,
+       "date": "10-25",
+       "unit": "ft",
+       "source": "https://waterservices.usgs.gov/nwis/stat/"
+      },
+      "age_s": 1368,
+      "provider_proof": {
+       "time": "none",
+       "location": "claimed",
+       "content": "claimed"
+      }
+     },
+     {
+      "provider": "usgs-water",
+      "kind": "sensor",
+      "observed_at": "2026-10-25T17:35:00.000-05:00",
+      "lat": 30.0114361,
+      "lon": -98.9741361,
+      "value": 5.15,
+      "unit": "ft",
+      "label": "gage height",
+      "url": "https://waterdata.usgs.gov/monitoring-location/08166700/",
+      "site": "USGS-08166700",
+      "via": "legacy",
+      "distance_km": 8.2,
+      "age_s": 1368,
+      "provider_proof": {
+       "time": "none",
+       "location": "claimed",
+       "content": "claimed"
+      }
+     }
+    ],
+    "warnings": [
+     {
+      "provider": "usgs-water",
+      "code": "fallback_legacy",
+      "msg": "USGS OGC API returned HTTP 429; readings come from the legacy waterservices endpoint (via: legacy); set USGS_WATER_API_KEY to raise the rate limit",
+      "status": 429
+     },
+     {
+      "provider": "usgs-water",
+      "code": "daily_stats_missing",
+      "msg": "USGS publishes no daily statistics for USGS-08166700 gage height"
+     },
+     {
+      "provider": "usgs-water",
+      "code": "camera_unavailable",
+      "msg": "USGS camera service returned HTTP 429; no photo; set USGS_WATER_API_KEY to raise the rate limit",
+      "status": 429
+     }
+    ],
+    "log": [
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "received: 'is the Guadalupe at Comfort, TX good for tubing today'"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "proposed: 1 options, 34 ruled out, best usgs-water via live"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "warning from usgs-water: fallback_legacy: USGS OGC API returned HTTP 429; readings come from the legacy waterservices endpoint (via: legacy); set USGS_WATER_API_KEY to raise the rate limit"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "warning from usgs-water: daily_stats_missing: USGS publishes no daily statistics for USGS-08166700 gage height"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "warning from usgs-water: camera_unavailable: USGS camera service returned HTTP 429; no photo; set USGS_WATER_API_KEY to raise the rate limit"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "live read from usgs-water: 3 observations"
+     }
+    ]
+   }
+  },
+  {
+   "tool": "get_job",
+   "arguments": {
+    "job_id": "4374a352594b"
+   },
+   "started_at": "2026-10-25T22:57:48.491Z",
+   "finished_at": "2026-10-25T22:57:48.495Z",
+   "is_error": false,
+   "response_bytes": 15048,
+   "response_sha256": "53d5c4217776d340caafb2a9d99606a1bf73caa7331878ffaa5a8e5547bb1d10",
+   "response": {
+    "id": "4374a352594b",
+    "need": "is the Guadalupe at Comfort, TX good for tubing today",
+    "why": "user deciding whether to go tubing on the Guadalupe today",
+    "state": "delivered",
+    "request": {
+     "need": "is the Guadalupe at Comfort, TX good for tubing today",
+     "terms": [
+      "tubing"
+     ],
+     "require": [
+      "time",
+      "location",
+      "content"
+     ],
+     "place": "Comfort, TX",
+     "lat": 29.967715,
+     "lon": -98.9050337,
+     "country_code": "us",
+     "state": "texas",
+     "mode": "live",
+     "within_minutes": 720,
+     "quantity": 1,
+     "default_proof": true
+    },
+    "policy": {
+     "max_order_usd": 0,
+     "include_unclaimed": true
+    },
+    "questions": [],
+    "plan": [
+     {
+      "card_id": "usgs-water",
+      "name": "USGS stream gauges",
+      "route": "live",
+      "fit": 73,
+      "gaps": [
+       "no proof of time",
+       "self-reported location, content"
+      ],
+      "policy": [],
+      "price": 0,
+      "price_unit": "per request",
+      "speed": "minutes",
+      "proof": {
+       "time": "none",
+       "location": "claimed",
+       "content": "claimed"
+      },
+      "sdk": {
+       "callable": true,
+       "needs_key": false,
+       "env": null
+      }
+     }
+    ],
+    "ruled_out": [
+     {
+      "card_id": "airnow",
+      "name": "EPA AirNow",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "nasa-firms",
+      "name": "NASA FIRMS active fires",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "ndbc-buoys",
+      "name": "NOAA NDBC buoys",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "noaa-tides",
+      "name": "NOAA tide and current stations",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "nws",
+      "name": "NWS weather stations (NOAA)",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "usgs-earthquakes",
+      "name": "USGS earthquake feed",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "caltrans-cctv",
+      "name": "Caltrans highway cameras",
+      "reason": "outside_coverage",
+      "label": "wrong state",
+      "why": "doesn't cover Texas",
+      "reasons": [
+       "outside_coverage",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "openaq",
+      "name": "OpenAQ",
+      "reason": "no_match",
+      "label": "no match",
+      "why": "its card doesn't mention tubing",
+      "reasons": [
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "tfl-jamcams",
+      "name": "TfL JamCams",
+      "reason": "outside_coverage",
+      "label": "wrong country",
+      "why": "doesn't cover US",
+      "reasons": [
+       "outside_coverage",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "wsdot-cameras",
+      "name": "WSDOT highway cameras",
+      "reason": "outside_coverage",
+      "label": "wrong state",
+      "why": "doesn't cover Texas",
+      "reasons": [
+       "outside_coverage",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "appen",
+      "name": "Appen",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "capella",
+      "name": "Capella Space",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "defined-ai",
+      "name": "Defined.ai",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "empiric-earth",
+      "name": "Empiric Earth (Nexar)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "field-agent",
+      "name": "Field Agent (now Storesight)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "iceye",
+      "name": "ICEYE",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "lxt-clickworker",
+      "name": "LXT (clickworker)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "purpleair",
+      "name": "PurpleAir",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "satellogic",
+      "name": "Satellogic",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "satvu",
+      "name": "SatVu",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "shaip",
+      "name": "Shaip",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "toloka",
+      "name": "Toloka",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "wegolook",
+      "name": "WeGoLook",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "windy-webcams",
+      "name": "Windy Webcams",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "zeitview",
+      "name": "Zeitview",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "hivemapper",
+      "name": "Hivemapper (Bee Maps)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "planet",
+      "name": "Planet (Planet Labs)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "prolific",
+      "name": "Prolific",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "proxypics",
+      "name": "ProxyPics",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "rentahuman",
+      "name": "RentAHuman",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "skyfi",
+      "name": "SkyFi",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "spexi",
+      "name": "Spexi",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     },
+     {
+      "card_id": "telus-digital",
+      "name": "TELUS Digital (AI Data Solutions)",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "outside_coverage",
+       "too_slow",
+       "no_match"
+      ]
+     },
+     {
+      "card_id": "umbra",
+      "name": "Umbra",
+      "reason": "policy:max_order_usd",
+      "label": "paid",
+      "why": "costs money; max_order_usd is $0",
+      "reasons": [
+       "policy:max_order_usd",
+       "too_slow",
+       "no_match",
+       "needs_key"
+      ]
+     }
+    ],
+    "choice": {
+     "card_id": "usgs-water",
+     "name": "USGS stream gauges",
+     "route": "live",
+     "fit": 73,
+     "gaps": [
+      "no proof of time",
+      "self-reported location, content"
+     ],
+     "policy": [],
+     "price": 0,
+     "price_unit": "per request",
+     "speed": "minutes",
+     "proof": {
+      "time": "none",
+      "location": "claimed",
+      "content": "claimed"
+     },
+     "sdk": {
+      "callable": true,
+      "needs_key": false,
+      "env": null
+     }
+    },
+    "quote": null,
+    "provider_response": null,
+    "status": null,
+    "provider_status": null,
+    "results": [
+     {
+      "provider": "usgs-water",
+      "kind": "sensor",
+      "observed_at": "2026-10-25T17:35:00.000-05:00",
+      "lat": 29.96523889,
+      "lon": -98.8971667,
+      "value": 76.3,
+      "unit": "ft3/s",
+      "label": "discharge",
+      "url": "https://waterdata.usgs.gov/monitoring-location/08167000/",
+      "site": "USGS-08167000",
+      "via": "legacy",
+      "distance_km": 0.8,
+      "daily_median": 103.0,
+      "daily_stats": {
+       "p25": 51.0,
+       "p50": 103.0,
+       "p75": 201.0,
+       "years": "1940-2025",
+       "count": 86,
+       "date": "10-25",
+       "unit": "ft3/s",
+       "source": "https://waterservices.usgs.gov/nwis/stat/"
+      },
+      "age_s": 1368,
+      "provider_proof": {
+       "time": "none",
+       "location": "claimed",
+       "content": "claimed"
+      }
+     },
+     {
+      "provider": "usgs-water",
+      "kind": "sensor",
+      "observed_at": "2026-10-25T17:35:00.000-05:00",
+      "lat": 29.96523889,
+      "lon": -98.8971667,
+      "value": 3.26,
+      "unit": "ft",
+      "label": "gage height",
+      "url": "https://waterdata.usgs.gov/monitoring-location/08167000/",
+      "site": "USGS-08167000",
+      "via": "legacy",
+      "distance_km": 0.8,
+      "daily_median": 2.93,
+      "daily_stats": {
+       "p25": 1.71,
+       "p50": 2.93,
+       "p75": 3.37,
+       "years": "1991-2025",
+       "count": 35,
+       "date": "10-25",
+       "unit": "ft",
+       "source": "https://waterservices.usgs.gov/nwis/stat/"
+      },
+      "age_s": 1368,
+      "provider_proof": {
+       "time": "none",
+       "location": "claimed",
+       "content": "claimed"
+      }
+     },
+     {
+      "provider": "usgs-water",
+      "kind": "sensor",
+      "observed_at": "2026-10-25T17:35:00.000-05:00",
+      "lat": 30.0114361,
+      "lon": -98.9741361,
+      "value": 5.15,
+      "unit": "ft",
+      "label": "gage height",
+      "url": "https://waterdata.usgs.gov/monitoring-location/08166700/",
+      "site": "USGS-08166700",
+      "via": "legacy",
+      "distance_km": 8.2,
+      "age_s": 1368,
+      "provider_proof": {
+       "time": "none",
+       "location": "claimed",
+       "content": "claimed"
+      }
+     }
+    ],
+    "warnings": [
+     {
+      "provider": "usgs-water",
+      "code": "fallback_legacy",
+      "msg": "USGS OGC API returned HTTP 429; readings come from the legacy waterservices endpoint (via: legacy); set USGS_WATER_API_KEY to raise the rate limit",
+      "status": 429
+     },
+     {
+      "provider": "usgs-water",
+      "code": "daily_stats_missing",
+      "msg": "USGS publishes no daily statistics for USGS-08166700 gage height"
+     },
+     {
+      "provider": "usgs-water",
+      "code": "camera_unavailable",
+      "msg": "USGS camera service returned HTTP 429; no photo; set USGS_WATER_API_KEY to raise the rate limit",
+      "status": 429
+     }
+    ],
+    "log": [
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "received: 'is the Guadalupe at Comfort, TX good for tubing today'"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "proposed: 1 options, 34 ruled out, best usgs-water via live"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "warning from usgs-water: fallback_legacy: USGS OGC API returned HTTP 429; readings come from the legacy waterservices endpoint (via: legacy); set USGS_WATER_API_KEY to raise the rate limit"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "warning from usgs-water: daily_stats_missing: USGS publishes no daily statistics for USGS-08166700 gage height"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "warning from usgs-water: camera_unavailable: USGS camera service returned HTTP 429; no photo; set USGS_WATER_API_KEY to raise the rate limit"
+     },
+     {
+      "t": "2026-10-25T22:57:48Z",
+      "msg": "live read from usgs-water: 3 observations"
+     }
+    ]
+   }
+  }
+ ]
+}

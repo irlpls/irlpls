@@ -1,0 +1,14 @@
+{
+  "keys": [
+    {
+      "kty": "EC",
+      "crv": "P-256",
+      "kid": "sample-2026-10",
+      "alg": "ES256",
+      "use": "sig",
+      "irlpls_use": "receipt",
+      "x": "SjIsg-GreTtys_SXyMHm-Rp-MFqMXnG5S5mKTypO31Q",
+      "y": "RdZ0fp9vKLziJSyzzt5sJG5UyY189CVYsSB2ymfzazo"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "irlpls_sample_pack": "2026-10-26",
+  "stage": "time",
+  "type": "rfc3161",
+  "artefact": "data.txt",
+  "proof": "response.tsr",
+  "trust_anchor": "tsa.pem",
+  "readme": "README.md",
+  "verify": "openssl ts -verify -data data.txt -in response.tsr -CAfile tsa.pem"
+}

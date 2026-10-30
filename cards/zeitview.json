@@ -1,0 +1,259 @@
+{
+  "id": "zeitview",
+  "name": "Zeitview",
+  "provider_url": "https://www.zeitview.com",
+  "status": "unclaimed",
+  "tags": [
+    "aerial",
+    "drone",
+    "inspection",
+    "thermal",
+    "lidar",
+    "methane",
+    "solar",
+    "wind",
+    "utilities",
+    "oil-and-gas",
+    "roof",
+    "property",
+    "real-estate",
+    "dronebase"
+  ],
+  "summary": "Asset intelligence company (formerly DroneBase) whose pilots collect drone, fixed-wing and robotic-crawler data for energy, utility and property assets, then add AI analysis and expert review. It also sells fixed-price drone photo and video packages for US commercial real estate, and has a contact-gated Partners API for bulk mission orders.",
+  "short": "Drone inspections of energy, utility and property assets; fixed-price US real estate drone photo packages.",
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "photo",
+      "video",
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "solar inspection (visual and thermal)",
+      "wind turbine inspection (onshore and offshore; external and internal blades, towers, nacelles; lightning protection testing)",
+      "electric utility circuit patrol, vegetation encroachment, thermal hotspot and substation inspection",
+      "aerial methane detection and quantification for oil and gas",
+      "roof, facade, pavement and landscaping property assessments with 1-100 condition scores",
+      "drone aerial photos, HD video clips and edited marketing videos for US commercial real estate"
+    ]
+  },
+  "pricing": {
+    "model": "quote (enterprise inspections); published packages for US commercial real estate",
+    "from_usd": 379,
+    "unit": "per listing (commercial real estate Images Package)",
+    "notes": "Commercial real estate, per listing: Images $379, Starter $479, Pro $649. Strip, convenience, neighborhood and community centers (up to 400,000 sq ft), per center: Images $409, Starter $579, Pro $769. Each package includes up to one hour of flight time on site and image hosting. Volume and enterprise pricing by contact. Enterprise terms: fees in USD, quotes valid 90 days, fees non-cancellable and non-refundable."
+  },
+  "latency": {
+    "typical": "Real estate: flight within a few days (weather permitting); images 2 business days after the flight, edited videos 3-5 business days",
+    "notes": "Real estate buyers choose between faster turnaround and clearer skies. Partners API: scheduled missions must be booked at least 24 hours ahead, and the availability preview covers the next four days. No turnaround published for enterprise inspections. Terms treat severe weather as force majeure."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "Commercial real estate page: \"Zeitview will visit and fly the site within a few days (subject to weather). After the flight, allow two additional business days for aerial marketing packages, and three to five business days for edited marketing videos.\" Other services: not published."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after the order; delivered days after the flight",
+    "notes": "Each image in the Partners API carries a taken_at timestamp. Zeitview also analyses data that customers collect themselves (bring your own data)."
+  },
+  "coverage": {
+    "regions": [
+      "Global (claimed, 80+ countries)",
+      "Continental United States (real estate packages)"
+    ],
+    "notes": "The About page claims coverage in 80+ countries and \"the largest drone pilot network in the industry\". Other pages give lower, segment-specific figures: properties 20+ countries, solar 70+, wind 40. The properties and solar pages claim 80,000 pilots; the utilities page says 11K+, described as US utility coverage. Real estate packages cover \"anywhere in the continental United States\". No country list is published. The Partners API rejects missions in FAA-protected airspace. Per-country density and lead times are not published."
+  },
+  "licensing": {
+    "summary": "General Terms and Conditions (dated October 8, 2025): Zeitview owns its services and \"related technology and deliverables\", and the customer acquires no IP in them (8.1). The customer owns its Confidential Information and Customer Data, defined as data about the customer (2.3, 8.2). Services are for the customer's \"own internal or personal purposes\" (5.1). The customer grants Zeitview a perpetual, worldwide, sublicensable licence to Customer Data to provide services, optimise them and create anonymised data sets (8.3). Zeitview may use service data, including AI-generated annotations and anonymised data sets, to improve and develop its services, and may disclose it in aggregate or de-identified form (8.6). Separately, the Site Terms of Service (s.7) give Zeitview a perpetual, irrevocable, sublicensable licence, including the right to sell, over content submitted to the Site. The commercial real estate page instead says \"All drone aerial photography is yours to own and use as you like\". Neither document mentions AI or model training rights for the buyer, or resale.",
+    "vendor_trains_on_data": "yes"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "\"Certified pilots\" capture the data. Real estate pilots are \"vetted and tested\", and Zeitview says it is FAA-permitted for commercial flight and insured at every job site. Partners API missions record pilot_accepted, pilot_arrived and pilot_departed timestamps.",
+      "unknown": "How pilot identity and certification are checked, and whether the delivered files were captured by that pilot. Customers may also upload their own data."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No claim that capture goes through a controlled or attested app. The Partners API lets some integrations use a third-party flight app and upload tool, and nothing says imagery cannot be replaced before upload."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: RGB, thermal, lidar and methane sensors on drones, fixed-wing aircraft and robotic crawlers. Sensor output is not signed or tamper-evident, and there is no C2PA support. Nothing rules out edited images or photos of a screen."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each image from the Partners API carries a taken_at timestamp, and missions carry status timestamps. Each methane detection includes a timestamp.",
+      "unknown": "The source of taken_at (likely camera metadata) is not documented, and it is not signed or checked against an independent clock."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Data is geotagged to the asset or component. Each image from the Partners API carries GPS latitude, longitude and altitude. Methane detections include a precise GPS location.",
+      "unknown": "Positional accuracy, where the geotag comes from, and resistance to GPS spoofing or substituted files are not documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "AI models flag anomalies, then certified analysts or domain experts review and validate each finding before delivery",
+      "unknown": "Review error rates are not published, and nothing says a fabricated or staged capture would be caught. The terms say Zeitview \"does not review the information collected during performance\" of its services (6.5)."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent confirms a capture. Repeat surveys and the portfolio view are Zeitview's own data. The FAQ calls its methane measurement EPA-approved, but Zeitview is not named on EPA's alternative test methods page."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://dronebaseapi.docs.apiary.io/",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "X-Api-Client, X-Api-Secret",
+        "how_to_get": "The docs say: \"In order to access this API, please contact our team.\" Mission packages (package_id) are also defined with Zeitview's team."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/v2/partners/missions/preview",
+        "notes": "Dry run that saves nothing. Checks FAA airspace and returns four days of hourly timeslots with pilot availability and weather. No price. V1 at /v1/partners/missions/preview checks airspace only."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/v1/partners/missions/",
+        "params": "external_id (required, unique; prevents duplicates), package.id, location (name, coordinate, address, GeoJSON annotations), instructions, reference_id, portfolio, scheduled_at_start/end (same day, at least 24h ahead)",
+        "notes": "Airspace is checked asynchronously; a rejection arrives by email or webhook. Cancel with DELETE /v1/partners/missions/{mission_id}. Re-shoot and reschedule at /reshoot and /schedule."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/v1/partners/missions/{mission_id}",
+        "notes": "Status and activity log. Optional HMAC-SHA256-signed webhooks (X-Dronebase-Signature), enabled by support."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/v1/partners/missions",
+        "params": "reference_id",
+        "notes": "Up to 50 missions matching the reference id"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/v1/partners/missions/{mission_id}/images",
+        "params": "page, per_page (default 100, max 1000)",
+        "notes": "Signed image URLs that expire after about 6 hours, with taken_at, GPS and shot type for each image"
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "Searches of the official MCP Registry for \"zeitview\" and \"dronebase\" returned no servers (2026-10-26)."
+    },
+    "notes": "The Zeitview Partners API (formerly the DroneBase API) creates missions in bulk, server to server. The docs list only https://sandbox-api.dronebase.com (labelled 'production' in the Apiary metadata), which does not resolve. api.dronebase.com redirects (308) to sake.production.zeitview.com; that host is not documented and was not called. Download URLs are signed and time-limited since May 1, 2026. The marketing pages say Asset Insights is \"built as an API\", but no public docs for it were found. Real estate packages can also be ordered in the web Client Dashboard (clients.zeitview.com)."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "contract"
+  },
+  "payment": {
+    "methods": [
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Enterprise terms: Zeitview invoices by email, payment is due within 30 days by electronic transfer in USD, and orders are subject to credit approval. Payment methods for online real estate orders are not stated on public pages."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "All orders are subject to approval by Zeitview, including credit approval (terms 1.7). Users must be 18 or older and not barred by US sanctions (OFAC), and must provide payment information (Terms of Service 3). Missions in FAA-protected airspace are rejected (Partners API).",
+    "unknown": "Whether Zeitview checks the requester's authority over the property, or the purpose of a capture, is not documented."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Asset intelligence for energy and critical infrastructure; certified pilots capture by drone, fixed-wing aircraft or robotic crawler with optical, thermal, lidar and methane sensors geotagged to components; AI flags and certified analysts review each finding before delivery; findings mapped to location; portfolio view updated survey after survey; bring-your-own-data; DroneBase, Inc. d/b/a Zeitview, San Diego",
+      "url": "https://www.zeitview.com"
+    },
+    {
+      "claim": "Formerly DroneBase; coverage across 80+ countries; largest drone pilot network in the industry",
+      "url": "https://www.zeitview.com/about"
+    },
+    {
+      "claim": "Property assessments (roof, facade, pavement, landscaping) with a 1-100 condition score; AI plus expert analysts; RGB, thermal and lidar; 20+ countries, 80,000 pilots, 20,000 sites a year; Asset Insights \"built as an API\"",
+      "url": "https://www.zeitview.com/properties"
+    },
+    {
+      "claim": "Solar: 70+ countries, 80,000 pilots",
+      "url": "https://www.zeitview.com/solar"
+    },
+    {
+      "claim": "Wind: 40 countries",
+      "url": "https://www.zeitview.com/wind"
+    },
+    {
+      "claim": "Utilities: 11K+ pilots",
+      "url": "https://www.zeitview.com/utilities"
+    },
+    {
+      "claim": "Onshore and offshore wind; internal and external blades, towers, nacelles, LPS testing; utility programs; methane detections with GPS location, emission rate and timestamp; claim of EPA approval at 10 kg/hr with 90% probability of detection; expert validation before delivery",
+      "url": "https://www.zeitview.com/resources/faqs"
+    },
+    {
+      "claim": "Real estate packages $379-$769 per listing or center; up to one hour of flight; flight within a few days subject to weather; images 2 business days and edited videos 3-5 business days after the flight; online ordering through the Client Dashboard; continental US; pilots vetted and tested; FAA-permitted and insured; \"All drone aerial photography is yours to own and use as you like\"",
+      "url": "https://www.zeitview.com/commercial-real-estate"
+    },
+    {
+      "claim": "Real estate orders need no conversation with a person: pick a package, then give the address or lat/long, the property area, and a preference for clear skies or faster turnaround. Other industries are quoted.",
+      "url": "https://www.zeitview.com/resource/dronebase-client-order-guide"
+    },
+    {
+      "claim": "General Terms and Conditions dated October 8, 2025: orders subject to approval including credit approval (1.7); fees in USD valid 90 days (4.1); email invoices, payment within 30 days by electronic transfer (4.2-4.3); fees non-cancellable and non-refundable (4.9); services for the customer's internal purposes (5.1); Zeitview does not review the information collected (6.5); Zeitview owns deliverables (8.1); customer owns Customer Data (8.2); licence to Customer Data and anonymised data sets (8.3); service-data use to improve and develop services (8.6); severe weather force majeure (15)",
+      "url": "https://www.zeitview.com/termsandconditions"
+    },
+    {
+      "claim": "Terms of Service: users 18+, not barred by OFAC, must provide payment information; prices in USD; no ban on automated or API use; s.7 licence on submitted content incl. right to sell",
+      "url": "https://www.zeitview.com/termsofuse"
+    },
+    {
+      "claim": "Zeitview Partners API (updated 2026-03-18): contact the team for access; X-Api-Client and X-Api-Secret headers; preview (airspace, pilot availability and weather), create (external_id dedupe, 24h-ahead scheduling), find, list by reference_id, cancel, re-shoot, reschedule, images endpoint (signed URLs expiring in about 6 hours, taken_at and GPS per image); HMAC-signed webhooks; FAA-protected airspace rejected; listed host sandbox-api.dronebase.com",
+      "url": "https://jsapi.apiary.io/apis/dronebaseapi/blueprint"
+    },
+    {
+      "claim": "Partners API documentation page",
+      "url": "https://dronebaseapi.docs.apiary.io/"
+    },
+    {
+      "claim": "The DroneBase API lets enterprise customers submit bulk orders server to server and get back status updates and links to finished files; contact Zeitview to be set up",
+      "url": "https://www.zeitview.com/resource/2017-03-09-the-dronebase-api"
+    },
+    {
+      "claim": "EPA's oil and gas alternative test methods page (fetched 2026-10-26) does not name Zeitview or DroneBase among the approved methods",
+      "url": "https://www.epa.gov/emc/oil-and-gas-alternative-test-methods"
+    },
+    {
+      "claim": "No MCP Registry entry for zeitview",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=zeitview"
+    },
+    {
+      "claim": "No MCP Registry entry for dronebase",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=dronebase"
+    }
+  ],
+  "adapter": "zeitview"
+}

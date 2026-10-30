@@ -1,0 +1,7 @@
+{
+  "_fixture": "documented-shape",
+  "_source": "https://www.clickworker.com/mpapi/cw-mp-api-v2.yaml GET /clickworkers?api_method=count_in_range (description: response { \"clickworker_count\": 1234 })",
+  "response": {
+    "clickworker_count": 1234
+  }
+}

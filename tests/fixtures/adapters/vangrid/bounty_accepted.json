@@ -1,0 +1,47 @@
+{
+ "bounty_id": "cmufahx1e00002egi0d1um822",
+ "status": "accepted",
+ "amount_usdc": 200,
+ "deadline": "2026-10-01T08:48:24.000Z",
+ "title": "Loading dock, east side",
+ "brief": "Walk the full length of the east loading dock at ground level, both directions, daylight.",
+ "onchain_id": 17,
+ "board_url": "https://app.vangrid.io/bounties/17",
+ "payer": "0x7bab81f94ce1548bb9ecddaf3945fb65d95a49a7",
+ "network": "eip155:8453",
+ "payment_tx": "0x01",
+ "create_tx": "0x02",
+ "accept_tx": "0x03",
+ "cancel_tx": null,
+ "refund_tx": null,
+ "payout_tx": null,
+ "poll_url": "https://data.vangrid.io/api/v1/bounties/cmufahx1e00002egi0d1um822",
+ "submissions": [
+  {
+   "submission_id": "sub_1",
+   "submitted_at": "2026-09-27T10:00:00.000Z",
+   "note": null,
+   "preview_status": "ready",
+   "quality_status": "pass",
+   "reconstruction_status": "ready",
+   "preview_url": "https://cdn.vangrid.io/p/sub_1.mp4?sig=x",
+   "accepted": true,
+   "full_capture_url": "https://cdn.vangrid.io/f/sub_1.mp4?sig=x",
+   "model_glb_url": "https://cdn.vangrid.io/m/sub_1.glb?sig=x",
+   "model_zip_url": null
+  },
+  {
+   "submission_id": "sub_2",
+   "submitted_at": "2026-09-27T11:00:00.000Z",
+   "note": "second pass",
+   "preview_status": "ready",
+   "quality_status": "fail",
+   "reconstruction_status": "none",
+   "preview_url": "https://cdn.vangrid.io/p/sub_2.mp4?sig=y",
+   "accepted": false,
+   "full_capture_url": null,
+   "model_glb_url": null,
+   "model_zip_url": null
+  }
+ ]
+}

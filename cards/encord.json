@@ -1,0 +1,191 @@
+{
+  "id": "encord",
+  "name": "Encord",
+  "provider_url": "https://encord.com",
+  "status": "unclaimed",
+  "short": "Robotics data to order: teleoperation, gripper and first-person capture, piloted in a lab then run in the field.",
+  "tags": [
+    "robotics",
+    "physical AI",
+    "teleoperation",
+    "UMI",
+    "manipulation",
+    "egocentric video",
+    "managed service",
+    "training data",
+    "custom collection"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "teleoperation demonstrations on leader/follower arms (stationary and mobile)",
+      "UMI handheld-gripper manipulation data, including multi-finger and client-provided grippers",
+      "egocentric head and wrist camera video at 1080p/30fps",
+      "operating the client's own robot (embodiment-specific)",
+      "on-site collection at the client's factory or warehouse",
+      "capturing deployment failure modes through remote teleoperation"
+    ]
+  },
+  "pricing": {
+    "model": "Quote after a call",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "Collection is not priced. The pricing page lists only platform tiers (Starter, Team, Enterprise) with no dollar amounts; Enterprise is 'Contact sales'."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "Every protocol is piloted in Encord's lab before operators go into the field; no turnaround is stated."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after the protocol is agreed and piloted",
+    "notes": "Encord also releases open research datasets (e.g. EMG-1); those are not commissions."
+  },
+  "coverage": {
+    "regions": [
+      "US (Bay Area lab)",
+      "multiple geographies (not listed)",
+      "client sites (on-site collection)"
+    ],
+    "notes": "Pilots run in Encord's Bay Area lab. Encord says it 'operates across multiple geographies' but lists none; it also collects on site at the client's factory or warehouse."
+  },
+  "licensing": {
+    "summary": "Standard Terms of Service (US and UK versions, effective 27 Jun 2025) define Client Input as data 'entered into the Services ... by Encord on Client's behalf during Professional Services' and say the Client owns all Client Input (s.4.5); Encord gets a licence to use it only 'to provide the Services' (s.4.3). Collected data 'flows directly into Encord's platform'. Deliverables are whatever the Order Form names. Whether collected robotics data is Client Input (owned by the client) or a Deliverable depends on the Order Form, so buyer_owns_output is conditional on that. Encord may use Usage Data to improve its products and share it only if aggregated and de-identified (s.8.2). The terms do not mention AI training, resale of collected data, or whether Encord may train on client data. Contributor consent terms are not published.",
+    "buyer_owns_output": true
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "'Thousands of trained operators' in kitchens, warehouses, offices, vehicles and industrial settings.",
+      "unknown": "How operators are vetted, identified or consented is not published."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Encord supplies a standard capture kit (cameras, grippers, mounts, synchronisation), but no app or device attestation is documented; client-provided gripper hardware is also used. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Base kit: RGB-D stereo depth cameras with IMU and multi-camera sync; egocentric head and wrist cameras at 1080p/30fps. No C2PA or signed capture; Encord is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "Synchronisation aligns streams to each other; no signed or independently time-stamped capture times are documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is documented; the place is the lab, a field site or the client's premises, as agreed."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Protocol, tasks and quality criteria are defined with the client and piloted in the lab; 'every episode is classified, synchronised, and aligned to your model'.",
+      "unknown": "Acceptance criteria and QC results are not published. The multi-stage review with audit trails Encord describes is for annotation, not capture."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of collected data is documented."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Book a call with the Physical AI team (encord.com/data-collection); work is set by a signed Order Form."
+      }
+    ],
+    "mcp": {
+      "remote": "https://mcp.encord.com/mcp",
+      "registry_name": null,
+      "auth": "oauth2",
+      "first_party": true,
+      "notes": "Merlin (beta) manages the Encord platform: projects, ontologies, datasets, folders, workflows, analytics. It has no tool to order or quote data collection. EU host mcp.encord.com, US host mcp.us.encord.com; OAuth via WorkOS AuthKit (authkit.encord.com) with a registration endpoint and PKCE S256; needs an existing Encord account (cloud accounts only; organizations that enforce MFA are rejected, per docs.encord.com/platform-documentation/GettingStarted/encord-merlin, read 2026-10-28). Not in the official MCP Registry (searched 'encord', 2026-10-26). A separate docs-only MCP runs at encord-docs.mcp.kapa.ai."
+    },
+    "notes": "The platform API and SDK (docs.encord.com) manage data already in Encord, which is where collected data lands; collection itself is ordered only through sales."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No turnaround is published. Encord says only that collection 'always starts at Encord facilities ... piloted in a controlled lab environment before scaling' and that its platform removes 'weeks of pre-processing'."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "notes": "Fees are set in an Order Form that takes effect only once both parties sign. Client may authorise a credit or debit card; otherwise invoices are due in 30 days (Terms s.2.3-2.4)."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "unknown": "Encord publishes no check of who commissions collection or for what; every project starts with a call and a signed Order Form."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "Encord collects robotics training data to order: teleoperation, handheld-gripper (UMI), robot-specific and egocentric capture. Each protocol is designed and piloted in its Bay Area lab, then run by trained in-field operators or on site at the client's factory or warehouse. Sales only: collection is not priced, and turnaround is not published. Its standard terms give the client ownership of data Encord enters into the platform on the client's behalf.",
+  "sources": [
+    {
+      "claim": "Collection types (embodiment-specific, teleoperation, egocentric 1080p/30FPS, UMI incl. multi-finger and client grippers); lab pilot before field; thousands of trained operators; Bay Area lab; base kit; 'multiple geographies'; episodes classified and synchronised; remote-teleoperation failure capture; collected data flows into the platform; Book a call",
+      "url": "https://encord.com/data-collection/"
+    },
+    {
+      "claim": "On-site collection at the client's factory or warehouse; pilot then scale; annotation review with audit trails; SOC 2 Type II, HIPAA, GDPR",
+      "url": "https://encord.com/physical-ai-data/"
+    },
+    {
+      "claim": "Platform tiers Starter, Team, Enterprise with no published prices; collection not priced",
+      "url": "https://encord.com/pricing/"
+    },
+    {
+      "claim": "Terms differ by contracting entity (US / UK)",
+      "url": "https://encord.com/terms/"
+    },
+    {
+      "claim": "Client Input definition, Client owns Client Input (4.5), Encord's licence limited to providing the Services (4.3), Deliverables per Order Form, fees by card or invoice within 30 days, Order Form effective only when signed by both; no AI-training or resale clause",
+      "url": "https://encord.com/terms-and-conditions-us/"
+    },
+    {
+      "claim": "UK terms: same ownership and licence clauses",
+      "url": "https://encord.com/terms-and-conditions-uk/"
+    },
+    {
+      "claim": "Merlin MCP: tools, EU/US endpoints, OAuth via WorkOS, beta",
+      "url": "https://docs.encord.com/platform-documentation/GettingStarted/encord-merlin.md"
+    },
+    {
+      "claim": "Merlin OAuth authorization server metadata: registration endpoint, PKCE S256",
+      "url": "https://mcp.encord.com/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "No Encord server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=encord"
+    },
+    {
+      "claim": "Company facts and Data-as-a-Service overview",
+      "url": "https://encord.com/llms.txt"
+    },
+    {
+      "claim": "Encord not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "Terms s.4.5 Client Input ownership, s.8.2 Usage Data",
+      "url": "https://encord.com/terms-and-conditions-us/"
+    }
+  ]
+}

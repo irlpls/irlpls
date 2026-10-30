@@ -1,0 +1,158 @@
+{
+  "id": "pospulse-streetspotr",
+  "name": "POSpulse (Streetspotr community)",
+  "status": "unclaimed",
+  "provider_url": "https://www.pospulse.com",
+  "short": "German store checks and mystery shopping with photos and GPS.",
+  "summary": "POSpulse GmbH (Berlin) takes commissions for store checks, placement and promotion tracking, mystery shopping and shopper feedback at points of sale in Germany. Its Streetspotr smartphone community ('Spotr') fills a questionnaire on site and takes photos; POSpulse reviews each dataset against the order and releases accepted ones to an analytics dashboard. A quote is agreed per project; no public API is documented, though the site mentions 'Schnittstellen zu Ihren Systemen'.",
+  "tags": [
+    "people",
+    "store-check",
+    "mystery-shopping",
+    "shelf-audit",
+    "photos",
+    "germany",
+    "retail",
+    "crowd"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "text-report"
+    ],
+    "tasks": [
+      "store check",
+      "shelf placement and availability",
+      "price check",
+      "promotion tracking",
+      "mystery shopping",
+      "out-of-home advertising check",
+      "shopper feedback"
+    ]
+  },
+  "pricing": {
+    "model": "Quote per project; the customer pays only for accepted datasets from markets actually visited",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "AGB: contract forms on accepting the written offer; 'Der Kunde zahlt nur für angenommene Datensätze'; a 70% fee on the remaining order value applies to reductions or cancellations after contract. No prices published."
+  },
+  "latency": {
+    "typical": "Collection starts within 5 working days of questionnaire confirmation",
+    "notes": "AGB V: data collection starts 'innerhalb von maximal 5 Werktagen'. The site says 'Ergebnisse in Echtzeit' via dashboard. The Streetspotr app page says a Spot normally must be done within 12 hours of being taken and uploaded results are reviewed within a maximum of 7 days."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "AGB V: 'POSpulse wird die Datenerhebung innerhalb von maximal 5 Werktagen starten'.",
+    "formats": [
+      "dashboard"
+    ]
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "notes": "Spotr visit the market after the order."
+  },
+  "coverage": {
+    "regions": [
+      "Germany"
+    ],
+    "notes": "Site and customer quotes refer to checks across Germany ('ganz Deutschland'); the Streetspotr page names only Germany. The AGB also mention out-of-home and at-home surveys.",
+    "areas": [
+      "DE"
+    ]
+  },
+  "licensing": {
+    "summary": "AGB V: 'Die erhobenen Datensätze gehören POSpulse' (the collected datasets belong to POSpulse), which may use them anonymised for benchmarks, industry reports, white papers and media; order-specific details are not passed to third parties. What rights the customer receives to the results (use, resale, AI training) is not stated in the AGB sections read.",
+    "buyer_owns_output": false
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": false,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Request through the platform, by email (service@pospulse.com) or by phone; POSpulse returns a written offer (AGB II). A free demo is offered on the site."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    },
+    "notes": "No API documentation found. The home page says 'Schnittstellen zu Ihren Systemen' (interfaces to your systems) are possible without detail. A customer quote on the home page also mentions a self-service tool to steer surveys. /.well-known/agent-card.json, /ucp and oauth-protected-resource returned 404."
+  },
+  "capture": {
+    "by": "contributors",
+    "worker_pay": {
+      "model": "paid per correctly and completely executed order; independent, not employees",
+      "disclosed": false
+    }
+  },
+  "requester": {
+    "checks": "AGB II: the request must not breach law (criminal, discriminatory, pornographic or racist content); POSpulse reviews each request by internal criteria and may decline to make an offer to individual customers.",
+    "unknown": "Whether requests aimed at a person rather than a place are blocked is not stated."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Spotr register as members; no identity check is described on the pages read."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Data is captured with the Streetspotr app, but no app or device attestation is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No signed capture or C2PA is described."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Home page: 'GPS-Tracking, Datum-/Zeitstempeln' guarantee traceable surveys; spots are completed in a set time frame (normally 12 hours).",
+      "unknown": "Source of the timestamp and whether it can be checked outside POSpulse are not published."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Streetspotr page: workers check in on site 'in einem Umkreis von 400m'; home page cites GPS tracking.",
+      "unknown": "The 400 m radius is stated for the app generally, not per order; some surveys can be done from anywhere; spoofing defences are not described."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "AGB V: POSpulse rejects datasets whose answers do not match the photos or are incomplete; home page adds AI image recognition and analyst quality control.",
+      "unknown": "Review thresholds and error rates are not published; the customer receives accepted datasets, not the rejected ones."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Multiple Spotr cover many markets but each market is visited once; no cross-check is described."
+    }
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Services (store checks, mystery shopping, market insights, shopper feedback), Streetspotr community, GPS tracking and time stamps, AI image recognition, 'Schnittstellen', free demo",
+      "url": "https://www.pospulse.com/"
+    },
+    {
+      "claim": "POS optimisation: placement and availability checks, promotion tracking",
+      "url": "https://www.pospulse.com/service/pos-optimierung"
+    },
+    {
+      "claim": "AGB: offer-based contract, 5 working days to start, datasets belong to POSpulse, pay only for accepted datasets, 70% cancellation fee, request rules, Spotr independent, AI services may include Anthropic",
+      "url": "https://www.pospulse.com/agbs"
+    },
+    {
+      "claim": "Streetspotr app page: tasks near you, 400 m check-in, normal 12-hour window, review within 7 days, Germany",
+      "url": "https://www.streetspotr.com/"
+    }
+  ]
+}

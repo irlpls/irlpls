@@ -1,0 +1,252 @@
+{
+  "id": "mturk",
+  "name": "Amazon Mechanical Turk",
+  "provider_url": "https://www.mturk.com",
+  "status": "defunct",
+  "tags": [
+    "DEFUNCT",
+    "closed 2026-09-30",
+    "crowdsourcing",
+    "human task marketplace",
+    "microtasks",
+    "HITs",
+    "AWS",
+    "boto3",
+    "online",
+    "surveys",
+    "annotation",
+    "locale qualification",
+    "US",
+    "India"
+  ],
+  "summary": "CLOSED. Amazon's crowdsourcing marketplace for small paid online tasks (HITs), with an AWS API (CreateHIT, ListAssignmentsForHIT, and others via boto3). mturk.com states the service permanently closed on September 30, 2026; HIT creation and task completion ended that day. Before closure it was built for remote, browser-based work. Workers could be filtered by country or ISO 3166-2 subdivision through the Worker_Locale qualification, but no public source describes sending workers to a specific physical place or verifying where or when a photo was taken. Listed for the record only. An agent cannot use it.",
+  "capabilities": {
+    "modalities": [
+      "text-report",
+      "photo"
+    ],
+    "tasks": [
+      "online microtasks (HITs) built with QuestionForm, HTMLQuestion or ExternalQuestion",
+      "surveys and research studies",
+      "image and video labeling, classification and content screening (per Wikipedia)",
+      "file upload by workers: GetFileUploadURL returns a 60-second URL for a FileUploadAnswer, but AWS marked FileUploadAnswer pending deprecation on 2017-12-12 and recommended Amazon S3 instead. Self-reported photos were technically possible; no field-capture product was documented",
+      "no longer available: the service closed on 2026-09-30"
+    ]
+  },
+  "pricing": {
+    "model": "worker reward set by the requester plus an Amazon commission (historical; the service is closed)",
+    "from_usd": 0,
+    "unit": "n/a, service closed",
+    "notes": "The www.mturk.com pricing page now shows only the closure notice, but requester.mturk.com/pricing still serves the old fee table: a 20 percent fee on the worker reward and any bonus; an additional 20 percent on the reward for tasks with 10 or more assignments; a minimum fee of $0.01 per assignment or bonus payment; an extra 5 percent of the reward for the Masters qualification; and Premium Qualification fees of $0.05 to $1.00 per assignment. The 40 percent rate for 10+ assignments took effect on 2015-07-22 (SPSP). Wikipedia gives one cent as the minimum task payment. The pricing is moot since the closure."
+  },
+  "latency": {
+    "typical": "n/a, service closed",
+    "notes": "Requesters set HIT lifetime (LifetimeInSeconds) and per-assignment time limit (AssignmentDurationInSeconds). No typical fill time was published. HIT submission ended on 2026-09-30, and unsubmitted HITs expired automatically."
+  },
+  "coverage": {
+    "regions": [
+      "None (closed 2026-09-30)",
+      "Historically mostly United States, then India (per Wikipedia)"
+    ],
+    "notes": "Wikipedia puts the workforce at about 80 percent US in May 2015, about 60 percent US with about 30 percent of the total in India in May 2019, and about 90 percent US in early 2023. The Worker_Locale qualification could restrict a HIT to ISO 3166 countries or ISO 3166-2 subdivisions such as US-WA. That was a worker-profile attribute, not proof of physical presence. No city-level targeting was documented, and Amazon published no list of covered countries."
+  },
+  "licensing": {
+    "summary": "Under the Participation Agreement (last updated 2020-03-25, still shown on mturk.com), work product from Tasks is a work made for hire for the Requester, ownership vests in the Requester, and Workers waive moral rights (s. 3.3). Section 3.7 says task content Requesters upload and work product they receive may be retained and used to improve the Site and other machine learning related products and services of Amazon or its affiliates. The agreement does not mention resale of work product or AI training by requesters, so those keys are omitted. The Acceptable Use Policy prohibited collecting or deriving workers' personally identifiable information, posting third parties' personal information, and HITs requiring registration elsewhere. It does not address physical-location or photo tasks.",
+    "buyer_owns_output": true,
+    "vendor_trains_on_data": "yes"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Workers registered with accurate information. Amazon reserved the right to require additional information to verify a worker's identity or ACH-enabled bank account (Participation Agreement sections 1.1 and 4.3.2). Workers agreed not to use robots, scripts or other automated methods (s. 3.2).",
+      "unknown": "The actual identity-check process, including any ID document or selfie check, is not publicly documented. Bots and shared accounts were widely reported in research literature but not assessed here."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Tasks ran in a browser (HTML or external pages). No controlled capture app or attestation was documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No method for confirming that uploaded media came from a live camera rather than an existing file."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "Assignments had platform accept and submit timestamps, but capture time of any uploaded media was not verified."
+    },
+    "location": {
+      "level": "none",
+      "method": "The Worker_Locale qualification filters on the country or subdivision in the worker's profile.",
+      "unknown": "How the locale was established (self-reported, tax address, IP) is not documented on the pages read. Nothing verifies a worker's presence at a place."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Requesters approved or rejected work themselves, and review policies existed in the API (ListReviewPolicyResultsForHIT). No platform check for fabricated or AI-generated media was documented."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Requesters could request multiple assignments per HIT and compare answers themselves. The platform offered no documented cross-check against independent sources."
+    }
+  },
+  "updated": "2026-10-27",
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "n/a, service closed",
+    "notes": "Historically, work was performed after a HIT was posted. The service closed on 2026-09-30. Requesters can approve or reject pending HITs (otherwise auto-approved) and send bonuses until 2026-10-30, a balance refund is expected within 30 days of closure, and transaction history stays available until 2027-01-28."
+  },
+  "api": {
+    "available": false,
+    "docs_url": "https://docs.aws.amazon.com/boto3/latest/reference/services/mturk.html",
+    "base_url": "https://mturk-requester.us-east-1.amazonaws.com",
+    "auth": [
+      {
+        "type": "other",
+        "header": "Authorization (AWS Signature Version 4)",
+        "env_var": "AWS_ACCESS_KEY_ID",
+        "how_to_get": "Historically, an AWS account linked to an MTurk Requester account, signing requests with SigV4 (botocore service model: signatureVersion v4). New customers were stopped on 2026-07-30, and the service closed on 2026-09-30. The sandbox host was mturk-requester-sandbox.us-east-1.amazonaws.com. The env-var name is standard AWS SDK behaviour, not stated on the MTurk pages read."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "CreateHIT (boto3 create_hit)",
+        "params": "Title, Description, Reward (string), MaxAssignments, LifetimeInSeconds, AssignmentDurationInSeconds, Question (QuestionForm/HTMLQuestion/ExternalQuestion XML up to 65,535 bytes) or HITLayoutId, QualificationRequirements (0 to 10; Worker_Locale with LocaleValues Country/Subdivision, comparators EqualTo, NotEqualTo (one value), In, NotIn (up to 30 values))",
+        "notes": "AWS JSON 1.1 protocol: POST to the endpoint with X-Amz-Target MTurkRequesterServiceV20170117.CreateHIT. Non-functional since 2026-09-30."
+      },
+      {
+        "action": "list",
+        "method": "POST",
+        "path": "ListAssignmentsForHIT (boto3 list_assignments_for_hit)",
+        "params": "HITId, AssignmentStatuses, pagination",
+        "notes": "Returns worker submissions. Non-functional since closure."
+      },
+      {
+        "action": "status",
+        "method": "POST",
+        "path": "GetHIT (boto3 get_hit)",
+        "params": "HITId",
+        "notes": "Non-functional since closure."
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "GetFileUploadURL (boto3 get_file_upload_url)",
+        "params": "AssignmentId, QuestionIdentifier",
+        "notes": "Returns a temporary URL, valid 60 seconds, for a file a Worker uploaded as a FileUploadAnswer; files are deleted when the HIT is disposed. Marked pending deprecation since 2017-12-12. Non-functional since closure."
+      },
+      {
+        "action": "list",
+        "method": "POST",
+        "path": "ListHITs (boto3 list_hits)",
+        "params": "pagination",
+        "notes": "Non-functional since closure."
+      }
+    ],
+    "sdk": "boto3 client('mturk'); other AWS SDKs",
+    "rate_limits": "Not published on the pages read.",
+    "self_serve": false,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No server found in the official MCP Registry (searches for mturk and mechanical-turk on 2026-10-26 returned no MTurk server)."
+    },
+    "notes": "The endpoint host still answers (an unsigned request returns MissingAuthenticationTokenException), but mturk.com states the service closed on 2026-09-30. No OAuth metadata is served at www.mturk.com/.well-known/. The boto3 reference pages carry no closure notice."
+  },
+  "sources": [
+    {
+      "claim": "Home page: 'Mechanical Turk is no longer available. Amazon Mechanical Turk permanently closed on September 30, 2026.'",
+      "url": "https://www.mturk.com/"
+    },
+    {
+      "claim": "Closure FAQ: HIT submission closed 2026-09-30; unsubmitted HITs expired; requesters may approve/reject (else auto-approved) and award bonuses until 2026-10-30; balance refund within 30 days; transaction history until 2027-01-28; the MTurk worker type no longer available in SageMaker Ground Truth and Amazon A2I",
+      "url": "https://www.mturk.com/help"
+    },
+    {
+      "claim": "www.mturk.com pricing page now shows only the closure notice",
+      "url": "https://www.mturk.com/pricing"
+    },
+    {
+      "claim": "Requester pricing page (still served, with banner 'All HIT creation and task completion will end on this date'): 20 percent fee on reward and bonus, additional 20 percent for tasks with 10+ assignments, $0.01 minimum fee, 5 percent Masters fee, Premium Qualification fees $0.05 to $1.00 per assignment; reward chosen by the requester",
+      "url": "https://requester.mturk.com/pricing"
+    },
+    {
+      "claim": "Commission rose from 10 to 20 percent, and 40 percent for 10+ assignments, effective 2015-07-22",
+      "url": "https://spsp.org/news-center/character-context-blog/mechanical-turk-quadruples-survey-fees-mturkgate-ensues"
+    },
+    {
+      "claim": "New customers stopped on 2026-07-30 (announced 2026-07-05); full closure announced 2026-08-25 for 2026-09-30; worker share about 80 percent US (2015), about 60 percent US / 30 percent India (2019), about 90 percent US (early 2023); image and video task examples; one-cent minimum task payment",
+      "url": "https://en.wikipedia.org/wiki/Amazon_Mechanical_Turk"
+    },
+    {
+      "claim": "Shutdown reporting: closure on 2026-09-30, no specific reason given, new-customer sign-ups halted the month before",
+      "url": "https://www.techspot.com/news/113643-amazon-shutting-down-mechanical-turk-after-more-than.html"
+    },
+    {
+      "claim": "Participation Agreement (last updated 2020-03-25): work made for hire for the Requester (s. 3.3); task content and work product may be retained and used for machine learning related products (s. 3.7); identity verification (s. 1.1, 4.3.2); workers may not use robots or scripts (s. 3.2); Prepaid Task Credits and AWS-invoiced tasks; sanctions representation (s. 5); no rejection without good cause",
+      "url": "https://www.mturk.com/participation-agreement"
+    },
+    {
+      "claim": "Acceptable Use Policy: prohibits collecting or deriving worker PII, third-party personal info in HITs, HITs requiring registration elsewhere, bots completing HITs, scraping; does not address physical-location or photo tasks",
+      "url": "https://www.mturk.com/acceptable-use-policy"
+    },
+    {
+      "claim": "boto3 MTurk client and its 43 methods (create_hit, list_assignments_for_hit, get_hit, list_hits, get_file_upload_url, list_review_policy_results_for_hit, and others); no closure notice",
+      "url": "https://docs.aws.amazon.com/boto3/latest/reference/services/mturk.html"
+    },
+    {
+      "claim": "create_hit parameters; 10+ MaxAssignments carry an additional fee; Question up to 65,535 bytes; 0 to 10 QualificationRequirements; Worker_Locale LocaleValues using ISO 3166 / 3166-2 with EqualTo, NotEqualTo, In, NotIn (up to 30 values)",
+      "url": "https://docs.aws.amazon.com/boto3/latest/reference/services/mturk/client/create_hit.html"
+    },
+    {
+      "claim": "get_file_upload_url: AssignmentId and QuestionIdentifier; URL valid 60 seconds; FileUploadAnswer pending deprecation 2017-12-12, S3 recommended",
+      "url": "https://docs.aws.amazon.com/boto3/latest/reference/services/mturk/client/get_file_upload_url.html"
+    },
+    {
+      "claim": "Endpoint data: mturk-requester in us-east-1 only, sandbox host mturk-requester-sandbox.us-east-1.amazonaws.com",
+      "url": "https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/endpoints.json"
+    },
+    {
+      "claim": "Service model: apiVersion 2017-01-17, JSON 1.1 protocol, SigV4, targetPrefix MTurkRequesterServiceV20170117",
+      "url": "https://raw.githubusercontent.com/boto/botocore/develop/botocore/data/mturk/2017-01-17/service-2.json"
+    },
+    {
+      "claim": "Old AWSMturkAPI reference pages now return 404",
+      "url": "https://docs.aws.amazon.com/AWSMechTurk/latest/AWSMturkAPI/Welcome.html"
+    },
+    {
+      "claim": "Official MCP Registry search for mturk: no MTurk server",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=mturk"
+    }
+  ],
+  "delivery": {
+    "modes": [],
+    "speed": "unknown",
+    "basis": "Service closed 2026-09-30."
+  },
+  "short": "Amazon's crowd-task marketplace (closed 30 September 2026).",
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "people"
+  },
+  "payment": {
+    "methods": [
+      "prepaid_balance",
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Historical. The Participation Agreement lets Requesters prepay (Prepaid Task Credits on their Amazon account balance) or be invoiced by AWS for Invoiced Tasks. Prepaying was optional. After closure, requesters get a balance refund within 30 days and a final bill."
+  },
+  "requester": {
+    "checks": "Requesters accepted the Participation Agreement, represented that neither they nor their financial institutions were under sanctions (s. 5), needed an AWS account for invoiced tasks, and had to follow the Acceptable Use Policy (no collecting worker PII, no third-party personal information in HITs).",
+    "unknown": "No documented review of HIT content before posting, and no check on what a HIT asks a worker to photograph or where."
+  }
+}

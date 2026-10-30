@@ -1,0 +1,95 @@
+{
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+175.896,
+-38.784
+]
+},
+"properties": {
+"acc": "Green",
+"activity": "No volcanic unrest.",
+"hazards": "Volcanic environment hazards.",
+"level": 0,
+"volcanoID": "taupo",
+"volcanoTitle": "Taupo"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+175.641727,
+-39.133318
+]
+},
+"properties": {
+"acc": "Green",
+"activity": "No volcanic unrest.",
+"hazards": "Volcanic environment hazards.",
+"level": 0,
+"volcanoID": "tongariro",
+"volcanoTitle": "Tongariro"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+174.77,
+-36.985
+]
+},
+"properties": {
+"acc": "Green",
+"activity": "No volcanic unrest.",
+"hazards": "Volcanic environment hazards.",
+"level": 0,
+"volcanoID": "aucklandvolcanicfield",
+"volcanoTitle": "Auckland Volcanic Field"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+176.251,
+-37.286
+]
+},
+"properties": {
+"acc": "Green",
+"activity": "No volcanic unrest.",
+"hazards": "Volcanic environment hazards.",
+"level": 0,
+"volcanoID": "mayorisland",
+"volcanoTitle": "Mayor Island"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+175.632,
+-39.156
+]
+},
+"properties": {
+"acc": "Green",
+"activity": "No volcanic unrest.",
+"hazards": "Volcanic environment hazards.",
+"level": 0,
+"volcanoID": "ngauruhoe",
+"volcanoTitle": "Ngauruhoe"
+}
+}
+]
+}

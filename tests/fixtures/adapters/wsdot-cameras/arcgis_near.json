@@ -1,0 +1,97 @@
+{
+ "objectIdFieldName": "OBJECTID",
+ "globalIdFieldName": "",
+ "geometryType": "esriGeometryPoint",
+ "spatialReference": {
+  "wkid": 4326,
+  "latestWkid": 4326
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "alias": "CameraID",
+   "type": "esriFieldTypeOID"
+  },
+  {
+   "name": "CameraTitle",
+   "alias": "CameraTitle",
+   "type": "esriFieldTypeString",
+   "length": 50
+  },
+  {
+   "name": "ImageURL",
+   "alias": "ImageURL",
+   "type": "esriFieldTypeString",
+   "length": 150
+  },
+  {
+   "name": "CompassDirection",
+   "alias": "CompassDirection",
+   "type": "esriFieldTypeString",
+   "length": 5
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 1028,
+    "CameraTitle": "I-5 at MP 165: Yesler Way",
+    "ImageURL": "https://images.wsdot.wa.gov/nw/005vc16511.jpg",
+    "CompassDirection": "S"
+   },
+   "geometry": {
+    "x": -122.32489199999998,
+    "y": 47.60170000000005
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 1029,
+    "CameraTitle": "I-5 at MP 166: Pine St",
+    "ImageURL": "https://images.wsdot.wa.gov/nw/005vc16607.jpg",
+    "CompassDirection": "B"
+   },
+   "geometry": {
+    "x": -122.32942699999995,
+    "y": 47.61480400000005
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 1088,
+    "CameraTitle": "I-90 at MP 2.4: 8th Ave S, EB",
+    "ImageURL": "https://images.wsdot.wa.gov/nw/090vc00245.jpg",
+    "CompassDirection": "N"
+   },
+   "geometry": {
+    "x": -122.32221499999997,
+    "y": 47.59325700000005
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 1434,
+    "CameraTitle": "I-90 at MP 2: 4th Ave S, EB",
+    "ImageURL": "https://images.wsdot.wa.gov/nw/090vc00207.jpg",
+    "CompassDirection": "B"
+   },
+   "geometry": {
+    "x": -122.32820199999998,
+    "y": 47.59031100000004
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 1435,
+    "CameraTitle": "I-90 at MP 2.3: Airport Way, WB",
+    "ImageURL": "https://images.wsdot.wa.gov/nw/090vc00237.jpg",
+    "CompassDirection": "B"
+   },
+   "geometry": {
+    "x": -122.32376,
+    "y": 47.59282200000007
+   }
+  }
+ ],
+ "exceededTransferLimit": true
+}

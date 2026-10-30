@@ -1,0 +1,12 @@
+{
+ "latitude": 34.0522,
+ "longitude": -118.2437,
+ "shoottype": "event",
+ "duration": 120,
+ "date": "2018-12-01",
+ "timezone": "America/Los_Angeles",
+ "available_times": [
+  "2018-12-01T07:30:00Z",
+  "2018-12-01T09:30:00Z"
+ ]
+}

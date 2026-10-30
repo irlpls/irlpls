@@ -1,0 +1,94 @@
+{
+    "type":"Feature",
+    "properties":{
+        "id":"USGS-08167000",
+        "agency_code":"USGS",
+        "agency_name":"U.S. Geological Survey",
+        "monitoring_location_number":"08167000",
+        "monitoring_location_name":"Guadalupe Rv at Comfort, TX",
+        "district_code":"48",
+        "country_code":"US",
+        "country_name":"United States of America",
+        "state_code":"48",
+        "state_name":"Texas",
+        "county_code":"259",
+        "county_name":"Kendall County",
+        "minor_civil_division_code":null,
+        "site_type_code":"ST",
+        "site_type":"Stream",
+        "hydrologic_unit_code":"121002010302",
+        "basin_code":null,
+        "altitude":null,
+        "altitude_accuracy":null,
+        "altitude_method_code":null,
+        "altitude_method_name":null,
+        "vertical_datum":null,
+        "vertical_datum_name":null,
+        "horizontal_positional_accuracy_code":"H",
+        "horizontal_positional_accuracy":"Accurate to + or - .01 sec (Differentially-Corrected GPS).",
+        "horizontal_position_method_code":"N",
+        "horizontal_position_method_name":"Interpolated from digital map",
+        "original_horizontal_datum":"NAD83",
+        "original_horizontal_datum_name":"North American Datum of 1983",
+        "drainage_area":839.0,
+        "contributing_drainage_area":839.0,
+        "time_zone_abbreviation":"CST",
+        "uses_daylight_savings":"Y",
+        "construction_date":null,
+        "aquifer_code":null,
+        "national_aquifer_code":null,
+        "aquifer_type_code":null,
+        "well_constructed_depth":null,
+        "hole_constructed_depth":null,
+        "depth_source_code":null,
+        "revision_note":"WSP 1632: 1958. WSP 1732: 1939(M). WSP 2123: Drainage area, 1944(M), 1952(M), 1957(M), 1960(M). Incorrectly applied \"6\" qualifier removed from 2023 WY Peak Discharge.",
+        "revision_created":"2017-11-13T06:00:00+00:00",
+        "revision_modified":"2025-07-07T16:18:03.847000+00:00"
+    },
+    "id":"USGS-08167000",
+    "geometry":{
+        "type":"Point",
+        "coordinates":[
+            -98.89716666666668,
+            29.965238888888887
+        ]
+    },
+    "links":[
+        {
+            "type":"application/json",
+            "rel":"root",
+            "title":"The landing page of this server as JSON",
+            "href":"https://api.waterdata.usgs.gov/ogcapi/v1?f=json"
+        },
+        {
+            "type":"text/html",
+            "rel":"root",
+            "title":"The landing page of this server as HTML",
+            "href":"https://api.waterdata.usgs.gov/ogcapi/v1?f=html"
+        },
+        {
+            "rel":"self",
+            "type":"application/geo+json",
+            "title":"This document as JSON",
+            "href":"https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items/USGS-08167000?f=json"
+        },
+        {
+            "rel":"alternate",
+            "type":"application/ld+json",
+            "title":"This document as RDF (JSON-LD)",
+            "href":"https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items/USGS-08167000?f=jsonld"
+        },
+        {
+            "rel":"alternate",
+            "type":"text/html",
+            "title":"This document as HTML",
+            "href":"https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items/USGS-08167000?f=html"
+        },
+        {
+            "rel":"collection",
+            "type":"application/json",
+            "title":"Monitoring locations",
+            "href":"https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations"
+        }
+    ]
+}

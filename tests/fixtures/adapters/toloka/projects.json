@@ -1,0 +1,22 @@
+{
+  "_fixture": "documented-shape",
+  "_source": "https://platform.toloka.ai/api/v2-beta/doc GET /api/v2-beta/projects",
+  "response": {
+    "projects": [
+      {
+        "id": "pp.0192f0a1-1111-7aaa-8bbb-000000000001",
+        "name": "Door clips",
+        "teamId": "team-1",
+        "status": "active",
+        "deliveryOrderId": null,
+        "createdAt": "2026-10-20T09:00:00Z"
+      }
+    ],
+    "pagination": {
+      "total": 1,
+      "limit": 20,
+      "offset": 0,
+      "hasMore": false
+    }
+  }
+}

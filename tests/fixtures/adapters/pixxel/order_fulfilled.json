@@ -1,0 +1,33 @@
+{
+ "id": "47435e2b-d8c4-41ff-9de9-2be3bfc92299",
+ "status": "PAID",
+ "total_amount": 800,
+ "order_items": [
+  {
+   "id": "47435e2b-d8c4-41ff-9de9-2be3bfc92276",
+   "order_id": "47435e2b-d8c4-41ff-9de9-2be3bfc92299",
+   "name": "Order Tasking",
+   "area": 100,
+   "base_amount": 800,
+   "final_amount": 800,
+   "tokens_used": 800,
+   "cloud_cover": 20,
+   "delivery_speed": "STANDARD",
+   "recurrence": "ONCE",
+   "start_date": "2026-10-30T00:00:00Z",
+   "end_date": "2026-11-13T00:00:00Z",
+   "feasibility_status": "SUCCESS",
+   "image_type": "VNIR",
+   "project_id": "1234567890",
+   "usecase": "other",
+   "type": "TASKING",
+   "images": [
+    {
+     "item_id": "FF04_20261102_101010_0001",
+     "geometry": null
+    }
+   ],
+   "status": "FULFILLED"
+  }
+ ]
+}

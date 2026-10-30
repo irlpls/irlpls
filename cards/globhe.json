@@ -1,0 +1,420 @@
+{
+  "id": "globhe",
+  "name": "Globhe",
+  "provider_url": "https://www.globhe.com",
+  "status": "unclaimed",
+  "short": "Global marketplace of local drone operators; order a capture by API.",
+  "tags": [
+    "drone",
+    "aerial",
+    "orthomosaic",
+    "thermal",
+    "lidar",
+    "multispectral",
+    "ndvi",
+    "panorama",
+    "pilot network",
+    "global",
+    "api",
+    "crowddroning"
+  ],
+  "summary": "Marketplace that sends each order out for bids from vetted local licensed drone operators (11,000+ claimed, 150 countries), picks one and quotes the client; an Order API creates single-location orders, returns quotes to accept or reject, and delivers files with webhooks.",
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "photo",
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "new drone capture of a polygon",
+      "raw photos (JPEG, DNG)",
+      "2D orthomosaic",
+      "3D model / point cloud",
+      "DTM/DSM",
+      "topographic map",
+      "thermal",
+      "NDVI / multispectral",
+      "LiDAR",
+      "360 panoramas",
+      "live streamed video",
+      "recurring capture (web platform)"
+    ]
+  },
+  "pricing": {
+    "model": "quote per order; published floors",
+    "from_usd": 5,
+    "unit": "hectare (RGB, Zone 1)",
+    "notes": "Zone 1 from $5/ha RGB, $8 thermal, $15 multispectral, $20 LiDAR; Zone 2 from $10/$15/$30/$30. Each country's zone and available sensors are shown on the coverage page (73 Zone 1, 76 Zone 2 entries). Final price in a per-order quote (finalPrice, currency, expiryDate); permit and non-standard costs can be added."
+  },
+  "latency": {
+    "typical": "per quote",
+    "notes": "Each quote states deliveryBy, the maximum number of days to delivery (docs example: 20 days). 'Complicated' countries can need 4+ weeks for flight permission. Weather, permits and operator availability can delay delivery."
+  },
+  "coverage": {
+    "regions": [
+      "Global"
+    ],
+    "notes": "150 countries and 11,000+ operators claimed. areas lists the 143 codes on the coverage page, minus Iran, North Korea and Russia (removed until further notice) and the listed countries marked 'Not allowed' (Ukraine, Haiti, Nicaragua). 17 'Not allowed' countries in all, incl. Israel, Iraq, Syria, Kuwait; 27 'Complicated' (4+ weeks for permission), incl. Egypt, Saudi Arabia, UAE, Ethiopia. Sensor availability varies by country.",
+    "areas": [
+      "AE",
+      "AM",
+      "AO",
+      "AR",
+      "AT",
+      "AU",
+      "BB",
+      "BD",
+      "BE",
+      "BF",
+      "BG",
+      "BI",
+      "BJ",
+      "BO",
+      "BR",
+      "BS",
+      "BT",
+      "BW",
+      "BZ",
+      "CA",
+      "CD",
+      "CG",
+      "CH",
+      "CI",
+      "CL",
+      "CM",
+      "CO",
+      "CR",
+      "CY",
+      "CZ",
+      "DE",
+      "DJ",
+      "DK",
+      "DO",
+      "DZ",
+      "EC",
+      "EE",
+      "EG",
+      "ES",
+      "ET",
+      "FI",
+      "FJ",
+      "FR",
+      "GB",
+      "GE",
+      "GH",
+      "GM",
+      "GR",
+      "GT",
+      "GY",
+      "HK",
+      "HN",
+      "HR",
+      "HU",
+      "ID",
+      "IE",
+      "IN",
+      "IS",
+      "IT",
+      "JM",
+      "JO",
+      "JP",
+      "KE",
+      "KH",
+      "KR",
+      "KY",
+      "KZ",
+      "LA",
+      "LB",
+      "LK",
+      "LR",
+      "LS",
+      "LT",
+      "LU",
+      "LV",
+      "MA",
+      "MD",
+      "ME",
+      "MG",
+      "MK",
+      "ML",
+      "MN",
+      "MR",
+      "MT",
+      "MU",
+      "MV",
+      "MW",
+      "MX",
+      "MY",
+      "MZ",
+      "NA",
+      "NC",
+      "NE",
+      "NG",
+      "NL",
+      "NO",
+      "NP",
+      "NZ",
+      "OM",
+      "PA",
+      "PE",
+      "PG",
+      "PH",
+      "PK",
+      "PL",
+      "PR",
+      "PT",
+      "PY",
+      "RE",
+      "RO",
+      "RS",
+      "RW",
+      "SA",
+      "SD",
+      "SE",
+      "SG",
+      "SI",
+      "SK",
+      "SL",
+      "SN",
+      "SO",
+      "SR",
+      "SV",
+      "SZ",
+      "TG",
+      "TH",
+      "TJ",
+      "TL",
+      "TN",
+      "TO",
+      "TR",
+      "TT",
+      "TW",
+      "TZ",
+      "UG",
+      "US",
+      "UY",
+      "VE",
+      "VN",
+      "VU",
+      "ZA",
+      "ZM",
+      "ZW"
+    ]
+  },
+  "licensing": {
+    "summary": "Client terms: ownership of the Reality Data 'is transferred to the Client and will continue to be jointly owned by you and us'; 'each party may however use the data freely and without any restrictions'. Globhe's use of data the client marks in writing as critical needs express consent. Operators assign all IP in uploaded content to Globhe. Data Library purchases carry no IP transfer. No AI-training or resale clause.",
+    "buyer_owns_output": true
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Only local, licensed drone and data providers (registered companies); a local operator is 'vetted and assigned' per mission and signs a per-mission contract",
+      "unknown": "How operators are vetted and licences checked is not published; the client is not told who flew"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Operators fly their own drones and choose processing software; no capture app or pipeline control is documented"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Drone and camera chosen by Globhe or the operator; QA only checks file sizes against the drone model; nothing is signed"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Admin QA inspects embedded capture date/time metadata for accuracy and consistency before delivery",
+      "unknown": "Capture time comes from unsigned operator-device metadata; currentFlyingDate is the scheduled date, not proof of capture",
+      "evidence_url": "https://www.globhe.com/resources-collection/quality-control-and-assurance"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Order polygon (locationMap); admin QA checks georeferencing, GPS metadata against the flight plan and coverage of the area of interest",
+      "unknown": "Geotags are unsigned; flight logs and telemetry are not exposed to the client",
+      "evidence_url": "https://www.globhe.com/resources-collection/quality-control-and-assurance"
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Admin QA before delivery against the order spec (format, coverage, image quality, artefacts); client has 10 business days to dispute quality; orderNotFeasible can carry photo proof",
+      "unknown": "Per-order QA results are not published"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check; Globhe's own QA compares with GIS layers or ground control points only 'if possible'"
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://developers.globhe.com/",
+    "base_url": "https://us-central1-globhe-app.cloudfunctions.net/api/v2",
+    "auth": [
+      {
+        "type": "basic",
+        "env_var": "GLOBHE_API_KEY",
+        "how_to_get": "API key is the Basic-auth username with an empty password (curl -u {apiKey}:). A key appears on the profile page after client sign-up (https://app.globhe.com/crowddroning/client/sign-up/) but is not automatically approved: email support@globhe.com to activate (reply in under 24 hours). Staging needs a separate account at stagingpage.globhe.com and its own activated key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/orders",
+        "params": "deliveryDeadline, locationMap[{lat,lng}], mapTypes[], description, orderName (<=20 chars); optional notifications{webhook,email}, pointOfContact{pocName,pocPhone}, otherMapType, advancedOption, clientEmail, clientName, companyName",
+        "notes": "Creates an order request for review and bidding; nothing is committed until a quote is accepted. Single location only."
+      },
+      {
+        "action": "status",
+        "method": "POST",
+        "path": "/getorder/{orderId}",
+        "notes": "status, instruction, quotes, rejectedQuotes, acceptedQuote, orderNotFeasible, currentFlyingDate, prevFlightDate, collectedData"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/order/{orderId}/quote/{quoteId}",
+        "params": "status: accept|reject",
+        "notes": "Accepting a quote makes the order active and forms a contract; quotes expire at expiryDate"
+      },
+      {
+        "action": "list",
+        "method": "POST",
+        "path": "/getorderslist",
+        "params": "status, fileDataType, limit (default 10), page (default 0)",
+        "notes": "Statuses: reviewing, quoteReceived, pendingOperator, operatorAssigned, orderNotFeasible, flyingDateSet, completed, rejected, cancelled, deleted"
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/getorder/{orderId}",
+        "params": "fileDataType[] (optional filter)",
+        "notes": "deliveryFiles: baseFiles (URLs) and processedData by map type, after admin QA; completion is signalled by webhook or email"
+      }
+    ],
+    "notes": "Also PUT /orders/{id} (update before quote acceptance; locationMap and mapTypes fixed) and DELETE /orders/{id} (cancel while reviewing). Data library API (POST /datalibraryorders) only fetches already-purchased archive datasets. Staging base: https://us-central1-globhe-d3087.cloudfunctions.net/api/v2. Client terms bar 'software that reads data on this Platform... automatically'; the documented API is the sanctioned automated route. No MCP server, OAuth or well-known discovery files found.",
+    "self_serve": false
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "'When you order data in Globhe's platform, a time estimation will be provided as part of your quote' (deliveryBy, in days)."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "approval"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Account needs a valid payment method (credit card or accepted payment partner). Unless the quote says otherwise: 30% advance on invoice before work starts, 70% within 30 days of delivery; recurring orders invoiced monthly. Refund of the advance only on cancellation within 48 hours, less incurred costs. No API payment."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Access requests are reviewed by Globhe; the API key must be activated by support. Clients must be 18+, give complete and accurate account information and a valid payment method, and must obtain any permissions the order needs before flights.",
+    "unknown": "What the access review checks (identity, company, intended use) is not published"
+  },
+  "updated": "2026-10-28",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "150 countries, 11,000+ operators; per-country zone and sensors; zone prices; Not allowed and Complicated lists",
+      "url": "https://www.globhe.com/country-coverage-and-prices"
+    },
+    {
+      "claim": "Bidding marketplace; only local, licensed, registered providers; time estimate given in quote; recurring capture; Data Library",
+      "url": "https://www.globhe.com"
+    },
+    {
+      "claim": "Order API for automated ordering; single-location only; webhooks",
+      "url": "https://developers.globhe.com/order-api"
+    },
+    {
+      "claim": "Create order fields, mapTypes and advanced options",
+      "url": "https://developers.globhe.com/create-order"
+    },
+    {
+      "claim": "Get order: status fields, orderNotFeasible photo proof, currentFlyingDate",
+      "url": "https://developers.globhe.com/get-single-order"
+    },
+    {
+      "claim": "Accept/reject quotes; quote fields incl. deliveryBy, finalPrice, expiryDate",
+      "url": "https://developers.globhe.com/accept-reject-quotes"
+    },
+    {
+      "claim": "List orders endpoint and full status list",
+      "url": "https://developers.globhe.com/list-order"
+    },
+    {
+      "claim": "Update order endpoint and limits",
+      "url": "https://developers.globhe.com/update-order"
+    },
+    {
+      "claim": "Cancel order endpoint",
+      "url": "https://developers.globhe.com/cancel-order"
+    },
+    {
+      "claim": "Delivery after admin QA; deliveryFiles; webhook or email",
+      "url": "https://developers.globhe.com/delivery"
+    },
+    {
+      "claim": "Basic auth with API key as username; key not auto-approved; activation via support in <24h",
+      "url": "https://developers.globhe.com/authentication"
+    },
+    {
+      "claim": "Staging environment and base URL",
+      "url": "https://developers.globhe.com/testing-environment"
+    },
+    {
+      "claim": "API v2.0.0 current; v1 support ended",
+      "url": "https://developers.globhe.com/versions"
+    },
+    {
+      "claim": "Data library API fetches purchased datasets only",
+      "url": "https://developers.globhe.com/datalibrary-api"
+    },
+    {
+      "claim": "Client access is reviewed by Globhe",
+      "url": "https://www.globhe.com/request-access"
+    },
+    {
+      "claim": "Client terms: ownership and joint use, critical-data consent, payment schedule, 10-day quality window, automated-reading clause, 18+",
+      "url": "https://www.globhe.com/terms-and-conditions"
+    },
+    {
+      "claim": "Operator terms: IP assignment to Globhe; payment on delivery as per the mission requirement",
+      "url": "https://www.globhe.com/operator-terms-and-conditions"
+    },
+    {
+      "claim": "QA checklist incl. metadata time/GPS, georeferencing, coverage",
+      "url": "https://www.globhe.com/resources-collection/quality-control-and-assurance"
+    },
+    {
+      "claim": "Local operator vetted and assigned per mission",
+      "url": "https://www.globhe.com/resources-collection/general-operating-standards"
+    },
+    {
+      "claim": "Operators sign a contract per mission; registered company needed for paid missions",
+      "url": "https://www.globhe.com/resources-collection/all-about-flying-with-globhe"
+    },
+    {
+      "claim": "Deliverable products",
+      "url": "https://www.globhe.com/data-deliverables"
+    },
+    {
+      "claim": "QA inspects embedded capture date/time and GPS metadata against the flight plan and ground control points",
+      "url": "https://www.globhe.com/resources-collection/quality-control-and-assurance"
+    }
+  ],
+  "adapter": "globhe"
+}

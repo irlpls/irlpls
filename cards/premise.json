@@ -1,0 +1,212 @@
+{
+  "id": "premise",
+  "name": "Premise",
+  "provider_url": "https://premise.com",
+  "status": "unclaimed",
+  "short": "Smartphone crowd in 140+ countries for photo, video and survey tasks; sold by contract, no public API.",
+  "summary": "Premise turns a customer's questions into paid tasks in its mobile app. Contributors in over 140 countries complete them by taking photos, videos and audio recordings, answering surveys or reporting what they see at a place. Submissions go through automatic and manual quality control, and results reach the customer in a dashboard or as a raw export. It is sold for retail audits, price and market monitoring, point-of-interest mapping and verification, and situation monitoring for development and humanitarian work.",
+  "tags": [
+    "crowd",
+    "ground truth",
+    "survey",
+    "photo",
+    "video",
+    "retail audit",
+    "price monitoring",
+    "point of interest",
+    "global",
+    "international development",
+    "humanitarian"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "audio",
+      "text-report"
+    ],
+    "tasks": [
+      "location surveys",
+      "retail audits and store visits",
+      "price and product availability monitoring",
+      "location discovery and point-of-interest verification",
+      "mapping infrastructure, services and businesses",
+      "business hours and offerings",
+      "situation analysis and remote monitoring",
+      "video interviews (VideoAI)",
+      "asset and site inspections"
+    ]
+  },
+  "pricing": {
+    "model": "per project (quote)",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "No price published; the only route is Book a Demo. The SaaS Agreement bills in US dollars under an executed Order Document, with fees payable up front unless the Order Document says otherwise, auto-renewing terms (one year by default) and no refunds. Negotiated pricing is confidential. from_usd 0 means not published."
+  },
+  "latency": {
+    "typical": "Same-day data once a campaign is running (company-stated).",
+    "notes": "The homepage says organisations 'can swiftly gather same-day data'. The 2019 brochure says a campaign 'can begin in as little as 24-48 hours' where a contributor network exists, and that recruiting and training a network in a new region takes 2-4 weeks. Contributor rejection appeals take 3-5 days."
+  },
+  "coverage": {
+    "regions": [
+      "Global (over 140 countries)"
+    ],
+    "notes": "Company-stated: 'over 140 countries', '6M+ Contributors Worldwide', '25M+ Submissions per Year', '2.3M+ Unique Points of Interest', and over 120,000 traditional-trade store visits a month (December 2024). No country list or density is published. The contributor terms exclude people resident in Cuba, Iran, North Korea, Sudan, Syria and Crimea. For new regions the 2019 brochure gives 2-4 weeks to recruit a network."
+  },
+  "licensing": {
+    "summary": "Under the public SaaS Agreement, data 'collected specifically for Customer' under an Order Document (Collected Data) is owned by the customer, and Premise assigns 'all intellectual property rights it has' in it. Data Premise sells to other customers too (Licensed Data) comes with a non-exclusive, non-transferable, perpetual licence for internal business purposes only and 'may not be resold or otherwise directly commercialized' (the resale bar applies to Licensed Data only; Collected Data is yours). A separately negotiated master agreement overrides these terms. Contributors keep their content but grant Premise a non-exclusive, perpetual, sublicensable licence to exploit it for any purpose, including by the customer and the customer's clients. The terms do not name AI training by buyers, or whether Premise trains on customer data.",
+    "buyer_owns_output": true,
+    "resale": "forbidden"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "One account and one device per person, with no account sharing (Community Guidelines). Premise may run background and security checks at its discretion (Terms of Use), and the 2019 brochure lists account-duplication checks.",
+      "evidence_url": "https://tos.premise.com/community-guidelines/en/",
+      "unknown": "No identity check is required for ordinary tasks; sign-up is by Google or Apple credentials or a username and password. KYC applies only to the Premise Wallet. Contributors reach customers only as anonymous IDs, so a buyer cannot check who captured an item."
+    },
+    "application": {
+      "level": "claimed",
+      "method": "Tasks are done only in the Premise mobile app; the guidelines ban other access and 'auto' or 'macro' software. The app collects the names of installed apps so Premise can detect ones that 'doctor' location data or the clock (an installed-app scan, not attestation).",
+      "evidence_url": "https://tos.premise.com/privacy-policy/en/",
+      "unknown": "No device or app attestation (such as Play Integrity or App Attest) is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Image Analysis in quality control checks that photos are 'not blurry or from a computer, and of the correct subject'. How screen or generated images are detected is not published. There is no C2PA or other signed capture, and Premise is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Submissions carry timestamps (2019 brochure). The app checks installed apps to catch any that 'doctor' the clock.",
+      "evidence_url": "https://tos.premise.com/privacy-policy/en/",
+      "unknown": "Whether the timestamp comes from the device or the server, and whether the buyer receives a capture time for each item, is not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "The app records precise check-in and observation locations. Quality control includes location verification and machine-learning anti-spoofing. The guidelines ban mocking or spoofing location, and starting and finishing a task in different places.",
+      "evidence_url": "https://premise.com/how-premise-works/",
+      "unknown": "How the coordinates are checked is undocumented, and no public proof is offered for any item."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Every submission goes through automatic (machine-learning) and manual quality control and fraud detection before it reaches the dashboard. The task brief defines the deliverable.",
+      "evidence_url": "https://premise.com/how-premise-works/",
+      "unknown": "Rejection and error rates are not published."
+    },
+    "corroboration": {
+      "level": "claimed",
+      "method": "'crowdsourced confirmation' on top of manual quality control (2019 brochure).",
+      "evidence_url": "https://premise.com/wp-content/uploads/2019/11/WhyPremiseBrochure_2019.pdf",
+      "unknown": "Only the 2019 brochure mentions it, and current pages do not. How often items are confirmed, and by whom, is not stated."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "notes": "No public API docs. Customers use dashboards and raw data export (CSV, KMZ, PDF), and the 2019 brochure mentions a 'Data API for real-time data access' to results. api.premise.com answers most paths, including /.well-known/oauth-protected-resource, with HTTP 400 'authorization header missing or malformed' (the bare root returned 200 with an empty body on 2026-10-28), so a private API exists but is undocumented (no public discovery metadata). Ordering is by sales contract; no tasking API is published.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No Premise entry in the official MCP Registry (2026-10-26)."
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "'If a network is already in place where your study is situated, your data acquisition campaign can begin in as little as 24-48 hours. For new regions, we can recruit and train a network in 2-4 weeks' (2019 brochure); 'swiftly gather same-day data' (homepage)."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "same day to days",
+    "notes": "Collected Data is captured for the customer's tasks. Licensed Data that Premise already holds is also sold, but it is not new capture."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No payment method is published. Fees follow an executed Order Document, are payable in US dollars at registration or renewal unless the Order Document says otherwise, are non-cancellable and non-refundable, and carry 1.5% a month on late payment."
+  },
+  "capture": {
+    "by": "contributors"
+  },
+  "requester": {
+    "checks": "No customer screening is published. Customers sign an Order Document, and the SaaS Agreement forbids unlawful use and material that violates third-party privacy. Contributors are told not to invade privacy or enter non-public spaces, and may leave any task where they feel unsafe.",
+    "unknown": "Whether Premise reviews task briefs, for example ones that target a specific person or private place, before contributors see them."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "140+ countries, 6M+ contributors, 25M+ submissions a year, 2.3M+ points of interest, same-day data, validation algorithms, Book a Demo only",
+      "url": "https://premise.com/"
+    },
+    {
+      "claim": "Configure, collect, QC and visualise workflow; manual and automatic QC; anti-spoofing ML; location verification; image analysis (not blurry or from a computer); dashboards and raw export",
+      "url": "https://premise.com/how-premise-works/"
+    },
+    {
+      "claim": "Collected Data owned by the customer and IP assigned; Licensed Data for internal use only and not resold; Order Document; fees, renewal and refunds; scraping ban; master agreement overrides",
+      "url": "https://tos.premise.com/saas-agreement/en/"
+    },
+    {
+      "claim": "Task types (survey, photos, video, screen shots, recordings); contributor licence to Premise and its clients; background checks; sanctioned-country exclusions; ban on invading privacy or entering non-public spaces; AI analysis",
+      "url": "https://tos.premise.com/terms-of-use/en/"
+    },
+    {
+      "claim": "Precise check-in and observation location; app-name checks for apps that doctor location or the clock; device information; KYC only for the Premise Wallet; sharing of media with clients",
+      "url": "https://tos.premise.com/privacy-policy/en/"
+    },
+    {
+      "claim": "One account and one device per person; location spoofing banned; app-only access, no auto/macro software; QC review and 3-5 day appeals",
+      "url": "https://tos.premise.com/community-guidelines/en/"
+    },
+    {
+      "claim": "Business discovery, location verification, mapping, hours and offerings; photo-backed POI mapping",
+      "url": "https://premise.com/products/geospatial-analytics/"
+    },
+    {
+      "claim": "VideoAI: video responses from the contributor network in over 140 countries",
+      "url": "https://premise.com/products/ai-qualitative-insights-platform/"
+    },
+    {
+      "claim": "Situation analysis and remote monitoring; same-day data; observational tasks; access to non-permissive environments",
+      "url": "https://premise.com/international-development/situation-analysis/"
+    },
+    {
+      "claim": "Market monitoring (price and availability); 6M+ survey panelists and auditors in 140 countries",
+      "url": "https://premise.com/solutions/international-development/"
+    },
+    {
+      "claim": "Over 120,000 traditional-trade store visits a month; computer-vision product detection (Prime, December 2024)",
+      "url": "https://premise.com/press-releases/premise-unveils-prime-a-breakthrough-solution-transforming-retail-data-insights/"
+    },
+    {
+      "claim": "2019 QC list (account duplication, GPS spoofing prevention, image analysis); ML review of every submission; crowdsourced confirmation; timestamps; 24-48 h start, 2-4 weeks for new regions; Data API; inspections",
+      "url": "https://premise.com/wp-content/uploads/2019/11/WhyPremiseBrochure_2019.pdf"
+    },
+    {
+      "claim": "Contributor app on iOS and Android; payouts via PayPal, Payoneer or Bitcoin",
+      "url": "https://contributors.premise.com/"
+    },
+    {
+      "claim": "Private API host requires an Authorization header; no public discovery documents",
+      "url": "https://api.premise.com/.well-known/oauth-protected-resource"
+    },
+    {
+      "claim": "No Premise server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=premise"
+    },
+    {
+      "claim": "Premise not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+  ]
+}

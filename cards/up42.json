@@ -1,0 +1,364 @@
+{
+  "id": "up42",
+  "name": "UP42",
+  "adapter": "up42",
+  "status": "unclaimed",
+  "provider_url": "https://up42.com",
+  "short": "One business account to order new satellite, aerial and drone captures from about 20 operators.",
+  "summary": "Geospatial marketplace for registered businesses. 25 tasking collections are integrated in the API (Vantor WorldView, Airbus Pléiades/Pléiades Neo/SPOT/TerraSAR-X, BlackSky Gen-2/Gen-3, Planet, Satellogic, Pixxel, Wyvern, Umbra, Capella, ICEYE, KOMPSAT, EROS-C, GEOSAT, GÖKTÜRK-1, Beijing-3, AxelGlobe), with validate, estimate, opportunities, feasibility and quotation steps; SatVu, Globhe drones and some others are non-integrated and ordered through the Operations team. Paid in prepaid credits (100 = €1).",
+  "tags": [
+    "satellite",
+    "tasking",
+    "archive",
+    "aggregator",
+    "SAR",
+    "optical",
+    "hyperspectral",
+    "thermal",
+    "drone",
+    "blacksky",
+    "pleiades neo",
+    "vantor",
+    "pixxel",
+    "umbra",
+    "capella",
+    "iceye",
+    "api",
+    "STAC"
+  ],
+  "capabilities": {
+    "modalities": [
+      "aerial"
+    ],
+    "tasks": [
+      "list collections (keyless) and order-form JSON schemas",
+      "validate and estimate a catalog or tasking order before buying",
+      "list tasking opportunities (sensor passes) for an AOI",
+      "check whether a tasking order needs a feasibility study",
+      "place tasking orders; choose feasibility options and accept quotations",
+      "track order status and coverage; request acquisition window extensions",
+      "search delivered assets via STAC and create download URLs"
+    ]
+  },
+  "pricing": {
+    "model": "prepaid credits, 100 credits = €1, minimum purchase 10,000 credits (€100); credits expire after 24 months",
+    "from_usd": 0,
+    "unit": "per scene or per km²",
+    "notes": "Not published in USD. Priced by AOI size, resolution, collection, acquisition mode, tasking priority and cloud cover; an estimate is given before purchase and a high-difficulty acquisition may carry a price uplift. Floors: BlackSky tasking from 17,500 credits (€175)/scene; minimum charges 1 scene (BlackSky, Planet, Satellogic, SatVu, Umbra, Capella, ICEYE, KOMPSAT-5, StriX, TerraSAR-X), 25 km² (Vantor VNIR, GEOSAT 2), 100 km² (Pléiades, Pléiades Neo, SPOT, Pixxel, Dragonette-1), 1 km² (Globhe drone). 5% bonus credits on purchases of 1,000,000+ credits. Credits are non-refundable; tasking shortfalls past the window are refunded pro rata on request."
+  },
+  "latency": {
+    "typical": "days; depends on collection, feasibility study and priority",
+    "notes": "Minimum lead time 0 days (BlackSky, Umbra) or 1-3 days, and minimum acquisition window 1 day (BlackSky, Capella, ICEYE, Umbra, Vantor) up to 30 days (Dragonette-1). Where a feasibility study is needed it takes 1-5 business days (Sep-May) or 3-10 (Jun-Aug). Collection access requests are reviewed in up to 3 working days; the initial compliance check usually takes 1 business day. UP42 can't say when a capture attempt will be made."
+  },
+  "coverage": {
+    "regions": [
+      "Global (per collection coverage and restriction maps)"
+    ],
+    "areas": [
+      "*"
+    ],
+    "notes": "Collections are described as acquired worldwide, subject to each collection's coverage and restriction maps; many tasking collections need an access request that the data provider can reject based on the organisation or use case."
+  },
+  "licensing": {
+    "summary": "Data is licensed, not sold: the buyer does not acquire ownership (Terms of Purchase 5.1-5.2; Platform Services Agreement 13.2). Use is set by each provider's EULA, accepted before the first order and downloadable only after login; UP42 says most are non-transferable, non-sublicensable, non-exclusive and revocable. Original data is for internal use; external use and redistribution are usually not allowed, while derivative products can usually be shared (resale is set per collection EULA, so 'forbidden' is the safe reading). UP42's docs answer 'Can I resell the data I ordered?' with 'No'. AI or ML training is not addressed in the public terms or docs.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Satellite, aircraft and drone operators capture; no person is attested."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing, checksum or provenance scheme for delivered files is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Each delivery is tied to a named collection, sensor and data product in its order and STAC metadata. The sensor is named in operator metadata; nothing lets a buyer check it independently."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "STAC items carry the acquisition datetime from the operator's metadata.",
+      "unknown": "Acquisition time comes from operator metadata and is not signed or independently time-stamped."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Positional accuracy is published per collection (e.g. BlackSky Gen-3 tasking < 10 m CE90 absolute); deliveries are AOI-georeferenced.",
+      "unknown": "Accuracy is the operator's specification and is not checked per delivery; some collections list it as unknown."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No manipulation detection is documented; buyers can report quality issues within 7 days of delivery for investigation with the provider."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent confirmation of deliveries is documented."
+    }
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Tasking: captured inside your acquisition window",
+    "notes": "The same account also buys archive (catalog) imagery, which irlpls does not match."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "Acquisition time frames page: minimum lead time 0-3 days and minimum acquisition window 1-30 days by collection; actual time frames are set by the feasibility study, and UP42 can't give a specific capture date."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "approval",
+    "rate_limit": {
+      "requests": 100,
+      "per_seconds": 1,
+      "scope": "per-ip",
+      "notes": "About; varies by endpoint group. 429 when exceeded.",
+      "source_url": "https://developer.up42.com/reference/rate-limiting.md"
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.up42.com/developers/api-tasking",
+    "base_url": "https://api.up42.com",
+    "auth": [
+      {
+        "type": "oauth2",
+        "token_url": "https://auth.up42.com/realms/public/protocol/openid-connect/token",
+        "client_id": "up42-api",
+        "env_var": "UP42_USERNAME / UP42_PASSWORD",
+        "transport": "rest",
+        "how_to_get": "Free sign-up at up42.com, upgraded to the free Professional plan with your organisation's details. Tokens come from the OAuth2 password grant (client_id up42-api) with your console email and password, last 5 minutes, and are sent as 'Authorization: Bearer'. To order: add tax info and a company card, buy credits (first purchase triggers a compliance check), request access to restricted collections and accept each EULA."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/v2/collections",
+        "notes": "Keyless; tasking collections have the -tasking suffix and an integrations array (e.g. ACCESS_APPROVAL_REQUIRED, FEASIBILITY_STUDY_REQUIRED)"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/orders/schema/{data-product-id}",
+        "notes": "JSON schema of the order form for a data product"
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/v2/orders/validation"
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/v2/orders/estimate",
+        "notes": "summary.totalCredits"
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/v2/tasking/orders/opportunities",
+        "notes": "Sensor passes over the AOI; only for collections with TASKING_OPPORTUNITIES_AVAILABLE"
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/v2/tasking/orders/feasibility",
+        "notes": "Checks whether a feasibility study is required; returns feasibilityOutcome and difficulty"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/v2/orders?workspaceId={id}",
+        "notes": "Tasking credits are not deducted until the quotation is accepted"
+      },
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/v2/tasking/feasibility-studies",
+        "notes": "Options to choose from when a study was required"
+      },
+      {
+        "action": "quote",
+        "method": "PATCH",
+        "path": "/v2/tasking/feasibility-studies/{feasibility-study-id}",
+        "notes": "Choose a feasibility option (NOT_DECIDED only)"
+      },
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/v2/tasking/quotation",
+        "notes": "content.creditsPrice"
+      },
+      {
+        "action": "order",
+        "method": "PATCH",
+        "path": "/v2/tasking/quotation/{quotation-id}",
+        "notes": "Accepting deducts credits irreversibly; not allowed for the Viewer or Member role"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/v2/orders/{order-id}",
+        "notes": "status (CREATED ... FULFILLED, FAILED_PERMANENTLY, CANCELED) and orderDetails.subStatus"
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/v2/assets/stac/search",
+        "notes": "Your delivered data only"
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/v2/assets/{asset-id}/download-url",
+        "notes": "Signed URL valid for 5 minutes"
+      }
+    ],
+    "sdk": "Python: up42-py",
+    "rate_limits": "About 100 requests per second per IP, varying by endpoint group; 429 when exceeded",
+    "notes": "No idempotency key is documented for order creation. Orders in CREATED or PLACEMENT_FAILED can be cancelled via POST /v2/orders/{order-id}/cancellation. Non-integrated products (e.g. SatVu, Globhe) are ordered through an order form or the Operations team, not this API. No MCP server found."
+  },
+  "updated": "2026-10-28",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "Organisations only: the initial compliance check (first credit purchase or first access request) confirms a legally registered business via business databases and may ask for a certificate of registration; the email domain must match the organisation and cards must be company-issued. A full check (leadership, beneficial ownership, anti-corruption self-declaration) is triggered at a spending threshold. Restricted collections need a questionnaire that the data provider approves or rejects by organisation and use case. The buyer warrants it is not on sanctions lists.",
+    "unknown": "The spending threshold, the questionnaire contents and the per-provider approval criteria are not published."
+  },
+  "payment": {
+    "methods": [
+      "prepaid_balance",
+      "card",
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "Professional: prepaid credits bought by company card in the console (100 credits = €1, minimum €100, in euros). Enterprise: consumption-based monthly invoicing. Orders are paid from the credit balance via the API (accepting a quotation deducts credits), but top-ups are console-only."
+  },
+  "sources": [
+    {
+      "claim": "Credits (100 = €1), €100 minimum, 24-month expiry, 5% bonus, compliance check on first purchase, pricing drivers, Professional plan for API access and workflow automation, Enterprise monthly invoicing",
+      "url": "https://up42.com/pricing"
+    },
+    {
+      "claim": "Credit purchase by company card in euros, non-refundable, initial compliance check takes about 1 business day",
+      "url": "https://docs.up42.com/getting-started/purchase"
+    },
+    {
+      "claim": "Compliance checks: registered businesses only, documents, full check at a spending threshold",
+      "url": "https://docs.up42.com/getting-started/compliance-process"
+    },
+    {
+      "claim": "Access requests reviewed in up to 3 working days; providers may reject by organisation or use case",
+      "url": "https://docs.up42.com/getting-started/restrictions"
+    },
+    {
+      "claim": "Tasking flow: access, validation, estimate, opportunities, feasibility, quotation, order statuses, coverage, extensions; quotation acceptance deducts credits irreversibly",
+      "url": "https://docs.up42.com/developers/api-tasking"
+    },
+    {
+      "claim": "OAuth2 password grant, client_id up42-api, 5-minute bearer tokens; listing collections needs no token",
+      "url": "https://docs.up42.com/developers/authentication"
+    },
+    {
+      "claim": "Keycloak realm metadata for auth.up42.com (token endpoint)",
+      "url": "https://auth.up42.com/realms/public/.well-known/openid-configuration"
+    },
+    {
+      "claim": "Endpoint paths and methods (API reference index)",
+      "url": "https://developer.up42.com/llms.txt"
+    },
+    {
+      "claim": "Create order: POST /v2/orders with required workspaceId; tasking credits deducted only on quotation acceptance",
+      "url": "https://developer.up42.com/reference/createv2orderunderworkspace.md"
+    },
+    {
+      "claim": "Feasibility requirement check: POST /v2/tasking/orders/feasibility",
+      "url": "https://developer.up42.com/reference/checkorderfeasibility.md"
+    },
+    {
+      "claim": "Feasibility studies: GET /v2/tasking/feasibility-studies and PATCH /v2/tasking/feasibility-studies/{id}",
+      "url": "https://developer.up42.com/reference/listtaskingfeasibilitystudies.md"
+    },
+    {
+      "claim": "Order form schema: GET /orders/schema/{data-product-id}",
+      "url": "https://developer.up42.com/reference/getjsonschema.md"
+    },
+    {
+      "claim": "Download URL: POST /v2/assets/{asset-id}/download-url, valid 5 minutes",
+      "url": "https://developer.up42.com/reference/generatedownloadurlexternal.md"
+    },
+    {
+      "claim": "Rate limits about 100 requests per second per IP",
+      "url": "https://developer.up42.com/reference/rate-limiting.md"
+    },
+    {
+      "claim": "25 integrated tasking collections, their producers, integrations flags and 'acquired worldwide' descriptions (keyless call, 2026-10-26)",
+      "url": "https://api.up42.com/v2/collections"
+    },
+    {
+      "claim": "Minimum charges per tasking collection",
+      "url": "https://docs.up42.com/data/tasking-min-charges"
+    },
+    {
+      "claim": "Minimum lead times and acquisition windows; no specific capture date",
+      "url": "https://docs.up42.com/data/acquisition"
+    },
+    {
+      "claim": "Feasibility study time frames and collections that don't need one",
+      "url": "https://docs.up42.com/data/feasibility"
+    },
+    {
+      "claim": "BlackSky tasking from 17,500 credits per scene; Gen-3 tasking < 10 m CE90",
+      "url": "https://docs.up42.com/data/blacksky"
+    },
+    {
+      "claim": "Positional accuracy per collection",
+      "url": "https://docs.up42.com/data/accuracy"
+    },
+    {
+      "claim": "Globhe Optical is a non-integrated product, 1 km² minimum, global coverage",
+      "url": "https://docs.up42.com/data/globhe-optical"
+    },
+    {
+      "claim": "SatVu HotSat tasking is a non-integrated product",
+      "url": "https://docs.up42.com/data/satvu"
+    },
+    {
+      "claim": "Per-provider EULAs; licence conditions; internal vs external use; resale answered 'No'",
+      "url": "https://docs.up42.com/getting-started/eulas"
+    },
+    {
+      "claim": "Credits non-refundable; Content rights retained by UP42 or licensors; sanctions warranty",
+      "url": "https://up42.com/legal/platform-services-agreement"
+    },
+    {
+      "claim": "Products licensed, not sold; purchaser does not acquire ownership",
+      "url": "https://up42.com/legal/terms-of-purchase"
+    },
+    {
+      "claim": "Quality issues reported within 7 days; pro-rata refund for area not tasked in the window",
+      "url": "https://docs.up42.com/getting-started/refund"
+    },
+    {
+      "claim": "STAC search of delivered assets",
+      "url": "https://docs.up42.com/developers/api-stac"
+    },
+    {
+      "claim": "Python SDK up42-py",
+      "url": "https://pypi.org/project/up42-py/"
+    }
+  ]
+}

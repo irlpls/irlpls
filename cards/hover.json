@@ -1,0 +1,323 @@
+{
+  "id": "hover",
+  "name": "Hover",
+  "provider_url": "https://hover.to",
+  "status": "unclaimed",
+  "short": "Texts or emails the homeowner a link; their phone scan becomes a 3D model and measurements.",
+  "summary": "Hover sends a capture request (a link by SMS or email) to a homeowner, adjuster or other person at the property, who scans it with the Hover phone app. Hover turns the photos into a 3D model with roof, exterior or interior measurements (PDF, JSON, XLSX, ESX and more). OAuth REST API with a sandbox and a first-party MCP server; per-project prices are published.",
+  "capabilities": {
+    "modalities": [
+      "photo"
+    ],
+    "tasks": [
+      "send a capture request (link by SMS/email) to the person at a property",
+      "exterior photo set + 3D model (Complete, deliverable_id 3)",
+      "roof-only 3D model and measurements (deliverable_id 2)",
+      "interior floor plan and measurements (deliverable_id 8)",
+      "total living area (deliverable_id 5/6, underwriting)",
+      "photos-only capture, upgradeable later (Capture Only, deliverable_id 7)",
+      "measurement exports (PDF, JSON, XLSX, XML, ESX, SKP, FML)",
+      "inspection photos and checklists",
+      "virtual walkthrough link"
+    ]
+  },
+  "capture": {
+    "by": "subject"
+  },
+  "requester": {
+    "checks": "The requester needs a Hover account; API integrations are created by a Team Admin and a user must approve the OAuth consent. The Terms make the sender obtain the recipient's consent before an SMS or email invite, ban use in US-embargoed countries or by sanctioned persons, and say Image Data must not contain personal information.",
+    "unknown": "No review of individual capture requests or check of the requester's link to the property is documented."
+  },
+  "pricing": {
+    "model": "per project (plan discounts by annual subscription)",
+    "from_usd": 29,
+    "unit": "project (simple roof or interior scan, Starter plan)",
+    "notes": "Starter, pay per project, first 3 projects free: exterior $59/$99/$139, roof $29/$49/$69, interior $29/$59/$89 (simple/average/complex). Pro ($999/yr) takes $20 off each project (from $9); Business ($2,999/yr) is flat $79 exterior, $39 roof, $49 interior. Enterprise is custom. Expedited delivery $39/project on Starter, $19 on Pro and Business. Upgrade price for a Capture Only job is available by API (hover.to/pricing)."
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "invoice"
+    ],
+    "agent_rails": [
+      "card_on_file_api"
+    ],
+    "agent_can_pay": false,
+    "notes": "Fees are charged to the card on file; pay by invoice is an Enterprise feature at Hover's discretion. Jobs and capture requests charge the org's wallet (or a shared wallet set up by a Hover rep). Fees are nonrefundable."
+  },
+  "coverage": {
+    "regions": [],
+    "notes": "Hover publishes no list of covered countries. Job addresses carry a country field; the Terms bar use in US-embargoed countries. Capture needs a supported mobile device and the Hover app."
+  },
+  "licensing": {
+    "summary": "The Terms of Use (posted 2026-05-11) give a non-exclusive, non-transferable, limited permission to use Hover Data (measurements, models, floorplans) only for the subject property or project and for personal or internal business purposes. Selling, licensing, distributing or otherwise making Hover Data available to third parties is banned, as is using Hover Data to train software or algorithms. The user owns the photos it submits (User Data) but grants Hover a perpetual, transferable licence to them, including for training Hover's models, and assigns Hover any Hover Data derived from them.",
+    "ai_training": "forbidden",
+    "resale": "forbidden",
+    "buyer_owns_output": false,
+    "vendor_trains_on_data": "yes"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "The capture is done by whoever accepts the link and signs up with the invited email; the job records that account's email (capture_by), but no identity check is documented."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Captures must be made in the Hover phone app, but no app-integrity or attestation check is published; the Terms only disclaim liability for rooted or jailbroken devices. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No capture signing (C2PA or other) documented; Hover is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "The API reports capture records with created_at times, but no capture-time attestation is documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "Hover collects image metadata and the location where each image was taken to build the model, but documents no check that the capture was made at the requested address, and the API exposes only the job address coordinates."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Measurements are computed by Hover from the photos; the Terms provide Hover Data as is, with no warranty of accuracy."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent confirmation offered."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://developers.hover.to/",
+    "base_url": "https://hover.to",
+    "auth": [
+      {
+        "type": "oauth2",
+        "transport": "rest",
+        "how_to_get": "A Team Admin creates an integration (Settings > Developer) for the Client ID and Secret; a user approves access once at https://hover.to/oauth/authorize (authorization code grant), then POST /oauth/token. Access tokens last 2 hours; refresh tokens until used. Sandbox: https://sandbox.hover.to",
+        "scopes": [
+          "all"
+        ],
+        "dynamic_registration": false
+      },
+      {
+        "type": "oauth2",
+        "transport": "mcp",
+        "how_to_get": "Get a REST OAuth access token as above and pass it as an Authorization: Bearer header to the MCP server; the MCP server does not run the OAuth flow itself.",
+        "dynamic_registration": false
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/api/v2/capture_requests",
+        "params": "capture_request[capturing_user_name], capture_request[capturing_user_email], capture_request[job_attributes][location_line_1], current_user_email or current_user_id; optional capturing_user_phone (for SMS), job_attributes.deliverable_id, wallet_id",
+        "notes": "Creates a draft job and sends the invite. States: new, connected, complete, deleted."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/api/v2/capture_requests/{id}/details"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/api/v3/jobs/{job_id}",
+        "notes": "Job details, captures, models and links to measurement files. Webhooks (Capture Request State Changed, Job State Changed v2, Model State Changed) are recommended over polling."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/api/v2/capture_requests"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/v3/models/{model_id}/artifacts/measurements.json"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/v2/inspections/{inspection_id}/photos"
+      },
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/api/v3/models/{model_id}/deliverable_change_requests/price",
+        "notes": "Price to upgrade an existing model's deliverable (e.g. a Capture Only job)."
+      }
+    ],
+    "rate_limits": "120 requests per minute or 7,200 per hour (429 when exceeded); 60-second request timeout.",
+    "self_serve": true,
+    "mcp": {
+      "remote": "https://developers.hover.to/mcp",
+      "registry_name": null,
+      "auth": "Docs tools need no auth; execute-request needs a Hover OAuth access token sent as an Authorization: Bearer header.",
+      "first_party": true,
+      "notes": "Hosted by Hover on its ReadMe docs site (tools include execute-request, list-endpoints, search). Not in the official MCP Registry. Hover says it is not an autonomous integration engine and requests should be reviewed by a human."
+    },
+    "notes": "Hover recommends capture requests over POST /api/v1/jobs because jobs emit no capture webhook. Test-job endpoints simulate captures. No idempotency key is documented (external_identifier is available). Authorizing an integration fails if the org's plan has integrations disabled."
+  },
+  "adapter": "hover",
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Pricing page, 'Typical turnaround time': 12 hours (Starter), 4 hours (Pro, Business), 2 hours (Enterprise); expedited roof measurements 'typically delivered within 1 hour' and full exterior within 90 minutes. The clock starts once the person at the property has scanned it, which Hover does not control."
+  },
+  "latency": {
+    "typical": "Hours after the scan (12 h Starter, 4 h Pro/Business, 2 h Enterprise; about 1 h expedited)",
+    "notes": "The wait for the person at the property to open the link and scan is not bounded and comes first. The provider also states roof measurements typically within 1 hour and exterior within 90 minutes after the scan."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none",
+    "notes": "Terms §2(b)(v) bar robots, spiders or other automatic programs that monitor, copy or summarise the service; the official OAuth API and MCP are the sanctioned route, so automation_allowed is true for those only.",
+    "rate_limit": {
+      "requests": 120,
+      "per_seconds": 60,
+      "scope": "unknown",
+      "notes": "Also 7,200 per hour; 429 when exceeded; 60-second request timeout.",
+      "source_url": "https://developers.hover.to/docs/api-usage-and-limits.md"
+    }
+  },
+  "tags": [
+    "property",
+    "roof",
+    "3d model",
+    "measurements",
+    "insurance",
+    "homeowner capture"
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "API index: capture requests, jobs, measurement exports, inspections, deliverable change requests, MCP guides",
+      "url": "https://developers.hover.to/llms.txt"
+    },
+    {
+      "claim": "Public API docs home",
+      "url": "https://developers.hover.to/"
+    },
+    {
+      "claim": "POST /api/v2/capture_requests, required fields, invite by email/SMS to download the Hover app",
+      "url": "https://developers.hover.to/reference/create-capture-request.md"
+    },
+    {
+      "claim": "Capture request states (new, connected, complete, deleted); webhooks to ingest; all captures on a mobile device",
+      "url": "https://developers.hover.to/docs/capture-requests-via-the-api.md"
+    },
+    {
+      "claim": "Capture requests go to homeowners, sales reps or independent adjusters; job records who captured",
+      "url": "https://developers.hover.to/docs/understanding-capture-requests.md"
+    },
+    {
+      "claim": "Deliverable types and IDs (2, 3, 5, 6, 7, 8)",
+      "url": "https://developers.hover.to/docs/understanding-deliverable-types.md"
+    },
+    {
+      "claim": "OAuth 2.0 authorization code grant, manual one-time consent, 2-hour access tokens, integrations must be enabled on the plan",
+      "url": "https://developers.hover.to/docs/oauth-20-authentication.md"
+    },
+    {
+      "claim": "Token response carries scope 'all'",
+      "url": "https://developers.hover.to/reference/generate-access-token.md"
+    },
+    {
+      "claim": "Team Admin creates an integration; custom integrations open to any plan with API access, including Starter",
+      "url": "https://developers.hover.to/docs/creating-and-managing-integrations.md"
+    },
+    {
+      "claim": "Create integration and get Client ID and Secret in Settings > Developer",
+      "url": "https://help.hover.to/en/articles/2599366-create-and-manage-integrations"
+    },
+    {
+      "claim": "Rate limits 120 RPM / 7,200 per hour, 60-second timeout",
+      "url": "https://developers.hover.to/docs/api-usage-and-limits.md"
+    },
+    {
+      "claim": "Remote MCP server at https://developers.hover.to/mcp and its tools",
+      "url": "https://developers.hover.to/docs/mcp-2.md"
+    },
+    {
+      "claim": "MCP runs on ReadMe; needs user-provided OAuth; not autonomous; human review advised",
+      "url": "https://developers.hover.to/docs/what-is-hover-mcp.md"
+    },
+    {
+      "claim": "MCP auth: access token passed as Authorization Bearer header",
+      "url": "https://developers.hover.to/docs/authentication-for-mcp-use.md"
+    },
+    {
+      "claim": "Webhook events (Job State Changed v2, Capture Request State Changed, Model State Changed)",
+      "url": "https://developers.hover.to/reference/webhooks.md"
+    },
+    {
+      "claim": "Jobs endpoint; capture requests recommended over jobs",
+      "url": "https://developers.hover.to/reference/createajob.md"
+    },
+    {
+      "claim": "GET /api/v3/jobs/{job_id}: captures with capture_by and created_at, address coordinates",
+      "url": "https://developers.hover.to/reference/show-job-details.md"
+    },
+    {
+      "claim": "GET /api/v2/capture_requests/{id}/details",
+      "url": "https://developers.hover.to/reference/show-capture-request-details.md"
+    },
+    {
+      "claim": "GET /api/v3/models/{model_id}/artifacts/measurements.json",
+      "url": "https://developers.hover.to/reference/get-json-measurements.md"
+    },
+    {
+      "claim": "GET /api/v2/inspections/{inspection_id}/photos",
+      "url": "https://developers.hover.to/reference/getinspectionphotos.md"
+    },
+    {
+      "claim": "Upgrade price endpoint",
+      "url": "https://developers.hover.to/reference/get-upgrade-price.md"
+    },
+    {
+      "claim": "Wallets hold an org's payment and billing information",
+      "url": "https://developers.hover.to/docs/understanding-companies-orgs-and-wallets.md"
+    },
+    {
+      "claim": "Per-project prices by plan, first 3 free, turnaround times, expedited delivery, API access on all plans, invoice on Enterprise, export formats",
+      "url": "https://hover.to/pricing"
+    },
+    {
+      "claim": "Licence limits on Hover Data, no resale, no training on Hover Data, ownership, Hover trains on User Data, card charges, invoicing, recipient consent, sanctions, no personal information in images",
+      "url": "https://hover.to/terms-of-use/"
+    },
+    {
+      "claim": "Hover collects image metadata and the location where the image was taken to create a 3D model",
+      "url": "https://hover.to/privacy/"
+    },
+    {
+      "claim": "Hover not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "No Hover entry in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=hover"
+    },
+    {
+      "claim": "Terms §2(b)(v) bans robot/spider/automatic programs to monitor or copy; §2(b)(xii) training ban; §2(b)(vii) no third-party disclosure",
+      "url": "https://hover.to/terms-of-use/"
+    },
+    {
+      "claim": "Roof measurements typically within 1 hour, exterior within 90 minutes",
+      "url": "https://hover.to/pricing"
+    },
+    {
+      "claim": "Jobs and capture requests charge the org's wallet (its card on file)",
+      "url": "https://developers.hover.to/docs/understanding-companies-orgs-and-wallets.md"
+    }
+  ]
+}

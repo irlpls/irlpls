@@ -1,0 +1,20 @@
+{
+  "_fixture": "documented-shape",
+  "_source": "https://platform.toloka.ai/api/v2-beta/doc POST /api/v2-beta/pipelines/{pipelineId}/cost-estimate",
+  "response": {
+    "dataset": {
+      "datasetId": "ds-1",
+      "itemCount": 500
+    },
+    "total": {
+      "expected": "412.50",
+      "worstCase": "530.00",
+      "bestCase": null,
+      "perItemExpected": "0.825",
+      "perItemWorstCase": "1.06"
+    },
+    "disclaimer": "Forecast only.",
+    "nodes": [],
+    "graphVersion": "v7"
+  }
+}

@@ -1,0 +1,316 @@
+{
+  "id": "satellogic",
+  "name": "Satellogic",
+  "status": "unclaimed",
+  "provider_url": "https://satellogic.com/",
+  "short": "High-resolution optical satellites tasked by contract through the Aleph Orders API, with 3-hour rush delivery.",
+  "tags": [
+    "satellite",
+    "satellite imagery",
+    "optical",
+    "multispectral",
+    "high resolution",
+    "tasking",
+    "rush tasking",
+    "site monitoring",
+    "NewSat",
+    "earth observation",
+    "remote sensing",
+    "aerial",
+    "api",
+    "STAC",
+    "signed deliverables",
+    "global"
+  ],
+  "summary": "Operator of the NewSat constellation of high-resolution (70 cm native, 50 cm super-resolved on Mark V) multispectral RGB-NIR satellites. Its Aleph platform and Orders API (v2) let contract holders analyse future capture opportunities and order new captures: Standard Tasking of a point, Standard Area Coverage of a polygon, Rush Tasking, Rush Tasking with Rapid Delivery (3 hours from capture to delivery) and Site Monitoring. Products, defaults and prices are set per contract by account managers; the free trial has no tasking or API access. Delivery packages carry an RSA-signed SHA-256 manifest.",
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "photo"
+    ],
+    "tasks": [
+      "Standard Tasking of a point (SKU TSKPOI-M): new optical capture, up to 50 km2, delivered within 24 h of capture at L1D or L1D_SR",
+      "Standard Area Coverage of a polygon (TSKARE-M): up to 500 km2, delivered within 24 h of capture",
+      "Rush Tasking (TSKRSH-M.NN.NN): up to 25 km2, L1B delivered within 6 h of capture",
+      "Rush Tasking with Rapid Delivery (TSKRRD-M.NN.NN): up to 25 km2, L1B delivered within 3 h of capture",
+      "Site Monitoring of a point (SITEMON-M.01.03)",
+      "opportunity analysis for future point captures, with cloud-cover forecasts up to 7 days, before ordering",
+      "track orders (Received, In Progress, Closed), captures (Queued, Collecting, Acquired, Failed) and deliverables (Processing, Delivered, Not Delivered) through event streams",
+      "processing levels L0, L1A, L1B, L1C, L1D and L1D_SR; GeoTIFF with STAC metadata",
+      "signed delivery packages: SHA-256 manifest signed with Satellogic's RSA-4096 key"
+    ]
+  },
+  "pricing": {
+    "model": "per contract (products, defaults and the price for delivered quantities are set in the contract)",
+    "from_usd": 0,
+    "unit": "per tasked capture (price not published)",
+    "notes": "from_usd 0 means unknown, not free. Satellogic publishes no price list and no price endpoint; contracts are set up by account managers, and its licence says prices are quoted in USD unless the order form says otherwise and that rights options change the price. Reseller UP42 lists Satellogic tasking from 30,000 credits per scene (100 credits = EUR 1, so about EUR 300) and archive from 500 credits per km2."
+  },
+  "latency": {
+    "typical": "Capture to delivery: 3 h (Rush with Rapid Delivery), 6 h (Rush), 24 h (Standard point or area). Tasking can be placed up to 6 h before capture (vendor deck).",
+    "notes": "Delivery times are from Satellogic's Tasking Products page; the licence says tasked imagery is available 'typically no longer than 24 hours from capture' unless the contract says otherwise. Time from order to capture depends on satellite passes, sun angle and cloud and is not stated. Revisit claims vary: '> daily revisit at equator from ~20 satellites' (Satellogic deck, March 2026) vs 'up to 4 times a day' (UP42). In the v1 web UI, tasks can be cancelled up to 12 h before a planned capture; later cancellations may carry fees."
+  },
+  "coverage": {
+    "regions": [
+      "Global (subject to orbit passes, sun angle and cloud)"
+    ],
+    "notes": "Optical: needs daylight and clear sky. Tasking needs an account with tasking permissions on a contract. Imagery of listed conflicted or restricted areas (including parts of Afghanistan, China, India, Iran, Israel, Gaza, Pakistan, Russia, Ukraine's Crimea, Donetsk and Luhansk, Venezuela and others) is 'prohibited from general sale' and needs a case-by-case determination with enhanced due diligence on the customer; Satellogic may delay delivery or reduce resolution there.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Imagery End User Licence Agreement (July 2025): a limited, non-transferable, non-exclusive, non-sublicensable licence for the customer's internal use or stated business purpose; derivatives only as minor adaptations, and products shared outside the organisation must contain no imagery pixels. Title and all IP stay with Satellogic. Resale, redistribution, public display and third-party training are forbidden without extra rights (Integrator, Group, Government, Media or Commercial Redistribution grants). Model training is prohibited unless explicitly authorised in an executed agreement, and no machine learning, AI or biometric technology may be used to identify natural persons (clause 1.3(a)(iv)). Attribution 'Powered by SATELLOGIC (c) [YEAR]' is required. Satellogic may later put licensed imagery in a public archive unless an archive holdback (48 h, 30 days or permanent) is bought.",
+    "ai_training": "forbidden",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "New capture after ordering; delivered 3-24 h after capture depending on product",
+    "notes": "Satellogic also sells archive imagery (ARCIMG-M) through the same API; irlpls lists it for new tasked captures."
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://developers.satellogic.com/aleph-v2/api/introduction.html",
+    "base_url": "https://api.satellogic.com/v2",
+    "auth": [
+      {
+        "type": "oauth2",
+        "header": "Authorization",
+        "env_var": "SATELLOGIC_CLIENT_ID",
+        "how_to_get": "OAuth 2.0 client credentials: in Aleph Web (aleph.satellogic.com) a user with the Imagery User role creates an API credential (role 'M2M Imagery Integrator v2', tied to one or more contracts) and gets a client ID and secret, then exchanges them at https://auth.platform.satellogic.com/oauth/token (audience https://api.satellogic.com/) for a 24-hour bearer token. Every call also sends the header x-satellogic-contract-id. Self-onboarded trial accounts cannot create API credentials; roles and contracts come from Satellogic (tasking@satellogic.com).",
+        "scopes": [
+          "deliverables:read",
+          "deliverables:reject"
+        ],
+        "dynamic_registration": false,
+        "transport": "rest"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/products",
+        "notes": "Products (SKUs) assigned to the contract in x-satellogic-contract-id."
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/analysis/opportunities",
+        "params": "GeoJSON FeatureCollection of order features, all with the same tasking sku",
+        "notes": "Future capture opportunities (feasibility, not price); result at GET /analysis/opportunities/{analysis_id}."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/orders",
+        "params": "GeoJSON Feature: geometry (Point or Polygon) and properties order_name, sku (e.g. TSKPOI-M, TSKRRD-M.NN.NN) and parameters (start, end, revisit_period, processing levels as the contract allows); header x-satellogic-contract-id",
+        "notes": "Creates tasking or archive orders. Cancellation: DELETE /orders/{order_id}."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/orders/{order_id}/events",
+        "notes": "Order, capture and deliverable events; also GET /orders/{order_id}/captures and /orders/{order_id}/deliverables."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/orders",
+        "notes": "Orders as a GeoJSON FeatureCollection, paginated."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/deliverables/{deliverable_id}",
+        "notes": "Deliverable with status, footprint and assets (href to GeoTIFF on api.satellogic.com/assets)."
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/archive/search",
+        "notes": "STAC API search of the existing archive (not new captures)."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No Satellogic server in the official MCP Registry and none found elsewhere."
+    },
+    "rate_limits": "Not stated in the docs or the OpenAPI file.",
+    "notes": "OpenAPI 3 spec (Aleph API v2, 2.0.0-beta.3) at https://developers.satellogic.com/aleph-v2/api/satellogic_api_v2.yml, server https://api.satellogic.com with paths under /v2. No RFC 9728 protected-resource metadata (api.satellogic.com/.well-known/* returns 403). The Auth0 authorization server publishes RFC 8414 metadata at https://auth.platform.satellogic.com/.well-known/oauth-authorization-server, with no registration endpoint. Signed-package public key: https://api.satellogic.com/.well-known/publickey.pem. Sample packages for every processing level are in the public S3 bucket satellogic-sample-data (eu-west-1)."
+  },
+  "adapter": "satellogic",
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "contract"
+  },
+  "payment": {
+    "methods": [
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "notes": "Paid under a contract or order form; the licence refers to invoiced amounts, payment terms and 1.5% monthly late interest. No card or self-serve checkout. Through UP42 instead, tasking is paid from prepaid UP42 credits."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "Customers sign a contract set up by an account manager. They must comply with export controls and sanctions, must not deal with denied or sanctioned parties, and must give Satellogic compliance documents on request. Orders for listed conflicted or restricted areas get 'enhanced due diligence on the requesting customer'. Use must be peaceful and lawful and must not violate privacy or identify natural persons. Each order is accepted only after Satellogic confirms it can capture it.",
+    "unknown": "What identity or KYC checks are done when the contract is set up is not published."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Captured by Satellogic satellites, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No device or ground-segment attestation is documented. The signed delivery manifest is a statement over delivered files, recorded under provenance.receipt."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Captures come from Satellogic's own NewSat satellites; package names carry the satellite (e.g. SN43). Sensor identity is operator-asserted."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Capture time is in the package's STAC metadata and the capture events (CaptureCollectionStarted, CaptureAcquired); the signed delivery manifest (provenance.receipt) covers the metadata files.",
+      "unknown": "How capture times are validated is not documented, and the signature only dates from processing."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Orthorectified products; geoaccuracy measured against an ESRI basemap (CE90 and RMSE, at least 30 match points). Vendor deck: 30 m CE90 for L1 Basic and Ortho-Ready, 10 m CE90 for Ortho (with ground control points).",
+      "unknown": "Satellogic says the ESRI reference basemap's accuracy is 'variable and unknown'; per-image accuracy reports were not found in public docs."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Capture and deliverable quality-control steps exist (QC events), but there is no documented method for detecting manipulated imagery."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No documented cross-check against other sensors for delivered scenes (radiometric cross-calibration with Sentinel-2 is a calibration step, not corroboration)."
+    }
+  },
+  "provenance": {
+    "receipt": {
+      "level": "claimed",
+      "method": "Since 8 September 2025 every delivery package includes a SHA-256 manifest of all files, signed with Satellogic's RSA-4096 key (PKCS#1 v1.5) when the package is generated; the public key is at https://api.satellogic.com/.well-known/publickey.pem.",
+      "evidence_url": "https://developers.satellogic.com/data/digital-signature.html",
+      "unknown": "Not evidenced: on 2026-10-26 none of 102 signed public sample packages verified against the published key, though their file hashes matched their manifests; re-tested 2026-10-28 on an SN43 Baotou L0 package, verification failed with an RSA padding error (a different key). Signed at processing, not capture: it shows files are unchanged since Satellogic generated the package, not what the sensor recorded, and it is not bound to your request or a nonce.",
+      "sources": [
+        {
+          "claim": "Delivery packages carry a SHA-256 manifest signed with Satellogic's RSA 4096-bit key",
+          "url": "https://developers.satellogic.com/data/digital-signature.html"
+        }
+      ]
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Satellogic Tasking Products page, capture to delivery latency: 'Standard Tasking (POI) 24Hs ... Rush Tasking 6Hs ... Rush Tasking with Rapid Delivery 3Hs'. Vendor deck: 'Tasking: Up to 6hrs before capture'."
+  },
+  "sources": [
+    {
+      "claim": "Orders always within a Contract (products, defaults, price for delivered quantities); SKUs TSKPOI-M, TSKARE-M, TSKRSH-M.NN.NN, TSKRRD-M.NN.NN, SITEMON-M.01.03, ARCIMG-M.NN.NN; contracts set up by Account Managers; order, capture and deliverable states and events; GeoJSON orders; cloud-cover forecasting up to 7 days; OAuth2; example base https://api.satellogic.com/v2",
+      "url": "https://developers.satellogic.com/aleph-v2/api/introduction.html"
+    },
+    {
+      "claim": "API v2 structure: STAC archive search, POST /analysis/opportunities, POST /orders, GET /orders/{order_id}/events; processing levels L0 through L1D_SR; OAuth2 with contract-based access control",
+      "url": "https://developers.satellogic.com/aleph-v2/api/api-overview.html"
+    },
+    {
+      "claim": "OpenAPI spec 2.0.0-beta.3: server https://api.satellogic.com, /v2 paths (products, orders, deliverables, captures, analysis/opportunities, archive/search), x-satellogic-contract-id header, OAuth2 scopes deliverables:read and deliverables:reject, deliverable assets with href; no rate limits stated",
+      "url": "https://developers.satellogic.com/aleph-v2/api/satellogic_api_v2.yml"
+    },
+    {
+      "claim": "Capture-to-delivery latency 24 h (Standard POI and AOI), 6 h (Rush), 3 h (Rush with Rapid Delivery); maximum areas 50, 500, 25 and 25 km2; mandatory processing levels",
+      "url": "https://developers.satellogic.com/aleph-v2/web-ui/tasking-products.html"
+    },
+    {
+      "claim": "OAuth 2.0 client credentials flow; contracts define products and tasking; M2M Imagery Integrator role for systems that automatically interact with the APIs; roles granted via tasking@satellogic.com",
+      "url": "https://developers.satellogic.com/api-authentication/getting_started.html"
+    },
+    {
+      "claim": "Credentials created in Aleph Web with role M2M Imagery Integrator v2 tied to contracts; self-onboarded trial accounts cannot create API credentials",
+      "url": "https://developers.satellogic.com/api-authentication/create_credentials.html"
+    },
+    {
+      "claim": "Token endpoint https://auth.platform.satellogic.com/oauth/token, audience https://api.satellogic.com/, client_credentials grant, 24-hour bearer token",
+      "url": "https://developers.satellogic.com/api-authentication/get_access_token.html"
+    },
+    {
+      "claim": "Authorization server metadata: issuer auth.platform.satellogic.com, grant types include client_credentials, PKCE S256 supported, no registration endpoint",
+      "url": "https://auth.platform.satellogic.com/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Free trial: archive search and preview with watermark only; ordering, tasking and API access need the sales team",
+      "url": "https://developers.satellogic.com/aleph-v1/web-ui/getting_started.html"
+    },
+    {
+      "claim": "Tasking available for accounts with tasking permissions; special requirements via tasking@satellogic.com; cancellation up to 12 h before capture, fees may apply later",
+      "url": "https://developers.satellogic.com/aleph-v1/web-ui/tasking_with_aleph.html"
+    },
+    {
+      "claim": "Since 8 September 2025 all delivery packages include a SHA-256 manifest signed with Satellogic's RSA-4096 private key (PKCS#1 v1.5); public key at api.satellogic.com/.well-known/publickey.pem; verification optional",
+      "url": "https://developers.satellogic.com/data/digital-signature.html"
+    },
+    {
+      "claim": "Published RSA-4096 public key for verifying delivery signatures (fetched without authentication)",
+      "url": "https://api.satellogic.com/.well-known/publickey.pem"
+    },
+    {
+      "claim": "Public sample packages for every processing level in S3 bucket satellogic-sample-data (eu-west-1)",
+      "url": "https://developers.satellogic.com/data/data-samples.html"
+    },
+    {
+      "claim": "Signed sample package whose manifest signature did not verify against the published key on 2026-10-26 (one of 102 checked; file hashes matched the manifest)",
+      "url": "https://satellogic-sample-data.s3.eu-west-1.amazonaws.com/L0/Baotou/0392e349-af81-4b9f-90ca-283070dc4dbb/1_1_0/20240601_064039_SN43_MS_L0_203086/20240601_064039_SN43_MS_L0_203086_manifest.txt.sig"
+    },
+    {
+      "claim": "Geoaccuracy measured against an ESRI basemap (RMSE, CE90, at least 30 match points); ESRI basemap accuracy 'variable and unknown'",
+      "url": "https://developers.satellogic.com/data/image-processing/geoaccuracy.html"
+    },
+    {
+      "claim": "Imagery EULA (July 2025): internal-use licence, non-transferable and non-sublicensable; no resale or redistribution without extra rights; model training prohibited unless authorised in an agreement; title stays with Satellogic; attribution; archive holdback options; public archive clause; tasked imagery typically within 24 h of capture; invoiced amounts and late interest; prices in USD; export-control and sanctions compliance; orders placed in Aleph UI or API",
+      "url": "https://satellogic.com/license-agreement"
+    },
+    {
+      "claim": "Conflicted / restricted areas prohibited from general sale; case-by-case determination with enhanced due diligence on the requesting customer; delivery may be delayed or resolution reduced",
+      "url": "https://satellogic.com/conflicted-restricted-areas/"
+    },
+    {
+      "claim": "Vendor deck (March 2026): NewSat Mk-V 70 cm native / 50 cm SR, > daily revisit at equator from ~20 satellites, tasking up to 6 h before capture, delivery up to 3 h after capture (L1 Basic), geolocation 30 m / 10 m CE90 with GCPs",
+      "url": "https://science.nasa.gov/wp-content/uploads/2026/03/csda-vendor-focus-satellogic-3-25-26.pdf"
+    },
+    {
+      "claim": "Reseller listing: more than 30 NewSat satellites, up to 4 times a day; tasking from 30,000 credits per scene, catalog from 500 credits per km2",
+      "url": "https://docs.up42.com/data/satellogic"
+    },
+    {
+      "claim": "UP42: 100 credits are equivalent to EUR 1",
+      "url": "https://docs.up42.com/getting-started/credit-management"
+    },
+    {
+      "claim": "No Satellogic server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=satellogic"
+    },
+    {
+      "claim": "Signed delivery manifest (SHA-256 per file, RSA-4096) since 8 September 2025",
+      "url": "https://developers.satellogic.com/data/digital-signature.html"
+    }
+  ],
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

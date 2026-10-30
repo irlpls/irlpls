@@ -1,0 +1,261 @@
+{
+  "id": "airnow",
+  "name": "EPA AirNow",
+  "status": "unclaimed",
+  "provider_url": "https://docs.airnowapi.org/",
+  "adapter": "airnow",
+  "tags": [
+    "air quality",
+    "aqi",
+    "air quality index",
+    "official aqi",
+    "nowcast",
+    "ozone",
+    "pm2.5",
+    "pm10",
+    "no2",
+    "smoke",
+    "air quality forecast",
+    "government monitors",
+    "epa",
+    "government",
+    "free",
+    "real-time",
+    "sensor",
+    "united states",
+    "canada",
+    "mexico"
+  ],
+  "summary": "The U.S. EPA's AirNow program serves real-time Air Quality Index readings (NowCast AQI) and agency-issued AQI forecasts from more than 2,500 monitoring stations run by over 150 local, state, tribal, provincial and federal agencies across the United States, Canada and Mexico. Keyless hourly files (reportingarea.dat by reporting area, HourlyAQObs and HourlyData by monitoring site) download from files.airnowtech.org; the AirNow API web services (by ZIP, lat/long, reporting area or bounding box) need a free account and key. The data are preliminary and unvalidated.",
+  "short": "The EPA's official real-time Air Quality Index for the US, Canada and Mexico; hourly, free, keyless files.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current NowCast AQI per pollutant for a reporting area (the peak across the area's monitors), by ZIP code, lat/long or reporting area code",
+      "AQI forecasts by reporting area, ZIP or lat/long (where agencies issue them)",
+      "hourly observations by monitoring site: AQI for ozone, PM2.5, PM10 and NO2, and concentrations incl. CO and SO2 (keyless HourlyAQObs/HourlyData files, or the keyed bounding-box service)",
+      "PM2.5, ozone and combined AQI contour maps (KML) for a bounding box",
+      "action-day flags and forecast discussions from air agencies"
+    ]
+  },
+  "pricing": {
+    "model": "free public government service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "Free. The file products on files.airnowtech.org download without a key; the web services need a free AirNow API account and key."
+  },
+  "latency": {
+    "typical": "Observations for the previous hour are generally available 10-30 minutes past the hour; reportingarea.dat is updated twice per hour at :25 and :55",
+    "notes": "AirNow FAQ: observations update once per hour and forecasts are issued once per day. On 2026-10-27 04:59 UTC the keyless reportingarea.dat (last modified 04:42 UTC) held observations for 00:00 EDT (04:00 UTC), and HourlyData for 03:00 UTC was last modified 04:54 UTC."
+  },
+  "coverage": {
+    "regions": [
+      "United States",
+      "Canada",
+      "Mexico"
+    ],
+    "notes": "AirNow covers the United States, Canada and Mexico. AQI by reporting area (reportingarea.dat and the ZIP/lat-long services) is for US reporting areas plus Mexicali; Canadian and most Mexican data appear as monitoring sites in the hourly site files. Reporting areas range from part of a city to a whole county, and the lat/long and ZIP services return the reporting area's peak value, not the nearest monitor. Forecasts are not issued for every area, every day or every season.",
+    "areas": [
+      "US",
+      "CA",
+      "MX"
+    ]
+  },
+  "licensing": {
+    "summary": "EPA AirNow Data Exchange Guidelines (PDF, Aug 2025) (account sign-up also requires agreeing to a Data Use Agreement): the data are preliminary, not fully verified or validated, and must not be used for regulation, trends, guidance or other government or public decision-making (official data come from EPA's AQS). The federal, state, local and tribal agencies own the data. Users must credit those agencies and EPA AirNow, disseminate values and advisories unaltered, use the AQI colours, label displays and products as preliminary, tell the agencies and EPA AirNow when products rely on the data, and keep their contact details current. AI training and resale are not mentioned.",
+    "buyer_owns_output": false
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 1.5 hours",
+    "notes": "Historical observation and forecast services exist; irlpls lists AirNow for current readings."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "AirNow FAQ: \"air quality observations for the previous hour are generally available between 10 and 30 minutes past the hour.\""
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://docs.airnowapi.org/webservices",
+    "base_url": "https://www.airnowapi.org",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "The file products on https://files.airnowtech.org/ (e.g. /airnow/today/reportingarea.dat, /airnow/{YYYY}/{YYYYMMDD}/HourlyAQObs_{YYYYMMDDHH}.dat) download without a key."
+      },
+      {
+        "type": "api_key_query",
+        "env_var": "AIRNOW_API_KEY",
+        "how_to_get": "Request an account at https://docs.airnowapi.org/account/request/ (name, user name, email, phone, agency, comment, and agreement to the Data Use Agreement and Data Use Guidelines), activate it with the emailed confirmation code, then copy the key from the top right of the Web Services page; it is passed as the API_KEY query parameter."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://files.airnowtech.org/airnow/today/reportingarea.dat",
+        "params": "None. Pipe-delimited: issue date|valid date|valid time|time zone|hour offset|record type (O observation, F forecast)|current flag|reporting area|state|lat|lon|parameter|AQI|category|action day|discussion|agency",
+        "notes": "No key; different host from base_url. Current observations and forecasts for every reporting area, updated at :25 and :55. Pair with https://files.airnowtech.org/airnow/today/cityzipcodes.csv (ZIP to reporting area, updated daily)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://files.airnowtech.org/airnow/{YYYY}/{YYYYMMDD}/HourlyAQObs_{YYYYMMDDHH}.dat",
+        "params": "Date and hour in UTC",
+        "notes": "No key; different host from base_url. CSV, one row per monitoring site: AQSID, site name, status, lat/lon, country code, valid date/time, data source, reporting area, ozone/PM10/PM2.5/NO2 AQI and concentrations of PM2.5, ozone, NO2, CO, SO2 and PM10. HourlyData_{YYYYMMDDHH}.dat has the raw hourly values per site and parameter."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/aq/observation/current/ziplatlong/",
+        "notes": "Current observations for the reporting area of a lat/long or ZIP (new June 2026). Needs API_KEY; without it returns HTTP 401 'Request not authenticated.' Per-service parameter docs are visible only when logged in."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/aq/observation/current/racode/",
+        "notes": "Current observations by reporting area code (new June 2026). Needs API_KEY."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/aq/forecast/current/",
+        "notes": "Current forecasts by ZIP, lat/long or reporting area code (new June 2026). Needs API_KEY."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/aq/data/",
+        "notes": "Hourly observations (AQI and/or concentrations) by monitoring site in a bounding box, for a date/time range. Needs API_KEY."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/KML/PM25/",
+        "notes": "PM2.5 AQI contour map (KML) for a bounding box and hour; /KML/Ozone/ and /KML/Combined/ likewise. Needs API_KEY."
+      }
+    ],
+    "rate_limits": "Web services: per key, per service, per hour (each service's limit is in its own docs, visible only when logged in); once hit, the service returns no data until the next hour, and limits cannot be raised. AirNow asks users to cache, and not to loop over ZIP codes to build a database (use the file products instead).",
+    "self_serve": true,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "io.github.pipeworx-io/airnow v0.1.5 (Pipeworx, third party), remote https://gateway.pipeworx.io/airnow/mcp; keyless, reads AirNow's public file products"
+    },
+    "notes": "The six older web services (e.g. /aq/observation/latLong/current/, /aq/forecast/zipCode/) were retired on 2026-09-30; their docs pages now redirect to /webservices/retired. File products are on a second host, files.airnowtech.org, so their endpoint paths are full URLs."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [],
+    "notes": "No payment: the service is free."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "None for the keyless file products. A web-service account asks for name, email, phone and agency, is activated by an emailed confirmation code, and requires agreeing to the Data Use Guidelines; users who keep exceeding rate limits may be contacted.",
+    "unknown": "Nothing is commissioned; monitors report on their own schedule."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated monitors operated by air agencies"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or published hashes of data from monitor to file or API"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No imagery"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each observation is reported for a stated valid date and hour, with its time zone or UTC offset",
+      "unknown": "How monitor clocks are checked is not documented in the pages read"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Values belong to a named reporting area or to a monitoring site with an AQS ID and latitude/longitude",
+      "unknown": "Lat/long and ZIP queries return the reporting area's peak value, which may come from a monitor some distance away; site coordinates are as reported by agencies"
+    },
+    "content": {
+      "level": "none",
+      "unknown": "AirNow labels its data raw, preliminary and not fully verified or validated; values come from agency-operated monitors and can change after agency validation (official data are in AQS), and no real-time quality-control method is described in the pages read"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No per-reading cross-check documented; a reporting area's value is the maximum across its monitors, not a cross-check"
+    }
+  },
+  "sources": [
+    {
+      "claim": "AirNow covers the United States, Canada and Mexico; over 2,500 monitoring stations; forecasts for more than 500 cities; more than 150 local, state, tribal, provincial and federal agencies; data not fully verified or validated, preliminary, not for regulation, trends, guidance or government or public decision making; official data from AQS",
+      "url": "https://docs.airnowapi.org/"
+    },
+    {
+      "claim": "Web services list: current forecasts by reporting area, lat/long or ZIP; historical forecasts; PM2.5, ozone and combined KML contour maps; observations by monitoring site (hourly and daily bounding box); current observations by reporting area and by ZIP or lat/long; historical observations by state",
+      "url": "https://docs.airnowapi.org/webservices"
+    },
+    {
+      "claim": "API key at top right of Web Services page; users must follow the Data Use Guidelines; per-key per-service hourly rate limits that cannot be changed; observations updated hourly, available 10-30 minutes past the hour; forecasts daily; cache results; reporting areas from part of a city to a county; forecasts not available for every area; area observation is the maximum across its monitors; ZIP and lat/long services return the reporting area peak AQI; do not loop over ZIP codes; reportingarea.dat on files.airnowtech.org updated at :55 and :25; cityzipcodes.csv updated daily",
+      "url": "https://docs.airnowapi.org/faq"
+    },
+    {
+      "claim": "Account required for web services and feeds; activate with emailed confirmation code; key on Web Services page; NowCast AQI per pollutant; CSV, JSON or XML output; six web services retired in September 2026; file products on files.airnowtech.org",
+      "url": "https://docs.airnowapi.org/docs/AirNowAPIFactSheet.pdf"
+    },
+    {
+      "claim": "New services from June 17, 2026: /aq/forecast/current/, /aq/observation/current/racode/, /aq/observation/current/ziplatlong/, /aq/observation/historical/state/, /aq/dailydata/, /aq/forecast/historical/; six older services (e.g. /aq/observation/latLong/current/) retired September 30, 2026; /aq/data/ and /KML/PM25/, /KML/Ozone/, /KML/Combined/ remain",
+      "url": "https://docs.airnowapi.org/docs/AirNowAPIUpdates2026June.pdf"
+    },
+    {
+      "claim": "Data Use (Exchange) Guidelines: preliminary data, not for regulation or decision-making; agencies own the data; credit agencies and EPA AirNow; do not alter values or advisories; use AQI colours; label products preliminary; notify agencies and EPA AirNow of reliance; keep contact details current",
+      "url": "https://docs.airnowapi.org/docs/DataUseGuidelines.pdf"
+    },
+    {
+      "claim": "Account request form: name, user name, email, phone, agency, comment; must agree to the Data Use Agreement and the EPA AirNow Data Use Guidelines",
+      "url": "https://docs.airnowapi.org/account/request/"
+    },
+    {
+      "claim": "AQI categories and colours; real-time values are NowCast AQI; forecasts issued by agencies per reporting area; action days",
+      "url": "https://docs.airnowapi.org/aq101"
+    },
+    {
+      "claim": "Keyless live check 2026-10-26 (04:59 UTC 27 Oct): 7,410 rows of current observations and forecasts by reporting area, newest observations for 00:00 EDT 27 Oct, last modified 04:42 UTC; US states plus Mexicali (MX)",
+      "url": "https://files.airnowtech.org/airnow/today/reportingarea.dat"
+    },
+    {
+      "claim": "Keyless hourly site file: 4,416 sites with country codes (US 2,726, CA 343, MX 75, others), AQI for ozone/PM10/PM2.5/NO2 and concentrations incl. CO and SO2",
+      "url": "https://files.airnowtech.org/airnow/2026/20261027/HourlyAQObs_2026102703.dat"
+    },
+    {
+      "claim": "ZIP to reporting area lookup file with ZIP centroids, no key",
+      "url": "https://files.airnowtech.org/airnow/today/cityzipcodes.csv"
+    },
+    {
+      "claim": "A keyless call to the new current-observations service returns HTTP 401 'Request not authenticated.' (tested 2026-10-26)",
+      "url": "https://www.airnowapi.org/aq/observation/current/ziplatlong/?format=application/json&latitude=36.7&longitude=-119.8"
+    },
+    {
+      "claim": "No first-party MCP server; third-party io.github.pipeworx-io/airnow (v0.1.5, remote https://gateway.pipeworx.io/airnow/mcp)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=airnow"
+    }
+  ],
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

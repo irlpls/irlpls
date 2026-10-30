@@ -1,0 +1,179 @@
+{
+  "id": "doordash-tasks",
+  "name": "DoorDash Tasks",
+  "status": "unclaimed",
+  "provider_url": "https://developer.doordash.com/en-US/tasks",
+  "short": "Dashers photograph or check a place on request. US, design partners only.",
+  "summary": "DoorDash's programme that pays its couriers (Dashers) for short on-the-ground jobs, offered to businesses: photos of menus, storefronts, shelves, store condition and property damage, structured inspection checklists, and item transport. The developer site says a Dasher can be engaged anywhere in the U.S. with a single API call; no endpoints, auth or prices are published and access is by contacting the team (design partners). Available in select US places, excluding California, New York City, Seattle and Colorado.",
+  "tags": [
+    "people",
+    "photos",
+    "inspection",
+    "property",
+    "shelf-audit",
+    "storefront",
+    "gig",
+    "us",
+    "api",
+    "design-partners"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "storefront photo",
+      "menu and dish photography",
+      "entrance and delivery-zone walkthrough",
+      "retail shelf and inventory capture",
+      "store condition documentation",
+      "property damage photos",
+      "pre/post construction documentation",
+      "structured inspection checklist",
+      "real estate listing exterior photos",
+      "item transport"
+    ]
+  },
+  "pricing": {
+    "model": "Not published; per task, set by DoorDash",
+    "from_usd": 0,
+    "unit": "task",
+    "notes": "No client price is published. The announcement says Dasher pay is 'shown upfront and determined based on effort and complexity of the activity'."
+  },
+  "latency": {
+    "typical": "Not stated",
+    "notes": "No turnaround is published. The only timing statement is that listing photos are delivered 'before the first showing'."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Real-World Task Dispatch page: no turnaround stated except listing photos 'delivered before the first showing'.",
+    "formats": [
+      "photo"
+    ]
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "notes": "Tasks are performed by a Dasher after the order; no archive."
+  },
+  "coverage": {
+    "regions": [
+      "USA, select places"
+    ],
+    "notes": "Announcement (19 Mar 2026): 'currently available in select places in the U.S., excluding California, New York City, Seattle and Colorado'; 'plan to expand into more task types and countries'. The dispatch page says 'anywhere in the U.S.' and the hero says Dashers 'can reach almost anywhere in the U.S.'; the two are not reconciled.",
+    "areas": [
+      "US"
+    ]
+  },
+  "licensing": {
+    "summary": "No licence, data-ownership or AI-training terms for Tasks clients are published on the pages read. Rights are not stated; treat as not granted until a client agreement says otherwise."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "approval"
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Not published. The developer pages offer 'Talk to our team' and say DoorDash is 'building with design partners across industries'."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "Registry search 'doordash' (2026-10-27) returned only a third-party food-delivery server (@striderlabs/mcp-doordash), unrelated to Tasks."
+    },
+    "notes": "The page claims 'Engage a Dasher anywhere in the U.S. with a single API call' but publishes no docs, base URL, endpoints or auth. /.well-known/oauth-protected-resource and /.well-known/agent-card.json on developer.doordash.com redirected (302) and were not served as metadata."
+  },
+  "payment": {
+    "methods": [],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Not published."
+  },
+  "capture": {
+    "by": "people",
+    "worker_pay": {
+      "model": "per task, shown upfront, based on effort and complexity",
+      "disclosed": false
+    }
+  },
+  "requester": {
+    "unknown": "Not published. Whether DoorDash screens clients or forbids tasks aimed at a specific person is not stated on the pages read."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "unknown": "The Dasher-wide policy is published, but not whether Tasks, or the standalone Tasks app in pilot, apply it. Re-verification is sampled, not per task, and nothing per result shows which Dasher captured it. No independent audit, so not evidenced.",
+      "method": "Dashers verify identity at sign-up with a government ID and a selfie through Persona, pass a background check, and are asked for real-time selfie re-verification (150,000+ a week per DoorDash, Dec 2024)."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No app or device attestation is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No capture signing or C2PA is described."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No timestamp method is described; delivery time is not documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is described; how a Dasher is shown to have been at the address is not published."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "The announcement does not say how completed tasks are verified; any review process is unpublished."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent confirmation is described."
+    }
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Hero: 'Put 8 million Dashers to work for your business'; 2M+ tasks completed; three offerings; 'Talk to our team'",
+      "url": "https://developer.doordash.com/en-US/tasks/Hero"
+    },
+    {
+      "claim": "Real-World Task Dispatch: 'Engage a Dasher anywhere in the U.S. with a single API call'; property documentation (storm damage, pre/post construction, structured inspection checklists), listing photos, item transport; 'design partners across industries'",
+      "url": "https://developer.doordash.com/en-US/tasks/RealWorldDispatch"
+    },
+    {
+      "claim": "Digitize the Physical World: menu and dish photography, entrance/storefront walkthroughs, shelf capture, store condition documentation, robotaxi support; custom workflows on request",
+      "url": "https://developer.doordash.com/en-US/tasks/DigitizePhysicalWorld"
+    },
+    {
+      "claim": "Announcement 19 Mar 2026: tasks for businesses; pay shown upfront; 2M+ tasks since 2024; partners in retail, insurance, hospitality, technology; select US places excluding CA, NYC, Seattle, CO; more countries planned",
+      "url": "https://about.doordash.com/en-us/news/introducing-doordash-tasks"
+    },
+    {
+      "claim": "Not in the official MCP Registry as a Tasks server",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=doordash"
+    },
+    {
+      "claim": "Dashers verify identity with a government ID and complete a background check; regular real-time selfie re-verification (150,000+ a week)",
+      "url": "https://about.doordash.com/en-us/news/doordash-further-strengthens-safeguards-against-account-sharing"
+    },
+    {
+      "claim": "Dasher identity verification through Persona at sign-up and before a dash",
+      "url": "https://help.doordash.com/en-us/dashers/article/dasher-identification-verification-faq"
+    }
+  ]
+}

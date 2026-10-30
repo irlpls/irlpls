@@ -1,0 +1,1 @@
+Sample receipt: artefact ../artefact.txt, receipt receipt.json (detached JWS, ES256), keys jwks.json. Check: SHA-256 of the artefact equals payload.media.sha256, then verify the JWS over RFC 8785 of payload with the key named by kid.

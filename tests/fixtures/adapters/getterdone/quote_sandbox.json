@@ -1,0 +1,2 @@
+{"success": true, "data": {"reward": 10, "platformFee": 2, "total": 12, "currency": "USD", "tokenStatus": "sandbox", "sandbox": true,
+ "recurring": false, "perTaskLimitUsd": null, "withinTokenLimit": true, "confirmationToken": "qc_fixture", "confirmationExpiresInSeconds": 600}}

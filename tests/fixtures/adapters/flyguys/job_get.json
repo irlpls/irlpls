@@ -1,0 +1,38 @@
+{
+ "message_created_at": "2024-11-15T13:44:48Z",
+ "mission_event": "created",
+ "mission": {
+  "id": "d153976d-82eb-4870-81db-71df700ee8fe",
+  "job_number": "76445d4001b4",
+  "job_id": "3132",
+  "status": "confirmed",
+  "status_update_reason": "",
+  "created_at": "2024-10-21T16:34:45Z",
+  "cancellation_reasons": null,
+  "reference_id": "0fa695b3-11be-425f-86a9-e47540866cdc",
+  "external_id": "69d70127-0450-4ba6-bfb9-1a1c89ce111c",
+  "status_timestamps": {
+   "created": "2024-10-21T16:34:45Z"
+  },
+  "package": {
+   "id": "demo-catalog-aerial",
+   "name": null
+  },
+  "activity_logs": [
+   {
+    "activity_id": "21900",
+    "created_at": "2024-11-15T13:44:48Z",
+    "action": "created",
+    "reason": ""
+   },
+   {
+    "activity_id": "21901",
+    "created_at": "2024-11-15T13:44:48Z",
+    "action": "confirmed",
+    "reason": ""
+   }
+  ],
+  "images": null,
+  "videos": null
+ }
+}

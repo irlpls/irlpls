@@ -1,0 +1,449 @@
+{
+  "id": "prolific",
+  "name": "Prolific",
+  "provider_url": "https://www.prolific.com",
+  "status": "unclaimed",
+  "tags": [
+    "participant recruitment",
+    "human data",
+    "online",
+    "surveys",
+    "AI evaluation",
+    "multimodal",
+    "verified participants",
+    "research",
+    "API",
+    "MCP"
+  ],
+  "summary": "Online platform that recruits ID-verified adult participants in about 50 countries for paid studies and human-data collection, run through a web app, REST API, CLI or a first-party MCP server. Its AI Task Builder Collections let participants upload their own photos, recordings and files. Prolific prohibits in-person studies, including asking participants to visit specific locations, so it cannot send anyone to a place, and it does not verify where or when an uploaded file was captured.",
+  "short": "ID-verified people in about 50 countries for paid online studies and uploads; no in-person or on-site tasks.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "audio",
+      "text-report"
+    ],
+    "tasks": [
+      "online surveys and experiments, hosted on Prolific or on an external survey tool",
+      "AI model evaluation, preference ranking and annotation (AI Task Builder Batches)",
+      "original data collection with AI Task Builder Collections: free text, multiple choice and file upload with set file types, sizes and counts (Prolific's examples: photos, documents, recordings, egocentric video, speech samples)",
+      "longitudinal and multi-wave studies with the same participants",
+      "targeting by 300+ audience filters, custom screeners and representative samples"
+    ]
+  },
+  "pricing": {
+    "model": "pay as you go from a prepaid workspace balance: a participant reward you set plus a platform fee; managed services by custom quote",
+    "from_usd": 0,
+    "unit": "per participant submission (the reward you set, plus platform fee)",
+    "notes": "The pricing page states a platform fee of usually 42.8% for corporate customers and 33.3% for academic or non-profit customers. The minimum reward is £6.00 / $8.00 per hour, with £9.00 / $12.00 recommended. No subscription or contract is needed for the platform; managed services use a Statement of Work. A submission's price depends on its estimated time, so no price per capture is published, and from_usd is 0. POST /study-cost-calculator/ returns a study's total including VAT and fees. Final cost can exceed a quote (underpaying adjustments, extra approvals, bonuses). Minimum top-up £0.51 / $0.51."
+  },
+  "latency": {
+    "typical": "Prolific says self-serve studies typically launch in minutes and return first responses in hours. Most studies start recruiting quickly; contact support if recruitment has not started within two hours.",
+    "notes": "Speed depends on time of day, filters, reward and the eligible pool. Prolific gives no guaranteed timeframe and says it cannot currently support time-sensitive studies. Webhooks (response.submitted, study.completed) allow incremental ingest. Funding by bank transfer can take up to 7 days; card top-ups are instant."
+  },
+  "coverage": {
+    "regions": [
+      "49 supported countries, mostly OECD members, including the US, UK, Canada, EU countries, Japan, Korea, Australia and New Zealand, plus Brazil, Mexico, Chile, South Africa, the Gulf states, Hong Kong, Taiwan and Singapore",
+      "Small participant populations in Algeria, Argentina, Colombia, Egypt, India, Indonesia, Kazakhstan, Kenya, Malawi, Malaysia, Morocco, the Philippines and Vietnam"
+    ],
+    "notes": "Country means where a participant lives, filtered by screener; it says nothing about where a capture is made. Prolific describes particularly strong representation in the US, UK and Europe. Pool size: 300,000+ active participants (pricing page; 'our participant pool in numbers' page says 300k+ and 43 represented countries, 86 languages). The participant help page lists Egypt, India and Indonesia as supported, while the researcher page lists them as small populations. No city-level availability is published, and in-person tasks are prohibited, so coverage of a specific place is not offered.",
+    "areas": [
+      "AU",
+      "AT",
+      "BH",
+      "BE",
+      "BR",
+      "BG",
+      "CA",
+      "CL",
+      "HR",
+      "CY",
+      "CZ",
+      "DK",
+      "EE",
+      "FI",
+      "FR",
+      "DE",
+      "GR",
+      "HK",
+      "HU",
+      "IS",
+      "IE",
+      "IL",
+      "IT",
+      "JP",
+      "KR",
+      "LV",
+      "LT",
+      "LU",
+      "MT",
+      "MX",
+      "NL",
+      "NZ",
+      "NO",
+      "PL",
+      "PT",
+      "QA",
+      "RO",
+      "SA",
+      "SG",
+      "SK",
+      "SI",
+      "ZA",
+      "ES",
+      "SE",
+      "CH",
+      "TW",
+      "AE",
+      "GB",
+      "US",
+      "DZ",
+      "AR",
+      "CO",
+      "EG",
+      "IN",
+      "ID",
+      "KZ",
+      "KE",
+      "MW",
+      "MY",
+      "MA",
+      "PH",
+      "VN"
+    ]
+  },
+  "licensing": {
+    "summary": "Researcher Terms (full version, last updated 14 Aug 2026), section M: Prolific claims no rights in Studies or Submissions, and the Participant Terms ask participants to waive proprietary rights in a Submission to the Researcher and, where needed, assign them 'for their sole use'. Section B forbids researchers to 'sell, distribute, publish, sublicense, loan or copy any of the Submissions if not expressly permitted by the Terms', and the terms grant no such permission. The researcher is data controller and must give participants a privacy notice. Media (audio, video, images) must be flagged in the study description, must not include direct identifiers, and must not be used to re-identify anyone. The terms do not mention AI or machine-learning training by the buyer. For AI Task Builder studies Prolific holds Submissions as processor and says it 'will not use Study data or Submissions for our own purposes', but it may review them for compliance, safeguarding, troubleshooting and improving the platform. It also runs authenticity checks and deletes Submissions 6 months after the study completes. The terms do not mention model training by Prolific.",
+    "resale": "forbidden",
+    "buyer_owns_output": true
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Waitlist entry, then identity verification with a live video selfie matched to a government-issued ID (Onfido/Entrust; vendor-reported fraud rate under 0.1%, false acceptance 0.01%), phone and email verification, IP validation and deduplication, VPN detection, an onboarding quality screen, surprise identity re-checks with new selfies, bi-monthly pool audits and behavioural monitoring. Prolific describes 110+ checks in its Protocol system. Optional bot authenticity checks, on by default in AI Task Builder; a '100% Human Guarantee' refunds double for bot-flagged submissions in eligible Qualtrics studies.",
+      "unknown": "All figures are Prolific's or its ID vendor's; no independent audit is published. Prolific's pages disagree on the number of checks (40+, 50+, 110+). Whether the verified person is the one who made a given uploaded photo or recording is not checked.",
+      "evidence_url": "https://researcher-help.prolific.com/en/articles/621821-methodological-justification-pack-how-prolific-protects-data-quality"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "AI Task Builder Collections take files through a browser file-upload field with allowed types and sizes. No controlled capture app or app attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No method confirms an upload came from a live camera rather than an existing file, a screen recording or a generator. Prolific is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "Exports carry a submission created_at timestamp; nothing establishes when an uploaded file was actually captured."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location verification. IP validation and the country filter concern where a participant lives and duplicate accounts, not where a file was captured, and studies asking participants to visit specific locations are prohibited."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Protocol quality checks, LLM and bot authenticity checks (behavioural signals such as copy-paste, tab switching, mouse movement and pacing; Prolific reports 98.7% precision and 78.9% recall in its own testing), flags for exceptionally fast submissions, participant quality scores from researcher approvals and rejections, and manual review by a data-quality team. The researcher approves or rejects each submission.",
+      "unknown": "These target bots, AI-written text and low effort in surveys. No public method checks whether an uploaded photo, video or audio file shows what it claims, or detects staged, reused or AI-generated media."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-checking of a submission against other sources or second captures. A researcher can collect several participants per task and compare them."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.prolific.com/",
+    "base_url": "https://api.prolific.com/api/v1",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "Authorization",
+        "env_var": "PROLIFIC_API_TOKEN",
+        "how_to_get": "In a Prolific researcher account open the API Tokens page (app.prolific.com/researcher/tokens/), click Create API Token, name it and copy it. Send it as 'Authorization: Token <your token>'. Tokens do not expire and carry the full permissions of the researcher account."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/study-cost-calculator/",
+        "params": "reward (cents, account currency), total_available_places",
+        "notes": "Returns total_cost including VAT and fees. GET /studies/{id}/cost/?is_projected=true gives a draft study's projected cost."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/data-collection/collections",
+        "params": "name, workspace_id, task_details, collection_items (pages of free_text, multiple_choice, file_upload with accepted_file_types, max_file_size_mb, min/max_file_count)",
+        "notes": "Defines an AI Task Builder Collection for participant uploads. Requires an account with Collections enabled. Attach it to a study with data_collection_method AI_TASK_BUILDER_COLLECTION and data_collection_id."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/studies/",
+        "params": "name, description, one of external_study_url / access_details / data_collection_method + data_collection_id, prolific_id_option, total_available_places, estimated_completion_time (minutes), reward (cents or pence); optional project (to bill workspace funds), filters, device_compatibility, peripheral_requirements, submissions_config, completion_codes",
+        "notes": "Creates a draft (UNPUBLISHED) study; nothing is spent yet."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/studies/{id}/transition/",
+        "params": "action: PUBLISH, SCHEDULE_PUBLISH, CANCEL_PUBLISH, PAUSE, START, STOP; publish_at for SCHEDULE_PUBLISH",
+        "notes": "PUBLISH spends real money from the workspace balance; there is no sandbox."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/studies/{id}/",
+        "notes": "Study status; GET /studies/{id}/submissions/counts/ counts submissions by status. Webhooks can push study and submission events."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/studies/{id}/submissions/",
+        "params": "ordering (started_at, completed_at, status, ip, time_taken, participant_id, study_code; prefix - for descending)",
+        "notes": "Lists a study's submissions for review and approval."
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/data-collection/collections/{collection_id}/export",
+        "notes": "200 with a presigned ZIP URL (valid 1 hour) or 202 with export_id; poll GET /data-collection/collections/{collection_id}/export/{export_id}. The ZIP holds responses.jsonl, collection.json and files/. AI Task Builder submissions are deleted 6 months after the study completes."
+      }
+    ],
+    "rate_limits": "Authenticated: 10 requests per second per account; unauthenticated: 30 requests per day per IP; POST /invitations/ 100 per hour. 429 when exceeded, and also under wallet contention on concurrent payment operations.",
+    "sdk": "Prolific CLI (github.com/prolific-oss/cli), built from source in the docs' instructions.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "auth": "PROLIFIC_TOKEN environment variable, sent as 'Authorization: Token <token>'",
+      "first_party": true,
+      "notes": "prolific-oss/prolific-mcp (Apache-2.0, v1.0.0, linked from prolific.com/mcp) is a local stdio server run with 'uvx prolific-mcp' or a .mcpb bundle. Its tools cover filters, eligibility counts, workspaces, studies (create, publish, pause, stop), submissions, collections and exports, and webhooks; it warns that publish_study spends real money. Its README says it is listed on the official MCP Registry, but registry searches for 'prolific', 'prolific-mcp' and 'prolific-oss' returned no such server on 2026-10-26. Separately, docs.prolific.com/_mcp/server is a documentation-search MCP server."
+    },
+    "notes": "Funds can only be added, and the balance only checked, in the web app; the API Supplement says payments and top-ups are not available through the API. Collections studies should be reviewed with the CLI or preview link, not the web app's review screen. Webhooks are signed and retried. The Researcher Terms forbid bots or programs that automate use of Prolific except integrations described in the help centre; the API Supplement licenses API use, including from your own platform."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "approval",
+    "rate_limit": {
+      "requests": 10,
+      "per_seconds": 1,
+      "scope": "per-account",
+      "notes": "Authenticated. Unauthenticated: 30 requests per day per IP; POST /invitations/ 100 per hour. 429 when exceeded, and under wallet contention.",
+      "source_url": "https://docs.prolific.com/api-reference/introduction/rate-limits-and-api-status.md"
+    }
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "invoice",
+      "prepaid_balance"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "Studies are funded upfront from a workspace balance. Top up by card (Visa, Mastercard, Amex, Maestro, Discover; via Braintree, instant) or by bank transfer against a generated invoice (Lloyds or Wise, up to 7 days). No cheques. Invoices are valid 45 days. The API can spend the balance but cannot add funds. Platform fees are not refundable."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Accounts registered with an institutional email are approved automatically if the institution has used Prolific before; other accounts are reviewed manually and must state their institution, study types and research aim. Email verification and a workspace office address are required before adding funds. Prolific prohibits studies involving in-person activities (including visiting specific locations), recruiting under-18s, collecting direct identifiers or special category data in AI Task Builder studies, and unlawful content. It may review AI Task Builder study content and submissions for compliance or safeguarding and can suspend data collection. Researchers act for their institution and may not let others use the account or post studies for a third party without Prolific's approval. API users listing studies for their own customers must identify those customers on request.",
+    "unknown": "How strictly study briefs are screened before publication; whether a brief targeting a specific person is caught."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Collected after you publish; first responses usually within hours",
+    "notes": "Submissions are new contributions, but an uploaded file can be older than the study: nothing establishes when it was captured. Prolific says it cannot currently support time-sensitive studies."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Prolific: 'Self-serve studies typically launch in minutes and return first responses in hours.'"
+  },
+  "adapter": "prolific",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Platform fee usually 42.8% corporate, 33.3% academic or non-profit; minimum pay £6.00/$8.00 per hour, £9.00/$12.00 recommended; no contract or subscription, pay as you go by adding funds to a wallet; managed services by SoW/custom quote; 300,000+ active participants; 40+ countries with strongest representation in US, UK and Europe; responses within hours",
+      "url": "https://www.prolific.com/pricing"
+    },
+    {
+      "claim": "REST API, CLI and webhooks for agents; 'Self-serve studies typically launch in minutes and return first responses in hours'; idempotency keys on study creation (marketing claim)",
+      "url": "https://www.prolific.com/for-agents"
+    },
+    {
+      "claim": "First-party MCP server page linking github.com/prolific-oss/prolific-mcp",
+      "url": "https://www.prolific.com/mcp"
+    },
+    {
+      "claim": "prolific-mcp: local stdio server (uvx prolific-mcp), PROLIFIC_TOKEN sent as Authorization: Token, tool list, publish_study spends real money with no sandbox, Apache-2.0; README claims an MCP Registry listing",
+      "url": "https://github.com/prolific-oss/prolific-mcp"
+    },
+    {
+      "claim": "MCP Registry search: no Prolific server returned for 'prolific' (only an unrelated server by user ajprolific), nor for 'prolific-mcp' or 'prolific-oss'",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=prolific"
+    },
+    {
+      "claim": "Docs index: API sections, AI Task Builder Collections endpoints, webhooks; documentation MCP server at docs.prolific.com/_mcp/server",
+      "url": "https://docs.prolific.com/llms.txt"
+    },
+    {
+      "claim": "API token created on the API Tokens page; 'Authorization: Token <token>'; tokens never expire and are scoped to the researcher account; error codes including 429",
+      "url": "https://docs.prolific.com/documentation/get-started/api-fundamentals.md"
+    },
+    {
+      "claim": "Rate limits: 10 requests/second per authenticated account, 30 requests/day per IP unauthenticated, POST /invitations/ 100/hour",
+      "url": "https://docs.prolific.com/api-reference/introduction/rate-limits-and-api-status.md"
+    },
+    {
+      "claim": "429s also come from wallet contention on concurrent payment operations",
+      "url": "https://docs.prolific.com/documentation/core-concepts/managing-high-loads.md"
+    },
+    {
+      "claim": "Balance can only be checked in the web app; publishing requires an available balance",
+      "url": "https://docs.prolific.com/api-reference/introduction/account-balance.md"
+    },
+    {
+      "claim": "Collections: participants submit their own content (images, files, text); file_upload with accepted_file_types and size/count limits; account needs Collections enabled; project needed to bill workspace funds; ~40% service fee on workspace-billed studies; export ZIP with responses.jsonl (created_at) and files/, presigned URL valid 1 hour; submission statuses",
+      "url": "https://docs.prolific.com/documentation/cookbooks/collecting-original-data-with-ai-task-builder-collections.md"
+    },
+    {
+      "claim": "POST /api/v1/data-collection/collections: name, workspace_id, task_details, collection_items",
+      "url": "https://docs.prolific.com/api-reference/ai-task-builder/create-collection.md"
+    },
+    {
+      "claim": "POST /api/v1/data-collection/collections/{collection_id}/export",
+      "url": "https://docs.prolific.com/api-reference/ai-task-builder/request-collection-export.md"
+    },
+    {
+      "claim": "GET /api/v1/data-collection/collections/{collection_id}/export/{export_id}",
+      "url": "https://docs.prolific.com/api-reference/ai-task-builder/get-collection-export-status.md"
+    },
+    {
+      "claim": "POST /api/v1/studies/ creates a draft study; fields including data_collection_method AI_TASK_BUILDER_COLLECTION and data_collection_id",
+      "url": "https://docs.prolific.com/api-reference/studies/create-study.md"
+    },
+    {
+      "claim": "POST /api/v1/studies/{id}/transition/ with PUBLISH, SCHEDULE_PUBLISH, CANCEL_PUBLISH, PAUSE, START, STOP",
+      "url": "https://docs.prolific.com/api-reference/studies/publish-study.md"
+    },
+    {
+      "claim": "GET /api/v1/studies/{id}/",
+      "url": "https://docs.prolific.com/api-reference/studies/get-study.md"
+    },
+    {
+      "claim": "GET /api/v1/studies/{id}/submissions/ with ordering",
+      "url": "https://docs.prolific.com/api-reference/studies/get-study-submissions.md"
+    },
+    {
+      "claim": "POST /api/v1/study-cost-calculator/ returns total_cost including VAT and fees",
+      "url": "https://docs.prolific.com/api-reference/studies/calculate-study-cost.md"
+    },
+    {
+      "claim": "GET /api/v1/studies/{id}/cost/ with is_projected",
+      "url": "https://docs.prolific.com/api-reference/studies/get-study-cost.md"
+    },
+    {
+      "claim": "Prolific CLI repository",
+      "url": "https://github.com/prolific-oss/cli"
+    },
+    {
+      "claim": "Researcher Terms full version (14 Aug 2026): section B bans bots except documented integrations, bans selling, distributing or copying Submissions unless expressly permitted, and bans posting for third parties without approval; section D requires media to be flagged; section M: Prolific claims no rights in Submissions and participants waive or assign rights to the Researcher; data-protection limits on media and re-identification",
+      "url": "https://prolific.notion.site/Researcher-Terms-7787f102f0c541bdbe2c04b5d3285acb"
+    },
+    {
+      "claim": "Researcher Terms: summary (studies funded upfront by card or bank transfer; platform fees non-refundable), AI Task Builder Terms (submissions held by Prolific as processor; 'We will not use Study data or Submissions for our own purposes' but may review them for compliance, safeguarding, troubleshooting and improving the platform; authenticity checks; no direct identifiers or special category data; deletion 6 months after completion), Research Consultancy Terms ('we do not claim any intellectual property rights in relation to your Studies'), API Supplement (licence to use the API to create, list and launch studies, including for your own customers; payments and adding funds not available via the API; must identify customers on request)",
+      "url": "https://prolific.notion.site/Researcher-Terms-7787f102f0c541bdbe2c04b5d3285acb"
+    },
+    {
+      "claim": "Studies involving in-person activities are prohibited, including asking participants to visit specific locations; no under-18s; PII collection unlikely to be supported; time-sensitive studies not fully supported",
+      "url": "https://researcher-help.prolific.com/en/articles/445105-are-there-types-of-studies-that-aren-t-suitable-for-prolific"
+    },
+    {
+      "claim": "Supported countries (49) and small participant populations (13 more); participants must live in a supported country",
+      "url": "https://researcher-help.prolific.com/en/articles/445224-who-are-the-participants-on-prolific"
+    },
+    {
+      "claim": "Participant-side country list (adds Egypt, India, Indonesia); over-18 and verified account required",
+      "url": "https://participant-help.prolific.com/en/articles/445007-who-can-participate-in-studies-on-prolific"
+    },
+    {
+      "claim": "Pool page: 300k+ active participants, 43 represented countries, 86 languages",
+      "url": "https://www.prolific.com/our-participant-pool-in-numbers"
+    },
+    {
+      "claim": "Recruitment speed depends on time of day, filters and pool; most studies start quickly, contact if not within two hours; time-sensitive studies not supported",
+      "url": "https://researcher-help.prolific.com/en/articles/445202-how-long-does-it-take-to-recruit-participants-for-my-study"
+    },
+    {
+      "claim": "Protocol: 110+ checks; waitlist; live video selfie + government ID via Entrust (<0.1% fraud, 0.01% false acceptance); phone, email, IP dedup; surprise re-checks; bi-monthly audits; authenticity checks 98.7% precision, 78.9% recall in testing; fast-submission flags",
+      "url": "https://researcher-help.prolific.com/en/articles/621821-methodological-justification-pack-how-prolific-protects-data-quality"
+    },
+    {
+      "claim": "Bot/AI detection overview: 110+ onboarding steps, also '50+ onboarding checks'; VPN detection; periodic ID re-checks",
+      "url": "https://www.prolific.com/resources/how-prolific-detects-bots-and-ai-in-online-research"
+    },
+    {
+      "claim": "Duplicate-account prevention: IP detection, email/phone verification, Onfido face scan, continuous integrity monitoring",
+      "url": "https://researcher-help.prolific.com/en/articles/445227-how-does-prolific-prevent-duplicate-participant-accounts"
+    },
+    {
+      "claim": "Data-integrity layers: IP validation 'confirms ... unique participants in your target locations', quality scores, specialist screeners",
+      "url": "https://researcher-help.prolific.com/en/articles/494274-how-prolific-protects-your-data-integrity"
+    },
+    {
+      "claim": "LLM and bot authenticity checks; both on by default in AI Task Builder; not available for Taskflow",
+      "url": "https://researcher-help.prolific.com/en/articles/445144-what-are-authenticity-checks"
+    },
+    {
+      "claim": "100% Human Guarantee: double credit for bot-flagged submissions in eligible Qualtrics studies",
+      "url": "https://researcher-help.prolific.com/en/articles/624524-what-is-the-100-human-guarantee"
+    },
+    {
+      "claim": "AI Task Builder collects images, video and audio (egocentric video, image datasets, speech samples); via CLI and API",
+      "url": "https://www.prolific.com/resources/what-s-new-longitudinal-projects-collect-multimodal-data-in-prolific-s-ai-task-builder-and-more"
+    },
+    {
+      "claim": "Ways to add money: card (Visa, Mastercard, Amex, Maestro; Braintree; instant) or bank transfer (Lloyds or Wise); no cheques; studies funded upfront",
+      "url": "https://researcher-help.prolific.com/en/articles/445241-adding-money-to-your-workspace-overview"
+    },
+    {
+      "claim": "Card top-up details; minimum top-up £0.51 / $0.51; Discover also accepted",
+      "url": "https://researcher-help.prolific.com/en/articles/445242-adding-money-via-card-payment"
+    },
+    {
+      "claim": "Bank transfer: up to 7 days; invoices valid 45 days",
+      "url": "https://researcher-help.prolific.com/en/articles/445243-how-to-add-money-via-bank-wire-transfer"
+    },
+    {
+      "claim": "Invoices: generated for top-ups or requested before paying; split rewards from platform fees",
+      "url": "https://researcher-help.prolific.com/en/articles/445247-invoices"
+    },
+    {
+      "claim": "Quotes are estimates; final cost can be higher (underpaying adjustments, extra approvals, bonuses)",
+      "url": "https://researcher-help.prolific.com/en/articles/445249-how-to-generate-a-quote-for-your-study"
+    },
+    {
+      "claim": "Account approval: institutional emails auto-approved if institution known; others reviewed manually with institution, study types and aims; email verification before funding",
+      "url": "https://researcher-help.prolific.com/en/articles/445107-account-approval-and-verification"
+    },
+    {
+      "claim": "Prolific not listed on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "Live video selfie and government ID check (Entrust); surprise identity re-checks",
+      "url": "https://researcher-help.prolific.com/en/articles/621821-methodological-justification-pack-how-prolific-protects-data-quality"
+    }
+  ]
+}

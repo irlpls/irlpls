@@ -1,0 +1,345 @@
+{
+  "id": "iceye",
+  "name": "ICEYE",
+  "status": "unclaimed",
+  "provider_url": "https://www.iceye.com/",
+  "tags": [
+    "satellite",
+    "satellite imagery",
+    "SAR",
+    "synthetic aperture radar",
+    "radar",
+    "night",
+    "through clouds",
+    "all-weather",
+    "tasking",
+    "dwell",
+    "spotlight",
+    "stripmap",
+    "scan",
+    "earth observation",
+    "remote sensing",
+    "aerial",
+    "api",
+    "global"
+  ],
+  "summary": "ICEYE runs a large synthetic aperture radar (SAR) satellite constellation that images through cloud and at night. Its Tasking API v2 is for customers with a contract. They can get a price, check feasibility and task a new capture centred on a point. The capture window is at least 24 hours wide and ends within 14 days. The customer picks the imaging mode (Strip, Scan, Spot, Dwell and their variants), the priority, and how soon products are available after acquisition: 8, 3 or 1 hour.",
+  "capabilities": {
+    "modalities": [
+      "aerial"
+    ],
+    "tasks": [
+      "task a new SAR capture centred on a point (or anywhere covering an AOI circle, with aoiRadiusMeters) in an acquisition window at least 24 h wide, ending within 14 days",
+      "imaging modes: STRIPMAP, SCAN, SCAN_WIDE, SPOTLIGHT, SPOTLIGHT_EXTENDED_AREA, SPOTLIGHT_FINE, SPOTLIGHT_EXTENDED_DWELL (and _FINE, _PRECISE), as allowed by contract",
+      "price a task before ordering (amount and currency, minor units), on contracts with a pricing plan",
+      "feasibility check for a list of candidate tasks (FEASIBLE / INFEASIBLE, and budget fit where priced)",
+      "priority BACKGROUND or COMMERCIAL (stated >90% statistical reliability)",
+      "product availability SLA: 8 h (default), 3 h, or 1 h in certain regions after acquisition",
+      "product types GRD, GRD-COG, SLC, SLC-COG, QLK, SICD, SIDD, CSI, VID as the contract and mode allow",
+      "Object Detection and Identification derivative ODI (formerly Detect & Classify; replaces DC-ATR, which is removed 2026-11-15) on Dwell modes and SPOTLIGHT_FINE, where enabled",
+      "planned and actual imaging time and footprint via the task scene endpoint",
+      "delivery to SFTP or S3 locations, and webhook notifications on task changes"
+    ]
+  },
+  "pricing": {
+    "model": "per task, set by contract (region, priority, imaging mode, SLA, exclusivity, EULA)",
+    "from_usd": 0,
+    "unit": "per tasked capture (price not published)",
+    "notes": "from_usd 0 means not published, not free. Each contract has a fixed pricing model, and the same task can cost different amounts under different contracts. GET /tasking/v2/price returns the price in minor currency units, but only on contracts with a pricing plan (hasPricingPlan). The docs' example of 529199 USD minor units (about $5,292) is only an example. Cancelling is free within 1 hour of submission or more than 72 h before the window. After that it costs 10% of the order value at 72-48 h, 20% at 48-24 h and 100% under 24 h, and a task cannot be cancelled once the window has started."
+  },
+  "latency": {
+    "typical": "Products available 8 h after acquisition by default, 3 h or 1 h with a faster SLA; acquisition happens somewhere in a window of at least 24 h that cannot start immediately",
+    "notes": "The minimum lead time before collection is 12 h for COMMERCIAL priority and 24 h for BACKGROUND (Product Specification, Table 3-2). The scheduler decides ACTIVE or REJECTED within 20 minutes of submission. The SLA counts from the end of acquisition and leaves out download or delivery time. Non-SLA products usually follow within about an hour, with no guarantee. The 1 h SLA is Commercial priority only, needs a feasibility pass, is not available for Dwell modes, and is 'guaranteed' for over 80% of feasible tasks."
+  },
+  "coverage": {
+    "regions": [
+      "Global (subject to orbit passes, contract and scheduling)"
+    ],
+    "notes": "SAR works through cloud and at night. Prices vary by region with demand. The contract decides which regions, imaging modes, priorities and exclusivity you may use, and the 1-hour SLA applies only in certain regions.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Each task picks a STANDARD or GOVERNMENT EULA, and the full terms are in the customer's contract. ICEYE US publishes its EULA (updated 2 December 2025). It grants a non-exclusive, non-transferable, non-sublicensable licence for the End User's internal use only. It forbids distributing, sublicensing, selling, publishing or making products public, and forbids commercial use. ICEYE keeps all title to products and to the parts of them inside the customer's derivatives. 'Data Derivatives' are outputs that keep no SAR pixels or sensor or ephemeris data and cannot be reversed back to them. The customer owns these outright and may use them for any purpose, credited 'Powered by ICEYE'. AI or ML training is not mentioned. Exclusivity: PUBLIC images go into ICEYE's public catalog 14 days after acquisition, where other customers can buy them. PRIVATE images are withheld from that catalog. The Product Specification says permanently, and the API docs say for the contract's agreed period.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured in your window, available hours after acquisition",
+    "notes": "ICEYE also sells past images from its archive catalog, where new images appear at least 14 days after acquisition. irlpls lists ICEYE only for new tasked captures."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://docs.iceye.com/constellation/api/tasking/",
+    "base_url": "https://platform.iceye.com/api",
+    "auth": [
+      {
+        "type": "oauth2",
+        "header": "Authorization",
+        "env_var": "ICEYE_CLIENT_ID",
+        "how_to_get": "ICEYE issues a TOKEN_URL, CLIENT_ID and CLIENT_SECRET during onboarding on a contract. To start onboarding, fill in the SAR data contact form at https://www.iceye.com/contact/sar-data. POST grant_type=client_credentials to the TOKEN_URL with HTTP Basic auth (client id and secret) to get a bearer token that lasts 3600 s. v2 does not support the older username and password flow.",
+        "scopes": [
+          "catalog.read",
+          "deliveries.read",
+          "orders.read",
+          "activities.read",
+          "contracts.read",
+          "bundles.read"
+        ],
+        "dynamic_registration": false,
+        "transport": "rest"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/company/v1/contracts",
+        "notes": "Your contracts: allowed imaging modes, priorities, SLAs, exclusivity, delivery locations, start/end dates, and hasPricingPlan."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/company/v1/contracts/{contractID}/summary",
+        "notes": "Budget: consolidatedSpent, onHold, optional spendLimit (minor units). Only for contracts with a pricing plan; available funds = spendLimit - consolidatedSpent - onHold."
+      },
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/tasking/v2/price",
+        "params": "contractID, pointOfInterest[lat], pointOfInterest[lon], imagingMode; optional acquisitionWindow, exclusivity, priority, sla, eula, incidenceAngle, lookSide, passDirection, reference",
+        "notes": "Returns {amount, currency}, amount in minor units; 403 if the parameters are not allowed by the contract or the contract has no pricing plan."
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/tasking/v2/feasibility",
+        "params": "array of tasks with the createTask fields (all with the same priority)",
+        "notes": "Returns FEASIBLE / INFEASIBLE per task; also checks budget when the contract has a pricing plan."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/tasking/v2/tasks",
+        "params": "contractID, pointOfInterest {lat, lon}, acquisitionWindow {start, end}, imagingMode; optional reference, priority, sla, exclusivity, eula, incidenceAngle, lookSide, passDirection, aoiRadiusMeters, productTypes, derivativeProductTypes, deliveries, notifications",
+        "notes": "Returns 201 with status RECEIVED; the scheduler sets ACTIVE or REJECTED within 20 minutes. 400 ERR_INSUFFICIENT_FUNDS if the contract budget is too low. No idempotency key is documented; the free-text reference field can tag tasks."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasking/v2/tasks/{taskID}",
+        "notes": "Status RECEIVED, ACTIVE, FULFILLED (SLA products ready), DONE (all products), or terminal REJECTED, CANCELED, FAILED."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasking/v2/tasks/{taskID}/scene",
+        "notes": "Planned (ACTIVE) or actual (FULFILLED/DONE) imaging time, incidence angle, look side, pass direction and footprint."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/tasking/v2/tasks",
+        "params": "limit, cursor, contractID, createdAfter, createdBefore and filters",
+        "notes": "Your tasks."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/tasking/v2/tasks/{taskID}/products",
+        "params": "cursor",
+        "notes": "STAC-like items with signed download URLs that expire after 1 hour; available once the task is FULFILLED or DONE. /products/{productType} returns one type."
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/catalog/v2/search",
+        "notes": "STAC items; use only to fetch metadata for your own tasked captures (collections incl. private/tasking), not as an archive route."
+      }
+    ],
+    "rate_limits": "Not published in the pages read.",
+    "self_serve": false,
+    "notes": "To cancel, PATCH /tasking/v2/tasks/{taskID} with {\"status\": \"CANCELED\"} while the task is RECEIVED or ACTIVE (charges in pricing.notes). Webhooks are registered with the Notifications API. Delivery to SFTP or S3 uses config IDs set up by ICEYE. Every tasking request needs a contractID. The API docs show paths without the /api prefix, which is part of base_url. ICEYE publishes an open-source demo app on GitHub (github.com/iceye-ltd), but no official SDK was found.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No ICEYE MCP server is in the official MCP Registry (search 'iceye' returned 0 servers, 2026-10-26)."
+    }
+  },
+  "adapter": "iceye",
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "ICEYE satellites capture the images, not people. Whether a person reviews a capture before delivery is not stated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No public signing or checksum scheme for delivered products was found. Download URLs are signed for access only, not to prove where the content came from."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Products come from ICEYE's own SAR satellites in a stated imaging mode, with sensor and orbit metadata. Which satellite and sensor took the image is ICEYE's word. No cryptographic provenance is published."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "The task scene reports the actual imaging start and end, and product items carry start_datetime and end_datetime inside the requested window",
+      "unknown": "No independent or signed timestamp. How acquisition times are validated is not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Tasks target a WGS 84 point. Products are geolocated using refined orbits and calibrated against ground-surveyed corner-reflector sites. ICEYE gives a fleet worst-case RMSE of 6 m, and its June-November 2025 campaign at Rosamond (521 images) found mean errors under 0.4 m.",
+      "unknown": "The accuracy figures are ICEYE's own statistics, not proof for a single delivered image, and the campaign's raw data are not public. Error grows with terrain-model uncertainty."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No public method for detecting manipulated SAR imagery or proving what a product shows. Within 14 days you can report that a product does not meet the spec."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No documented cross-check of a delivered capture against other sensors"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "From the Create Task and Product Specification docs: products are available SLA_8H (default), SLA_3H or SLA_1H after acquisition. The window must start at least 12 h ahead (COMMERCIAL) or 24 h ahead (BACKGROUND), be at least 24 h wide and end within 14 days, so the time from order to product is usually more than a day."
+  },
+  "payment": {
+    "methods": [
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "notes": "The contract has a spend limit, and a task fails with ERR_INSUFFICIENT_FUNDS if it would go over. Under the ICEYE US direct-sales terms (v1.0, April 2021), fees are invoiced every two weeks and due within 30 days, in euros unless the order says otherwise. ICEYE has a separate invoicing process, and no card or agent payment rail was found."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "Customers are onboarded by ICEYE's COSP team and contract with ICEYE, and contracts set what each customer may task. Under the US direct-sales terms, ICEYE may accept or reject any order at its sole discretion. Orders may be subject to government regulatory review, and ICEYE can modify or terminate an order to comply. Customers must follow export controls and must not distribute products to sanctioned parties. The EULA choice (STANDARD or GOVERNMENT) depends on the type of end user.",
+    "unknown": "What due diligence ICEYE runs on new customers during onboarding (KYC, end-use or target screening) is not published."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "contract",
+    "notes": "automation_allowed rests on the documented tasking API; the separate ICEYE API licence agreement linked from the EULA could not be read, so its terms are unchecked."
+  },
+  "sources": [
+    {
+      "claim": "2026-10-28 changelog: Detect & Classify renamed Object Detection and Identification; new ODI derivative product type replaces DC-ATR, deprecated and removed on November 15, 2026; ODI results use GeoJSON schema v6",
+      "url": "https://docs.iceye.com/constellation/api/other-resources/changelog/"
+    },
+    {
+      "claim": "POST /api/tasking/v2/tasks; required pointOfInterest, acquisitionWindow, imagingMode; imaging mode list; window rules (not immediate, >= 24 h, end <= 14 days); priority BACKGROUND/COMMERCIAL (90%); SLA_8H/3H/1H; exclusivity PUBLIC/PRIVATE; EULA STANDARD/GOVERNMENT; productTypes, DC-ATR derivatives, aoiRadiusMeters, SFTP/S3 deliveries, webhooks; 201 RECEIVED; ERR_INSUFFICIENT_FUNDS",
+      "url": "https://docs.iceye.com/constellation/api/tasking/create-task/"
+    },
+    {
+      "claim": "GET /tasking/v2/price parameters and {amount, currency} response in minor units; 403 when parameters not allowed or no pricing plan",
+      "url": "https://docs.iceye.com/constellation/api/tasking/get-task-price/"
+    },
+    {
+      "claim": "POST /tasking/v2/feasibility takes a list of tasks (same priority); returns FEASIBLE per item; checks budget on priced contracts",
+      "url": "https://docs.iceye.com/constellation/api/tasking/check-feasibility/"
+    },
+    {
+      "claim": "Scheduler sets ACTIVE or REJECTED within 20 minutes; createTask checks syntax, contract feasibility and budget; availability window formula; standard SLA 8 h; non-standard products typically within 1 h after, no guarantee",
+      "url": "https://docs.iceye.com/constellation/api/tasking/"
+    },
+    {
+      "claim": "OAuth2 client credentials, tokens 60 minutes; GET /company/v1/contracts response; feasibility FEASIBLE/INFEASIBLE; task statuses; GET /tasking/v2/tasks/{id}/scene and /products; signed URLs expire after 1 hour; PATCH cancel",
+      "url": "https://docs.iceye.com/constellation/api/how-to/build-tasking-application/"
+    },
+    {
+      "claim": "TOKEN_URL, CLIENT_ID, CLIENT_SECRET provided by ICEYE during onboarding; Basic auth to token endpoint; expires_in 3600; scope list; base URL https://platform.iceye.com/api",
+      "url": "https://docs.iceye.com/constellation/api/getting-started/authentication/"
+    },
+    {
+      "claim": "First call to https://platform.iceye.com/api/company/v1/contracts with credentials received from ICEYE",
+      "url": "https://docs.iceye.com/constellation/api/getting-started/quickstart/"
+    },
+    {
+      "claim": "v2.0 requires Client Credentials, obtained by contacting ICEYE; v2 endpoint list incl. GET /tasks, GET /tasks/{id}, PATCH cancel, /products/{productType} enum, scene footprint, catalog v2 search",
+      "url": "https://docs.iceye.com/constellation/api/migration/api-reference-guide/"
+    },
+    {
+      "claim": "Contract pricing model immutable; price factors region, priority, imaging mode, SLA, exclusivity, EULA; cancellation charges; minor currency units",
+      "url": "https://docs.iceye.com/constellation/api/tasking/pricing-model/"
+    },
+    {
+      "claim": "Budget summary: consolidatedSpent, onHold, spendLimit; insufficient funds rejects tasks",
+      "url": "https://docs.iceye.com/constellation/api/company/get-summary/"
+    },
+    {
+      "claim": "Contracts set by ICEYE representative; hasPricingPlan; separate process for invoicing",
+      "url": "https://docs.iceye.com/constellation/api/company/get-contract/"
+    },
+    {
+      "claim": "Imaging time accuracy +/- 90 s by lead time; reliability estimates only for COMMERCIAL priority",
+      "url": "https://docs.iceye.com/constellation/api/tasking/get-task-scene/"
+    },
+    {
+      "claim": "STAC catalog v2 search; tasked images in private collection",
+      "url": "https://docs.iceye.com/constellation/api/how-to/build-catalog-application/"
+    },
+    {
+      "claim": "Onboarding via SAR data contact form and COSP team; minimum time before collection 12 h (Commercial) / 24 h (Background); Commercial >90% reliability; Public Catalog listing 14 days after acquisition, Private Catalog permanently withheld; cancellation policy; 14-day non-compliance return window",
+      "url": "https://sar.iceye.com/latest/productspecification/tasking/"
+    },
+    {
+      "claim": "Archive catalog images available at least 14 days after acquisition",
+      "url": "https://sar.iceye.com/latest/productspecification/catalog/"
+    },
+    {
+      "claim": "Calibration against ground-surveyed corner-reflector sites; fleet worst-case RMSE 6 m",
+      "url": "https://sar.iceye.com/latest/foundations/geospatialAccuracy/"
+    },
+    {
+      "claim": "June-November 2025 Rosamond campaign, 521 images; fleet mean range and azimuth error under 0.4 m",
+      "url": "https://sar.iceye.com/latest/foundations/validation/geospatialValidation/"
+    },
+    {
+      "claim": "ICEYE US EULA (2 Dec 2025): internal-use-only, non-transferable, non-sublicensable licence; no sale, distribution or commercial use; ICEYE retains ownership; Data Derivatives owned by End User for any purpose; attribution",
+      "url": "https://iceye.us/end-user-license-agreement"
+    },
+    {
+      "claim": "ICEYE US direct-sales terms v1.0 (April 2021): orders accepted or rejected at ICEYE's discretion; regulatory review; invoiced every two weeks, due in 30 days; payment in euros; export control and sanctions obligations",
+      "url": "https://legal.iceye.com/direct_sales_us_tc/ICEYE%20US%20INC%20-%20Direct%20Sales%20-%20Product%20and%20Service%20Terms%20and%20Conditions%20Version%201.0%20-%20April%202021.pdf"
+    },
+    {
+      "claim": "ICAS 'Built for automation: run machine-to-machine scripts'; tasking, status and delivery automated",
+      "url": "https://www.iceye.com/defense-and-intelligence/sar-data/api"
+    },
+    {
+      "claim": "Contact form for SAR data customers (onboarding entry point)",
+      "url": "https://www.iceye.com/contact/sar-data"
+    },
+    {
+      "claim": "Dwell Precise mode provides 25 cm resolution (press coverage, October 2024)",
+      "url": "https://www.microwavejournal.com/articles/42786-iceye-announces-new-dwell-precise-imaging-mode-providing-25-cm-resolution"
+    },
+    {
+      "claim": "No ICEYE server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=iceye"
+    },
+    {
+      "claim": "1 h SLA Commercial only, feasibility pass, not for Dwell modes, over 80% of feasible tasks",
+      "url": "https://sar.iceye.com/latest/productspecification/tasking/"
+    },
+    {
+      "claim": "EULA footer links a separate API licence agreement (not read)",
+      "url": "https://iceye.us/end-user-license-agreement"
+    }
+  ],
+  "updated": "2026-10-28",
+  "spec_version": "2026-10-26",
+  "short": "Radar satellites tasked by API on a contract, with price and feasibility checks, products 1-8 hours after capture.",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27"
+}

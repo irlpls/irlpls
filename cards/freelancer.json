@@ -1,0 +1,330 @@
+{
+  "id": "freelancer",
+  "name": "Freelancer.com (local jobs)",
+  "provider_url": "https://www.freelancer.com",
+  "status": "unclaimed",
+  "tags": [
+    "crowd",
+    "freelance",
+    "local job",
+    "site verification",
+    "inspection",
+    "photography",
+    "global",
+    "api",
+    "oauth",
+    "sandbox",
+    "bidding"
+  ],
+  "summary": "Global freelance marketplace whose API can post 'Local Jobs' projects pinned to a place (country, city, latitude and longitude) in job types such as Inspections, Local Job, Photography and Video Tours. Freelancers bid; the buyer awards a bid and pays through Milestone Payments released on approval. The User Agreement (s.33) forbids automated access, including the API, without Freelancer's express written permission.",
+  "short": "Post a local job anywhere; nearby freelancers bid to go and do it.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "site verification",
+      "inspections",
+      "local photography and video tours",
+      "errands and pickups",
+      "investigation"
+    ]
+  },
+  "pricing": {
+    "model": "bid-based; buyer sets a budget range, freelancers bid",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "from_usd 0 means not published (set by bids). Posting is free. Employer fee on award: 3% or USD 3, whichever is greater (fixed price); 3% of each payment (hourly); refundable if cancelled within 7 days. Card, PayPal or Skrill: USD 0.30 + 2.3% (not for Australian transactions, which carry an Account Admin Fee of AUD 0.75 + 0.99%). Milestone arbitration: USD 5 or 5%, whichever is greater, per party, refunded to the winner. Optional upgrades include IP Agreement (USD 22.99 in the fee table, USD 21.99 in the same page's FAQ), NDA USD 22.99, Urgent USD 10.99."
+  },
+  "latency": {
+    "typical": "Not published; posting, review, bidding, then award",
+    "notes": "No SLA. API-posted projects usually enter a review queue before they go live (developer docs, sandbox page). Active projects on 2026-10-26 via the public API: Inspections 17, Local Job 89, Photo Anywhere 0."
+  },
+  "coverage": {
+    "regions": [
+      "Global"
+    ],
+    "areas": [
+      "*"
+    ],
+    "notes": "Freelancer says Local Jobs 'get help in any location, anywhere in the world' and claims a 'talent pool of over 90.5 million professionals'. 167 of 3,487 job types are local. Active Inspections and Local Job projects on 2026-10-26 were concentrated in Thailand, the US, South Korea, Brazil and the UK, with a few in about 20 other countries. Density per city is not published. People barred under Australian or other applicable law may not use the site."
+  },
+  "licensing": {
+    "summary": "No default clause transfers ownership of project deliverables to the buyer; a paid IP Agreement upgrade 'ensures intellectual property rights transfer to you' (Fees and Charges). Freelancer takes a broad, sublicensable, irrevocable licence to User Content (User Agreement s.10). The terms do not mention AI or machine-learning training or resale. Freelancer may record in-app audio and video calls for 'quality assurance, training, and service improvement' (s.15), without saying whether that means model training."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Optional 'Verified by Freelancer' KYC: government photo ID, a photo holding the ID beside a one-time keycode, and two proofs of address, reviewed by Freelancer's team. Freelancer can also demand ID at any time (s.14).",
+      "unknown": "Verification is optional for sellers, so the freelancer you award may be unverified. Freelancer states it 'cannot and do[es] not confirm each User's purported identity' (s.38).",
+      "evidence_url": "https://www.freelancer.com/page.php?p=info/kyc_policy"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Freelancers upload files they captured however they like; there is no capture app."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Nothing stops a gallery upload, screenshot or generated image."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No capture timestamp is checked; only message and upload times exist."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "The project has a location, but where a file was captured is not checked. OAuth scopes fln:location_tracking_create/view ('location information of freelancer working on project') exist, but no endpoint using them is documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "The buyer reviews the work and releases the Milestone Payment; disputes go to Freelancer's Milestone Dispute Resolution, with paid arbitration on submitted evidence.",
+      "unknown": "Freelancer does not review deliverables, and for Local Jobs it does not verify credentials or statements of capability (s.16)."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check. A buyer could award the same task to a second freelancer by hand."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://developers.freelancer.com/",
+    "base_url": "https://www.freelancer.com/api",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "Freelancer-OAuth-V1",
+        "env_var": "FLN_OAUTH_TOKEN",
+        "how_to_get": "Personal Access Token: Generate Token at https://accounts.freelancer.com/settings/develop. Acts only as the account that made it; one active token per environment; valid 30 days. Sandbox tokens (https://accounts.freelancer-sandbox.com/settings/develop) work only on https://www.freelancer-sandbox.com. User Agreement s.33 bars automated means, \"including ... access to our API\", \"without our express written permission\"; the API T&Cs (apiterms) govern API use, and issuing a token may count as that permission, which is unconfirmed. Marked false until a person decides."
+      },
+      {
+        "type": "oauth2",
+        "header": "Freelancer-OAuth-V1",
+        "env_var": "FLN_OAUTH_TOKEN",
+        "how_to_get": "Create a client application at https://accounts.freelancer.com ('Develop with Freelancer.com'); applications are reviewed (expect a reply within 5 business days), and requests for single-user apps are denied. Authorization-code flow: https://accounts.freelancer.com/oauth/authorize with scope=basic and advanced_scopes as numeric ids; token at https://accounts.freelancer.com/oauth/token with a client secret. Access tokens last 30 days, with refresh tokens.",
+        "scopes": [
+          "basic",
+          "fln:project_create",
+          "fln:project_manage",
+          "fln:contest_create",
+          "fln:contest_manage",
+          "fln:messaging",
+          "fln:user_information",
+          "fln:location_tracking_create",
+          "fln:location_tracking_view"
+        ],
+        "dynamic_registration": false,
+        "transport": "rest"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/projects/0.1/jobs/",
+        "notes": "Public, no key. Filter local:true for local job ids (e.g. 867 Inspections, 1386 Local Job, 27 Photography, 1502 Video Tours, 2622 Investigation)."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/projects/0.1/projects/active/",
+        "params": "jobs[], latitude, longitude, location_details, local_details",
+        "notes": "Public, no key. Shows current local demand; not a capture."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/projects/0.1/projects/",
+        "params": "title, description, currency, budget, jobs (a local job), local: true, location {country, city, latitude, longitude}",
+        "notes": "Scopes basic + fln:project_create. Posting is free; projects usually enter a review queue before going live."
+      },
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/projects/0.1/projects/{project_id}/bids/",
+        "notes": "Freelancers' bids (amount, period) on your project."
+      },
+      {
+        "action": "order",
+        "method": "PUT",
+        "path": "/projects/0.1/bids/{bid_id}/",
+        "params": "action=award",
+        "notes": "Awards the bid; the 3% employer fee is charged at award."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/projects/0.1/milestones/",
+        "notes": "Scope fln:project_manage. Creates a Milestone Payment; PUT /projects/0.1/milestones/{milestone_id}/ with action=release pays the freelancer."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/projects/0.1/projects/{project_id}/",
+        "notes": "Scope basic. Project details and status."
+      }
+    ],
+    "sdk": "freelancer-sdk-python (official; https://github.com/freelancer/freelancer-sdk-python, last push 2023-12-07), includes create_local_project",
+    "rate_limits": "Per endpoint; HTTP 429 when exceeded. RateLimit-Limit and RateLimit-Remaining headers report the windows (documented example: 50 per 60 s and 1000 per 3600 s).",
+    "self_serve": false,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "io.github.godesigntech/freelancer-mcp-server (seller side: search, bid, message; does not post projects)",
+      "notes": "No first-party MCP server found. The MCP Registry search for 'freelancer' returns only unrelated or community servers."
+    },
+    "notes": "The developer docs render only with JavaScript. Freelancer lists 'Local Jobs' as a common integration type; automatic bidders, spammy and 'replacement' integrations are prohibited. No OAuth protected-resource or authorization-server metadata is published."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after award",
+    "notes": "No archive."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Freelancer publishes no delivery time; each freelancer's bid states a period in days. Projects usually pass a review queue before bidding opens."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": false,
+    "gate": "approval"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "prepaid_balance"
+    ],
+    "agent_can_pay": true,
+    "notes": "Buyers fund their Freelancer account (credit card, PayPal, Skrill or bank deposit) and pay through Milestone Payments held in the account until released. The API can create and release milestones (scope fln:project_manage), but s.33 requires Freelancer's written permission for any API use."
+  },
+  "account": {
+    "agent_may_act": {
+      "allowed": false,
+      "source_url": "https://www.freelancer.com/about/terms"
+    }
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Users must be 16 or older, able to contract and not barred by law. Freelancer may refuse any registration, request ID at any time (s.14), and usually reviews new projects before they go live. A Local Jobs buyer must give the job's location and must not put personal details (name, street number, phone, email) in the public project description.",
+    "unknown": "No documented check on whether a local job targets or follows a specific person."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "s.33 ban on automated and API access without express written permission; s.10 User Content licence; s.14 identity checks; s.15 call recording and User Contract; s.16 Local Jobs provisions; s.3 eligibility; s.17 account funds; s.25 Milestone Payments; s.38 no identity warranty (last modified 05 June 2025)",
+      "url": "https://www.freelancer.com/about/terms"
+    },
+    {
+      "claim": "API licence and data-storage rules (last modified 21 December 2017)",
+      "url": "https://www.freelancer.com/about/apiterms"
+    },
+    {
+      "claim": "Employer and freelancer fees, transaction fees, Australian Account Admin Fee, arbitration fee, upgrade prices, IP Agreement upgrade transfers IP to the buyer, Milestone Payments",
+      "url": "https://www.freelancer.com/feesandcharges"
+    },
+    {
+      "claim": "Verified by Freelancer KYC method; optional for sellers",
+      "url": "https://www.freelancer.com/page.php?p=info/kyc_policy"
+    },
+    {
+      "claim": "Milestone dispute process and arbitration",
+      "url": "https://www.freelancer.com/page.php?p=info/dispute_policy"
+    },
+    {
+      "claim": "Talent pool of over 90.5 million professionals",
+      "url": "https://www.freelancer.com/"
+    },
+    {
+      "claim": "Local jobs: get help in any location, anywhere in the world",
+      "url": "https://www.freelancer.com/local"
+    },
+    {
+      "claim": "Local job ids; 167 of 3,487 job types are local",
+      "url": "https://www.freelancer.com/api/projects/0.1/jobs/"
+    },
+    {
+      "claim": "Active Inspections projects (17) and their countries on 2026-10-26",
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?jobs%5B%5D=867&limit=100&location_details=true"
+    },
+    {
+      "claim": "Active Local Job projects (89) on 2026-10-26",
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?jobs%5B%5D=1386&limit=100&location_details=true"
+    },
+    {
+      "claim": "Active Photo Anywhere projects (0) on 2026-10-26",
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?jobs%5B%5D=2045&limit=100"
+    },
+    {
+      "claim": "Common and prohibited integration types (Local Jobs is a common one)",
+      "url": "https://developers.freelancer.com/docs/api-overview/types-of-integrations"
+    },
+    {
+      "claim": "Client applications are reviewed (about 5 business days); single-user apps denied",
+      "url": "https://developers.freelancer.com/docs/authentication/creating-a-client"
+    },
+    {
+      "claim": "Authorize and token URLs, scope=basic plus advanced_scopes, 30-day tokens, refresh tokens, Freelancer-OAuth-V1 header",
+      "url": "https://developers.freelancer.com/docs/authentication/generating-access-tokens"
+    },
+    {
+      "claim": "Advanced scope list, including location tracking scopes",
+      "url": "https://developers.freelancer.com/docs/authentication/advanced-scopes"
+    },
+    {
+      "claim": "Personal Access Tokens: self-generated, own account only, one per environment, 30 days",
+      "url": "https://developers.freelancer.com/docs/authentication/personal-access-tokens"
+    },
+    {
+      "claim": "Rate limits and headers",
+      "url": "https://developers.freelancer.com/docs/api-overview/rate-limiting"
+    },
+    {
+      "claim": "Sandbox; projects usually enter a review queue before going live; account balance needed to award",
+      "url": "https://developers.freelancer.com/docs/api-overview/sandbox-environment"
+    },
+    {
+      "claim": "Create project, project status, bids on a project, project actions and scopes",
+      "url": "https://developers.freelancer.com/docs/projects/projects"
+    },
+    {
+      "claim": "Bid award action",
+      "url": "https://developers.freelancer.com/docs/projects/bids"
+    },
+    {
+      "claim": "Create and release milestones via API",
+      "url": "https://developers.freelancer.com/docs/projects/milestones"
+    },
+    {
+      "claim": "Official Python SDK, create_local_project with location object (last push 2023-12-07)",
+      "url": "https://github.com/freelancer/freelancer-sdk-python"
+    },
+    {
+      "claim": "No first-party MCP server in the official registry; community seller-side server",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=freelancer"
+    },
+    {
+      "claim": "API T&Cs (last modified 21 Dec 2017)",
+      "url": "https://www.freelancer.com/about/apiterms"
+    },
+    {
+      "claim": "KYC policy: government photo ID, keycode photo, proof of address; optional for sellers; reviewed by the Freelancer Verification Team",
+      "url": "https://www.freelancer.com/page.php?p=info/kyc_policy"
+    },
+    {
+      "claim": "Terms s.33: no automated or API access without Freelancer's express written permission",
+      "url": "https://www.freelancer.com/about/terms"
+    }
+  ]
+}

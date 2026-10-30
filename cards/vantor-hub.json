@@ -1,0 +1,265 @@
+{
+  "id": "vantor-hub",
+  "name": "Vantor Hub (WorldView tasking)",
+  "provider_url": "https://vantor.com/product/platform/hub/",
+  "short": "Task WorldView optical, 3D and radar captures by API.",
+  "summary": "Vantor (formerly Maxar Intelligence) sells new WorldView satellite collections through the Vantor Hub APIs: a Tasking V2 API for FastView (collection guaranteed within 24 hours of a chosen start) and FlexView (cloud, angle and sun limits) 2D imagery, WorldView 3D elevation products, and limited-release WorldView Radar tasking of Umbra SAR. Requests need an end-use code, quotes reserve account credits, and by default tasked imagery joins Vantor's public catalogue unless the account has private tasking.",
+  "tags": [
+    "satellite",
+    "optical",
+    "high resolution",
+    "tasking",
+    "worldview",
+    "fastview",
+    "flexview",
+    "SAR",
+    "umbra",
+    "3d",
+    "stereo",
+    "vantor",
+    "maxar",
+    "api",
+    "stac"
+  ],
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "photo"
+    ],
+    "tasks": [
+      "task a new WorldView 2D collection over a point or polygon within a collection window (FastView or FlexView)",
+      "check feasibility (High, Medium or Low probability) before tasking",
+      "quote credits before submitting (estimate endpoints)",
+      "task WorldView 3D elevation products and, in limited release, Umbra SAR spotlight scenes",
+      "stereo pairs (FlexView only), private tasking (account option)",
+      "search the archive and order imagery (Discovery and Ordering APIs), monitor areas"
+    ]
+  },
+  "pricing": {
+    "model": "credits reserved at submission; billed per area collected",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "Docs: 'A usage quote is calculated when a request is submitted... Account credits are reserved'; unused credits are released; tasking minimum 50 km2, maximum 1000 km2; Umbra radar priced per 5 km x 5 km scene by resolution and dwell. Vantor's Hub page says 'credits model with transparent pricing' and 'One subscription, unlimited seats'; no dollar figures were found."
+  },
+  "latency": {
+    "typical": "FastView: collected within 24 h of a start time set 8 h to 14 days ahead; FlexView: any window up to 364 days, start can be 'now'",
+    "notes": "FastView docs: 'Within 24 hours of the requested start time, an image will be collected'; availability is a reservation and an unavailable date returns 400 with future dates. FlexView honours cloud and angle limits so may take longer. Time from capture to delivery is not stated in the pages read. Shared limit of 1000 new tasking requests per hour across all customers."
+  },
+  "coverage": {
+    "regions": [
+      "Global (WorldView constellation)"
+    ],
+    "notes": "Docs list 'high demand' countries where tasking is harder: Armenia, Azerbaijan, Bahrain, Benin, China (East), Colombia, Congo, Cyprus, Ecuador, Gabon, Gaza Strip, Georgia, Iran, Iraq, Israel, Japan, Jordan, Kuwait, Lebanon, North Korea, Nigeria, Oman, Qatar, Saudi Arabia, Singapore, South Korea, Syria, Taiwan, Togo, Turkey, Turkmenistan, Ukraine, United Arab Emirates, West Bank, Yemen. Requests can be DENIED by Vantor headquarters. Radar needs Point AOIs and an enabled account.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Tasked imagery is added to Vantor's public catalogue by default; 'private tasking' (only the ordering account can see it, not resold or archived) is a sales-enabled option. Each request carries a required end-use code (e.g. AGR, COM, DNI, USG). Vantor publishes licence documents (internal use, subscription services, display media, fedgov and others) at vantor.com/resources/, which were not read, so resale, AI training and ownership are left unstated."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Captured by satellites; no person is identity-checked at capture."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No attestation of delivered files is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). Products carry sensor and product metadata (WorldView or Umbra constellation, product recipe)."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Tasking status moves INITIAL, ACCEPTED, AWAITING-COLLECTION, IN-PRODUCTION, FULFILLED with transition times, and imagery has capture metadata; no independent time-stamp is documented. The cited page documents order-status transition times, not image acquisition time.",
+      "method": "Documented status lifecycle with transition_time",
+      "evidence_url": "https://developers.maxar.com/docs/tasking/guides/tasking-status.md"
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Delivered products are georeferenced (system-ready, ortho-ready or orthorectified); accuracy figures were not read."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No integrity or anti-manipulation method is documented in the tasking docs."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-checking is documented."
+    }
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after you request, inside your window",
+    "notes": "The same Hub also serves archive imagery, which is not new capture."
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://developers.maxar.com/docs/tasking.md",
+    "base_url": "https://api.maxar.com",
+    "auth": [
+      {
+        "type": "bearer",
+        "how_to_get": "OAuth2 password grant: POST https://account.maxar.com/auth/realms/mds/protocol/openid-connect/token with client_id=mgp, the user's email and password, grant_type=password. Needs a Vantor Hub account."
+      },
+      {
+        "type": "api_key_header",
+        "env_var": "VANTOR_API_KEY",
+        "how_to_get": "Generate a key in the Hub UI (profile menu > API Key) or POST https://account.maxar.com/api-key/api/v2/api-key; keys expire 180 days after creation by default and work on non-admin APIs, sent as the HTTP header maxar-api-key or the URL parameter maxar_api_key.",
+        "header": "maxar-api-key"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/tasking/umbra/estimate",
+        "notes": "Radar credit estimate. The 2D and 3D estimate and feasibility endpoints exist (docs: 'Quote a tasking order', 'Check feasibility') but their exact paths were not read."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/tasking/umbra",
+        "params": "start_collect_datetime, end_collect_datetime, geometry (Point), tasking_details, product_details.licensing.end_use_code, output_configs, notifications",
+        "notes": "Validate first with ?validation_only=true. The 2D create path under tasking/v2 was not read."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasking/{id}"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/tasking"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/tasking/cancel",
+        "notes": "Cancel a request; FastView cancel up to 24 h before start"
+      }
+    ],
+    "sdk": "Python package maxar-platform (modules ordering, tasking, api_keys); QGIS and ArcGIS Pro plugins.",
+    "rate_limits": "Tasking system accepts up to 1000 new requests per hour across all Hub customers; excess returns 429 too_many_requests.",
+    "notes": "Tasking moved to V2 endpoints on 9 December 2025 (base path tasking/v2); exact endpoint paths and the full host path were not read from the interactive reference, so only paths named in the guides are listed. No OAuth discovery, dynamic registration or MCP found. SkyFi also resells Vantor tasking. Vantor has announced that API base URLs will be renamed in 2026, with a 90-day window in which legacy and new paths both work; as of 2026-10-28 no migration guide or new host is published (api.vantor.com does not resolve), so api.maxar.com and account.maxar.com remain current. Status page is now hub-status.vantor.com."
+  },
+  "adapter": "vantor_hub",
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "FastView: 'Within 24 hours of the requested start time, an image will be collected' (start 8 hours to 14 days out); delivery after capture is not stated."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "payment": {
+    "methods": [
+      "prepaid_balance"
+    ],
+    "agent_can_pay": false,
+    "notes": "Subscription with account credits; credits are reserved when a tasking request is submitted. How credits are bought (card or invoice) was not found. Tasking, subscription and demo requests go through Vantor sales."
+  },
+  "requester": {
+    "checks": "A Hub customer account with credentials; every tasking request must declare an end-use code; some features (private tasking, radar, object detection) are enabled per account by sales; requests can be denied by Vantor headquarters.",
+    "unknown": "Identity, export-control and sanctions screening of customers is not described in the developer docs."
+  },
+  "providers": [
+    {
+      "name": "Vantor",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://vantor.com"
+    },
+    {
+      "name": "Umbra",
+      "roles": [
+        "producer"
+      ],
+      "url": "https://umbra.space"
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Hub 1.12.0 (2026-02-12): API base URLs move to updated naming in 2026, migration guide promised by March 2026, 90-day window with legacy and new paths; Hub 1.14.0 (2026-05-07): status page hub-status.vantor.com; 2026-10-27: Ordering V2 required by November 11, 2026, Monitoring V1 turned off (neither used by this card)",
+      "url": "https://developers.maxar.com/docs/release-notes"
+    },
+    {
+      "claim": "Hub API overview; OAuth2 bearer token and API keys; Discovery, Ordering, Monitoring, Tasking APIs",
+      "url": "https://developers.maxar.com/docs.md"
+    },
+    {
+      "claim": "Tasking API: 2D, 3D, Radar via Umbra; V2 since 9 Dec 2025",
+      "url": "https://developers.maxar.com/docs/tasking.md"
+    },
+    {
+      "claim": "WorldView 2D tasking: credits, 50 to 1000 km2, high-demand countries, FastView and FlexView, stereo, private tasking, feasibility, managing endpoints",
+      "url": "https://developers.maxar.com/docs/tasking/guides/tasking-guide.md"
+    },
+    {
+      "claim": "Radar tasking limited release, per 5x5 km scene, estimate and submit endpoints",
+      "url": "https://developers.maxar.com/docs/tasking/guides/radar-guide.md"
+    },
+    {
+      "claim": "Umbra request example (Point AOI, end_use_code, output_configs)",
+      "url": "https://developers.maxar.com/docs/tasking/guides/example-umbra-sar.md"
+    },
+    {
+      "claim": "1000 requests per hour shared limit, 429",
+      "url": "https://developers.maxar.com/docs/tasking/guides/request-limits.md"
+    },
+    {
+      "claim": "End-use codes required",
+      "url": "https://developers.maxar.com/docs/tasking/guides/end-use-codes.md"
+    },
+    {
+      "claim": "Cancellation policy",
+      "url": "https://developers.maxar.com/docs/tasking/guides/cancellation.md"
+    },
+    {
+      "claim": "Status lifecycle (INITIAL ... FULFILLED, DENIED, UNFULFILLED)",
+      "url": "https://developers.maxar.com/docs/tasking/guides/tasking-status.md"
+    },
+    {
+      "claim": "Private tasking is not default; contact sales",
+      "url": "https://developers.maxar.com/docs/tasking/guides/private-tasking-tutorial.md"
+    },
+    {
+      "claim": "Bearer token via OAuth2 password flow at account.maxar.com",
+      "url": "https://developers.maxar.com/docs/authentication/guides/get-a-token.md"
+    },
+    {
+      "claim": "API keys: 180-day default expiry, non-admin APIs; header maxar-api-key or URL parameter maxar_api_key",
+      "url": "https://developers.maxar.com/docs/authentication/guides/api-key.md"
+    },
+    {
+      "claim": "Hub is subscription, credits model, unlimited seats, up to 15x/day revisit, Request a Demo",
+      "url": "https://vantor.com/product/platform/hub/"
+    },
+    {
+      "claim": "Not in MCP Registry (search vantor and maxar, 0 results)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=vantor"
+    },
+    {
+      "claim": "FastView request body: tasking_tier, geometry {latitude, longitude, buffer}, start_collect_datetime, tasking_details.max_gsd, product_details.product_type and licensing.end_use_code (required)",
+      "url": "https://developers.maxar.com/docs/tasking/guides/fastview-parameters.md"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "status": "unclaimed",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27"
+}

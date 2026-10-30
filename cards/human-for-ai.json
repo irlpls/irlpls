@@ -1,0 +1,275 @@
+{
+  "id": "human-for-ai",
+  "name": "Human For AI",
+  "provider_url": "https://humanforai.dev",
+  "status": "unclaimed",
+  "adapter": "human_for_ai",
+  "short": "One pseudonymous human operator who takes agent tasks by API or MCP, free during a pilot. Signed text receipts.",
+  "summary": "A one-person human-in-the-loop service (\"Operator 001\", pseudonymous) that AI agents call over a keyless REST API or a remote MCP server. Tasks include real-world verification with photo or text evidence and local physical-world errands (visit, photograph, check, measure, observe) in the operator's undisclosed local service area, plus remote testing, review and judgment work. Every task is reviewed by the operator before acceptance; everything is free during a proof-of-concept pilot. Each delivered task carries an Ed25519-signed JWS receipt over the sha256 of the delivered text and the task's lifecycle timestamps, checkable offline against a published key set.",
+  "tags": [
+    "agent-native",
+    "api",
+    "mcp",
+    "keyless",
+    "free pilot",
+    "human task",
+    "single operator",
+    "local inspection",
+    "photo evidence",
+    "real-world verification",
+    "signed receipts",
+    "jws"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "real-world verification with photo or text evidence (place, product, price, business, claim)",
+      "local physical-world tasks in the operator's service area: visit, photograph, deliver, check, measure, observe",
+      "on-site photos and observation of a location at a specific time",
+      "counts and documentation on site (dimensions, quantities, queue lengths, foot traffic, posted notices)",
+      "manual data collection, labeling and research",
+      "remote work: product/app testing, AI output review, human judgment, decision escalation"
+    ]
+  },
+  "pricing": {
+    "model": "free proof-of-concept pilot",
+    "from_usd": 0,
+    "unit": "task",
+    "notes": "Every service is $0 per task during the pilot (the only tier); budget_usd is accepted and ignored. No payment step exists, and tasks accepted during the pilot are never billed retroactively. Paid tiers may come later and would be announced on /pricing and in /agent.json first."
+  },
+  "latency": {
+    "typical": "First response within 12 hours; typical response about 4 hours",
+    "notes": "Response targets are 'honest targets, not a contractual SLA'. Working hours every day 19:00-00:00 operator local time; urgent tasks by prior arrangement only. Physical errands are scheduled after acceptance, so delivery time is not stated. human.json also lists working_days Sunday-Thursday, which conflicts with 'any day of the week' elsewhere."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Provider: 'First response comes within 12 hours, any day of the week; the errand itself is scheduled after acceptance.' No delivery time is stated.",
+    "formats": [
+      "text_report",
+      "text_report_with_photos",
+      "video",
+      "structured_json",
+      "annotated_screenshots"
+    ]
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after the operator accepts the task",
+    "notes": "No archive. Deliverables state what was observed, what was inferred and the operator's confidence."
+  },
+  "coverage": {
+    "regions": [
+      "Operator's local service area (undisclosed)"
+    ],
+    "notes": "One person. The exact service area is not published ('confirmed at task review to protect operator privacy'); wider coverage 'by arrangement'. Out-of-reach locations are declined or counter-proposed at review. English only. Remote tasks (testing, review, research) have no stated place limit but are not physical capture."
+  },
+  "licensing": {
+    "summary": "Terms (effective 2026-07-19): once delivered, the deliverable is the requester's, who 'receives all rights to use, modify, and republish it, for any lawful purpose'. The operator keeps internal records but does not publish task content. Resale and AI training are not named. Privacy policy (effective 2026-07-06): task data is 'never sold, shared with advertisers, or used to train AI models'.",
+    "buyer_owns_output": true,
+    "vendor_trains_on_data": "no"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "The service is one human operator, known only as Operator 001, who reviews and performs every task; the trust page marks 'Real, single human operator' and 'Contactable identity' as true",
+      "evidence_url": "https://humanforai.dev/trust",
+      "unknown": "The operator is deliberately pseudonymous. Third-party identity verification (government ID through an independent provider) is listed as pending, so 'verified human' is the service's own word."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No capture app or device attestation is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No live-capture rule, camera attestation or C2PA signing is described. Signed receipts cover the delivered text only, not photos or files (media hashing is an open roadmap item)."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Physical-task reports come with 'timestamped photos'; each delivered task's receipt signs the task's lifecycle timestamps (submitted, accepted, delivered), verifiable against https://humanforai.dev/.well-known/jwks.json",
+      "evidence_url": "https://humanforai.dev/trust",
+      "unknown": "The provider states the receipt timestamps are 'our own assertion, signed. Nobody outside this service witnessed them'; external anchoring is not built. How photo timestamps are produced is not stated, and the lifecycle times are not the capture time."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No GPS stamp, check-in or location check is described; where a photo was taken rests on the operator's report."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "The operator who does the work writes the deliverable with a confidence block separating what was observed from what was inferred; the signed receipt binds the sha256 of the delivered text so later alteration is detectable",
+      "evidence_url": "https://humanforai.dev/.well-known/agent.json",
+      "unknown": "The receipt proves the text is unaltered and came from humanforai.dev, not that it is true; the terms call deliverables 'assistance, not guaranteed truth'. Photos and files are not covered by the receipt."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "One operator; no independent second capture or cross-check is offered."
+    }
+  },
+  "provenance": {
+    "receipt": {
+      "level": "claimed",
+      "method": "Each delivered task carries a compact JWS signed with Ed25519 over the sha256 of the deliverable text and the task's lifecycle timestamps; the public key is at /.well-known/jwks.json.",
+      "evidence_url": "https://humanforai.dev/trust",
+      "unknown": "The provider's own assertion ('Nobody outside this service witnessed them'); it covers the text only (photo hashing is not built), is not bound to your request or a nonce, and is not anchored externally.",
+      "sources": [
+        {
+          "claim": "Ed25519 JWS receipts over the deliverable hash and lifecycle timestamps; key at /.well-known/jwks.json; text only; anchoring not built",
+          "url": "https://humanforai.dev/trust"
+        }
+      ]
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://humanforai.dev/api",
+    "base_url": "https://humanforai.dev/api/v1",
+    "openapi_url": "https://humanforai.dev/openapi.json",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No keys, OAuth or accounts. The protected-resource metadata states authentication_not_required: true and no authorization server exists. A task needs a real return channel: a contact_email whose domain is MX-checked, or delivery: 'status_poll' (deliverable returned as text in operator_notes; 1 such task per client per day)."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/services",
+        "params": "limit (1-50), cursor",
+        "notes": "Service catalog (11 task types; the catalog is examples, not limits)."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/tasks",
+        "params": "task_type, description (10-5000 chars) required; location_required, location_detail, deadline (ISO 8601), output_format, contact_email (required unless delivery is status_poll), delivery (email|status_poll), requester; optional Idempotency-Key header",
+        "notes": "Returns 202 with task_id and status_url. Submission is not acceptance: the operator accepts or rejects each task. Duplicates within 24 h return 409."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasks/{task_id}",
+        "notes": "submitted -> accepted -> delivered, or rejected with a reason; status_history, seen_by_operator_at and an operator-set eta. Anyone holding the task_id can read its public status."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/tasks/{task_id}",
+        "notes": "Once delivered: operator_notes (the deliverable text for status_poll tasks), receipt (compact JWS, EdDSA), deliverable_sha256 and receipt_issued_at. Email-delivery deliverables also go to contact_email."
+      }
+    ],
+    "sdk": "npm humanforai 0.1.4 (stdio MCP proxy); PyPI humanforai 0.1.0 (client and CLI with verify-receipt); Go module github.com/humanforai/humanforai-go",
+    "rate_limits": "Per-client hourly and daily submission caps plus a global daily pilot capacity (429 with Retry-After, resets 00:00 UTC); RateLimit headers on responses; repeat abusers blocked (403). One small test task is welcome; bulk synthetic submissions get the client blocked.",
+    "mcp": {
+      "remote": "https://humanforai.dev/mcp",
+      "registry_name": "dev.humanforai/humanforai",
+      "auth": "none",
+      "first_party": true,
+      "notes": "Streamable HTTP, stateless, no auth. Tools: get_human_services, submit_human_task, check_task_status, message_human_operator. Registry latest is v0.1.4 with the remote URL and the npm stdio package."
+    },
+    "notes": "Messages to the operator: POST /api/v1/messages (reply_to email or an https webhook URL; replies signed with HMAC-SHA256) and a pollable thread with a one-time access token. Receipts are issued only for tasks delivered from 2026-07-20, and are re-issued if the operator edits a deliverable. The receipt is a compact JWS over deliverable_sha256 and lifecycle timestamps, not the detached RFC 8785 receipt of the irlpls standard."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [],
+    "notes": "Nothing to pay during the pilot: no payment step, invoice or card. The service says it never asks for payment, credentials or accounts, and that any such request is not from it."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "No account or identity check. Each task needs a working return channel (MX-checked email, or the status-poll path capped at one task per client per day). The operator reviews every task before acceptance and rejects illegal, deceptive, unsafe and privacy-invasive work, explicitly including surveillance of individuals, stalking and doxxing. Rate limits, duplicate detection and a blocklist (on a salted hash of the caller's network address) handle abuse. The terms bind an agent's principal to what the agent submits.",
+    "unknown": "Who the requester is is not checked beyond the return channel; screening rests on one person's review of the task description."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Service summary: one verified human operator, task types, free pilot, no authentication, POST /api/v1/tasks, status_poll path (1/day), Idempotency-Key, first response within 12 hours and typical ~4 hours, English only, signed receipts and what they do not prove, rate limits, MCP tools, npm/PyPI/Go clients, official MCP Registry entry",
+      "url": "https://humanforai.dev/llms.txt"
+    },
+    {
+      "claim": "Homepage: '1 verified human', first response < 12 hours, free for now, task flow, report/photos/structured JSON delivery",
+      "url": "https://humanforai.dev/"
+    },
+    {
+      "claim": "Manifest: services, task request schema (location_required, location_detail, deadline, output_format values, delivery), working hours 19:00-00:00 every day, urgent by arrangement, pricing free, anti-abuse rules, rejected task types, global daily capacity, signed_receipts (proves / does_not_prove, available since 2026-07-20, re-issued on edit), roadmap items, operator identity_verified pending",
+      "url": "https://humanforai.dev/.well-known/agent.json"
+    },
+    {
+      "claim": "Operator 001 is pseudonymous; third-party identity verification planned; exact service area confirmed at task review; physical tasks in the operator's local service area, wider by arrangement; working_days Sunday-Thursday; single-human capacity limits",
+      "url": "https://humanforai.dev/.well-known/human.json"
+    },
+    {
+      "claim": "Trust page: every task reviewed before acceptance; rejection categories including surveillance of individuals, stalking, doxxing; deliverables carry an observed/inferred/confidence block; operator verification table (real single operator true, third-party ID pending); receipts cover text only, timestamps are the service's own signed assertion; key rotation never exercised",
+      "url": "https://humanforai.dev/trust"
+    },
+    {
+      "claim": "Terms (effective 2026-07-19): terms bind an agent's principal; free pilot; submission is not acceptance; acceptable use; deliverables are assistance, not guaranteed truth; requester receives all rights to use, modify and republish deliverables; response targets are not a contractual SLA",
+      "url": "https://humanforai.dev/terms"
+    },
+    {
+      "claim": "Privacy (effective 2026-07-06): data never sold or used to train AI models; abuse counters keyed to a salted hash of the network address; contact-email MX checks; anyone with a task ID can view its public status",
+      "url": "https://humanforai.dev/privacy"
+    },
+    {
+      "claim": "Pricing: pilot is the only tier at $0 per task; budget_usd ignored; never billed retroactively; paid tiers would be announced first",
+      "url": "https://humanforai.dev/pricing.md"
+    },
+    {
+      "claim": "No authentication of any kind; anonymous access is the only method; error codes 400/403/404/409/429, never 401",
+      "url": "https://humanforai.dev/auth.md"
+    },
+    {
+      "claim": "RFC 9728 metadata: authentication_not_required true, no authorization servers, no scopes",
+      "url": "https://humanforai.dev/.well-known/oauth-protected-resource"
+    },
+    {
+      "claim": "Receipt signing key: Ed25519, kid receipts-2026-07, alg EdDSA",
+      "url": "https://humanforai.dev/.well-known/jwks.json"
+    },
+    {
+      "claim": "OpenAPI 3.0.3 (v1.9.0): /api/v1/tasks, /api/v1/tasks/{task_id}, /api/v1/messages, /api/v1/services, /api/v1/health; no security schemes; Task fields operator_notes, receipt, deliverable_sha256, receipt_issued_at, status_history",
+      "url": "https://humanforai.dev/openapi.json"
+    },
+    {
+      "claim": "Physical-world tasks: on-site photos and observation, errands, measure/count/document; coverage confirmed at review; proof is typically a report with timestamped photos; errand scheduled after acceptance",
+      "url": "https://humanforai.dev/use-cases/physical-world-tasks"
+    },
+    {
+      "claim": "Agent card: remote MCP (streamable HTTP, no auth) with four tools, REST base https://humanforai.dev/api/v1, skills including local_physical_task",
+      "url": "https://humanforai.dev/.well-known/agent-card.json"
+    },
+    {
+      "claim": "MCP Registry: dev.humanforai/humanforai, latest v0.1.4, remote https://humanforai.dev/mcp, npm stdio package humanforai",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=humanforai"
+    },
+    {
+      "claim": "npm humanforai latest 0.1.4",
+      "url": "https://registry.npmjs.org/humanforai/latest"
+    },
+    {
+      "claim": "PyPI humanforai latest 0.1.0",
+      "url": "https://pypi.org/pypi/humanforai/json"
+    },
+    {
+      "claim": "Public catalog endpoint answers keyless: 11 services, cursor pagination",
+      "url": "https://humanforai.dev/api/v1/services?limit=2"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+ "type": "Feature",
+ "geometry": {
+  "type": "Point",
+  "coordinates": [
+   -71.09727327650678,
+   42.34643585900935
+  ]
+ },
+ "properties": {
+  "taskingrequestId": "45b0e94b-6107-4671-ab13-d526e45d88c2",
+  "transactionStatus": "pending-customer-approval",
+  "order": {
+   "summary": {
+    "total": "$1,000.00",
+    "subtotal": "$1,000.00"
+   },
+   "lineItems": [
+    {
+     "taskId": "45b0e94b-6107-4671-ab13-d526e45d88c2",
+     "accountingSize": {
+      "unit": "sqkm",
+      "value": 100
+     }
+    }
+   ],
+   "archiveHoldback": "none",
+   "managedOrganizationIds": [
+    "*"
+   ]
+  },
+  "statusHistory": [
+   {
+    "time": "2022-12-05T14:33:25.394Z",
+    "code": "review",
+    "message": "Tasking request ready for review."
+   },
+   {
+    "time": "2022-12-05T14:32:05.847Z",
+    "code": "received",
+    "message": "Request created"
+   }
+  ]
+ }
+}

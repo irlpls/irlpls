@@ -1,0 +1,2 @@
+latest_obs.txt: live GET https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt on 2026-10-28, trimmed to the 2 header lines and 9 of ~830 station rows.
+buoycams.json: live GET https://www.ndbc.noaa.gov/buoycams.php on 2026-10-28, trimmed to 4 of 90 entries (41013 has img null).

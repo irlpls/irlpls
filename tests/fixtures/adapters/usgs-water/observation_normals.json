@@ -1,0 +1,167 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -98.89716667,
+     29.96523889
+    ]
+   },
+   "properties": {
+    "monitoring_location_id": "USGS-08167000",
+    "monitoring_location_name": "Guadalupe Rv at Comfort, TX",
+    "site_type": "Stream",
+    "site_type_code": "ST",
+    "country_code": "US",
+    "state_code": "48",
+    "county_code": "259",
+    "data": [
+     {
+      "parameter_code": "00060",
+      "unit_of_measure": "ft^3/s",
+      "parent_time_series_id": "61b051675c6d478db2f0e80f9d420b0f",
+      "parent_statistic_id": "00003",
+      "parent_statistic_name": "Mean",
+      "values": [
+       {
+        "time_of_year": "10-28",
+        "time_of_year_type": "day_of_year",
+        "values": [
+         "17.7",
+         "30.4",
+         "57.7",
+         "104.0",
+         "185.0",
+         "426.8",
+         "646.0"
+        ],
+        "percentiles": [
+         "5",
+         "10",
+         "25",
+         "50",
+         "75",
+         "90",
+         "95"
+        ],
+        "sample_count": 87,
+        "approval_status": "approved",
+        "computation_id": "38cf9ce5-340f-4991-9fa8-a6d2134218a8",
+        "computation": "percentile"
+       }
+      ]
+     },
+     {
+      "parameter_code": "00060",
+      "unit_of_measure": "ft^3/s",
+      "parent_time_series_id": "ccd02dbbbff240319282d299d94aba7c",
+      "parent_statistic_id": "00001",
+      "parent_statistic_name": "Max",
+      "values": [
+       {
+        "time_of_year": "10-28",
+        "time_of_year_type": "day_of_year",
+        "values": [
+         "17.09",
+         "21.78",
+         "39.2",
+         "73.4",
+         "117.5",
+         "393.0",
+         "728.5"
+        ],
+        "percentiles": [
+         "5",
+         "10",
+         "25",
+         "50",
+         "75",
+         "90",
+         "95"
+        ],
+        "sample_count": 25,
+        "approval_status": "approved",
+        "computation_id": "9af8edc4-669d-4c49-98ec-2cde3dbf4ca1",
+        "computation": "percentile"
+       }
+      ]
+     },
+     {
+      "parameter_code": "00060",
+      "unit_of_measure": "ft^3/s",
+      "parent_time_series_id": "a51f55299c55430cb26b84537c4ae6b5",
+      "parent_statistic_id": "00002",
+      "parent_statistic_name": "Min",
+      "values": [
+       {
+        "time_of_year": "10-28",
+        "time_of_year_type": "day_of_year",
+        "values": [
+         "12.04",
+         "18.46",
+         "30.5",
+         "59.0",
+         "108.0",
+         "353.0",
+         "631.9"
+        ],
+        "percentiles": [
+         "5",
+         "10",
+         "25",
+         "50",
+         "75",
+         "90",
+         "95"
+        ],
+        "sample_count": 25,
+        "approval_status": "approved",
+        "computation_id": "d3969fb4-3254-465e-8753-d1081874e317",
+        "computation": "percentile"
+       }
+      ]
+     },
+     {
+      "parameter_code": "00065",
+      "unit_of_measure": "ft",
+      "parent_time_series_id": "0527b12a3c7043b1844b39a86a6ebf1a",
+      "parent_statistic_id": "00003",
+      "parent_statistic_name": "Mean",
+      "values": [
+       {
+        "time_of_year": "10-28",
+        "time_of_year_type": "day_of_year",
+        "values": [
+         "0.753",
+         "1.094",
+         "2.192",
+         "2.79",
+         "3.38",
+         "3.679",
+         "5.683"
+        ],
+        "percentiles": [
+         "5",
+         "10",
+         "25",
+         "50",
+         "75",
+         "90",
+         "95"
+        ],
+        "sample_count": 36,
+        "approval_status": "approved",
+        "computation_id": "ccdf8556-6481-4e95-ae6d-06ad0df8ae94",
+        "computation": "percentile"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "next": null
+}

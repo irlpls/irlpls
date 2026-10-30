@@ -1,0 +1,44 @@
+{
+ "id": "68567134-27ad-7bd7-4b65-d61adb11fc78",
+ "workspaceId": "68567134-27ad-7bd7-4b65-d61adb11fc79",
+ "accountId": "55434287-31bc-3ad7-1a63-d61aac11ac55",
+ "type": "TASKING",
+ "displayName": "Pl\u00e9iades Neo over North America",
+ "createdAt": "2026-10-28T10:00:00Z",
+ "updatedAt": "2026-10-30T10:00:00Z",
+ "createdBy": "u",
+ "updatedBy": "u",
+ "status": "CREATED",
+ "orderDetails": {
+  "acquisitionStart": "2026-10-29T00:00:00Z",
+  "acquisitionEnd": "2026-11-05T00:00:00Z",
+  "geometry": {
+   "type": "Polygon",
+   "coordinates": [
+    [
+     [
+      77.259584,
+      28.622331
+     ],
+     [
+      77.287879,
+      28.622632
+     ],
+     [
+      77.287621,
+      28.594794
+     ],
+     [
+      77.259389,
+      28.594983
+     ],
+     [
+      77.259584,
+      28.622331
+     ]
+    ]
+   ]
+  },
+  "subStatus": "QUOTATION_WAITING_RESPONSE"
+ }
+}

@@ -1,0 +1,3 @@
+Recorded live 2026-10-29T03:38Z (2026-10-28 evening, US), keyless, one GET, from the new CDSE STAC host (old stac.dataspace.copernicus.eu is replaced on 2027-01-12; https://dataspace.copernicus.eu/news/2026-10-16-new-sfeos-stac-catalogue-endpoint):
+stac_s2.json: GET https://stac.opensearch.dataspace.copernicus.eu/v1/search?collections=sentinel-2-l2a&bbox=6.8889,50.8950,7.0311,50.9850&sortby=-datetime&limit=1
+(HTTP 200; the feature's assets map is trimmed to its first entry to keep the fixture small; everything else is as served.)

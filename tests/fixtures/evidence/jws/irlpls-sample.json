@@ -1,0 +1,10 @@
+{
+  "irlpls_sample_pack": "2026-10-26",
+  "stage": "receipt",
+  "type": "jws-receipt",
+  "artefact": "../artefact.txt",
+  "proof": "receipt.json",
+  "trust_anchor": "jwks.json",
+  "readme": "README.md",
+  "verify": "python -m irlpls.evidence <card> (or any JWS library: detached payload = RFC 8785 of payload)"
+}

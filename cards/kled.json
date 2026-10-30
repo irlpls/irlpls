@@ -1,0 +1,222 @@
+{
+  "id": "kled",
+  "name": "Kled AI",
+  "provider_url": "https://www.kled.ai",
+  "status": "unclaimed",
+  "short": "A consumer app whose ID-checked contributors capture photos, video and audio to a lab's spec, claimed in under 72 hours.",
+  "tags": [
+    "egocentric video",
+    "first-person video",
+    "crowd",
+    "contributors",
+    "mobile app",
+    "training data",
+    "custom collection",
+    "consented",
+    "audit ledger"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "audio"
+    ],
+    "tasks": [
+      "custom capture to a spec built from 108 task templates (camera, microphone, screen recording, touch, keyboard)",
+      "egocentric hand-task video (e.g. reorganizing a room, two-handed repair)",
+      "multi-view object photos (the same object from every angle)",
+      "native conversational speech in rare languages"
+    ]
+  },
+  "pricing": {
+    "model": "Quote",
+    "from_usd": 0,
+    "unit": "dataset",
+    "notes": "Not published. The dataset request form asks for a budget band (under $10K, $10K-50K, $50K-250K, $250K+)."
+  },
+  "latency": {
+    "typical": "Under 72 hours to build and deploy a task to contributors; Kled also says any consumer dataset can be collected in under 72 hours (provider claim)",
+    "notes": "Kled V3 post, 30 Sep 2026; no SLA. The request form lets the buyer set the date the data is needed by."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Task captures are recorded after the task is deployed",
+    "notes": "The catalogue also sells 'Existing files' from contributors' camera rolls; only 'Task capture' (made to order) is a commission."
+  },
+  "coverage": {
+    "regions": [
+      "Southeast Asia",
+      "Sub-Saharan Africa",
+      "North America",
+      "Europe"
+    ],
+    "notes": "Kled says its contributors are 'across the US, Southeast Asia and Europe'. Its Trace ledger, by receipt volume, shows Southeast Asia 74.5%, Sub-Saharan Africa 22.7%, North America 2%, EU 0.4%, MENA 0.3%, Latin America 0.1%. Catalogue task-capture datasets list '100+ countries'. Kled can route contributors to a region (e.g. 'egocentric video from Southeast Asia this week')."
+  },
+  "licensing": {
+    "summary": "Contributors grant Kled a perpetual, irrevocable, worldwide licence, sublicensable through multiple tiers and exclusive to Kled for AI and ML training. Buyers receive 'a license written for model training'; catalogue datasets carry a 'non-exclusive commercial training license' ('train and ship commercial models'), and exclusivity and term are negotiable. The buyer rights come from product-page copy ('Use it to train and ship commercial models'), not a published contract: the Terms of Service contain no buyer licence. The buyer licence text itself is not public; resale, buyer ownership and Kled's own reuse of delivered data are not stated.",
+    "ai_training": "allowed"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Government ID checked at onboarding; active liveness challenge at every contribution session; each Trace receipt carries the contributor's KYC status (99.9% of receipts from verified contributors).",
+      "unknown": "ID results are not public; only an opaque per-app ID reaches the ledger, and the KYC status on a receipt is Kled's own assertion. The Trace audit page names Didit as the KYC vendor, but no independent audit of the checks is linked.",
+      "evidence_url": "https://trace.datafdn.org/audit/kled"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Task captures are recorded in the Kled app ('Capture Tool: Phone camera (in app)') and the Camera-Original Phone Photos set is 'never imported from a camera roll', but no device or app attestation is published, and the catalogue also contains camera-roll uploads. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Camera-original files with EXIF kept; terms ban AI-generated content; the FD 1.0 fraud model screens every upload for AI-generated, internet-sourced, edited and duplicate files. FD 1.0 results are from Kled's internal evaluations only; no C2PA signing and no per-file detector result is published."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each accepted file gets a Trace receipt within seconds; anyone can look up a file's fingerprint at trace.datafdn.org/verify.",
+      "unknown": "A receipt shows when the file was registered, not when it was captured; which chain anchors Trace is not documented. Trace's integration guide says the on-chain tx_hash stays empty until the DATA Foundation broadcasts, and names no chain, so the anchor cannot yet be checked independently."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "GPS and EXIF are kept in Kled's systems; receipts carry only the contributor's region and GPS existence flags.",
+      "unknown": "GPS values are never public; ledger resolution is 'never finer than country / state'."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Every submission is scored for task relevance and quality before acceptance, plus consent checks and masking of faces and personal details; task templates include examples of accepted and rejected submissions.",
+      "unknown": "Review criteria and per-dataset rejection data are not published beyond headline QA pass rates."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent confirms individual captures; Trace is run by The Data Foundation, which invested $3M in Kled."
+    }
+  },
+  "provenance": {
+    "custody": {
+      "level": "claimed",
+      "method": "Each accepted file gets a receipt on The Data Foundation's Trace ledger (content SHA-256 fingerprint, registration time, consent version, KYC status, payout); later changes and revocations append lifecycle events. Anyone can look up a fingerprint at trace.datafdn.org/verify.",
+      "unknown": "A registration and lifecycle record, not per-hop custody. The on-chain tx_hash stays empty until the DATA Foundation broadcasts and no chain is named, so the anchor cannot be checked independently; Kled's signature on submissions is optional. Trace is run by The Data Foundation, which invested in Kled.",
+      "sources": [
+        {
+          "claim": "Trace integration: tx_hash empty until broadcast; content SHA-256 is the searchable hash; signatures optional",
+          "url": "https://docs.datafdn.org/trace/integration"
+        },
+        {
+          "claim": "Every receipt onchain via Trace; revocation appends a lifecycle event",
+          "url": "https://trace.datafdn.org/audit/kled"
+        }
+      ]
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "'Any consumer dataset that can exist, can now be collected from physical reality in under 72 hours' and 'deployed to 500,000+ contributors within 72 hours' (Kled V3 post, 30 Sep 2026)."
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Submit a dataset request at kled.ai/datasets or contact sales; customers sign in at the Enterprise Portal (enterprise.kled.ai). Kled says self-serve task design is coming 'soon'."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No Kled server in the official MCP Registry (searched 'kled', 2026-10-26)."
+    },
+    "notes": "No public API docs. Dataset pages offer a 'Copy .md' button that exports specs and licence terms for an AI assistant."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract",
+    "notes": "Kled's Terms of Service §4.2 ban bots, scrapers and ML training on the consumer Services unless agreed with Kled; buyer work is by agreement, so automation_allowed is left unstated."
+  },
+  "payment": {
+    "notes": "No buyer payment method is published; terms are set with sales."
+  },
+  "capture": {
+    "by": "contributors"
+  },
+  "requester": {
+    "checks": "The dataset request form verifies the requester's email with a one-time code and a CAPTCHA.",
+    "unknown": "Kled publishes no check of who a buyer is or what a commission is for."
+  },
+  "attestations": [
+    {
+      "verifier": "Trail of Bits",
+      "scope": "security and privacy audit of Kled",
+      "result": "Completed May 2026 (stated on Kled's audit portal; no report published by Trail of Bits)",
+      "url": "https://trace.datafdn.org/audit/kled"
+    }
+  ],
+  "summary": "A consumer app whose 500,000+ opt-in contributors (company figure) capture photos, video and audio to a buyer's spec, built from 108 task templates and claimed in under 72 hours. Contributors are ID-checked via Didit and pass a liveness check each session; uploads are screened by Kled's fraud model, and each accepted file gets a public receipt on the Trace audit ledger (consent version, KYC status, payout). Buyers get a model-training licence. Ordering is through sales; self-serve is announced as coming.",
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "500,000+ opt-in contributors across the US, SEA and Europe; 108 templates; collection and deployment in under 72 hours; self-serve 'soon'; FD 1.0 fraud model; relevance and quality scoring; regional routing",
+      "url": "https://www.kled.ai/blog/kled-v3-is-here"
+    },
+    {
+      "claim": "Custom order flow (spec, contributors capture, QA, consent checks, face masking); delivery with consent records and a licence for model training; request form fields (budget bands, licence type, email verification)",
+      "url": "https://www.kled.ai/datasets"
+    },
+    {
+      "claim": "Task-capture dataset: in-app phone camera, non-exclusive commercial training licence, exclusivity negotiable, 100+ countries",
+      "url": "https://www.kled.ai/datasets/fix-something-with-tools-hands-in-shot"
+    },
+    {
+      "claim": "Contributor licence: perpetual, irrevocable, multi-tier sublicensable, exclusive to Kled for AI/ML training; Data Customers train AI; no AI-generated content",
+      "url": "https://www.kled.ai/terms-of-service"
+    },
+    {
+      "claim": "Submitted content is licensed or sold to third parties to train AI; KYC uses government ID and biometric data",
+      "url": "https://www.kled.ai/privacy-policy"
+    },
+    {
+      "claim": "ID KYC (provider not named on this page), liveness each session, per-receipt KYC and payout status, region mix, GPS/EXIF as existence flags only, Trail of Bits audit May 2026",
+      "url": "https://trace.datafdn.org/audit/kled"
+    },
+    {
+      "claim": "Public file-fingerprint and dataset lookup against Trace receipts",
+      "url": "https://trace.datafdn.org/verify"
+    },
+    {
+      "claim": "The Data Foundation (Trace operator) invested $3M in Kled",
+      "url": "https://www.kled.ai/blog/the-data-foundation-invests-3m-in-kled"
+    },
+    {
+      "claim": "Request Dataset, Contact and Enterprise Portal links",
+      "url": "https://www.kled.ai"
+    },
+    {
+      "claim": "No Kled server in the MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=kled"
+    },
+    {
+      "claim": "ToS §1.1(b) contributor licence exclusive to Kled; §4.2 bans bots, scrapers and ML training on the Services unless agreed",
+      "url": "https://www.kled.ai/terms-of-service"
+    },
+    {
+      "claim": "Dataset page: 'Use it to train and ship commercial models. Exclusivity is negotiable.'; non-exclusive rights",
+      "url": "https://www.kled.ai/datasets/fix-something-with-tools-hands-in-shot"
+    },
+    {
+      "claim": "Trace integration guide: tx_hash empty until the DATA Foundation broadcasts; no chain named",
+      "url": "https://docs.datafdn.org/trace/integration"
+    },
+    {
+      "claim": "Trace audit page: Didit KYC, liveness each session, every receipt on-chain",
+      "url": "https://trace.datafdn.org/audit/kled"
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "id": "wegolook",
+  "name": "WeGoLook",
+  "provider_url": "https://wegolook.com",
+  "status": "unclaimed",
+  "tags": [
+    "inspection",
+    "on-demand",
+    "looker",
+    "insurance",
+    "claims",
+    "auto",
+    "vehicle",
+    "heavy equipment",
+    "property",
+    "verification",
+    "crowd workforce"
+  ],
+  "summary": "On-demand field workers ('Lookers') who go to a vehicle, property or site and capture photos, video and checklist answers in the WeGoLook app. A public order portal sells fixed-price vehicle inspections (auto, heavy equipment, motorcycle, RV, watercraft) from $99; insurers and other enterprises buy custom workflows by contract. WeGoLook is a Crawford & Company subsidiary (Crawford bought 85 percent in January 2017) and also powers Crawford's alternative claims inspections.",
+  "short": "Sends a local inspector to photograph and video a vehicle or property; online vehicle inspections from $99.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "vehicle inspection ordered online: auto, heavy equipment, motorcycle, RV, watercraft",
+      "VIN and damage verification",
+      "working demonstration and walk-around video",
+      "auto and fleet claims inspection",
+      "non-complex property inspection",
+      "roof and interior/exterior property inspection (Crawford AIS network)",
+      "vacant land inspection",
+      "underwriting and real estate portfolio inspection",
+      "notice delivery and product recall checks",
+      "notarized document looks",
+      "self-service looks (customer or employee collected)",
+      "custom workflow integrations"
+    ]
+  },
+  "pricing": {
+    "model": "fixed price per online inspection; enterprise by quote",
+    "from_usd": 99,
+    "unit": "instant vehicle inspection",
+    "notes": "The $99 base and add-on prices could not be re-checked (the portal renders client-side). The public order portal listed Instant Inspection - Auto at a base price of $99, with add-ons: working demonstration and exterior walk-around videos $35, three-day rush delivery $35, two-day rush delivery $50. The same five vehicle products (auto, heavy equipment, motorcycle, RV, watercraft) are listed. Enterprise and claims work (Standard, Self-Service and Custom Looks) has no public price. Looker pay, per the app store listings, is mostly $15-$25 per Look."
+  },
+  "latency": {
+    "typical": "About 1.6 days to first inspection on average, against a two-day SLA (2022 claims brochure); rush delivery in two or three days can be bought online",
+    "notes": "The 2022 brochure also gives 38 minutes average time to first contact and 11.2 miles average Looker distance. The order portal sells three-day and two-day rush delivery as paid add-ons, so standard online delivery is slower than three days, but the standard window is not stated. Crawford says many of its services can be delivered 'as rapidly as same day'. App store listings say most Looks take under an hour on site."
+  },
+  "coverage": {
+    "regions": [
+      "US"
+    ],
+    "notes": "Over 45,000 Lookers claimed. Crawford describes the Looker network as recruited 'in the U.S.' and lists 'Locations Served: United States' for its WeGoLook contacts; the Looker onboarding site says 'nationwide network'. The homepage and 2022 brochure say 'global' and 'around the globe', but no non-US country is named. A Crawford brochure footer says 'Additional countries served by Crawford's global network'. No city list or density data is public.",
+    "areas": [
+      "US"
+    ]
+  },
+  "licensing": {
+    "summary": "No client terms for deliverables are public: ownership, resale and AI training are not stated. The site Terms (last updated July 1, 2020) say users grant Crawford Inspection Services a license to use their Submissions, and that site content belongs to Crawford Inspection Services or its licensors. The privacy policy (April 27, 2023) says WeGoLook does not sell personal data for money but may share it 'in exchange for other value, such as data analytics'. Enterprise contracts may differ."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Lookers are independent contractors who apply through the app or onboarding site; notary Looks require a notary license and roof inspectors are described as experienced. No identity check, background check or vetting process is described on a provider page. Older partner announcements (2010-2011) describe background-checked Lookers; WeGoLook's current site states no check."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Lookers capture in the WeGoLook mobile app, and release notes describe in-app photo validation and enforced in-app capture for 'v2' Looks, but no app-integrity check, Play Integrity or App Attest use is documented. No C2PA signing; WeGoLook is not on the C2PA Conforming Products List. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Release notes describe the app's own camera components (front/rear switch, flash, zoom, enforced landscape capture) for photos and video on v2 Looks. Whether gallery uploads are blocked on every Look type, and whether a photo of a screen would be caught, is not stated."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Reports state an inspection date and time",
+      "evidence_url": "https://demo.wegolook.com/looks/5fab09a11e9df00021af5485/reports/public.html",
+      "unknown": "How the inspection time is recorded (device clock, server receipt or Looker entry) is not stated, and photos carry no visible per-photo timestamp in the sample report."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "The app collects precise location and the Terms mention Google geo-location services, but no geofencing or per-photo location check is described. The sample report shows only a city. GPS spoofing risk unknown."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "'Quality assurance' is listed as a benefit on the homepage; Looks follow a fixed shot list and checklist (see sample report)",
+      "evidence_url": "https://wegolook.com",
+      "unknown": "No description of what the QA involves, who performs it, or whether every report is reviewed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No public statement on second-source checks, re-inspections or fraud-rate reporting."
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "2022 brochure: average time to first inspection 1.6 days, two-day SLA; the order portal sells two- and three-day rush delivery."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "captured after the order, usually within days",
+    "notes": "Each Look is a new on-site capture."
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "notes": "No public API documentation. The web order portal (placeorder.wegolook.com) calls a backend at api.wegolook.com with Auth0 login, but it is not documented for third parties. Enterprise integrations are offered as 'Custom Solutions' through sales.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No entry in the official MCP Registry for 'wegolook' or 'crawford' (2026-10-26)."
+    }
+  },
+  "access": {
+    "cost": "paid",
+    "tested_live": null,
+    "automation_allowed": false,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "hosted_checkout"
+    ],
+    "agent_can_pay": false,
+    "notes": "Online orders are paid at checkout by credit card or PayPal; the order portal redirects to a hosted payment page (Authorize.net or PayPal Express Checkout), per its public config and code (Stripe also appears in that config). Enterprise billing terms are not public."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Ordering online requires signing in or signing up for an account. The Terms require users to be at least 18 and to give accurate registration information.",
+    "unknown": "No identity, business or purpose checks on who commissions a Look are documented, and the Terms do not address Looks that target a specific person."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Operating site; Standard, Self-Service and Custom Looks; industries; 'global, on-demand workforce'; 'over 45,000' professionals; 'quality assurance' benefit; client 'Place an Order' and enterprise 'Contact Sales' paths; copyright Crawford & Company 2025",
+      "url": "https://wegolook.com"
+    },
+    {
+      "claim": "Get Started page: clients order instant inspections online at placeorder.wegolook.com; enterprise via sales",
+      "url": "https://wegolook.com/get-started"
+    },
+    {
+      "claim": "Instant Inspection - Auto: up to 64 photos, VIN and damage verification; base price $99; add-ons $35 videos, $35 three-day rush, $50 two-day rush; products for auto, heavy equipment, motorcycle, RV, watercraft; sign-in or sign-up required to order",
+      "url": "https://placeorder.wegolook.com/instant-inspections/auto"
+    },
+    {
+      "claim": "Order portal config: backend api.wegolook.com, Auth0 login (auth.wegolook.com), PayPal Express Checkout and Authorize.net hosted payment URLs",
+      "url": "https://placeorder.wegolook.com/config/globals.js"
+    },
+    {
+      "claim": "Sample report: fixed shot list, inspection date and time, city-level location",
+      "url": "https://demo.wegolook.com/looks/5fab09a11e9df00021af5485/reports/public.html"
+    },
+    {
+      "claim": "Crawford Innovative Ventures acquired 85 percent of WeGoLook, LLC for $36.125M, closed January 4, 2017",
+      "url": "https://www.sec.gov/Archives/edgar/data/25475/000119312517002419/d311506d8k.htm"
+    },
+    {
+      "claim": "Brochure page (March 14, 2022): over 45,000 Lookers",
+      "url": "https://crawco.com/resources/wegolook-brochure"
+    },
+    {
+      "claim": "Brochure PDF: average time to first inspection 1.6 days (two-day SLA), 38 minutes to first contact, 11.2 miles Looker distance; 'around the globe'; YouGoLook self-service",
+      "url": "https://assets.crawco.com/docs/us-global-resource-WGL-A-Crawford-ClaimsOnePager.pdf"
+    },
+    {
+      "claim": "Looker network (45,000+) recruited in the U.S. for auto, non-complex property, vacant land, underwriting, real estate portfolio; AIS network for roof and interior/exterior inspections; 'as rapidly as same day'; WeGoLook contacts serve United States",
+      "url": "https://www.crawco.com/services/alternative-inspections/"
+    },
+    {
+      "claim": "Looker onboarding: independent contractors in a nationwide network; Looker, Looker - Notary (license required), Roof Inspector, Interior/Exterior Inspector; notice delivery and product recall tasks",
+      "url": "https://onboarding.wegolook.com"
+    },
+    {
+      "claim": "Most Looks pay $15-$25 and take under an hour; Lookers apply in the app; release notes on in-app camera, photo validation and enforced capture; Precise Location in privacy label; version 5.8.1",
+      "url": "https://apps.apple.com/us/app/wegolook/id906841156"
+    },
+    {
+      "claim": "Android app: same Looker description; updated Jun 16, 2026; 100K+ downloads",
+      "url": "https://play.google.com/store/apps/details?id=com.wegolook.app"
+    },
+    {
+      "claim": "Terms (updated July 1, 2020): license to use Submissions granted to Crawford Inspection Services; users 18+, accurate registration; 'Do not use bots or automated means to access our Sites'; Google Geo-Location Services; no pricing, AI or resale terms",
+      "url": "https://wegolook.com/legal/terms"
+    },
+    {
+      "claim": "Privacy policy (April 27, 2023): collects geographic position and photos; does not sell personal data for money but may share it for other value such as analytics; no AI or model-training statement",
+      "url": "https://wegolook.com/legal/privacy"
+    },
+    {
+      "claim": "No WeGoLook or Crawford entry in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=wegolook"
+    },
+    {
+      "claim": "WeGoLook and Crawford are not on the C2PA Conforming Products List",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "2011 eBay Motors partnership: 'background-checked, certified' Lookers (third-party, dated)",
+      "url": "https://www.ebayinc.com/stories/news/ebay-motors-and-wegolook-partner-to-provide-onsite-inspections-for-vehicles/"
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "id": "hubeau-hydrometrie",
+  "name": "Hub'Eau Hydrométrie (France river levels and flow)",
+  "provider_url": "https://hubeau.eaufrance.fr",
+  "short": "Live French river height and flow, about 5,000 stations; keyless.",
+  "summary": "Hub'Eau is a French national open platform (publishers OFB, Vigicrues SCV and BRGM) that serves public water-information-system data by keyless REST APIs. Its Hydrométrie API gives river water height (H) and flow (Q) observations from about 5,000 stations of the French network, refreshed every 5 minutes from the PHyC platform with one month of history, plus daily and monthly mean flows over longer history.",
+  "tags": [
+    "river",
+    "water level",
+    "discharge",
+    "flow",
+    "hydrology",
+    "france",
+    "flood",
+    "open data",
+    "no key",
+    "etalab"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "stations and sites near a commune, department or bounding area",
+      "real-time water height (H) and flow (Q) at a station for the last month",
+      "daily and monthly mean flows with long history (from 1900 at some stations)",
+      "filter by time window and fields to limit the download"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms: use of the platform is free (\"L'accès à la Plateforme et son utilisation sont gratuits\"); the APIs are accessible without registration or prior authorisation."
+  },
+  "latency": {
+    "typical": "About 5 minutes after upload; stations record every 5 to 60 minutes",
+    "notes": "Docs: observations are banked every 5 to 60 minutes in PHyC and the API is updated from PHyC every 5 minutes. Live check: the newest observation of station K437311001 was dated 2026-10-27T15:25:00Z in a query made after 15:40Z."
+  },
+  "coverage": {
+    "regions": [
+      "France (the French hydrometric network)"
+    ],
+    "notes": "About 5,000 hydrometric stations, run mainly by DREAL and other producers; elaborated daily flows for over 4,200. The pages read do not say which overseas territories are included.",
+    "areas": [
+      "FR"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms of use: \"La réutilisation des Jeux de données est régie par la licence ouverte Etalab ... Les Jeux de données sont donc librement et gratuitement utilisables et réutilisables, y compris dans un but commercial. L'utilisateur de ces données doit néanmoins veiller à citer l'auteur des Jeux de données.\" The data are raw, supplied as produced by the water-information-system contributors, who alone answer for them. The publisher may refuse access for abusive use. The terms do not mention AI training or resale by name."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Automated stations; no person confirms readings."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each observation has date_obs in UTC (live sample: 2026-10-27T15:25:00Z).",
+      "unknown": "Station clocks are not documented; timestamps are unsigned."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station records carry latitude and longitude, returned on each observation.",
+      "unknown": "Coordinates are the producer's own and unsigned."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Each observation carries a method label (e.g. Mesurée), a qualification label (live sample: Non qualifiée) and a status (live sample: Brute).",
+      "unknown": "Real-time values are raw and unvalidated; the terms say the datasets are raw data and the contributors alone are responsible for them."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent confirms individual readings."
+    }
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "about 5 to 20 minutes",
+    "notes": "Real-time observations kept for one month; elaborated daily and monthly means over long history."
+  },
+  "delivery": {
+    "speed": "minutes",
+    "basis": "Docs: \"L'API est mise à jour à partir de la plateforme PHyC toutes les 5 minutes\"; stations bank readings every 5 to 60 minutes.",
+    "modes": [
+      "live"
+    ]
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://hubeau.eaufrance.fr/page/api-hydrometrie",
+    "base_url": "https://hubeau.eaufrance.fr/api/v2/hydrometrie",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No authentication or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/referentiel/stations",
+        "params": "e.g. code_commune_station, size, format (json, geojson, csv, xml)",
+        "notes": "Station reference data. Sites at /referentiel/sites. Result depth capped at 20,000 records."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/observations_tr",
+        "params": "code_entite (station code), grandeur_hydro (H or Q), date_debut_obs, date_fin_obs, sort, size (max 20000), cursor, fields",
+        "notes": "Real-time observations with cursor pagination. Live call returned date_obs, resultat_obs, libelle_methode_obs, libelle_qualification_obs, libelle_statut, latitude and longitude. Maximum URL length 2,083 characters."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/obs_elab",
+        "notes": "Elaborated daily and monthly mean flows over the full history."
+      }
+    ],
+    "rate_limits": "None published. The terms ask users to fetch only a subset of the data using the available filters and to prefer compression; abusive use can lead to refused access.",
+    "notes": "Formats: JSON, GeoJSON, CSV, XML SANDRE Hydrométrie; CORS and JSONP are supported. In testing, a request to the older /api/v1/ path with a custom User-Agent got a 403 page while the documented /api/v2/ path with a browser-style User-Agent returned data; which factor caused the 403 was not isolated. The terms do not forbid automation and describe the platform as for those who \"veulent automatiser leur téléchargement\"."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "automation_allowed": true,
+    "tested_live": "2026-10-28",
+    "gate": "none"
+  },
+  "sources": [
+    {
+      "claim": "Hydrométrie API: operations, 5-minute refresh from PHyC, one month history, about 5,000 stations, limits, formats, example URL",
+      "url": "https://hubeau.eaufrance.fr/page/api-hydrometrie"
+    },
+    {
+      "claim": "Terms of use: free, no registration, Etalab Licence Ouverte, commercial use, cite the author, raw data, use filters, refuse access on abuse, automation purpose",
+      "url": "https://hubeau.eaufrance.fr/page/conditions-generales"
+    },
+    {
+      "claim": "Publishers OFB, SCV and BRGM",
+      "url": "https://hubeau.eaufrance.fr/mentions-legales-credits"
+    },
+    {
+      "claim": "Live GET of observations_tr for station K437311001",
+      "url": "https://hubeau.eaufrance.fr/api/v2/hydrometrie/observations_tr?code_entite=K437311001&size=2&sort=desc"
+    },
+    {
+      "claim": "Swagger: observations_tr and referentiel/stations take latitude, longitude and distance (km); units mm (heights) and l/s (flows) are on the API page",
+      "url": "https://hubeau.eaufrance.fr/api/v2/hydrometrie/api-docs"
+    }
+  ],
+  "status": "unclaimed",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  },
+  "adapter": "hubeau-hydrometrie"
+}

@@ -1,0 +1,5 @@
+SOURCE: https://hireahuman.quest/agents/docs (read 2026-10-28). fixture: documented-shape (hand-made; no key, so nothing was called).
+getQuestsV2.sse: a tools/call answer as an SSE stream; result text = { quests: [...], rowsSkipped, resultCount }, fields as documented.
+postQuest.json: a tools/call JSON answer; result text = { status, questID } (status values as documented).
+postQuest_max_price.json: status "maximum price exceeded" with maxPrice and currency, as documented.
+initialize.json: a generic MCP initialize result (spec 2025-06-18), not Quest-specific.

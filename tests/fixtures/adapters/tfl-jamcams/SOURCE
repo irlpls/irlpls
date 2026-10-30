@@ -1,0 +1,2 @@
+place_near.json: GET https://api.tfl.gov.uk/Place?lat=51.5074&lon=-0.1278&radius=500&type=JamCam (keyless, recorded 2026-10-28T22:56Z)
+Image Last-Modified sampled by HEAD https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/00001.06502.jpg -> "Wed, 28 Oct 2026 22:56:18 GMT"

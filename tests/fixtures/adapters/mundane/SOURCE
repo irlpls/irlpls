@@ -1,0 +1,2 @@
+signup_capabilities.json: live GET https://api.mundane.market/v1/signup/capabilities on 2026-10-28 (keyless, recorded once).
+workers.json, offer_check.json, task_created.json, offer.json, task_completed.json: fixture: documented-shape, from WorkerSummary, TaskCreated, OfferResult and TaskStatus in https://api.mundane.market/openapi.json; the offer-check body and the proof-media item shape are not specified there (additionalProperties), so those are guesses kept minimal. Never called.

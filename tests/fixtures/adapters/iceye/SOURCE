@@ -1,0 +1,5 @@
+fixture: documented-shape; never called (contract-only).
+price.json, price_forbidden.json: https://docs.iceye.com/constellation/api/tasking/get-task-price/ (Response; 403 example)
+price_eur.json: same shape with a non-USD currency (hand-made from the documented fields)
+task_created.json, insufficient_funds.json: https://docs.iceye.com/constellation/api/tasking/create-task/
+feasibility.json, scene.json, products.json, task_fulfilled.json (status FULFILLED, POI from the guide): https://docs.iceye.com/constellation/api/how-to/build-tasking-application/

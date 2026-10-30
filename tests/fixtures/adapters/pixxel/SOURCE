@@ -1,0 +1,3 @@
+fixture: documented-shape, from https://docs.pixxel.space/openapi.json (SubmitOrder 201 and GetOrderById 200 schemas, error
+{error{code,message,details}}) and https://docs.pixxel.space/developer/orders/tasking.md ("The response of dry_run as true
+is same as the order placed"). Values are made up.

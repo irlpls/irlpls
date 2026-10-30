@@ -1,0 +1,391 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "planet",
+  "name": "Planet (Planet Labs)",
+  "provider_url": "https://www.planet.com",
+  "status": "unclaimed",
+  "adapter": "planet",
+  "short": "Satellite imagery of anywhere on Earth: near-daily PlanetScope, and new 50 cm SkySat captures from $12 per km2.",
+  "summary": "Operator of the PlanetScope (near-daily, ~3-4 m), SkySat (50 cm class), Pelican (30-50 cm class) and Tanager (hyperspectral) satellite constellations. New SkySat captures can be bought pay-as-you-go through Planet Select (a self-service web portal run with SkyFi; published per-km2 prices, 25 km2 minimum) or under an annual tasking-credits contract, which also covers Pelican and Tanager and gives access to the Tasking API (key from Planet sales). Its Data and Orders APIs search and deliver the existing archive; PlanetScope scenes 30 days and older are self-serve with an Insights Flex plan.",
+  "tags": [
+    "satellite",
+    "satellite imagery",
+    "earth observation",
+    "remote sensing",
+    "aerial",
+    "PlanetScope",
+    "SkySat",
+    "tasking",
+    "archive imagery",
+    "high resolution",
+    "daily imagery",
+    "change detection",
+    "global",
+    "api",
+    "geospatial",
+    "Pelican",
+    "Tanager",
+    "hyperspectral",
+    "stereo",
+    "satellite video"
+  ],
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "photo",
+      "video"
+    ],
+    "tasks": [
+      "search archive scenes by area, date range, cloud cover and item type (e.g. PSScene, SkySatCollect)",
+      "scene-count statistics over time for an area",
+      "order and deliver archive scenes or basemaps, with optional raster tools, to download or cloud storage",
+      "new SkySat tasking: point (25 km2 square), line, area, stereo, tri-stereo and video (30-120 s) collects",
+      "Flexible tasking (automated retries for a cloud-minimized capture over a time of interest of 14+ days) and Assured tasking (a chosen imaging window, collected regardless of weather)",
+      "Pelican (30-50 cm) and Tanager hyperspectral tasking, and Tanager methane estimates, under a tasking-credits contract",
+      "price estimate before placing a tasking order (Tasking API)"
+    ]
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "Planet's Assured Tasking terms: imaging windows 'between ≤ 7 days and ≥ 6 hours prior to TOI'; orthorectified products '≤ 12 hours from capture'. Planet Select: 'New tasking is completed within your selected capture window.'"
+  },
+  "pricing": {
+    "model": "Published per-km2 prices for pay-as-you-go SkySat tasking and archive through Planet Select; monthly or annual Insights Flex plans for archive PlanetScope; annual contracts (tasking credits, committed use) through sales for the Tasking API, Pelican, Tanager and fresher PlanetScope data",
+    "from_usd": 12,
+    "unit": "per km2 (SkySat Flexible Tasking via Planet Select; 25 km2 minimum order)",
+    "notes": "Planet's pricing page lists SkySat Flexible Tasking at $12/km2, SkySat Assured Tasking at $40/km2 and SkySat archive (30 days and older) at $6/km2, via Planet Select, with a 25 km2 minimum order (so about $300 for the smallest Flexible order). Pelican, Tanager, stereo, line and area collects are quoted by sales. Insights Flex plans for PlanetScope archive data (30 days and older): Starter $110/month or $1,100/year (7,000 monitoring credits/month), Professional $550/month, Scale $1,200/month; ordering 30-day-and-older PlanetScope scenes costs 50 monitoring credits per km2. Next-day and near-real-time PlanetScope needs an enterprise or Planet Agriculture plan (Agriculture: $0.35-$1.80 per hectare by country tier, sold in 5 km2 increments on an annual contract). The Tasking API's POST /tasking/v2/pricing/ and GET /tasking/v2/orders/{id}/pricing return a quota cost for contract customers. A free 30-day trial (3,000 monitoring credits, no card) covers public and sandbox data only, not ordering over your own area."
+  },
+  "latency": {
+    "typical": "New SkySat capture: Assured tasking collects in a chosen imaging window booked between 6 hours and 7 days before the time of interest (Express windows under 6 hours); Flexible tasking keeps trying over a time of interest of at least 14 days. Orthorectified products are delivered within about 12 hours of capture (L1A within about 4 hours for Assured). Archive search is immediate.",
+    "notes": "Planet's tasking terms call the latency figures estimates that may vary. Flexible orders must be placed at least 24 hours before the time of interest. Planet Select says archive data is delivered immediately and new tasking is completed within the selected capture window. The Tasking API distinguishes Standard delivery (per SLA) from Fast Track delivery (as soon as data is available) but gives no figures. Archive scenes in the Data API must be activated before download, or ordered through the Orders API."
+  },
+  "coverage": {
+    "regions": [
+      "Global (PlanetScope: Earth's land surface near-daily; SkySat and Pelican: tasked anywhere not restricted)"
+    ],
+    "notes": "Planet's June 2026 product specifications say PlanetScope provides near-daily imagery of the entire land surface with hundreds of Dove satellites in orbit, and that about fifteen SkySat-C satellites are in orbit (4-5 day revisit per satellite). Planet says certain countries and areas are restricted for tasking for capacity and compliance reasons and that these change; Planet Select shows when an area is unavailable and may restrict sensitive areas. Insights Flex reserves the right to limit access within some regions. Area tasking orders are capped at an account-specific maximum km2.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Licensed, not sold. Under Planet's Master Content License Agreement 2026.1 (effective June 24, 2026, current for all Order Schedules) Planet grants a limited, nontransferable, non-sublicensable, revocable licence scoped by the Order Schedule and retains all right, title and interest in the content. You may not distribute, sublicense or let third parties access the content, create derivative works except as authorized, use it to improve non-Planet imagery, or build a substitute for Planet's products. AI training is allowed if your Order Schedule's usage rights allow Derivative Products, unless the Order Schedule says otherwise: not to replicate Planet content or improve third-party imagery, only on isolated, encrypted systems, and the resulting model stays subject to Planet's rights and may not be commercialized or distributed unless the Order Schedule permits. The Terms of Use (September 1, 2026) let Insights Platform licensees build application and media derivative products for third parties' internal use only, without source imagery, and require a Planet credit. The MCLA lets Planet require agentic users to be identified.",
+    "resale": "forbidden",
+    "ai_training": "allowed",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: captures come from automated satellites, with no human operator in the loop"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No public documentation of signing, provenance attestation, or a tamper-evident chain from satellite downlink to delivered file"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Each scene is an item type tied to one constellation (e.g. PSScene, SkySatCollect), and Planet's product specifications document each constellation's sensors (e.g. SkySat: three 5.5 MP CMOS detectors behind a 3.6 m focal-length telescope). No signed provenance links a delivered file to a specific satellite and sensor; you rely on Planet's metadata"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Scenes carry an 'acquired' timestamp that the Data API filters on (DateRangeFilter on 'acquired'); tasking captures are reported per order through /tasking/v2/captures/",
+      "unknown": "How the acquisition time is derived and its accuracy are not documented on the pages read; timestamps are not signed"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Ortho products are corrected with attitude telemetry and ephemeris, then orthorectified with ground control points and 30-90 m DEMs; Planet's product specifications state positional accuracy under 10 m RMSE (PlanetScope ortho: 'Less than 10 m RMSE at 90th percentile'; SkySat ortho: under 10 m RMSE). Raw SkySat geolocation knowledge is 30-50 m",
+      "unknown": "These are specifications, not per-scene measurements; accuracy varies by region and terrain, and no per-scene error is published"
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No public method for detecting manipulated imagery. Cloud cover and quality_category are metadata, not authenticity checks. Orders API manifests carry per-file MD5 and SHA-256 digests, which show a file arrived intact but are unsigned and say nothing about what it shows"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Planet offers no per-capture independent cross-check. A NASA GSFC study (June 2022) measured PlanetScope offsets against WorldView imagery for a few sample sites (see attestations); it says nothing about any individual delivered scene or about SkySat"
+    }
+  },
+  "attestations": [
+    {
+      "verifier": "NASA Goddard Space Flight Center (Tan, Lin, Wolfe)",
+      "scope": "location (PlanetScope geolocation, relative to WorldView reference images)",
+      "result": "Sample sites only: after filtering, mean offsets of 4.24 m east-west and -0.81 m north-south in New Mexico; about 3-8 m east-west and 4.7-6.4 m north-south in Singapore, where the two WorldView references disagreed by about 8 m",
+      "date": "2022-06-02",
+      "url": "https://www.earthdata.nasa.gov/s3fs-public/2022-06/Planet_Geolocation_Assessment.pdf"
+    }
+  ],
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Tasking: captured after you order. Archive: PlanetScope from near-daily to years old; self-serve Insights Flex gets PlanetScope 30 days and older; SkySat archive via Planet Select is 30 days and older.",
+    "notes": "The Data API and Orders API serve existing scenes; the Tasking API and Planet Select order new captures. A tasking customer may buy an archive hold of up to 30 days before its captures join the shared SkySat archive. Buying archive imagery through the Tasking API is deprecated and ends November 1, 2026."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://docs.planet.com/develop/apis/",
+    "base_url": "https://api.planet.com",
+    "auth": [
+      {
+        "type": "basic",
+        "env_var": "PLANET_API_KEY",
+        "header": "Authorization",
+        "how_to_get": "Data and Orders APIs: the API key on your Planet Account page, My Settings tab (one active key at a time; needs an account with a paid plan to order your own areas). Send it as HTTP Basic with the key as username and an empty password (preferred). Planet's own examples use PL_API_KEY. Tasking API: the key comes from a Planet sales representative."
+      },
+      {
+        "type": "api_key_header",
+        "header": "Authorization",
+        "env_var": "PLANET_API_KEY",
+        "how_to_get": "Same key, sent as 'Authorization: api-key <key>'. The Tasking API docs use this form."
+      },
+      {
+        "type": "api_key_query",
+        "env_var": "PLANET_API_KEY",
+        "how_to_get": "Same key as the api_key query parameter, where an API supports it (meant for tile-streaming clients)."
+      },
+      {
+        "type": "oauth2",
+        "transport": "rest",
+        "scopes": [
+          "planet",
+          "offline_access",
+          "openid",
+          "profile",
+          "email"
+        ],
+        "dynamic_registration": false,
+        "pkce": "S256",
+        "how_to_get": "Authorization-code or device-code login at login.planet.com, giving a JWT sent as 'Authorization: Bearer <token>'. Interactive client registration has not been released: the only supported interactive client is Planet's CLI and Python SDK ('planet auth login'), which planet-mcp also uses. Machine-to-machine client credentials work only on services.sentinel-hub.com so far. Planet intends to deprecate API keys eventually, with no date set. api.planet.com serves no RFC 9728 protected-resource metadata."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/data/v1/quick-search",
+        "params": "body: item_types (e.g. ['PSScene']), geometry (GeoJSON), filter (AndFilter of DateRangeFilter on 'acquired', RangeFilter on 'cloud_cover', StringInFilter 'quality_category', AssetFilter, PermissionFilter); query: _sort, _page_size",
+        "notes": "One-off archive search; rate limit 5 req/s"
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/data/v1/searches",
+        "params": "same body as quick-search plus a name",
+        "notes": "Create a saved search; run it with GET /data/v1/searches/{search_id}/results"
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/data/v1/stats",
+        "params": "item_types, interval (e.g. day), filter, optional utc_offset",
+        "notes": "Scene counts over time, useful for checking how often an area is imaged"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/data/v1/item-types/{item_type_id}/items/{item_id}/assets",
+        "notes": "Lists assets with status and an activate link. Assets must be activated and polled until active before download (activation 2 req/s, download 5 req/s). Activation charges quota for the whole scene"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/compute/ops/orders/v2",
+        "params": "name, products [{item_ids, item_type, product_bundle}], source_type (scenes|basemaps), optional tools, delivery, hosting, notifications",
+        "notes": "Orders API: delivers archive scenes; max 500 items per request; 10,000 active orders per organization"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/compute/ops/orders/v2/{order_id}",
+        "notes": "Order state: queued, running, success, partial, failed or cancelled"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/compute/ops/orders/v2",
+        "notes": "List Orders API orders"
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/tasking/v2/pricing/",
+        "params": "geometry, plus imaging_window for ASSURED orders; one order or a bulk array",
+        "notes": "Estimate tasking price before ordering"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/tasking/v2/orders/",
+        "params": "name, geometry (GeoJSON Point/LineString/Polygon; a Point is a 5x5 km square), start_time, end_time, product, pl_number, order_type (e.g. STEREO), n_stereo_pov",
+        "notes": "New capture. product and pl_number default to the values tied to the API key. Area orders are Flexible only. Bulk create/edit/cancel via POST /tasking/v2/bulk/ (up to 1000)"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasking/v2/orders/{order_id}",
+        "notes": "Edit with PUT. Cancel with DELETE (?accept_cancellation_charge=true if over the contract's cancellation limit)"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/tasking/v2/orders/",
+        "params": "status, name__icontains, created_time__gt, limit, offset"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/tasking/v2/captures/?order_id={order_id}",
+        "notes": "Captures and their status for a tasking order"
+      },
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/tasking/v2/orders/{order_id}/pricing",
+        "notes": "Price of an existing order (orders created after March 2024)"
+      }
+    ],
+    "sdk": "Planet Python SDK and 'planet' CLI (planetlabs/planet-client-python)",
+    "rate_limits": "Data API: activation 2/s, download 5/s, search 5/s, other 10/s. Orders API (per key): create, get, list and cancel 3/s each, download 5/s, bulk cancel 5/s. Tasking API: 30/min unauthenticated, 40/s burst, 300/min sustained; HTTP 429 when exceeded.",
+    "self_serve": false,
+    "notes": "The Data and Orders APIs are self-serve once you buy an Insights Flex plan (archive PlanetScope 30 days and older); new captures by API need the Tasking API and a contract key, while self-serve new captures go through the Planet Select web portal. Orders can include metadata.stac (beta, scenes only) for a STAC catalog; manifest.json lists MD5 and SHA-256 digests per file. No /.well-known/ucp, /.well-known/agent-card.json or /.well-known/irlpls is served on planet.com or api.planet.com. The Terms of Use bar collecting data from the Services by automated means, running processes while you are not logged in, and caching: data must be served directly from the API, so use the licensed API and do not keep unattended background jobs or local copies beyond your licence.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": true,
+      "auth": "Planet account via 'planet auth login' (OAuth2 through the Planet CLI)",
+      "notes": "planet-mcp is Planet's experimental local (stdio) MCP server built on the Planet SDK, installed with 'pip install planet-mcp'. Planet warns it can create and modify orders and subscriptions, and says not to disable tool approvals. It is not in the official MCP Registry and has no hosted endpoint."
+    }
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "contract",
+    "rate_limit": {
+      "requests": 2,
+      "per_seconds": 1,
+      "scope": "unknown",
+      "notes": "Data API activation; search and download 5/s, other calls 10/s. Orders API per key: create, get, list and cancel 3/s each, download 5/s. Tasking API 300/min sustained. 429 when exceeded.",
+      "source_url": "https://docs.planet.com/develop/apis/data/"
+    }
+  },
+  "payment": {
+    "methods": [
+      "card"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "Insights Platform plans are paid monthly or annually with a stored payment method, and monitoring credits are bought up front with top-ups. Tasking credits are paid up front under an annual contract. Planet Select orders are placed and paid in the SkyFi-run portal. No agent payment method is documented."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "Planet Select does not permit defence and intelligence use cases and may restrict sensitive areas; tasking-credits contracts do permit them. Tasking is restricted over certain countries and areas. Users must comply with export controls and sanctions and may not serve restricted parties or jurisdictions. The MCLA lets Planet require agentic users to be identified by user-agent headers or separate credentials and their purpose described.",
+    "unknown": "How Planet screens a new self-serve customer is not published."
+  },
+  "sources": [
+    {
+      "claim": "Data API needs an active Planet account; quick and saved searches; item types PSScene and SkySatCollect; rate limits activation 2/s, download 5/s, search 5/s, other 10/s",
+      "url": "https://docs.planet.com/develop/apis/data/"
+    },
+    {
+      "claim": "Data API quick-search, searches and stats endpoints; filter body (DateRangeFilter on acquired, cloud_cover, quality_category, AssetFilter, PermissionFilter); basic auth example",
+      "url": "https://docs.planet.com/develop/apis/data/item-search/"
+    },
+    {
+      "claim": "Data API reference: item types, items, assets with activate link and status, searches, stats",
+      "url": "https://docs.planet.com/develop/apis/data/reference/"
+    },
+    {
+      "claim": "Auth: OAuth2 authorization code (preferred for interactive users), client credentials only on services.sentinel-hub.com, API keys; scopes planet, offline_access, openid, profile, email; interactive client registration not released; HTTP Basic preferred, 'Authorization: api-key', api_key query param; key on Account page, My Settings, one active key; plan to eventually deprecate API keys",
+      "url": "https://docs.planet.com/develop/authentication/"
+    },
+    {
+      "claim": "OAuth authorization server metadata: authorization, token and device-code endpoints; PKCE S256; no registration endpoint",
+      "url": "https://login.planet.com/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Tasking API base URL, api-key header, key from sales rep, orders/pricing/bulk/captures endpoints, Point = 5x5 km, Flexible/Assured/Archive/Stereo, archive purchase via Tasking deprecated Nov 1 2026, Standard vs Fast Track delivery, 0-30 day archive hold, rate limits, cancellation charges",
+      "url": "https://docs.planet.com/develop/apis/tasking/"
+    },
+    {
+      "claim": "Orders API: source_type scenes/basemaps, tools, delivery, hosting, notifications; states; 500 items per request; 10,000 active orders per organization; per-endpoint rate limits",
+      "url": "https://docs.planet.com/develop/apis/orders/"
+    },
+    {
+      "claim": "Orders API base URL https://api.planet.com/compute/ops and paths /orders/v2 and /orders/v2/{order_id}",
+      "url": "https://docs.planet.com/develop/apis/orders/reference/"
+    },
+    {
+      "claim": "Order delivery: manifest.json with per-file MD5 and SHA-256 digests; STAC metadata (beta, scenes only)",
+      "url": "https://docs.planet.com/develop/apis/orders/delivery/"
+    },
+    {
+      "claim": "Planet MCP: experimental local MCP server built on the Planet SDK, listed in Planet's SDK docs",
+      "url": "https://docs.planet.com/develop/sdks/"
+    },
+    {
+      "claim": "planet-mcp README: local stdio server, pip install planet-mcp, auth via planet auth login, beta warning that it can create and modify orders",
+      "url": "https://github.com/planetlabs/planet-mcp"
+    },
+    {
+      "claim": "Pricing page: SkySat archive $6/km2, Flexible tasking $12/km2, Assured tasking $40/km2 via Planet Select; 25 km2 minimum; Pelican, Tanager, stereo, line and area collects by sales; Planet Select bars defence and intelligence use; tasking restricted areas; Insights Flex Starter $110/mo ($1,100/yr), Professional $550/mo, Scale $1,200/mo; 50 MC/km2 to order 30-day-and-older PlanetScope; Agriculture $0.35-$1.80/ha; 30-day free trial with 3,000 credits, no card, no ordering over own areas; Pelican 30-50 cm, SkySat 50 cm class",
+      "url": "https://www.planet.com/pricing/"
+    },
+    {
+      "claim": "Self-serve purchasing launched (May 2025): Area Under Management and Single Order Tasking",
+      "url": "https://www.planet.com/pulse/planet-enables-self-service-purchasing-for-small-customers-on-planet-insights-platform/"
+    },
+    {
+      "claim": "Single Order Tasking rebranded Planet Select; pay as you go; archive delivered immediately; new tasking completed within the selected capture window; ordered and delivered via the SkyFi interface",
+      "url": "https://skyfi.com/en/blog/planet-select-skysat-tasking-and-archive-imagery"
+    },
+    {
+      "claim": "Current terms: MCLA 2026.1 applies to all Order Schedules; product terms for SkySat Flexible and Assured Tasking (2025.1) and Tasking Credits (2026.1)",
+      "url": "https://www.planet.com/licensing-information/"
+    },
+    {
+      "claim": "MCLA 2026.1 sections 3.1-3.4: limited revocable licence; no distribution or third-party access; no improving non-Planet imagery or building substitutes; AI Training allowed where Derivative Products are allowed, with conditions; Agentic Users clause; Planet retains all right, title and interest",
+      "url": "https://go.planet.com/master-content-license-agreement-20261"
+    },
+    {
+      "claim": "SkySat Flexible Tasking terms: order types incl. stereo, tri-stereo and video; TOI deadline >= 24 h and duration >= 14 days; 25 km2 point minimum; ortho latency <= 12 h from capture; cancellation charges; up to 30-day archive hold",
+      "url": "https://go.planet.com/skysat-flexible-tasking-20251"
+    },
+    {
+      "claim": "SkySat Assured Tasking terms: point and line orders; imaging window 6 h to 7 days before TOI, Express under 6 h; 25 km2 minimum; ortho <= 12 h and L1A <= 4 h from capture; delivered as-is regardless of weather",
+      "url": "https://go.planet.com/skysat-assured-tasking-20251"
+    },
+    {
+      "claim": "Terms of Use (effective September 1, 2026): Insights Platform usage terms (derivative products for internal use of third parties, Planet credit), payment by stored payment method monthly or annually, export-control and sanctions compliance, API download permitted",
+      "url": "https://www.planet.com/terms-of-use/"
+    },
+    {
+      "claim": "Product specifications (June 2026): PlanetScope near-daily land coverage with hundreds of Doves, 3.0-4.2 m GSD; about fifteen SkySat-C in orbit, 4-5 day revisit per satellite, 30-50 m raw geolocation knowledge, sensor description; ortho products under 10 m RMSE using GCPs and DEMs",
+      "url": "https://assets.planet.com/docs/Planet_Combined_Imagery_Product_Specs_letter_screen.pdf"
+    },
+    {
+      "claim": "PlanetScope 3.7-4.1 m pixel size resampled to 3 m; 1-day revisit",
+      "url": "https://docs.sentinel-hub.com/api/latest/data/planet/planet-scope/"
+    },
+    {
+      "claim": "E&R Basic ToS requires crediting 'Planet Labs' as the source",
+      "url": "https://assets.planet.com/docs/E&R_Basic_ToS_Revised_May_2023.pdf"
+    },
+    {
+      "claim": "NASA GSFC PlanetScope geolocation assessment (Tan, Lin, Wolfe, 2022-06-02): image registration against WorldView; New Mexico and Singapore sample offsets",
+      "url": "https://www.earthdata.nasa.gov/s3fs-public/2022-06/Planet_Geolocation_Assessment.pdf"
+    },
+    {
+      "claim": "MCLA 2026.1 s3.2(b): AI training only if Order Schedule allows Derivative Products; s3.2(c) agentic users may be identified",
+      "url": "https://planet.widen.net/s/gmbbjxcggq/master-content-license-agreement_2026.1"
+    }
+  ],
+  "updated": "2026-10-28",
+  "expires": "2027-10-27"
+}

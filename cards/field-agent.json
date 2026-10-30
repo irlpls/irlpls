@@ -1,0 +1,275 @@
+{
+  "id": "field-agent",
+  "name": "Field Agent (now Storesight)",
+  "status": "unclaimed",
+  "provider_url": "https://www.fieldagent.net",
+  "short": "Shoppers sent to stores for shelf photos and price checks, from $24 a response (now Storesight).",
+  "tags": [
+    "retail",
+    "shelf",
+    "store-audit",
+    "price",
+    "photos",
+    "crowd",
+    "mobile-app",
+    "self-serve",
+    "us",
+    "canada",
+    "uk"
+  ],
+  "summary": "Crowdsourced shoppers, using the Field Agent mobile app, visit a named store to photograph shelves and displays, check prices and answer audit questions. The company (Field Agent, Inc.) rebranded to Storesight in 2025 and fieldagent.net redirects to storesight.com; the shopper app keeps the Field Agent name. Buyers order audits by the response, at published list prices, in the self-serve Storesight Projects shop (web sign-up, no ordering API), or through full service. Storesight also sells syndicated shelf-photo data from its own sampling.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "item photo on shelf",
+      "price check",
+      "on-shelf availability",
+      "item check-up",
+      "display compliance",
+      "planogram visibility",
+      "category overview and display photos",
+      "signage audit",
+      "store walk (signage and displays)",
+      "menu board pricing",
+      "in-store measurements",
+      "shelf correction with before/after photos",
+      "video shopalong",
+      "mystery shopping",
+      "buy and try"
+    ]
+  },
+  "pricing": {
+    "model": "Per response (one shopper submission) at self-serve list prices; full-service and enterprise work by quote",
+    "from_usd": 24,
+    "unit": "response",
+    "notes": "List prices from the Storesight Projects shop on 2026-10-26: Item Photo, Signage Audit and Club Entryway Photos $26; Price Check and On-Shelf Availability $27; Item Check Up and Category Overview Photos $27.50; Display Compliance $28; Planogram Visibility, Modular Pics and Category Display Photos $30; Store Walk $38; Walmart Shelf Price Audit $40; Shelf Correction (Zoning) $24 with before/after photos. Optional add-on questions are $0.50 per response. Survey-style 'Insights' products that need no store visit start at $20. storesight.com/pricing is a 404; prices appear only in the shop."
+  },
+  "latency": {
+    "typical": "Self-serve projects run at least 5 days (5 to 17 by product); full-service audits launch in under 24 hours on average",
+    "notes": "The self-serve builder enforces a minimum project length of 5 days for most store audits and up to 17 for buy-and-review products, with 0 to 3 days' lead time before launch. The platform page promises results from the field 'within days'. Shopper-side review of submissions can take 3 to 5 business days."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "Self-serve project builder: 'Minimum project length is 5 days.' Platform page: 'visual proof and retail intelligence from the field within days.'"
+  },
+  "coverage": {
+    "regions": [
+      "USA",
+      "Canada",
+      "UK",
+      "Mexico",
+      "Ecuador",
+      "Spain",
+      "South Africa",
+      "Australia"
+    ],
+    "notes": "Core network is in the US: Storesight cites 3 million U.S. shoppers and audits 'from major metropolitan areas to rural markets'. The shopper app runs in 8 countries through international partners (separate local sites and support for Canada, UK, Mexico, Ecuador, Spain, South Africa and Australia); density outside the US is not published. Syndicated shelf-photo categories are collected in the USA, Canada and the UK. Company-stated scale: about 6 million shelf and display images a year across 50,000 retail locations; 50 major retailers covered.",
+    "areas": [
+      "US",
+      "CA",
+      "GB",
+      "MX",
+      "EC",
+      "ES",
+      "ZA",
+      "AU"
+    ]
+  },
+  "licensing": {
+    "summary": "Two documents apply. The shopper Participation Agreement says a shopper's work product is a 'work made for hire' for the Client, and all ownership rights, including worldwide IP, vest in the Client; Field Agent also takes a perpetual, irrevocable, sublicensable licence to exploit all submitted materials \"in connection with the operation and maintenance of the Platform\". The buyer-side Conditions of Use (2 September 2025) say Storesight owns all right, title and interest, including IP, in the Data Services, Site and Services, which are provided as-is with no warranty that they are timely. Neither document mentions resale or AI training. Syndicated shelf data bought from Storesight is Storesight's. Storesight marketing says its models \"actively learn and refine their capabilities with increased usage\"; no clause says buyers' photos train them, so that is not stated.",
+    "buyer_owns_output": true
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Shoppers sign up with a few demographic details; no identity check is published. The terms allow one registration per person and one device at a time, but how that is enforced is not stated. Tax identity (W-9) is collected only from US shoppers nearing $2,000 a year."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No app or device attestation is published. Whether a photo came from an unmodified copy of the app is unknown."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Photos must be taken in the app. Adding internet images, photos of another device, computer images or screen captures from outside the app counts as cheating and gets the account banned. This is a rule enforced after the fact, not a technical check. How a photo of a screen or a printout is detected is not published, and there is no C2PA signing."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "The privacy policy says Field Agent receives the time, date and place each photo or video was taken; jobs must be finished within a reservation window that starts at reservation.",
+      "unknown": "Whether the time comes from the device clock or the server is not stated. Nothing signed is delivered."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "The app verifies and records GPS coordinates; jobs submitted at the wrong store are denied, and location-based photos must be submitted through the app for GPS verification.",
+      "unknown": "The accepted distance from the store, defences against GPS spoofing and what the buyer receives as location proof are not published."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Specialists review each project's setup before launch; a quality assurance team reviews every submitted photo, price and answer and flags unclear, incomplete or potentially inaccurate ones; the system auto-denies submissions with missing items.",
+      "unknown": "Review criteria and error rates are not published. A staged or misleading scene may pass review."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check of a submission is published, such as a second shopper at the same store. Property audits are reviewed by a third party, but that is review, not independent confirmation."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "docs_url": "https://storesight.com/api",
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "No public API for ordering. Self-serve audits are ordered on the web after signing up at https://projects.storesight.com/p/sign-up; the Storesight data API is arranged through 'Contact Us' on https://storesight.com/api."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    },
+    "notes": "The Storesight API delivers shelf data and photos into BI, ERP and data-warehouse systems ('20 million Accessible Photo Data from the API'). No public docs, endpoints or audit-ordering call are published. No Storesight or Field Agent server is in the official MCP Registry (searched 'storesight', 'field agent' and 'fieldagent', 2026-10-26). No OAuth protected-resource metadata on storesight.com."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "enterprise"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "Registration requires valid payment account information, and Storesight acts as merchant of record for Data Services transactions. The payment methods accepted in the self-serve shop are not published. No agent-native payment."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Buyers register with name, company, email, phone and payment details, and represent that they are not on sanctions lists; Storesight may reject any enrollment. A specialist team reviews each audit's setup (instructions, questions, location targeting) before launch.",
+    "unknown": "Whether Storesight screens what a buyer asks shoppers to photograph, or forbids targeting a specific person, is not published. Shoppers work undercover and are told to stop if store staff ask."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Field Agent rebranded to Storesight in 2025 after acquiring Shelfgram in 2024; 3 million shoppers; 6 million+ shelf and display images a year across 50,000 retail locations; the shopper app stays unchanged",
+      "url": "https://talkbusiness.net/2025/07/field-agent-rebrands-to-storesight-touts-new-data-technology/"
+    },
+    {
+      "claim": "fieldagent.net returns a 301 redirect to storesight.com",
+      "url": "https://www.fieldagent.net"
+    },
+    {
+      "claim": "Store audits: 3 million U.S. shoppers; metro to rural reach; shoppers sent into stores around the world; expert review of project setup; QA team reviews every photo, price and answer; under 24 hours average to launch; 50 major retailers; full-service or self-serve click-and-launch products",
+      "url": "https://www.storesight.com/store-audits"
+    },
+    {
+      "claim": "230+ categories collected across the USA, Canada and the UK; results from the field 'within days'; services list",
+      "url": "https://www.storesight.com/platform"
+    },
+    {
+      "claim": "Storesight API is a data-delivery API for BI/ERP systems with no public docs or ordering endpoint; promotes automated workflows; models 'learn and refine their capabilities with increased usage'",
+      "url": "https://storesight.com/api"
+    },
+    {
+      "claim": "Conditions of Use (2 Sep 2025): buyer registration details and payment account; Storesight may reject enrollment; merchant of record; sanctions representation; as-is with no timeliness warranty; Storesight owns all IP in the Data Services, Site and Services",
+      "url": "https://storesight.com/conditions-of-use"
+    },
+    {
+      "claim": "Self-serve shop lists audit, insights and trial products with Sign Up; Stripe checkout script",
+      "url": "https://projects.storesight.com/p/audits"
+    },
+    {
+      "claim": "Price Check: $27 per response; add-on questions $0.50 per response; what shoppers capture",
+      "url": "https://projects.storesight.com/platform/shop/product/field-agent-price-check/"
+    },
+    {
+      "claim": "Item Photo: $26 per response; launches on submit; minimum project length 5 days",
+      "url": "https://projects.storesight.com/platform/shop/product/field-agent-item-photo/"
+    },
+    {
+      "claim": "Shelf Correction (Zoning): $24 per response with before/after photos",
+      "url": "https://projects.storesight.com/platform/shop/product/field-agent-shelf-correction-facings/"
+    },
+    {
+      "claim": "Store Walk - Signage & Displays: $38 per response; minimum project length 14 days",
+      "url": "https://projects.storesight.com/platform/shop/product/field-agent-store-walk-signage-displays/"
+    },
+    {
+      "claim": "Product list with prices for buy-and-review products ($34-$40) and minimum project length up to 17 days",
+      "url": "https://projects.storesight.com/api/product/get-product-list-by-type?type=RAR"
+    },
+    {
+      "claim": "Shopper app: job types (audits, surveys, buy & try, eye spys, scavenger hunts, mystery shops); international partners in 8 countries",
+      "url": "https://app.fieldagent.net/"
+    },
+    {
+      "claim": "Participation Agreement: register once, one device at a time; work product is work made for hire with IP vesting in the Client; Field Agent licence to all submitted materials; no forging or faking",
+      "url": "https://app.fieldagent.net/participation-agreement"
+    },
+    {
+      "claim": "Privacy policy: Field Agent receives the time, date and place photos or videos were taken; GPS when enabled; tasks may need location services",
+      "url": "https://app.fieldagent.net/privacy"
+    },
+    {
+      "claim": "The app verifies and documents GPS coordinates; wrong-store submissions denied; job types",
+      "url": "https://support.fieldagent.net/hc/en-us/articles/227602588-About-Jobs-What-to-Expect"
+    },
+    {
+      "claim": "Location-based photos must be submitted through the app for GPS verification",
+      "url": "https://support.fieldagent.net/hc/en-us/articles/115000028094-I-made-a-mistake-in-my-job-Can-I-send-the-correct-photos-to-you"
+    },
+    {
+      "claim": "Photos must be taken in the app; internet images, photos of another device and screen captures lead to a ban",
+      "url": "https://support.fieldagent.net/hc/en-us/articles/36945727675035-Computer-Images-Will-Lead-to-Account-Suspension"
+    },
+    {
+      "claim": "Shoppers are undercover; reservation time starts at reservation; all photos submitted via the app",
+      "url": "https://support.fieldagent.net/hc/en-us/articles/360001211593-The-Basics-for-Success"
+    },
+    {
+      "claim": "All jobs reviewed by data review, 3-5 business days; property audits reviewed by a third party",
+      "url": "https://support.fieldagent.net/hc/en-us/articles/115000027473-How-long-does-it-take-for-my-job-submission-to-be-reviewed-and-paid"
+    },
+    {
+      "claim": "Missing items are usually auto-denied",
+      "url": "https://support.fieldagent.net/hc/en-us/articles/1260801008269-Most-Common-Denials-Alternate-Photos"
+    },
+    {
+      "claim": "Field Agent is offered in Australia, Canada, Ecuador, Mexico, South Africa, Spain, Great Britain and the USA",
+      "url": "https://support.fieldagent.net/hc/en-us/articles/1260800309989-In-what-countries-around-the-world-is-Field-Agent-available"
+    },
+    {
+      "claim": "Registration needs only an account and a few demographic details",
+      "url": "https://support.fieldagent.net/hc/en-us/articles/360051555514-Downloading-the-App-and-Registering-Your-Account"
+    },
+    {
+      "claim": "W-9 collected only from shoppers nearing $2,000 a year",
+      "url": "https://support.fieldagent.net/hc/en-us/articles/115000033174-Tax-Information-W-9-and-1099"
+    },
+    {
+      "claim": "Photos come from ordinary consumers sampled by category, geography, retailer and urbanization",
+      "url": "https://docs.storesight.com/where-do-the-photos-come-from/"
+    },
+    {
+      "claim": "No Storesight or Field Agent server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=storesight"
+    },
+    {
+      "claim": "Participation Agreement licence scope: in connection with the operation and maintenance of the Platform",
+      "url": "https://app.fieldagent.net/participation-agreement"
+    },
+    {
+      "claim": "Marketing: models actively learn with increased usage",
+      "url": "https://storesight.com/api"
+    }
+  ]
+}

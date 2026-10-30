@@ -1,0 +1,9 @@
+{
+ "id": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX",
+ "pointOfInterest": {
+  "lat": 60.1699,
+  "lon": 24.9384
+ },
+ "imagingMode": "SCAN",
+ "status": "FULFILLED"
+}

@@ -1,0 +1,3 @@
+SOURCE: https://developers.globhe.com/create-order, /get-single-order, /accept-reject-quotes, /cancel-order,
+/delivery (read 2026-10-28). fixture: documented-shape (trimmed from the docs' example responses; URLs, ids and the
+SEK accepted quote are hand-made in the documented schema).

@@ -1,0 +1,76 @@
+{
+ "id": "DBM0114440",
+ "reference_id": "JK0513456",
+ "created_at": "2016-12-08T19:01:13Z",
+ "instructions": "Sample text for ops and pilot",
+ "portfolio": "Los Angeles Portfolio",
+ "location": {
+  "id": 881,
+  "name": "Disneyland",
+  "coordinate": {
+   "latitude": 30.065887,
+   "longitude": -81.445656
+  },
+  "address": {
+   "address": "1313 Disneyland Dr",
+   "address2": null,
+   "city": "Anaheim",
+   "state": "California",
+   "postal_code": "92802",
+   "country": "United States"
+  },
+  "annotations": null
+ },
+ "status": "complete",
+ "activity_logs": [
+  {
+   "created_at": "2016-12-08T19:01:13Z",
+   "action": "put_on_hold",
+   "reason": "airspace_authorization"
+  }
+ ],
+ "package": {
+  "id": "rre-premium",
+  "name": "Premium"
+ },
+ "attachments": [
+  {
+   "id": "DBF3745108366",
+   "name": "roof-measurements-DBM3659624769-08-25-2022.pdf",
+   "url": "https://dronebase-staging.s3.amazonaws.com/assets/mission/attachments/924/roof.pdf?X-Amz-Signature=sig"
+  }
+ ],
+ "images": [
+  {
+   "id": "DBI1210134",
+   "shot": {
+    "id": 123,
+    "shot_type": "12345",
+    "name": "Roof Top",
+    "shot_type_slug": "roof-top"
+   },
+   "processing_status": "uploading",
+   "name": "DBUV087-DBUA180-DBUV089-Pano-3-325.jpg",
+   "url": "https://dronebase-staging.s3.amazonaws.com/assets/mission/images/10388/original.jpg",
+   "source_type": "edit",
+   "size": 7691470,
+   "height": 2992,
+   "width": 3992,
+   "resolution": 240,
+   "gps_latitude": 34.9006345555556,
+   "gps_longitude": -81.9804995277778,
+   "gps_altitude": 249.124,
+   "taken_at": "2021-11-01T13:40:04+00:00"
+  }
+ ],
+ "ortho_photo_maps": [
+  {
+   "id": "DBOPM3015451062",
+   "name": "mosaic_group1.tif",
+   "remote_urls": {
+    "tif": "https://assets.example-zeitview.test/mosaic.tif",
+    "jpg": "https://assets.example-zeitview.test/mosaic.jpg"
+   }
+  }
+ ]
+}

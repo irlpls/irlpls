@@ -1,0 +1,231 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "stac_version": "1.1.0",
+   "stac_extensions": [
+    "https://cs-si.github.io/eopf-stac-extension/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/alternate-assets/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/authentication/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/classification/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/eo/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/file/v2.1.0/schema.json",
+    "https://stac-extensions.github.io/grid/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/processing/v1.2.0/schema.json",
+    "https://stac-extensions.github.io/product/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/projection/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/raster/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/sat/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/storage/v2.0.0/schema.json",
+    "https://stac-extensions.github.io/timestamps/v1.1.0/schema.json",
+    "https://stac-extensions.github.io/view/v1.1.0/schema.json"
+   ],
+   "id": "S2B_MSIL2A_20261028T104139_N0513_R008_T31UGS_20261028T165945",
+   "collection": "sentinel-2-l2a",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       5.875717288603333,
+       51.41589769639834
+      ],
+      [
+       5.81551011356698,
+       50.429726614086306
+      ],
+      [
+       7.357621898236907,
+       50.38212225093181
+      ],
+      [
+       7.450589699013681,
+       51.366602012514676
+      ],
+      [
+       5.875717288603333,
+       51.41589769639834
+      ]
+     ]
+    ]
+   },
+   "bbox": [
+    5.81551011356698,
+    50.38212225093181,
+    7.450589699013681,
+    51.41589769639834
+   ],
+   "properties": {
+    "datetime": "2026-10-28T10:41:39.024000Z",
+    "created": "2026-10-28T17:38:04Z",
+    "updated": "2026-10-28T17:44:51.712873Z",
+    "start_datetime": "2026-10-28T10:41:39.024000Z",
+    "end_datetime": "2026-10-28T10:41:39.024000Z",
+    "platform": "sentinel-2b",
+    "instruments": [
+     "msi"
+    ],
+    "constellation": "sentinel-2",
+    "gsd": 10.0,
+    "published": "2026-10-28T17:43:30.325955Z",
+    "eopf:origin_datetime": "2026-10-28T17:38:04.000000Z",
+    "auth:schemes": {
+     "s3": {
+      "type": "s3"
+     },
+     "oidc": {
+      "type": "openIdConnect",
+      "openIdConnectUrl": "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/.well-known/openid-configuration"
+     }
+    },
+    "storage:schemes": {
+     "cdse-s3": {
+      "type": "custom-s3",
+      "title": "Copernicus Data Space Ecosystem S3",
+      "platform": "https://eodata.dataspace.copernicus.eu",
+      "description": "This endpoint provides access to EO data which is stored on the object storage of both CloudFerro Cloud and OpenTelekom Cloud (OTC). See the [documentation](https://documentation.dataspace.copernicus.eu/APIs/S3.html) for more information, including how to get credentials.",
+      "requester_pays": false
+     },
+     "creodias-s3": {
+      "type": "custom-s3",
+      "title": "CREODIAS S3",
+      "platform": "https://eodata.cloudferro.com",
+      "description": "Comprehensive Earth Observation Data (EODATA) archive offered by CREODIAS as a commercial part of CDSE, designed to provide users with access to a vast repository of satellite data without predefined quota limits.",
+      "requester_pays": true
+     }
+    },
+    "processing:level": "L2",
+    "processing:datetime": "2026-10-28T16:59:45.000000Z",
+    "product:type": "S2MSI2A",
+    "product:timeliness": "PT24H",
+    "product:timeliness_category": "NRT",
+    "eo:cloud_cover": 17.56,
+    "eo:snow_cover": 0.001038,
+    "sat:orbit_state": "descending",
+    "sat:relative_orbit": 8,
+    "sat:absolute_orbit": 50370,
+    "sat:platform_international_designator": "2017-013A",
+    "grid:code": "MGRS-31UGS",
+    "view:sun_azimuth": 171.793004492195,
+    "view:sun_elevation": 25.554519935248507,
+    "eopf:datastrip_id": "S2B_OPER_MSI_L2A_DS_2BPS_20261028T165945_S20261028T104328_N05.13",
+    "eopf:datatake_id": "GS2B_20261028T104139_050370_N05.13",
+    "eopf:instrument_mode": "INS-NOBS",
+    "statistics": {
+     "nodata": 0.000146,
+     "saturated_defective": 0.0,
+     "dark_area": 0.234575,
+     "cloud_shadow": 20.874338,
+     "vegetation": 42.151806,
+     "not_vegetated": 15.898782,
+     "water": 0.919627,
+     "unclassified": 2.356847,
+     "medium_proba_clouds": 8.984078,
+     "high_proba_clouds": 8.565757,
+     "thin_cirrus": 0.013152
+    },
+    "processing:version": "05.13",
+    "view:azimuth": 199.93407057149093,
+    "view:incidence_angle": 2.8857095564400863,
+    "processing:software": {
+     "eometadatatool": "261026102458+dirty"
+    },
+    "processing:facility": "ESA",
+    "expires": "2262-01-01T00:00:00.000000Z"
+   },
+   "links": [
+    {
+     "rel": "self",
+     "type": "application/geo+json",
+     "href": "https://stac.opensearch.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a/items/S2B_MSIL2A_20261028T104139_N0513_R008_T31UGS_20261028T165945"
+    },
+    {
+     "rel": "parent",
+     "type": "application/json",
+     "href": "https://stac.opensearch.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a"
+    },
+    {
+     "rel": "collection",
+     "type": "application/json",
+     "href": "https://stac.opensearch.dataspace.copernicus.eu/v1/collections/sentinel-2-l2a"
+    },
+    {
+     "rel": "root",
+     "type": "application/json",
+     "href": "https://stac.opensearch.dataspace.copernicus.eu/v1/"
+    },
+    {
+     "href": "s3://eodata/Sentinel-2/MSI/L2A/2026/10/28/S2B_MSIL2A_20261028T104139_N0513_R008_T31UGS_20261028T165945.SAFE/",
+     "rel": "enclosure",
+     "type": "application/x-directory",
+     "title": "S3 path to source directory",
+     "auth:refs": [
+      "s3"
+     ],
+     "storage:refs": [
+      "cdse-s3",
+      "creodias-s3"
+     ]
+    },
+    {
+     "href": "https://trace.dataspace.copernicus.eu/api/v1/traces/name/S2B_MSIL2A_20261028T104139_N0513_R008_T31UGS_20261028T165945.SAFE.zip",
+     "rel": "version-history",
+     "type": "application/json",
+     "title": "Product history record from the CDSE traceability service"
+    }
+   ],
+   "assets": {
+    "safe_manifest": {
+     "href": "s3://eodata/Sentinel-2/MSI/L2A/2026/10/28/S2B_MSIL2A_20261028T104139_N0513_R008_T31UGS_20261028T165945.SAFE/manifest.safe",
+     "type": "application/xml",
+     "title": "manifest.safe",
+     "roles": [
+      "metadata"
+     ],
+     "file:checksum": "d50110fd57fb7a4e96fecd2053d3da7cd3b7a1",
+     "file:size": 68904,
+     "file:local_path": "S2B_MSIL2A_20261028T104139_N0513_R008_T31UGS_20261028T165945.SAFE/manifest.safe",
+     "alternate:name": "S3",
+     "auth:refs": [
+      "s3"
+     ],
+     "storage:refs": [
+      "cdse-s3",
+      "creodias-s3"
+     ],
+     "alternate": {
+      "https": {
+       "href": "https://zipper.dataspace.copernicus.eu/odata/v1/Products(fd8547f1-ab68-452b-a7a9-4db7815f5e54)/Nodes(S2B_MSIL2A_20261028T104139_N0513_R008_T31UGS_20261028T165945.SAFE)/Nodes(manifest.safe)/$value",
+       "alternate:name": "HTTPS",
+       "auth:refs": [
+        "oidc"
+       ],
+       "storage:refs": []
+      }
+     }
+    }
+   }
+  }
+ ],
+ "links": [
+  {
+   "rel": "next",
+   "type": "application/json",
+   "method": "GET",
+   "href": "https://stac.opensearch.dataspace.copernicus.eu/v1/search?collections=sentinel-2-l2a&bbox=6.8889%2C50.8950%2C7.0311%2C50.9850&sortby=-datetime&limit=1&token=WzE3OTMxODQwOTkwMjQwMDAwMDAsIlMyQl9NU0lMMkFfMjAyNjEwMjhUMTA0MTM5X04wNTEzX1IwMDhfVDMxVUdTXzIwMjYxMDI4VDE2NTk0NSJd"
+  },
+  {
+   "rel": "root",
+   "type": "application/json",
+   "href": "https://stac.opensearch.dataspace.copernicus.eu/v1/"
+  },
+  {
+   "rel": "self",
+   "type": "application/json",
+   "href": "https://stac.opensearch.dataspace.copernicus.eu/v1/search?collections=sentinel-2-l2a&bbox=6.8889,50.8950,7.0311,50.9850&sortby=-datetime&limit=1"
+  }
+ ],
+ "numberReturned": 1,
+ "numberMatched": 3207
+}

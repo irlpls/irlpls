@@ -1,0 +1,9 @@
+{
+ "latitude": 34.0522,
+ "longitude": -118.2437,
+ "shoottype": "event",
+ "coverage": true,
+ "available_providers": 12,
+ "available_specialist_providers": 4,
+ "available_related_specialist_providers": 6
+}

@@ -1,0 +1,2 @@
+fixture: documented-shape, from https://docs.skywatch.com/openapi-spec.json (price_calculator.response, pipeline.resource,
+4xx error {errors[{message}]}). Values are made up; field names and enums are the documented ones.

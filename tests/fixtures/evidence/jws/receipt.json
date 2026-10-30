@@ -1,0 +1,17 @@
+{
+  "jws": "eyJhbGciOiJFUzI1NiIsImtpZCI6InNhbXBsZS0yMDI2LTEwIiwidHlwIjoiaXJscGxzLXJlY2VpcHQrandzIn0..PAH2HyS799ua48aICMXKgpFQXnkjYslxgCxYgZnG7uXw4cQGBQtuTS3R6zHiBqmf6ZOthuKb7OeCwVMwfC9VyA",
+  "payload": {
+    "iss": "https://provider.example",
+    "order_id": "ord_sample_1",
+    "item_id": "itm_1",
+    "nonce": "n-3f9a2c",
+    "request_sha256": "3aa140199b353d1d92cba3cfb23253d0640a3b6bd331b1f8bea8229f6ca75a6f",
+    "media": {
+      "sha256": "8b7420f64b1945cb9380916920fa47e8e01502947f97f3e42c9cd32670b613fe",
+      "media_type": "text/plain",
+      "bytes": 58
+    },
+    "phenomenon_time": "2026-10-28T12:00:00Z",
+    "issued_at": "2026-10-28T12:05:00Z"
+  }
+}

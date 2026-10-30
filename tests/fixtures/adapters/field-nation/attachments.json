@@ -1,0 +1,21 @@
+{
+ "results": [
+  {
+   "id": 2,
+   "name": "Completion Photos",
+   "results": [
+    {
+     "id": 102,
+     "file": {
+      "name": "storefront.jpg",
+      "link": "https://cdn.fieldnation.com/files/storefront.jpg",
+      "size_bytes": 900000
+     },
+     "created": {
+      "utc": "2026-01-15 14:05:00"
+     }
+    }
+   ]
+  }
+ ]
+}

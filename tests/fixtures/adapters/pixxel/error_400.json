@@ -1,0 +1,6 @@
+{
+ "error": {
+  "code": "insufficient_tokens",
+  "message": "wallet balance is lower than the order amount"
+ }
+}

@@ -1,0 +1,240 @@
+{
+  "id": "fintraffic-weathercams",
+  "name": "Fintraffic Digitraffic road weather cameras",
+  "status": "unclaimed",
+  "provider_url": "https://www.digitraffic.fi/en/road-traffic/",
+  "tags": [
+    "webcam",
+    "road weather",
+    "traffic",
+    "snow",
+    "ice",
+    "finland",
+    "open data",
+    "live camera"
+  ],
+  "short": "816 road-weather camera stations across Finland, new stills about every 10 min, CC BY 4.0, no key.",
+  "summary": "Finland's national traffic agency publishes its road weather cameras as open data: 816 stations with 2,288 fixed views (presets). Each view has a stable latest-image URL, a capture time, a road address and a view direction, and the last 24 hours of images can be fetched by version.",
+  "capabilities": {
+    "modalities": [
+      "photo"
+    ],
+    "tasks": [
+      "current still of a Finnish road or roadside view",
+      "visual check of snow, ice, fog, road surface and traffic",
+      "images of the same view over the last 24 hours"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "image",
+    "notes": "Open data under CC BY 4.0; no key, no account and no paid tier."
+  },
+  "latency": {
+    "typical": "about 10 minutes",
+    "notes": "Digitraffic: images are updated about every 10 minutes (station collectionInterval 600 s). Sampled 2026-10-26 (05:00 UTC on 27 Oct): across 2,283 presets the latest measuredTime was a median 5.5 min old, 90th percentile 10 min, 2,225 under 15 min; a few long-idle presets are days or more stale. The sampled image's x-amz-meta-last-modified matched its measuredTime."
+  },
+  "coverage": {
+    "regions": [
+      "Finland",
+      "Aland Islands"
+    ],
+    "notes": "816 stations on the Finnish road network, from the south coast to northern Lapland (lat 59.9-70.1), one of them in Eckero, Aland. On 2026-10-26, 814 were GATHERING and 2 REMOVED_TEMPORARILY. Check collectionStatus, state and each preset's inCollection before relying on a view.",
+    "areas": [
+      "FI",
+      "AX"
+    ]
+  },
+  "licensing": {
+    "summary": "Fintraffic's open data is licensed under Creative Commons Attribution 4.0, which 'gives the right to distribute, remix, tweak, and build upon our data, even commercially', with credit. Attribution must preserve the copyright notice and disclaimers, link the original site and the licence, and describe any changes; suggested credit: 'Source: Fintraffic / digitraffic.fi, license CC 4.0 BY'. The terms do not mention AI or machine-learning training.",
+    "resale": "allowed"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Fixed automated cameras; no person is involved in capture."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No attestation of the camera software or the upload pipeline."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Fixed road cameras; Digitraffic says road data come from the traffic management systems of ITM Finland Ltd, a Fintraffic subsidiary. Station metadata names the camera type (e.g. BOSCH, VAPIX). No per-image proof that a frame came from the named camera; images carry no C2PA manifest."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "measuredTime per preset in /stations/{id}/data; the image's x-amz-meta-last-modified header matches it.",
+      "unknown": "Timestamps are not signed; the image overlay shows no capture time."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station coordinates, road address (road number, section, distance) and municipality, plus a direction code and name per preset.",
+      "unknown": "Coordinates and view direction are operator metadata, not verified per image."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No integrity or content checks are documented. An unknown or unpublished preset still returns HTTP 200 with a grey 'Image not available' JPEG, so check the size or the ETag."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Station metadata can name a nearestWeatherStationId (seen on the sampled station) whose road weather readings can be cross-checked by the caller, but Digitraffic publishes no cross-check."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/road-traffic/",
+    "base_url": "https://tie.digitraffic.fi/api/weathercam/v1",
+    "auth": [
+      {
+        "type": "none",
+        "header": "Digitraffic-User",
+        "how_to_get": "No key. Send a Digitraffic-User header naming your app (no personal data); it raises your request allowance. No Authorization header is needed. JSON APIs require Accept-Encoding: gzip (406 without it); images do not."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/stations",
+        "params": "lastUpdated",
+        "notes": "GeoJSON FeatureCollection of all stations: coordinates, collectionStatus, presets with inCollection."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations/{id}",
+        "notes": "One station in detail: camera type, collectionInterval, municipality, road address, nearestWeatherStationId, and per preset the imageUrl, resolution, direction and name."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations/{id}/data",
+        "notes": "measuredTime per preset; /stations/data returns all stations."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://weathercam.digitraffic.fi/{presetId}.jpg",
+        "params": "thumbnail=true",
+        "notes": "Latest image (e.g. 1280x720). Supports ETag/If-None-Match (304 when unchanged). Unknown presets return a 200 placeholder image."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/stations/{id}/history",
+        "notes": "Links to each preset's images over the last 24 hours (imageUrl with versionId, lastModified, size); /stations/history covers all."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/publicities/changes",
+        "params": "after",
+        "notes": "Presets whose publishableTo changed: views taken out of or returned to public view."
+      }
+    ],
+    "rate_limits": "Without the Digitraffic-User header: 60 requests/min per IP for weathercam images and 60/min for tie.digitraffic.fi v1 APIs; more with the header (no figure published). Excess requests get 429. Most JSON responses are cached for about a minute.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "No Fintraffic MCP server in the official MCP Registry. The only Digitraffic entry is a third-party AIS vessel server (io.github.pipeworx-io/digitraffic-ais), not weather cameras."
+    },
+    "notes": "OpenAPI: https://tie.digitraffic.fi/swagger/openapi.json. Deprecated API versions stay up for six months and return Deprecation and Sunset headers."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "0-10 minutes",
+    "notes": "Images are kept for 24 hours (history endpoint; S3 expiry rule 'Delete versions and current images after 24h')."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Digitraffic road-traffic page: 'Weather camera images are updated approximately about every 10 minutes.'"
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-26",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 60,
+      "per_seconds": 60,
+      "scope": "per-ip",
+      "notes": "Without the Digitraffic-User header; the header raises the allowance (no figure published). 429 on excess. gzip required for JSON.",
+      "source_url": "https://www.digitraffic.fi/en/support/instructions/"
+    }
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "None. Calls are anonymous; Digitraffic asks for a Digitraffic-User header naming the app and offers optional app sign-up so it can contact heavy users.",
+    "unknown": "Nothing is ordered or commissioned, so no requester checks apply."
+  },
+  "payment": {
+    "methods": [],
+    "agent_can_pay": true,
+    "notes": "Free; nothing to pay."
+  },
+  "updated": "2026-10-28",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "adapter": "fintraffic",
+  "sources": [
+    {
+      "claim": "816 stations, 2,288 presets, collectionStatus counts, coordinate range (live, 2026-10-26)",
+      "url": "https://tie.digitraffic.fi/api/weathercam/v1/stations"
+    },
+    {
+      "claim": "Station detail fields: cameraType, collectionInterval 600, road address, direction per preset, imageUrl, resolution, nearestWeatherStationId",
+      "url": "https://tie.digitraffic.fi/api/weathercam/v1/stations/C01503"
+    },
+    {
+      "claim": "Per-preset measuredTime (sampled about 2 min old)",
+      "url": "https://tie.digitraffic.fi/api/weathercam/v1/stations/C01503/data"
+    },
+    {
+      "claim": "Age of the latest image across 2,283 presets (median 5.5 min, p90 10 min)",
+      "url": "https://tie.digitraffic.fi/api/weathercam/v1/stations/data"
+    },
+    {
+      "claim": "Live image: ETag, x-amz-meta-last-modified matching measuredTime, 24 h expiry rule, 1280x720",
+      "url": "https://weathercam.digitraffic.fi/C0150301.jpg"
+    },
+    {
+      "claim": "Unknown preset returns HTTP 200 with a placeholder 'Image not available' JPEG",
+      "url": "https://weathercam.digitraffic.fi/C9999999.jpg"
+    },
+    {
+      "claim": "Last-24-hours image history with versioned URLs",
+      "url": "https://tie.digitraffic.fi/api/weathercam/v1/stations/C01503/history"
+    },
+    {
+      "claim": "Endpoint list, licence CC BY 4.0, terms of service link",
+      "url": "https://tie.digitraffic.fi/swagger/openapi.json"
+    },
+    {
+      "claim": "Images updated about every 10 minutes; check collectionStatus, state and inCollection; thumbnail parameter; 24 h history",
+      "url": "https://www.digitraffic.fi/en/road-traffic/"
+    },
+    {
+      "claim": "CC BY 4.0 including commercial distribution; attribution requirements",
+      "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+      "claim": "Digitraffic-User header, rate limits (60/min per IP without header), 429, gzip required, Authorization causes 400, ETag usage, deprecation policy",
+      "url": "https://www.digitraffic.fi/en/support/instructions/"
+    },
+    {
+      "claim": "No Fintraffic weathercam MCP server in the official registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=digitraffic"
+    }
+  ]
+}

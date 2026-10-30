@@ -1,0 +1,144 @@
+{
+ "$type": "Tfl.Api.Presentation.Entities.PlacesResponse, Tfl.Api.Presentation.Entities",
+ "centrePoint": [
+  51.507,
+  -0.127
+ ],
+ "places": [
+  {
+   "$type": "Tfl.Api.Presentation.Entities.Place, Tfl.Api.Presentation.Entities",
+   "id": "JamCams_00001.06502",
+   "url": "/Place/JamCams_00001.06502",
+   "commonName": "Trafalgar Square",
+   "distance": 63.31635313573615,
+   "placeType": "JamCam",
+   "additionalProperties": [
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "payload",
+     "key": "available",
+     "sourceSystemKey": "JamCams",
+     "value": "true",
+     "modified": "2026-10-27T17:50:59.003Z"
+    },
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "payload",
+     "key": "imageUrl",
+     "sourceSystemKey": "JamCams",
+     "value": "https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/00001.06502.jpg",
+     "modified": "2026-10-27T17:50:59.003Z"
+    },
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "payload",
+     "key": "videoUrl",
+     "sourceSystemKey": "JamCams",
+     "value": "https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/00001.06502.mp4",
+     "modified": "2026-10-27T17:50:59.003Z"
+    },
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "cameraView",
+     "key": "view",
+     "sourceSystemKey": "JamCams",
+     "value": "Zoom - Horse Guards Avenue",
+     "modified": "2026-10-27T17:50:59.003Z"
+    }
+   ],
+   "childrenUrls": [],
+   "lat": 51.5074,
+   "lon": -0.12765
+  },
+  {
+   "$type": "Tfl.Api.Presentation.Entities.Place, Tfl.Api.Presentation.Entities",
+   "id": "JamCams_00001.07500",
+   "url": "/Place/JamCams_00001.07500",
+   "commonName": "Northumberland Ave/Victoria Emb",
+   "distance": 336.4189015019241,
+   "placeType": "JamCam",
+   "additionalProperties": [
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "payload",
+     "key": "available",
+     "sourceSystemKey": "JamCams",
+     "value": "true",
+     "modified": "2026-10-26T07:48:40.38Z"
+    },
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "payload",
+     "key": "imageUrl",
+     "sourceSystemKey": "JamCams",
+     "value": "https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/00001.07500.jpg",
+     "modified": "2026-10-26T07:48:40.38Z"
+    },
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "payload",
+     "key": "videoUrl",
+     "sourceSystemKey": "JamCams",
+     "value": "https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/00001.07500.mp4",
+     "modified": "2026-10-26T07:48:40.38Z"
+    },
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "cameraView",
+     "key": "view",
+     "sourceSystemKey": "JamCams",
+     "value": "Zoom-Emb near Cleopatras Needle",
+     "modified": "2026-10-26T07:48:40.38Z"
+    }
+   ],
+   "childrenUrls": [],
+   "lat": 51.5064,
+   "lon": -0.12224
+  },
+  {
+   "$type": "Tfl.Api.Presentation.Entities.Place, Tfl.Api.Presentation.Entities",
+   "id": "JamCams_00001.07550",
+   "url": "/Place/JamCams_00001.07550",
+   "commonName": "Charing Cross Rd/Cranbourne St",
+   "distance": 486.9490082332833,
+   "placeType": "JamCam",
+   "additionalProperties": [
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "payload",
+     "key": "available",
+     "sourceSystemKey": "JamCams",
+     "value": "true",
+     "modified": "2026-10-22T17:44:48.257Z"
+    },
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "payload",
+     "key": "imageUrl",
+     "sourceSystemKey": "JamCams",
+     "value": "https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/00001.07550.jpg",
+     "modified": "2026-10-22T17:44:48.257Z"
+    },
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "payload",
+     "key": "videoUrl",
+     "sourceSystemKey": "JamCams",
+     "value": "https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/00001.07550.mp4",
+     "modified": "2026-10-22T17:44:48.257Z"
+    },
+    {
+     "$type": "Tfl.Api.Presentation.Entities.AdditionalProperties, Tfl.Api.Presentation.Entities",
+     "category": "cameraView",
+     "key": "view",
+     "sourceSystemKey": "JamCams",
+     "value": "North - CXR twds Cambridge Circus",
+     "modified": "2026-10-22T17:44:48.257Z"
+    }
+   ],
+   "childrenUrls": [],
+   "lat": 51.5113,
+   "lon": -0.1283
+  }
+ ]
+}

@@ -1,0 +1,364 @@
+{
+  "id": "skyfi",
+  "name": "SkyFi",
+  "status": "unclaimed",
+  "provider_url": "https://skyfi.com",
+  "tags": [
+    "satellite",
+    "satellite imagery",
+    "aerial",
+    "earth observation",
+    "remote sensing",
+    "tasking",
+    "archive",
+    "SAR",
+    "multispectral",
+    "optical",
+    "thermal",
+    "hyperspectral",
+    "stereo",
+    "basemap",
+    "sentinel",
+    "open data",
+    "geotiff",
+    "api",
+    "webhooks",
+    "global",
+    "marketplace",
+    "planet",
+    "umbra",
+    "vantor",
+    "iceye",
+    "satellogic",
+    "mcp",
+    "oauth"
+  ],
+  "summary": "Self-serve marketplace that resells archive and newly tasked satellite and aerial imagery from many operators (Vantor, Planet, Umbra, ICEYE US, Satellogic, Sentinel open data and others) through one web app, a REST Platform API and a first-party remote MCP server (OAuth 2.1 with dynamic client registration), with per-km² or per-scene pricing, validate-before-order price checks, webhooks and delivery to S3/GCS/Azure.",
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "video"
+    ],
+    "tasks": [
+      "search the existing imagery archive by AOI polygon, date, resolution, product type, provider, cloud cover and off-nadir angle",
+      "order archive scenes (cropped to an AOI)",
+      "task a new satellite capture over an AOI within a time window (DAY, NIGHT, VIDEO, MULTISPECTRAL, HYPERSPECTRAL, SAR, STEREO, THERMAL product types)",
+      "feasibility / pass checks before tasking (Planet, Umbra, SatVu)",
+      "free Sentinel-1/Sentinel-2 open data orders",
+      "archive notifications to a webhook when new imagery matches a filter",
+      "basemaps and tile streaming tokens",
+      "run paid analytics (NDVI, NDWI, building, vessel and vehicle detection) on delivered imagery (MCP)"
+    ]
+  },
+  "pricing": {
+    "model": "pay per order, per km² or per scene; no subscription or minimum spend",
+    "from_usd": 5,
+    "unit": "per km² (optical archive, High resolution; smallest per-km² imagery price stated besides $1/km² basemaps)",
+    "notes": "From skyfi.com/pricing: optical archive from $5/km² and new optical tasking from $8/km² (Vantor, Planet, Satellogic; 15 cm to 1 m); optical archive tops out at $100/km² for Ultra High 7.5 cm aerial; SAR from $450/scene archive and $675/scene tasking (e.g. Umbra); 3D products (DSM/DTM/point clouds) from $7.50/km²; basemap mosaics from $1/km²; open data free; no subscriptions, contracts or minimum spend. The same page's summary cards say single archive image from $15, single tasking image from $200, aerial from $35, analytics from $5. Minimums: SkyFi's FAQ says minimum tasking area is 25 km² and a 25 km² tasking request starts at $200; Planet Select orders need a 25 km² minimum AOI (from $6/km² archive >30 days, $12/km² flexible tasking). Archive minimums are per scene: each search result carries minSqKm/maxSqKm, priceForOneSquareKm and priceFullScene/fullSceneOnly. Exact prices come from the API (POST /pricing, /tasking/products, the */validate endpoints; MCP validate tools return estimatedCostCents). A 'full pricing sheet' download exists but was not read. Free accounts can place 1 open-data order per day and paid orders with a card on file; Pro accounts 5 open-data orders per day plus advanced billing (Pro price not found). The MCP connector itself is free. Check: the static pricing page shows only the per-image starting prices ($15 archive, $200 tasking, SAR $450, aerial $35); the per-km2 rates, the $675 SAR tasking figure and the 25 km2 minimum were not visible on it in a later check, so confirm them in the app or the pricing sheet."
+  },
+  "latency": {
+    "typical": "Archive: usually within 24 hours. Tasking: within 48 hours of capture, capture timing set by your tasking window",
+    "notes": "Per the Platform API docs: 'Archival imagery order delivery is usually within 24 hours' and 'Tasking orders will deliver within 48 hours of image capture.' Archive results include a deliveryTimeHours field. The pricing page FAQ mentions a guaranteed 'Next Available Capture' tasking mode that 'delivers imagery within 24 hours regardless of weather' (which providers and terms apply was not found). Order status changes can be pushed to a webhook (2 s timeout, up to 3 retries)."
+  },
+  "coverage": {
+    "regions": [
+      "Global (subject to each operator's archive and orbit coverage)"
+    ],
+    "notes": "SkyFi says it aggregates 50+ provider partners and 300+ satellite and aerial sources (llms.txt; the pricing and API pages say 300+ sources) and serves users in 179 countries. In-app providers named on the pricing page: Vantor, Planet, ICEYE, Umbra, Satellogic, Vexcel, Pixxel, GEOSAT, IMPRO and SIIS. The API's provider enum also lists Sentinel-1/2 (Creodias), Urban Sky, NSL, BlackSky, SatVu and Constellr. AOIs must be simple convex WKT polygons, max 500 vertices; archive searches max 500,000 km². Tasking offerings can be excluded with reason AOI_RESTRICTED (criteria unpublished). Actual availability per location and date depends on the underlying operator; Vantor imagery needs a separate EULA acceptance (else 403). The EULA bars making products available to embargoed or sanctioned countries, regions or parties under US export rules.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "SkyFi EULA: limited, non-exclusive, non-transferable, revocable licence for the end user's own internal purposes; you may create value-added products (VAP) and derivative works, share with contractors under written terms, and post or print extracts for promotion only; products may not be resold, redistributed or shared, and only derivative works that contain no imagery data and are irreversible may be distributed. Imagery remains the satellite provider's property (EULA 4.1); markings must not be removed. The EULA does not address AI/ML training. The MCP Terms say imagery is 'licensed, not sold' and bar reselling or redistributing it except as the provider licence permits; some operators (e.g. Vantor) have their own EULA. On SkyFi's own use of your data: the main privacy notice says data submitted through its AI-based tools may be logged and, once anonymised, used in training models; the MCP privacy policy says it does not use personal information to train AI models.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable in the usual sense: captures are made by satellite/aircraft operators, not individual people; SkyFi documents no operator-level attestation."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No public description of how SkyFi checks that delivered files are unmodified operator products; no signing or checksum scheme is documented in the API spec."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Each archive record names provider, constellation, product type, resolution/GSD; pricing page lists sensor specs per satellite (e.g. WorldView-3 31 cm). Sensor identity is metadata asserted by the operator and passed through by SkyFi; no independent check documented. SkyFi was not found on the C2PA conforming products page."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Archive records carry a captureTimestamp; tasking captures fall inside the requested window",
+      "unknown": "How capture times are derived or validated is not documented by SkyFi; relies on operator metadata"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Archive records include a footprint geometry; deliverables include GeoTIFF/COG",
+      "unknown": "Georeferencing accuracy (CE90 etc.) per product was not found in SkyFi's public docs"
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No public method for detecting manipulated or synthetic imagery; cloud cover and off-nadir are reported per scene but are quality, not integrity, measures"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "SkyFi does not document cross-checking one operator's capture against another; a buyer could compare multiple providers' archive scenes themselves"
+    }
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Archive: whatever is in the catalog (filter by fromDate/toDate); tasking: captured after you order, inside your window, delivered within 48 h of capture",
+    "notes": "Archive search covers existing imagery; tasking orders new captures. Notifications can alert a webhook when new archive imagery matching a filter arrives."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://app.skyfi.com/platform-api/redoc",
+    "base_url": "https://app.skyfi.com/platform-api",
+    "auth": [
+      {
+        "type": "oauth2",
+        "resource_metadata": "https://mcp.skyfi.com/.well-known/oauth-protected-resource",
+        "scopes": [
+          "skyfi:read",
+          "skyfi:write",
+          "skyfi:order"
+        ],
+        "dynamic_registration": true,
+        "pkce": "S256",
+        "transport": "mcp",
+        "how_to_get": "Point an MCP client at https://mcp.skyfi.com/mcp; it registers itself (RFC 7591, /oauth/register) and the person signs in with a free SkyFi account and accepts the Terms. Public clients only (no secret); authorization_code and refresh_token grants. skyfi:order is needed to place orders. Dynamic client registration is deprecated by the MCP specification of 2026-07-28 in favour of Client ID Metadata Documents (CIMD); whether SkyFi accepts CIMD is not stated."
+      },
+      {
+        "type": "api_key_header",
+        "header": "X-Skyfi-Api-Key",
+        "env_var": "SKYFI_API_KEY",
+        "how_to_get": "Sign up at app.skyfi.com; API keys are available to all accounts (including free) at app.skyfi.com/profile/api-keys-management. Paid orders need a credit card on the profile or advanced billing (api@skyfi.com)."
+      },
+      {
+        "type": "bearer",
+        "how_to_get": "POST /auth/sign-in with identifier (email or username) and password returns an auth_context JWT and refresh token (OAuth2PasswordBearer in the OpenAPI spec)."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/archives",
+        "params": "aoi (WKT polygon, required), fromDate, toDate, maxCloudCoveragePercent, maxOffNadirAngle, resolutions, productTypes, providers, openData, minOverlapRatio, pageSize",
+        "notes": "Returns archive records with archiveId, captureTimestamp, footprint, cloudCoveragePercent, minSqKm/maxSqKm, priceForOneSquareKm, priceFullScene, deliveryTimeHours, thumbnailUrls. Continue with GET /archives?page=<nextPage>."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/archives/{archive_id}",
+        "notes": "Details for one archive image"
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/pricing",
+        "params": "aoi (optional)",
+        "notes": "All product/resolution/provider options with pricing and constraints (described for tasking)"
+      },
+      {
+        "action": "list",
+        "method": "POST",
+        "path": "/tasking/products",
+        "params": "all filters optional",
+        "notes": "Taskable products with offerings: provider, optionId, pricing, capture timing, accepted AOI shapes; excludedReasons explains non-matches"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/providers",
+        "notes": "Providers by product type and resolution, with whether each supports tasking, archive or both"
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/feasibility",
+        "params": "aoi, productType, resolution, startDate, endDate (required); maxCloudCoveragePercent, priorityItem, requiredProvider (PLANET, UMBRA or SATVU), optionId",
+        "notes": "Async; poll GET /feasibility/{feasibility_id}. Pass providerWindowId/providerMetadata into the tasking order to pin a pass."
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/order-archive/validate",
+        "params": "same body as /order-archive",
+        "notes": "Returns estimated cost and resolved provider without creating an order"
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/order-tasking/validate",
+        "params": "same body as /order-tasking",
+        "notes": "Returns estimated cost and resolved provider without creating an order"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/order-archive",
+        "params": "aoi, archiveId (required); deliveryDriver (S3/GS/AZURE), deliveryParams, webhookUrl, metadata, productParameters",
+        "notes": "Charges the account"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/order-tasking",
+        "params": "aoi, windowStart, windowEnd, productType, resolution (required); priorityItem, maxCloudCoveragePercent, maxOffNadirAngle, requiredProvider, optionId, providerWindowId, SAR options, deliveryDriver, deliveryParams, webhookUrl",
+        "notes": "New capture; charges the account"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/orders",
+        "params": "orderType, search, myOrders, pageNumber, pageSize",
+        "notes": "Customer's orders"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/orders/{order_id}",
+        "notes": "Order with status history (CREATED ... PROVIDER_PENDING ... DELIVERY_COMPLETED / *_FAILED)"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/orders/{order_id}/{deliverable_type}",
+        "params": "deliverable_type: image, payload, cog, view-ready",
+        "notes": "Redirects to a signed download URL"
+      }
+    ],
+    "sdk": "Remote MCP server at https://mcp.skyfi.com/mcp (Streamable HTTP, OAuth 2.1; validate-then-confirm order tools). No official client SDK found; the OpenAPI spec includes Python/JS request examples.",
+    "rate_limits": "No request rate limit published in the OpenAPI spec or MCP docs; the MCP privacy policy says it enforces rate limits, and order endpoints can return 429 'An order limit was reached'. Documented quotas: open-data orders 1/day (free) or 5/day (Pro); AOI max 500 vertices; archive search AOI max 500,000 km².",
+    "self_serve": true,
+    "mcp": {
+      "remote": "https://mcp.skyfi.com/mcp",
+      "registry_name": null,
+      "auth": "OAuth 2.1: PKCE S256, dynamic client registration, scopes skyfi:read, skyfi:write, skyfi:order; sign in with a SkyFi account (no API key)",
+      "first_party": true,
+      "notes": "Not in the official MCP Registry (search=skyfi returns 0). Tools include skyfi_search_archive, skyfi_check_feasibility, skyfi_get_pricing, skyfi_validate_archive_order/skyfi_validate_tasking_order (no charge), skyfi_place_archive_order/skyfi_place_tasking_order (billable, confirm=True), skyfi_get_order, skyfi_download_deliverable and paid analytics."
+    },
+    "notes": "No STAC in Platform API v2.0.0; deliverables image, payload, cog or view-ready via a signed redirect; no checksums. Swagger UI at /platform-api/docs. The OAuth flow is for the MCP server; the REST API uses the API key or a sign-in JWT."
+  },
+  "adapter": "skyfi",
+  "sources": [
+    {
+      "claim": "OpenAPI spec (v2.0.0): base path /platform-api, X-Skyfi-Api-Key header and OAuth2PasswordBearer sign-in, endpoint list and request fields, archive response fields, provider/product/payment-type enums, Stripe payment flag, delivery drivers, AOI limits, AOI_RESTRICTED reason, webhook statuses and retry policy, 429 order limit, delivery times (archive usually within 24 h, tasking within 48 h of capture), API keys for all accounts, free 1/day and Pro 5/day open-data orders, Vantor EULA 403",
+      "url": "https://app.skyfi.com/platform-api/openapi.json"
+    },
+    {
+      "claim": "Human-readable API docs (Redoc)",
+      "url": "https://app.skyfi.com/platform-api/redoc"
+    },
+    {
+      "claim": "Optical archive from $5/km², tasking from $8/km²; SAR from $450/scene archive, $675/scene tasking; 3D from $7.50/km²; basemaps from $1/km²; up to $100/km² for 7.5 cm aerial; no subscriptions or minimum spend; starting-at cards ($15 archive image, $200 tasking image, $35 aerial, $5 analytics); Planet Select 25 km² minimum AOI and $6/$12 per km²; in-app provider list; 300+ sources; Next Available Capture within 24 hours",
+      "url": "https://skyfi.com/en/pricing"
+    },
+    {
+      "claim": "Minimum tasking size 25 km²; a 25 km² tasking request starts at $200",
+      "url": "https://learn.skyfi.com/frequently-asked-questions-faqs/whats-the-minimum-order-size-for-skyfi/"
+    },
+    {
+      "claim": "50+ provider partners, 300+ satellite and aerial sources, users in 179 countries",
+      "url": "https://skyfi.com/llms.txt"
+    },
+    {
+      "claim": "SkyFi MCP server at https://mcp.skyfi.com/mcp (Streamable HTTP), OAuth 2.1 public clients with PKCE S256, dynamic client registration at /oauth/register, scopes, tool names, validate-confirm-charge flow",
+      "url": "https://mcp.skyfi.com/docs"
+    },
+    {
+      "claim": "MCP setup: endpoint URL, free SkyFi account, sign in and accept Terms",
+      "url": "https://mcp.skyfi.com/how-to-setup"
+    },
+    {
+      "claim": "MCP is free, needs no API key, orders placed only after confirmation; designed for autonomous agents",
+      "url": "https://skyfi.com/en/mcp"
+    },
+    {
+      "claim": "MCP Terms: the Service exposes ordering to AI agents acting on the user's behalf under OAuth scopes; charges to payment method or credits; imagery licensed not sold; no resale except as provider licence permits",
+      "url": "https://mcp.skyfi.com/tos"
+    },
+    {
+      "claim": "MCP privacy: rate limits enforced; personal information not used to train AI models",
+      "url": "https://mcp.skyfi.com/privacy"
+    },
+    {
+      "claim": "Protected-resource metadata: resource https://mcp.skyfi.com/mcp, scopes skyfi:read, skyfi:write, skyfi:order",
+      "url": "https://mcp.skyfi.com/.well-known/oauth-protected-resource"
+    },
+    {
+      "claim": "Authorization-server metadata: registration_endpoint, S256 PKCE, token auth none, authorization_code and refresh_token grants",
+      "url": "https://mcp.skyfi.com/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Not in the official MCP Registry (0 results)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=skyfi"
+    },
+    {
+      "claim": "EULA: limited non-transferable licence for internal purposes, no resale/redistribution, only irreversible derivative works without imagery may be distributed, satellite provider owns imagery, export/sanctions certification; no AI training clause",
+      "url": "https://skyfi.com/en/end-user-license-agreement"
+    },
+    {
+      "claim": "Terms of Service: general use terms, payment by card on file, prohibition on automated tools accessing the Services (5(a)(xi))",
+      "url": "https://skyfi.com/en/terms-of-service"
+    },
+    {
+      "claim": "Privacy notice: data submitted through AI-based tools may be logged and, once anonymised, used in training models",
+      "url": "https://skyfi.com/en/privacy-policy"
+    },
+    {
+      "claim": "MCP Terms: ordering exposed to AI agents acting on the user's behalf; orders charge the account's payment method or credits",
+      "url": "https://mcp.skyfi.com/tos"
+    },
+    {
+      "claim": "MCP specification 2026-07-28: dynamic client registration deprecated in favour of Client ID Metadata Documents",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration"
+    }
+  ],
+  "updated": "2026-10-28",
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "API docs: 'Tasking orders will deliver within 48 hours of image capture', with capture timing set by your tasking window; archive 'usually within 24 hours'. The pricing FAQ also names a 'Next Available Capture' mode that 'delivers imagery within 24 hours regardless of weather'."
+  },
+  "short": "A self-serve marketplace for satellite imagery, including new captures on request.",
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "prepaid_balance",
+      "invoice"
+    ],
+    "agent_rails": [
+      "card_on_file_api"
+    ],
+    "agent_can_pay": false,
+    "notes": "Credit card on file (the API reports whether the customer has a valid Stripe payment method), organisation budget, per-member assigned budget with a per-order spending limit, user token balance/credits, or user/organisation invoice (PaymentType enum). No agent-native payment rail (x402, MPP, UCP/ACP checkout) found; MCP orders charge the account's payment method or credits after a validated price is confirmed."
+  },
+  "account": {
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://mcp.skyfi.com/tos"
+    }
+  },
+  "requester": {
+    "checks": "The buyer signs in with a SkyFi account and, under EULA 3.1, certifies it is not on the US Consolidated Screening List or UN Security Council list and not 50%+ owned by OFAC-sanctioned parties; Vantor imagery also needs acceptance of Vantor's EULA.",
+    "unknown": "Whether SkyFi screens buyers itself (identity or export checks) is not documented; tasking offerings can be excluded as AOI_RESTRICTED but the criteria are unpublished."
+  }
+}

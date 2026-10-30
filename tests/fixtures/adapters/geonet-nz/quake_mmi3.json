@@ -1,0 +1,119 @@
+{
+"type": "FeatureCollection",
+"features": [
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+172.250869751,
+-41.722118378
+]
+},
+"properties": {
+"publicID": "2026p812843",
+"time": "2026-10-28T18:02:53.145Z",
+"depth": 5,
+"magnitude": 2.7284478136143435,
+"mmi": 3,
+"locality": "10 km north-west of Murchison",
+"quality": "best"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+175.217453003,
+-39.287395477
+]
+},
+"properties": {
+"publicID": "2026p810623",
+"time": "2026-10-27T22:20:07.644Z",
+"depth": 21.018558502197266,
+"magnitude": 3.1015343806553513,
+"mmi": 3,
+"locality": "20 km north-west of Ohakune",
+"quality": "best"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+173.536727905,
+-42.418987274
+]
+},
+"properties": {
+"publicID": "2026p809844",
+"time": "2026-10-27T15:25:22.339Z",
+"depth": 7.076385021209717,
+"magnitude": 2.6144992166712075,
+"mmi": 3,
+"locality": "10 km west of Kaikoura",
+"quality": "best"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+176.07043457,
+-39.457942963
+]
+},
+"properties": {
+"publicID": "2026p806128",
+"time": "2026-10-26T06:25:18.271Z",
+"depth": 10,
+"magnitude": 3.1002854413505396,
+"mmi": 3,
+"locality": "30 km north-east of Taihape",
+"quality": "deleted"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+173.74206543,
+-41.643611908
+]
+},
+"properties": {
+"publicID": "2026p806127",
+"time": "2026-10-26T06:24:29.162Z",
+"depth": 31.016611099243164,
+"magnitude": 4.529364365634587,
+"mmi": 5,
+"locality": "20 km south-west of Blenheim",
+"quality": "best"
+}
+},
+{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [
+174.90512085,
+-40.211467743
+]
+},
+"properties": {
+"publicID": "2026p805693",
+"time": "2026-10-26T02:33:39.935Z",
+"depth": 12,
+"magnitude": 4.024860997196396,
+"mmi": 4,
+"locality": "30 km south of Whanganui",
+"quality": "best"
+}
+}
+]
+}

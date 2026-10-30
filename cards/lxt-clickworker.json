@@ -1,0 +1,280 @@
+{
+  "id": "lxt-clickworker",
+  "name": "LXT (clickworker)",
+  "provider_url": "https://www.lxt.ai",
+  "status": "unclaimed",
+  "tags": [
+    "training data",
+    "custom collection",
+    "image collection",
+    "photo collection",
+    "video collection",
+    "store check",
+    "display audit",
+    "mystery check",
+    "retail audit",
+    "mobile app",
+    "smartphone",
+    "on-site",
+    "crowd",
+    "contributors",
+    "clickworker",
+    "api",
+    "managed service"
+  ],
+  "summary": "AI data company LXT, which agreed to buy the German crowd platform clickworker in December 2024 and now issues clickworker's North American terms. Its crowd photographs and films to a brief: custom image and video datasets (people, pets, products, scenes, documents) shot at home, at a nearby location with the clickworker smartphone app, or in a studio; and store checks, where workers visit listed shops, photograph shelves and displays with geo data and fill in checklists. Projects are run by LXT's managed service. The clickworker Marketplace API v2 (HTTP Basic auth, access through support) can create tasks, track them, fetch results and accept or reject them; its standard products are surveys, sentiment and iFrame tasks, and photo work is set up as a custom product.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "custom image collection: people and poses, pets and animals, products and objects, scenes and environments, documents and screens",
+      "custom video collection: human activity, pets, object interaction, indoor and outdoor scenes, facial and body movement",
+      "three settings: remote (at home by PC or phone app), mobile on-site (a nearby location, by smartphone app), in-person (studio, client premises or LXT data collection centre, with a moderator)",
+      "store checks and display audits: workers visit listed stores and photograph shelves, displays and promotions with the clickworker app, uploading with geo position, store name and address",
+      "on-site mystery checks with photo, video or written documentation",
+      "API: create tasks from templates (Survey, Sentiment, ExternalForm/iFrame; custom products set up by clickworker Operations), track status, fetch results, accept or reject, count workers near a point"
+    ]
+  },
+  "pricing": {
+    "model": "Custom quote (managed); per-task worker payment you set (API/self-service)",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "from_usd 0 means unknown, not free. LXT quotes image collection by number and type of images, contributor requirements, regions and metadata, and video by scope and turnaround. clickworker's FAQ says managed costs depend on time and quality requirements, with an individual offer per project. Through the API you set the worker payment per task in cents (e.g. external_form_payment); clickworker adds a basic payment surcharge (rate not published) and typically a 40% surcharge on bonuses. Self-service fees are shown on the platform when the order is submitted."
+  },
+  "latency": {
+    "typical": "Store checks: 'often within hours'. Datasets: not published.",
+    "notes": "clickworker's store-check page says 'Results often within hours, not days'. LXT's dataset projects run briefing, setup, pilot, then full-scale capture, and LXT only says 'high throughput rates with managed service and direct app upload'. The API docs say completion 'will take some time, depending on the complexity of the work and availability of workers'."
+  },
+  "coverage": {
+    "regions": [
+      "150+ countries (not listed)"
+    ],
+    "notes": "LXT cites image and video collection in 150+ countries and 1,000+ locales with 10M+ contributors; clickworker's homepage says its workforce is in 136 countries. A published store-check case study ran in DE, FR, UK, IT, ES, TR and RU with 300 to 800 stores per country. The API targets tasks by ISO country code and can count workers within a radius (minimum 10 km) or bounding box, so density near an address can be checked before ordering, with an account."
+  },
+  "licensing": {
+    "summary": "clickworker's North American self-service terms (LXT AI Inc., effective 30 March 2026, §8) give the client, upon full payment, 'a non-exclusive, worldwide, perpetual license to use task results for its internal business purposes'; the same §8 bars reselling or sublicensing the Platform itself; the terms do not mention AI training, resale of results, or LXT using client data for its own models. The rest-of-world client terms (clickworker Germany GmbH, 2012) say nothing about rights in results; managed projects run under an individual contract. Workers grant clickworker unlimited rights of use in what they produce (worker GTC §7). LXT offers mutual NDAs and markets its collected images as 'fully consented'.",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Workers must be 18+, give truthful personal data and hold one account each (no alter egos); clickworker may require evidence that the data is correct before activating an account. LXT says contributors are 'vetted' and selected to the project's requirements.",
+      "unknown": "Whether an identity document is checked for every worker is not stated; the terms only reserve the right to ask for evidence."
+    },
+    "application": {
+      "level": "none",
+      "method": "On-site work uses the clickworker app for Android and iOS.",
+      "unknown": "No check that the app or device is genuine or unmodified is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Camera type can be included as metadata, but no check against imported, screen-captured or generated media is described."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "A timestamp 'can be included' as metadata; how it is set and whether it can be trusted is not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "In the store-check case study, workers photograph the store front 'with geo data' and upload shelf pictures 'with geo position, the business address and the store name'.",
+      "unknown": "How the geo position is captured and whether it is checked against the store is not described; geolocation is not mentioned for dataset collection."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "LXT: multi-layer QA with programmatic checks, gold tasks, peer review, human review and compliance validation. Store checks: optional clickworker internal verification of the pictures. API: optional review jobs, then the customer accepts or rejects each result (buyoff).",
+      "unknown": "Review criteria and error rates are not published."
+    },
+    "corroboration": {
+      "level": "claimed",
+      "method": "Peer review of submissions by other contributors; on the API, a separate content-review job can precede the customer's buyoff.",
+      "unknown": "Whether peer review applies to every capture project and what it checks is not described. Reviewers share the platform and operator, so this is not independent confirmation."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://www.clickworker.com/clickworker-marketplace-api-v2/",
+    "base_url": "https://api-production.clickworker.com/api/marketplace/v2",
+    "auth": [
+      {
+        "type": "basic",
+        "env_var": "CLICKWORKER_CREDENTIALS",
+        "how_to_get": "HTTP Basic auth with your clickworker customer email and password. Ask clickworker support for API access (https://www.clickworker.com/contact-for-customers/, helpdesk@clickworker.com). Sandbox: https://api-sandbox.clickworker.com. The irlpls adapter reads CLICKWORKER_CREDENTIALS as 'email:password'."
+      },
+      {
+        "type": "api_key_query",
+        "how_to_get": "The OpenAPI file declares an access_token query parameter for Asset Library endpoints only; how to obtain one is not documented."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/products",
+        "notes": "Products available to your account (standard: Survey, Sentiment, ExternalForm/iFrame)."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/clickworkers",
+        "params": "api_method=count_in_range&latitude&longitude&radius (km, min 10); or api_method=count_in_bounding_box&sw_latitude&sw_longitude&ne_latitude&ne_longitude",
+        "notes": "Counts workers in an area before launching location-based tasks."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/customer/tasks",
+        "notes": "Creates a task from a task template (POST /customer/task_templates first). Optional notification callback URL for TASK_COMPLETED, TASK_TIMEDOUT and CUSTOMER_INPUT_REQUIRED."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/customer/tasks/{taskId}",
+        "notes": "States: created, queued, running, finished, timedout, cancelled, feedback (awaiting buyoff)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/customer/tasks",
+        "params": "payload=extended&state=finished",
+        "notes": "Results inline. Accept or reject with PUT /customer/tasks/{taskId}/accept or /reject."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/customer/orders",
+        "notes": "Orders group tasks for billing."
+      }
+    ],
+    "sdk": "None. OpenAPI 3.0.3 file at https://www.clickworker.com/mpapi/cw-mp-api-v2.yaml with curl, JavaScript, PHP and Ruby samples. Customer portal: marketplace.clickworker.com.",
+    "rate_limits": "Not published. The North American terms forbid exceeding 'documented rate limits'; pages hold at most 50 results.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No clickworker or LXT server in the official MCP Registry. www.lxt.ai exposes an undocumented WordPress MCP endpoint (wp-json/mcp/mcp-oauth-server, OAuth with PKCE S256, scope 'mcp'); it appears to belong to the website and is not documented as a way to order data."
+    },
+    "notes": "Version 2.0.42. Content-Type and Accept must be application/json. The sandbox has no active workers. Photo collection and store checks are not standard API products; clickworker Operations can configure custom products, and store-check results can be delivered by API. Account balance via GET /customer (balance, reserved amount, credit limit)."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured for your order",
+    "notes": "LXT also sells off-the-shelf datasets; only custom collection is described here."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "clickworker store-check page: 'Fast turnaround – Results often within hours, not days.' No turnaround is published for LXT image or video datasets, which start with a briefing and a pilot."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "approval"
+  },
+  "payment": {
+    "methods": [
+      "prepaid_balance",
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "Self-service: top up a prepaid account before sending an order; North American terms say fees are payable in advance and may need pre-funding or wallet balances. Managed service: invoices at the end of each month. The API reads the balance but has no top-up endpoint."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "North American terms: business accounts only (consumers not permitted), accurate and complete information, no impersonating another business; LXT accepts each order and may refuse or modify tasks for compliance reasons. Rest-of-world terms: clients may use the platform only once clickworker connects and authorizes them, and each project needs clickworker's binding acceptance.",
+    "unknown": "Whether LXT verifies the business's identity, or screens store-check or mystery-check targets, is not documented."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Image data collection: remote, mobile on-site and in-person settings; categories; metadata such as camera type, resolution and timestamp; multi-layer QA with gold tasks, peer review, human review; vetted contributors; pricing by quote; managed, API/iframe or crowd access; 10M+ contributors; 150+ countries; NDAs; 'fully consented'; 'high throughput rates with managed service and direct app upload' (clickworker.com image-dataset page redirects here)",
+      "url": "https://www.lxt.ai/services/image-data-collection/"
+    },
+    {
+      "claim": "Video data collection: categories, three settings, app upload, peer review and gold tasks, priced by scope including turnaround",
+      "url": "https://www.lxt.ai/services/video-data-collection/"
+    },
+    {
+      "claim": "clickworker API overview: ordering process through the API, number of clickworkers in a region, SSL and password protected, access via support ticket, sandbox API Explorer",
+      "url": "https://www.clickworker.com/api/"
+    },
+    {
+      "claim": "Marketplace API v2 docs page (Redoc rendering the OpenAPI file); sandbox and customer portal links",
+      "url": "https://www.clickworker.com/clickworker-marketplace-api-v2/"
+    },
+    {
+      "claim": "OpenAPI 3.0.3, version 2.0.42: HTTP Basic auth with customer email and password; access_token for Asset Library; sandbox and production base URLs; products Survey, Sentiment, ExternalForm and custom products by Operations; task lifecycle, buyoff accept/reject, notifications; count_in_range (min 10 km) and count_in_bounding_box; country targeting; payment per task in cents; 40% bonus surcharge; page size max 50; customer balance",
+      "url": "https://www.clickworker.com/mpapi/cw-mp-api-v2.yaml"
+    },
+    {
+      "claim": "Store checks: on-site display audits and mystery checks set up by the managed service in the clickworker app; 'Results often within hours, not days'; optional internal quality control; results sent to your platform",
+      "url": "https://www.clickworker.com/store-check/"
+    },
+    {
+      "claim": "Display audits: photographs of shelves and promotions through the clickworker app for Android and iOS; nearby PoS tasks; API integration",
+      "url": "https://www.clickworker.com/store-check/display-audit/"
+    },
+    {
+      "claim": "Mystery checks on site with photo, video or written documentation",
+      "url": "https://www.clickworker.com/store-check/mystery-check/"
+    },
+    {
+      "claim": "Store-check case study: storefront photo with geo data; shelf pictures uploaded with geo position, address and store name; DE, FR, UK, IT, ES, TR, RU; 300-800 PoS per country; internal verification; data transfer via API",
+      "url": "https://www.clickworker.com/case-studies/area-wide-control-at-the-point-of-sale/"
+    },
+    {
+      "claim": "Self-service marketplace offers surveys; top up a prepaid account; invoices for download; other services through the managed service",
+      "url": "https://www.clickworker.com/self-service/"
+    },
+    {
+      "claim": "Managed costs by time and quality, individual offer per project; invoices issued at the end of each month",
+      "url": "https://www.clickworker.com/customer-faq/"
+    },
+    {
+      "claim": "clickworker workforce in 136 countries; more than 10 million clickworkers",
+      "url": "https://www.clickworker.com/"
+    },
+    {
+      "claim": "North American client terms (LXT AI Inc., effective 30 March 2026): business accounts only; API access for automated task creation, monitoring and retrieval; orders via Platform or API; rate-limit clause; non-exclusive perpetual licence for internal business purposes; fees in advance, pre-funding or wallet balances",
+      "url": "https://workplace.clickworker.com/en/agreements/9165"
+    },
+    {
+      "claim": "Rest-of-world client terms (clickworker Germany GmbH, 2012): platform use only upon authorization; projects need binding acceptance; no rights clause for results",
+      "url": "https://workplace.clickworker.com/en/agreements/32"
+    },
+    {
+      "claim": "Worker GTC: truthful personal data, evidence may be required before activation, one account per person, no automated methods; workers grant clickworker unlimited rights of use (§7)",
+      "url": "https://workplace.clickworker.com/en/agreements/10123"
+    },
+    {
+      "claim": "Worker GTC (LXT AI Inc., effective 1 August 2026): workers 18+, no alter-egos, work product verified and assigned",
+      "url": "https://workplace.clickworker.com/en/agreements/260715"
+    },
+    {
+      "claim": "LXT agreed to acquire clickworker (announced 17 Dec 2024); clickworker crowd of 6M+ at the time",
+      "url": "https://www.clickworker.com/press-releases/lxt-acquires-clickworker/"
+    },
+    {
+      "claim": "Not in the official MCP Registry (searches for clickworker and lxt return 0 servers)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=clickworker"
+    },
+    {
+      "claim": "lxt.ai protected-resource metadata points to a WordPress MCP endpoint with scope 'mcp'",
+      "url": "https://www.lxt.ai/.well-known/oauth-protected-resource/"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "short": "A crowd that photographs and films to your brief, from AI datasets to store shelves, managed by LXT or via an API.",
+  "capability": "com.irlpls.capture.card",
+  "adapter": "lxt_clickworker"
+}

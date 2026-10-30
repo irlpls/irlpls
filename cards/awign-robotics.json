@@ -1,0 +1,163 @@
+{
+  "id": "awign-robotics",
+  "name": "Awign Robotics Data",
+  "provider_url": "https://www.awign.com",
+  "status": "unclaimed",
+  "short": "Robotics training data collected to order by a large Indian gig workforce.",
+  "tags": [
+    "egocentric video",
+    "depth",
+    "tactile",
+    "teleoperation",
+    "UMI gripper",
+    "gig workforce",
+    "robotics",
+    "humanoid",
+    "India"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "egocentric head-mounted RGB, RGB-D and stereo video",
+      "ego camera plus wrist cameras and mocap gloves for hand-pose ground truth",
+      "tactile and contact-rich data",
+      "UMI, two-finger or custom gripper demonstrations",
+      "trained remote teleoperators, or Awign operating the client's hardware",
+      "pilot first, then a production line"
+    ]
+  },
+  "pricing": {
+    "model": "Quote after scoping",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "Not published. 'Get Custom Quote' form or robotics-quote-request@awign.com."
+  },
+  "latency": {
+    "typical": "Quote, sample datasets and a project plan promised within 24 hours of a request",
+    "notes": "No production turnaround is published. The site claims 10K+ hours of video per day as capacity."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Pilot first, then scale",
+    "notes": "Capacity claims only; no per-order turnaround."
+  },
+  "coverage": {
+    "regions": [
+      "India (most programs)",
+      "Japan",
+      "US"
+    ],
+    "notes": "Operations stated in India, Japan and the USA; collection is 'run in India' for most programs. Environments include Indian and Western-style homes, offices, commercial sites and factories.",
+    "areas": [
+      "IN",
+      "JP",
+      "US"
+    ]
+  },
+  "licensing": {
+    "summary": "No ownership, licence, AI-training or resale terms for client deliverables are published. The Terms and Conditions page found governs Awign Work Program participants (work product is work made for hire assigned to Awign) and does not address business customers. The FAQ says workflows 'can incorporate' participant consent, PII protection and bystander privacy protocols."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Gig workforce of '1.5M+ workers' in '1,000+ cities'.",
+      "unknown": "Identity checks and consent for capture work are not documented."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No capture-app or device attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Capture tiers with named sensor setups (monocular, stereo, depth/LiDAR, IMU, wrist cameras, mocap gloves, tactile gloves). No signed capture; Awign is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No signed or independently time-stamped capture times are documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Pilot before production; '98%' labeling accuracy claim; HITL QA.",
+      "unknown": "The accuracy claim has no public evidence; acceptance criteria are not published."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of collected data is documented."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Get Custom Quote form or robotics-quote-request@awign.com on awign.com; choose a SKU, describe requirements, run a pilot."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No server found in the official MCP Registry (searched the provider name, 2026-10-27)."
+    },
+    "notes": "No API or ordering docs. Not checked: /.well-known documents on awign.com."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Only 'within 24 hours' for the quote, samples and plan; no collection turnaround."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No payment methods published; contract-based."
+  },
+  "capture": {
+    "by": "people",
+    "consent": {
+      "documented": false,
+      "method": "FAQ: workflows can incorporate participant consent, PII protection and bystander privacy protocols.",
+      "unknown": "The actual consent and release process is not published."
+    },
+    "worker_pay": {
+      "model": "not published",
+      "disclosed": false
+    }
+  },
+  "requester": {
+    "unknown": "Awign publishes no check of who commissions collection or for what; it offers confidential 'stealth operations'."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "Awign (Awign Enterprises Pvt. Ltd., a Mynavi company) sells robotics data as tiered SKUs: Ego Vision (monocular RGB), Ego Depth (RGB-D or stereo), Ego Depth Ultra (ego plus wrist cameras and mocap gloves), Ego Touch (tactile), Gripper Vision (UMI or custom grippers), Teleoperations and BYOS (Awign operates the client's hardware). Collection is mostly run in India, with operations also in Japan and the USA. Quotes are requested through a form; sample data and a plan are promised within 24 hours. The only terms found are for Awign's gig participants, so client rights are not stated.",
+  "sources": [
+    {
+      "claim": "SKUs, modalities, India/Japan/USA, 1.5M+ workers, 24-hour quote, consent FAQ, quote form, entity Awign Enterprises Pvt. Ltd. (a Mynavi company)",
+      "url": "https://www.awign.com/"
+    },
+    {
+      "claim": "Egocentric data for robotics page (title only was readable by the fetch tool)",
+      "url": "https://www.awign.com/business/data-annotation/robotech-egocentric"
+    },
+    {
+      "claim": "Terms govern Awign Work Program participants; work made for hire; not customer terms",
+      "url": "https://www.awign.com/terms_and_conditions"
+    }
+  ]
+}

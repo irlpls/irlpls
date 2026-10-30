@@ -1,0 +1,2 @@
+query.geojson: live GET https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=35.77&longitude=-117.6&maxradiuskm=100&starttime=2026-10-21&orderby=time&limit=3 on 2026-10-28.
+query_empty.geojson: live GET ...?format=geojson&latitude=0&longitude=-30&maxradiuskm=5&starttime=2026-10-27&limit=3 on 2026-10-28 (HTTP 200, no features).

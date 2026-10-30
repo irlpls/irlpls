@@ -1,0 +1,38 @@
+{
+ "scheduling_options": [
+  {
+   "date": "2019-04-12",
+   "timeslots": [
+    {
+     "scheduled_at_start": "2019-04-12T08:00:00-07:00",
+     "weather_forecast": {
+      "precipitation_probability": 0,
+      "cloud_cover": 0.02
+     },
+     "pilot_availability": true
+    },
+    {
+     "scheduled_at_start": "2019-04-12T09:00:00-07:00",
+     "weather_forecast": {
+      "precipitation_probability": 0,
+      "cloud_cover": 0.02
+     },
+     "pilot_availability": false
+    }
+   ]
+  },
+  {
+   "date": "2019-04-13",
+   "timeslots": [
+    {
+     "scheduled_at_start": "2019-04-13T08:00:00-07:00",
+     "weather_forecast": {
+      "precipitation_probability": 0,
+      "cloud_cover": 0.02
+     },
+     "pilot_availability": true
+    }
+   ]
+  }
+ ]
+}

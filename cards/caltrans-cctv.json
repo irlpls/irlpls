@@ -1,0 +1,212 @@
+{
+  "id": "caltrans-cctv",
+  "name": "Caltrans highway cameras",
+  "status": "unclaimed",
+  "provider_url": "https://cwwp2.dot.ca.gov/",
+  "adapter": "caltrans_cctv",
+  "tags": [
+    "camera",
+    "cctv",
+    "webcam",
+    "traffic camera",
+    "highway",
+    "freeway",
+    "road",
+    "traffic",
+    "road conditions",
+    "weather",
+    "snow",
+    "chain control",
+    "photo",
+    "image",
+    "still",
+    "live",
+    "california",
+    "ca",
+    "bay area",
+    "los angeles",
+    "san diego",
+    "sacramento",
+    "tahoe",
+    "caltrans",
+    "government",
+    "free",
+    "no key"
+  ],
+  "summary": "Caltrans' Commercial Wholesale Web Portal (CWWP2) publishes free, keyless per-district JSON/XML/CSV/TXT lists of its ~3,600 California State Highway CCTV cameras, each with coordinates, route/postmile, in-service flag, a current still-image URL refreshed every 1-60 minutes, 12 previous stills, and (for about two-thirds) an HLS streaming URL. Some in-service cameras serve a 'Temporarily Unavailable' placeholder instead of a picture.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video"
+    ],
+    "tasks": [
+      "current still image from a highway camera near a California location",
+      "12 previous stills per camera (referenceImage1UpdateAgoURL..referenceImage12UpdatesAgoURL)",
+      "camera catalogue with lat/lon, route, postmile, direction, county, nearby place",
+      "camera in-service status",
+      "HLS streaming video URL where reported (not all reported URLs are live)"
+    ]
+  },
+  "pricing": {
+    "model": "free public government service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "CWWP2 CCTV page: 'There is no charge for the use of this data.' No account or key."
+  },
+  "latency": {
+    "typical": "Minutes: stills refresh every 1-60 minutes depending on camera (mostly 1-5)",
+    "notes": "Each camera reports currentImageUpdateFrequency in minutes. In a live pull of all 12 district JSON files (2026-10-27 05:00Z, i.e. 2026-10-26 PDT), of 3,605 cameras: 5 min 1,277; 2 min 1,232; 3 min 505; 1 min 401; 4 min 1; 10-60 min 185; Not Reported 4. Sixteen sampled in-service stills had Last-Modified 0.5-5.5 minutes before fetch. Nothing is captured on request: only fixed cameras on their own schedule."
+  },
+  "coverage": {
+    "regions": [
+      "California, USA (State Highway System)"
+    ],
+    "notes": "Only fixed cameras along Caltrans state highways and freeways, all 12 districts; you cannot place or point a camera. Live count 2026-10-26 (PDT): 3,605 cameras, 3,428 inService=true, all with a currentImageURL, 2,307 with a streamingVideoURL. Not local streets. The district list files update 'as necessary': on 2026-10-26 their Last-Modified dates ranged from 2026-03-02 (D09) to 2026-10-26 (D04, D08), so the catalogue can lag camera changes even though images are fresh.",
+    "areas": [
+      "US-CA"
+    ]
+  },
+  "licensing": {
+    "summary": "CWWP2 says the files are available for integration into your application at no charge, under a Fair Use Policy that prohibits usage risking degradation of the CCTV streaming service, plus the general Caltrans Conditions of Use (dated July 19, 2021). Those say website information, unless otherwise indicated, is considered public domain and may be distributed or copied as permitted by law, but Caltrans uses some copyrighted data (e.g. photographs) that may need additional permission; they do not say whether CCTV stills fall under public domain. Neither page mentions AI training, resale or attribution. As-is, no warranty, no implied endorsement."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: images come from fixed agency-operated cameras, not people"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or provenance metadata on images (plain JPEG with an EXIF DateTime and a text comment giving county, route, postmile and elevation); integrity rests on fetching from the Caltrans domain over HTTPS"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Each record identifies a specific Caltrans CCTV by index and location name (e.g. 'TV102 -- I-580 : West of SR-24'); image URLs are per camera. Camera hardware, pan/tilt state and field of view are not reported; operators may move PTZ cameras so the view may differ from the location description"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each JPEG carries an EXIF DateTime and a burned-in date/time bar (Pacific time); image HTTP responses carry Last-Modified, and the JSON gives a refresh interval per camera.",
+      "unknown": "Nothing is signed. In a 2026-10-26 sample the times disagreed: one image's EXIF and overlay time was 8.7 minutes older than its Last-Modified, and another's EXIF time was 18 minutes ahead of the fetch while its overlay was current, so neither header nor EXIF reliably dates the picture. recordTimestamp is when the catalogue record was last modified, not the image time. Previous-image URLs return Last-Modified 1970-01-01."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each camera has WGS84 latitude/longitude, elevation, route, postmile, direction of travel and county in the catalogue.",
+      "unknown": "Coordinate accuracy and the camera's actual viewing direction are not documented; 'direction' is the side of the road, not necessarily the view"
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Raw camera stills with no QC. In a 2026-10-26 sample, 6 of 17 cameras marked inService=true returned a 'Temporarily Unavailable' placeholder that still carried a fresh time bar, EXIF time and Last-Modified, so neither inService nor freshness means a real picture. Images can also be dark, frozen or obstructed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-checking; nearby cameras on the same route can be compared manually"
+    }
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Typically 1-5 minutes for the current image; up to ~60 minutes for slow cameras",
+    "notes": "currentImageURL is overwritten in place at each update; referenceImageNUpdatesAgoURL gives up to 12 previous images (so roughly the last hour at 5-minute cadence). No longer archive is offered."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Per-camera currentImageUpdateFrequency of 1-60 minutes (mostly 1-5) in the CWWP2 CCTV JSON; live images had Last-Modified within ~5.5 minutes of fetch."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://cwwp2.dot.ca.gov/closed-circuit-television-cameras.html",
+    "base_url": "https://cwwp2.dot.ca.gov/data",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No signup or key; static files over HTTPS."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/d{district}/cctv/cctvStatusD{district:02}.json",
+        "params": "district 1-12 (e.g. /d4/cctv/cctvStatusD04.json); also .xml, .csv, .txt with the same data",
+        "notes": "Whole-district static file (D04 ~2.5 MB, 764 cameras). Shape: {data:[{cctv:{index, recordTimestamp, location{district, locationName, nearbyPlace, latitude, longitude, elevation, direction, county, route, postmile, milepost}, inService, imageData{imageDescription, streamingVideoURL, static{currentImageUpdateFrequency, currentImageURL, referenceImageUpdateFrequency, referenceImage1UpdateAgoURL..referenceImage12UpdatesAgoURL}}}}]}. No server-side filtering: pick the district and filter by lat/lon client-side. Numbers are strings. A missing streamingVideoURL is an empty string (1,297 cameras), not 'Not Reported'; one is malformed ('ttps://...'). Sends Access-Control-Allow-Origin: *."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/d{district}/cctv/image/{camera}/{camera}.jpg",
+        "params": "use currentImageURL from the list verbatim",
+        "notes": "Current 320x260 JPEG still (~7-65 KB observed). Sends Last-Modified and Access-Control-Allow-Origin: * (checked with an Origin header), so browsers can fetch it directly. Previous stills at /previous/{camera}-{1..12}.jpg (all 3,605 cameras list 12)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://wzmedia.dot.ca.gov/D{district}/{stream}.stream/playlist.m3u8",
+        "params": "use streamingVideoURL from the list verbatim",
+        "notes": "HLS playlist (application/vnd.apple.mpegurl) on a separate host. In a 2026-10-26 sample of 50 in-service cameras with a stream URL, 34 returned the playlist and 16 returned 404."
+      }
+    ],
+    "rate_limits": "No numeric limit published. Fair Use Policy: usage that risks degrading the availability of the CCTV streaming service is prohibited. Cache the district lists (they change 'as necessary') and don't poll images faster than their update frequency.",
+    "self_serve": true,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "No Caltrans or CWWP2 server in the official MCP Registry (searches for caltrans, cwwp2, dot.ca.gov and 'california traffic' returned none)."
+    },
+    "notes": "No OAuth or discovery documents: /.well-known/oauth-protected-resource, oauth-authorization-server, ucp, agent-card.json and irlpls return HTTP 500 on cwwp2.dot.ca.gov and a 404 page on dot.ca.gov."
+  },
+  "sources": [
+    {
+      "claim": "CWWP2 aggregates real-time traveler information from Caltrans' 12 districts from ITS devices including CCTV; data in CSV, JSON, TXT and XML",
+      "url": "https://cwwp2.dot.ca.gov/"
+    },
+    {
+      "claim": "CCTV files describe location and status of each Caltrans CCTV on the State Highway Network; available via HTTPS for integration into applications; no charge; Fair Use Policy prohibits usage that risks degrading the CCTV streaming service; see Caltrans Conditions of Use; per-district files D01-D12 updated 'as necessary'",
+      "url": "https://cwwp2.dot.ca.gov/closed-circuit-television-cameras.html"
+    },
+    {
+      "claim": "Field definitions: recordDate/recordTime = when the record was last modified (PST/PDT); currentImageUpdateFrequency in minutes 1-1440 or 'Not Reported'; currentImageURL and reference image 1-12 updates-ago URLs; inService true/false/Not Reported; lat/lon WGS84; direction = direction of travel the CCTV is located on",
+      "url": "https://cwwp2.dot.ca.gov/documentation/cctv/cctv-field-description.html"
+    },
+    {
+      "claim": "Caltrans website information, unless otherwise indicated, is considered public domain and may be distributed or copied as permitted by law, but Caltrans uses copyrighted data (e.g. photographs) that may require permission; no warranty; no endorsement; no mention of AI training, resale or automated access (Conditions of Use dated July 19, 2021)",
+      "url": "https://dot.ca.gov/conditions-of-use"
+    },
+    {
+      "claim": "Live test 2026-10-27 05:00Z (2026-10-26 PDT): all 12 district JSON files returned 200; 3,605 cameras, 3,428 in service, 2,307 with streaming URL, 1,297 with empty streaming URL; all list 12 previous images; update frequency mostly 1-5 min; D04 Access-Control-Allow-Origin: *; district file Last-Modified from 2026-03-02 (D09) to 2026-10-26",
+      "url": "https://cwwp2.dot.ca.gov/data/d4/cctv/cctvStatusD04.json"
+    },
+    {
+      "claim": "Live test 2026-10-27 05:00Z: current image 200 image/jpeg, 320x260, Last-Modified 04:56:53Z, EXIF DateTime and burned-in time 21:56:53 PDT, Access-Control-Allow-Origin: * with Origin header; picture was a 'Temporarily Unavailable' placeholder although inService=true; previous-image URL returned 200 with Last-Modified 1970-01-01",
+      "url": "https://cwwp2.dot.ca.gov/data/d4/cctv/image/tv102i580westofsr24/tv102i580westofsr24.jpg"
+    },
+    {
+      "claim": "Live test 2026-10-27 05:03Z: this in-service still had EXIF DateTime and overlay 21:53:10 PDT but Last-Modified 05:01:53Z (8.7 minutes later)",
+      "url": "https://cwwp2.dot.ca.gov/data/d7/cctv/image/us101611pilgrimagebridge/us101611pilgrimagebridge.jpg"
+    },
+    {
+      "claim": "Live test 2026-10-27 05:00Z: HLS playlist returned 200 application/vnd.apple.mpegurl (34 of 50 sampled in-service stream URLs returned 200, 16 returned 404)",
+      "url": "https://wzmedia.dot.ca.gov/D3/50_Wrights_Lake_ED50_EB_2.stream/playlist.m3u8"
+    },
+    {
+      "claim": "No Caltrans server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=caltrans"
+    }
+  ],
+  "updated": "2026-10-28",
+  "short": "About 3,400 California highway cameras, with stills refreshed every few minutes.",
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-26",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  }
+}

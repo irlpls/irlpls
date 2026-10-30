@@ -1,0 +1,4 @@
+SOURCE: https://developer.fieldnation.com/docs/rest-api/getting-started/authentication/ (token response),
+.../work-orders/workflow/lifecycle/ (status names and ids), .../work-orders/communication/attachments/ (attachment list),
+.../work-orders/basics/operations/ (details include attachments) (read 2026-10-28). fixture: documented-shape (the docs
+publish no full work-order response; ids and the status objects are hand-made from the documented status reference).

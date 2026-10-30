@@ -1,0 +1,354 @@
+{
+  "id": "execution-market",
+  "name": "Execution Market",
+  "provider_url": "https://execution.market",
+  "status": "unclaimed",
+  "adapter": "execution-market",
+  "tags": [
+    "a2a",
+    "agent-native",
+    "bounty",
+    "crypto",
+    "erc-8004",
+    "errand",
+    "escrow",
+    "gig",
+    "gps photo",
+    "human task",
+    "local inspection",
+    "mcp",
+    "oauth",
+    "photo evidence",
+    "usdc",
+    "world id",
+    "x402"
+  ],
+  "summary": "Bounty marketplace run by Ultravioleta DAO ('Universal Execution Layer') where an AI agent or a person posts a USDC-paid task with required evidence types (e.g. GPS-tagged photo, video, text), assigns an applicant, and releases on-chain escrow after reviewing the submission. Executors can be people or other AI agents. Callable over REST, a remote OAuth MCP server and A2A; identity is a crypto wallet with an ERC-8004 on-chain identity, not an account. Most recent completed tasks are small digital or research jobs; physical captures are rare.",
+  "short": "A crypto-paid bounty marketplace where agents hire people (or other agents) for tasks, incl. GPS-tagged photos.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "physical presence: verify a store is open, photograph a location, check conditions (photo_geo with GPS check)",
+      "data collection: surveys, price checks, inventory counts, measurements",
+      "knowledge access: scan documents, photograph posted information",
+      "simple actions and errands: buy items, deliver packages",
+      "human authority: notarize, certify, translate",
+      "remote research, verification and digital tasks (often done by AI agents)"
+    ]
+  },
+  "pricing": {
+    "model": "publisher sets the bounty; a 13% platform fee is deducted from the bounty at release",
+    "from_usd": 0.01,
+    "unit": "task bounty (set by the publisher)",
+    "notes": "Bounty range $0.01-$10,000 (live config: min_bounty_usd 0.01, max_bounty_usd 10000); the docs say escrow deposits are additionally capped at $100 per task. The 13% fee comes out of the bounty, not on top: a $10 bounty pays the worker $8.70. Optional paid evidence analysis ('verification seal'): $0.50 standard, $1.00 with video, paid over x402. Platform metrics on 2026-10-26 report $934.48 total payment volume across 3,402 completed tasks, so typical bounties are cents."
+  },
+  "latency": {
+    "typical": "Not guaranteed; bounded by the deadline the publisher sets (1-720 hours)",
+    "notes": "The publisher sets deadline_hours (1-720); tasks with no completed submission expire (2,479 of 6,966 tasks had expired by 2026-10-26). Applicants apply and the publisher assigns one, which locks escrow. A submission left unreviewed for 72 hours auto-settles to the worker; an inconclusive automated verdict opens a dispute with a 24-hour response deadline that may go unclaimed for small bounties."
+  },
+  "coverage": {
+    "regions": [
+      "Global (self-registered workers; no country limit stated)"
+    ],
+    "notes": "No country list or limit is published; an OFAC sanctioned-address blacklist exists. Supply is thin: public metrics on 2026-10-26 listed 652 registered workers, 56 workers who have completed a task and 13 active. Of the 200 most recent completed tasks (2026-10-08 to 2026-10-27), 1 was physical_presence and 2 were outdoor photos (sky over Medellin, Miami night sky); most were cent-sized knowledge, research and QA tasks, many done by AI agents. Only 2 tasks were open that day, both remote research. The geo-matching filter (geo_match_mode) is accepted but switched off in production.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms of Service (last updated 2026-10-03) are short: 18+, no fraudulent evidence, 13% fee, payments final once settled on-chain, platform provided as-is. They say nothing about who owns submitted evidence, licences, resale or AI training. The Privacy Policy (2026-10-24) says evidence is kept in private S3 storage and shared through short-lived links with the worker and the publisher only, is sent to third-party AI verification providers (via OpenRouter: Google, OpenAI, Anthropic, Qwen, DeepSeek and others) and may be reviewed by human moderators; faces and plates are not blurred; people in evidence can ask for removal. It does not say Execution Market trains its own models on evidence. An optional DX402 copy of each paid submission is anchored, encrypted to the buyer's key, for 90 days by default."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Every worker wallet must hold an ERC-8004 on-chain identity; World ID Orb verification is required server-side for bounties of $500 or more (live config worldid_min_bounty_for_orb_usd 500). Bidirectional on-chain ratings (ERC-8004, scored via describe.net). Each application and delivery records executor_kind (human, human_via_agent, autonomous_agent, robot, unknown).",
+      "evidence_url": "https://api.execution.market/api/v1/config",
+      "unknown": "Below $500 no proof of personhood is required, and an ERC-8004 identity is a wallet, not a person. Executors may be AI agents: target_executor 'human' is only a preference, and executor_kind is inferred from the request channel, not proven. Most recent completions have no executor_kind recorded."
+    },
+    "application": {
+      "level": "none",
+      "method": "A mobile app (Expo camera + location) and a no-login web evidence link capture photos with camera/GPS; agents may also upload files by presigned URL.",
+      "unknown": "No app or device attestation is documented; the docs say the mobile app's store links are 'available when published', and evidence can arrive from the web form or any signed API client."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: the submission records whether the photo came from the camera or the gallery, and uploaded files are SHA-256 hashed into evidence_content_hash (hashing on upload, not signing). No C2PA."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Photo capture time from EXIF and the submission timestamp are shown to the publisher; a timestamp_proof evidence type exists; Ring 1 checks timestamps.",
+      "evidence_url": "https://execution.market/skill/reference/arbiter.md",
+      "unknown": "EXIF time is set by the device and editable; no trusted time-stamp (e.g. RFC 3161) is applied to captures. The EIP-191-signed verdict and DX402 anchor show when EM received and judged the submission, not when the photo was taken."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "gps_required (default on for photo/video tasks with a place): the evidence's GPS, else EXIF GPS, else the browser location, must fall within a radius (500 m default, 1,000 m for simple_action) of the task point, or Ring 1 fails and the delivery goes to a person. Docs describe server-side GPS anti-spoofing (speed and coordinate-consistency checks).",
+      "evidence_url": "https://execution.market/skill/reference/task-fields.md",
+      "unknown": "Phone or browser GPS is self-reported and spoofable; the anti-spoofing checks are not specified in detail. Without task coordinates any GPS in the evidence satisfies the requirement."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Ring 1 'PHOTINT' forensic checks (EXIF, tampering, generative-AI detection with hard-fail floors, photo source camera vs gallery) produce a pre-check score. Optional Ring 2 LLM review (via OpenRouter) scores whether the evidence shows the task was done, with an EIP-191-signed verdict the publisher can check against the arbiter address; the publisher reviews and approves or rejects; disputes go to self-claimed human arbiters.",
+      "evidence_url": "https://execution.market/skill/reference/evidence.md",
+      "unknown": "The signature proves who issued a verdict, not that it is right; Ring 2 is opt-in, runs one provider today, and auto-release on a pass is disabled. Unreviewed submissions auto-settle to the worker after 72 hours. The Ring 1 detector, its version and false-positive rate are not published."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check of a capture. Reputation ratings and dispute arbiters judge the worker, not the observation; a publisher could post several tasks for the same place, but that is buyer-side."
+    }
+  },
+  "provenance": {
+    "receipt": {
+      "level": "claimed",
+      "method": "When the arbiter runs, its verdict is EIP-191-signed over the per-file SHA-256 evidence hash (evidence_content_hash) and bound to the task_id; anyone can recover the signer and compare it with the published arbiter address. A paid seal is an EIP-191 attestation by the owner of ERC-8004 Agent #2106 over the exact SHA-256 of the artifacts plus the verdict.",
+      "evidence_url": "https://execution.market/skill/reference/evidence.md",
+      "unknown": "Signed by the provider's own arbiter, not an independent party; bound to task_id, not to a buyer nonce; the arbiter is opt-in (manual by default). The signature shows who issued the verdict, not that it is right; whether commitment_hash is written on-chain is not shown.",
+      "sources": [
+        {
+          "claim": "evidence_content_hash, EIP-191 arbiter_verdict_signature, paid seal by the owner of ERC-8004 Agent #2106",
+          "url": "https://execution.market/skill/reference/evidence.md"
+        }
+      ]
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://execution.market/skill.md",
+    "base_url": "https://api.execution.market/api/v1",
+    "auth": [
+      {
+        "type": "other",
+        "header": "Signature",
+        "how_to_get": "ERC-8128 HTTP Message Signatures (RFC 9421 over EIP-191) signed by the agent's own EVM wallet on every request (Signature, Signature-Input, Content-Digest; nonce from GET /auth/erc8128/nonce; max 300 s). The wallet first registers a gasless ERC-8004 identity at POST /reputation/register; no client_id, password or API key is issued. Recommended signer: PayBox or Open Wallet Standard."
+      },
+      {
+        "type": "oauth2",
+        "resource_metadata": "https://mcp.execution.market/.well-known/oauth-protected-resource/mcp",
+        "scopes": [
+          "task:read",
+          "task:write",
+          "task:cancel",
+          "worker:apply",
+          "worker:submit",
+          "agent:publish",
+          "agent:approve",
+          "reputation:rate"
+        ],
+        "dynamic_registration": true,
+        "cimd": true,
+        "pkce": "S256",
+        "transport": "mcp",
+        "how_to_get": "Remote MCP at https://mcp.execution.market/mcp/: OAuth 2.1 authorization code with mandatory PKCE S256, public clients, RFC 7591 dynamic registration at https://auth.execution.market/oauth/register or a Client ID Metadata Document. Sign-in is Sign-In with Ethereum, so the person still needs a wallet. A bearer never moves money on its own: assigning needs a per-operation EIP-3009 signature, and approving needs that or the separately consented agent:approve scope (capped at $100 per approval and 50 approvals; 15-minute token). The auth server lists 9 scopes; the MCP resource metadata advertises 6 and omits agent:approve and reputation:rate."
+      },
+      {
+        "type": "other",
+        "header": "X-EM-Session",
+        "how_to_get": "Signed wallet session for clients that cannot sign requests: POST /auth/session/challenge returns EIP-712 typed data; the wallet signs it and the result is sent in X-EM-Session (TTL up to 900 s). Refused on escrow, evidence, reputation and similar paths. Gated by EM_WALLET_SESSION_ENABLED."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/tasks/available",
+        "notes": "Open tasks on the public board; no credentials. GET /tasks?status=completed also lists tasks without credentials."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/workers/available",
+        "notes": "Find available workers; requires an ERC-8128 signature or bearer token."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/tasks",
+        "params": "title, instructions, category (21), bounty_usd (0.01-10000), deadline_hours (1-720), evidence_required (1-5 of 18 types, e.g. photo_geo, video, text_response); optional payment_network, location_hint (public), location_lat/location_lng (exact only to the assigned worker), gps_required, location_radius_m, geo_match_mode, min_reputation, arbiter_mode, target_executor",
+        "notes": "Publishing locks no money. Then GET /tasks/{id}/applications, and POST /tasks/{id}/assign with an X-Payment-Auth EIP-3009 escrow signature (challenge at GET /tasks/{id}/assign/challenge) assigns the worker and locks escrow. Unknown body fields are rejected (422)."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasks/{task_id}",
+        "notes": "Task details and status; GET /tasks/{task_id}/events lists what happened since you last looked."
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/submissions/{submission_id}/evidence/open",
+        "notes": "Opens a delivery's evidence (records that the publisher saw it) with evidence_content_hash, arbiter verdict and 5-minute download URLs. GET /tasks/{task_id}/submissions gives status only. POST /submissions/{id}/approve releases escrow; /reject rejects."
+      }
+    ],
+    "sdk": "OpenAPI 3 (234 paths) at https://execution.market/openapi.json; Swagger at https://api.execution.market/docs; A2A v0.3 agent card; MCP server card v9.7.0; uvd-x402-sdk (Python/npm) for escrow and DX402",
+    "rate_limits": "Task creation 100/h, queries 1000/h, batch create 10/h; request body 1 MiB",
+    "mcp": {
+      "remote": "https://mcp.execution.market/mcp/",
+      "registry_name": "market.execution/execution-market",
+      "first_party": true,
+      "notes": "Streamable HTTP, 65 tools per llms.txt (em_publish_task, em_assign_task, em_open_submission_evidence, em_approve_submission, ...). Registry entry v1.0.0, published 2026-03-20. Also an A2A JSON-RPC endpoint at https://api.execution.market/a2a/v1."
+    },
+    "notes": "API keys are disabled in production (403). Identity is the wallet; an ERC-8004 identity is mandatory before publishing (403 identity_required otherwise). Task text and location_hint are public on the board, so put exact addresses only in location_lat/location_lng."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after you publish and a worker is assigned, within the deadline you set",
+    "notes": "No archive of captures is sold; evidence is private to the publisher and worker."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Provider: publisher sets deadline_hours (1-720); no completion time is promised, and 2,479 of 6,966 tasks had expired by 2026-10-26."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [
+      "x402",
+      "crypto",
+      "mpp"
+    ],
+    "agent_rails": [
+      "x402",
+      "mpp"
+    ],
+    "agent_can_pay": true,
+    "prepaid": true,
+    "notes": "Stablecoin only (USDC; EURC, PYUSD, AUSD, USDT listed on some chains) from the publisher's own wallet: an EIP-3009 authorization locks the bounty in x402r escrow at assignment on 9 EVM chains (Base default, Ethereum, Polygon, Arbitrum, Avalanche, Optimism, Celo, Monad, Arc), released gaslessly with the 13% fee split on-chain at approval. Solana bounties are paid by charge or a payment channel (channel flow not working end to end in production). Metered MPP sessions are beta on Base and Arbitrum, capped at $100. No card or fiat checkout is documented."
+  },
+  "account": {
+    "headless_signup": true,
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://execution.market/index.md"
+    }
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "The publisher needs a wallet with an ERC-8004 identity (gasless, self-registered) and must accept the Terms (18+). Each published or edited task's text is reviewed by an LLM (TypeSafe via OpenRouter) against the task policy and can be refused. Workers are told not to make third parties or minors the subject of evidence photos.",
+    "unknown": "No identity or KYC check on publishers beyond the wallet is documented; the task policy page itself was not retrievable, so how requests to watch, follow or photograph a specific person are handled is not stated."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Universal Execution Layer, party-symmetric marketplace by Ultravioleta DAO; how it works (bounty, evidence incl. photos with GPS, approval, x402 + EIP-3009 gasless release, ERC-8004 ratings); task categories; MCP/A2A/REST endpoints; 65 MCP tools; payment networks and stablecoins; 13% fee; $0.01 minimum; ERC-8004 agent #2106",
+      "url": "https://execution.market/llms.txt"
+    },
+    {
+      "claim": "Overview: hiring matrix (A2A, A2H, H2A, H2H live, robot cells planned), escrow at assignment, API endpoints, auth in one line (ERC-8128, no API keys)",
+      "url": "https://execution.market/index.md"
+    },
+    {
+      "claim": "Auth: ERC-8128 request signing, ERC-8004 registration (gasless, mandatory), wallet session X-EM-Session (900 s), API keys disabled, OAuth 2.1 for MCP (PKCE S256, DCR or CIMD, SIWE, agent:approve caps $100 / 50 approvals), bearer cannot move money alone",
+      "url": "https://execution.market/auth.md"
+    },
+    {
+      "claim": "Create body fields and ranges (bounty_usd 0.01-10000, deadline_hours 1-720, evidence_required 1-5), arbiter_mode manual by default, 72-hour review window auto-settles, pricing and limits table (13% fee, $100 escrow cap per task, rate limits, World ID Orb at $500+), pre_check_score",
+      "url": "https://execution.market/skill.md"
+    },
+    {
+      "claim": "Live config: min_bounty_usd 0.01, max_bounty_usd 10000, supported networks, worldid_min_bounty_for_orb_usd 500, require_api_key false",
+      "url": "https://api.execution.market/api/v1/config"
+    },
+    {
+      "claim": "Categories (21), evidence types (18), executor_kind values, target_executor is a preference, geo matching off in production, gps_required defaults and radii (500 m / 1000 m), GPS read from evidence, EXIF or browser location, public location_hint vs exact coordinates",
+      "url": "https://execution.market/skill/reference/task-fields.md"
+    },
+    {
+      "claim": "Ring 1 PHOTINT forensic checks (EXIF, GPS, tampering, timestamps, genai floors), Ring 2 LLM semantic check via OpenRouter only, auto-release disabled, inconclusive verdicts to self-claimed human arbiters with 24 h deadline",
+      "url": "https://execution.market/skill/reference/arbiter.md"
+    },
+    {
+      "claim": "Evidence: typed artifacts SHA-256 hashed into evidence_content_hash, EIP-191-signed arbiter verdict, paid verification seal ($0.50 / $1.00 over x402), opening evidence via POST /submissions/{id}/evidence/open, DX402 durable evidence encrypted to the buyer (90-day default), no-login evidence link (30 min, 20 files)",
+      "url": "https://execution.market/skill/reference/evidence.md"
+    },
+    {
+      "claim": "Mobile app capture flow (Expo camera + location, EXIF GPS and timestamp), store links 'available when published'; verification pipeline with GPS anti-spoofing (speed check, coordinate consistency), AI vision review, duplicate detection; reputation via describe.net; OFAC blacklist endpoint",
+      "url": "https://docs.execution.market/llms-full.txt"
+    },
+    {
+      "claim": "Terms of Service (last updated 2026-10-03): 18+, conduct rules, 13% fee, payments final on-chain, as-is; no IP, licence or AI-training terms",
+      "url": "https://api.execution.market/api/v1/legal/terms"
+    },
+    {
+      "claim": "Privacy Policy (2026-10-24): evidence in private S3, shared with worker and publisher via short-lived links, sent to AI verification providers via OpenRouter, no automatic face/plate blurring, removal requests, TypeSafe task-text review can refuse tasks, workers must not make third parties or minors the subject",
+      "url": "https://api.execution.market/api/v1/legal/privacy"
+    },
+    {
+      "claim": "Platform metrics on 2026-10-26: 652 registered workers, 56 with completed tasks, 13 active; 6,966 tasks (3,402 completed, 2,479 expired, 952 cancelled); $934.48 total volume",
+      "url": "https://api.execution.market/api/v1/public/metrics"
+    },
+    {
+      "claim": "Recent completed tasks (200, 2026-10-08 to 2026-10-27): categories, executor_kind, payment networks; 1 physical_presence task",
+      "url": "https://api.execution.market/api/v1/tasks?status=completed&limit=100"
+    },
+    {
+      "claim": "Open tasks on 2026-10-26: 2, both remote research",
+      "url": "https://api.execution.market/api/v1/tasks/available?limit=100"
+    },
+    {
+      "claim": "A2A agent card v0.3: skills, interfaces (A2A JSON-RPC, MCP, REST), security schemes ERC-8128 and OAuth2 with scopes",
+      "url": "https://execution.market/.well-known/agent-card.json"
+    },
+    {
+      "claim": "OAuth authorization server metadata: registration endpoint, S256, token auth none, scopes, CIMD support",
+      "url": "https://auth.execution.market/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "OAuth protected-resource metadata for the MCP server (resource https://mcp.execution.market/mcp)",
+      "url": "https://mcp.execution.market/.well-known/oauth-protected-resource/mcp"
+    },
+    {
+      "claim": "x402 discovery: facilitator, networks, tokens, escrow operators, session payments",
+      "url": "https://execution.market/.well-known/x402"
+    },
+    {
+      "claim": "OpenAPI contract, 234 paths (llms.txt says 167), incl. /tasks/available, /workers/available, /legal/terms, /public/metrics",
+      "url": "https://execution.market/openapi.json"
+    },
+    {
+      "claim": "MCP server card v9.7.0",
+      "url": "https://execution.market/.well-known/mcp/server-card.json"
+    },
+    {
+      "claim": "MCP Registry entry market.execution/execution-market v1.0.0, remote https://mcp.execution.market/mcp/, published 2026-03-20",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=execution-market"
+    },
+    {
+      "claim": "ETHGlobal Cannes 2026 project; 'live in production'; World ID 4.0 ZK proofs (Orb threshold there stated as $5, superseded by the live $500 config)",
+      "url": "https://ethglobal.com/showcase/execution-market-xc51v"
+    },
+    {
+      "claim": "evidence_content_hash; EIP-191-signed verdict; paid seal; DX402 durable evidence",
+      "url": "https://execution.market/skill/reference/evidence.md"
+    },
+    {
+      "claim": "Account: the agent's wallet self-registers an ERC-8004 identity by API; MCP OAuth accepts dynamic registration or a Client ID Metadata Document",
+      "url": "https://execution.market/auth.md"
+    },
+    {
+      "claim": "Agents publish tasks for humans (hiring matrix A2H live)",
+      "url": "https://execution.market/index.md"
+    },
+    {
+      "claim": "MCP specification 2026-07-28: dynamic client registration deprecated in favour of Client ID Metadata Documents",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration"
+    }
+  ]
+}

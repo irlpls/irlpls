@@ -1,0 +1,30 @@
+{
+ "data": [
+  {
+   "id": "DBImg-abc123",
+   "name": "DJI_0001.jpg",
+   "url": "https://dronebase-uploads.s3.amazonaws.com/x.jpg?X-Amz-Signature=sig",
+   "source_type": "raw",
+   "taken_at": "2024-06-01T10:23:45Z",
+   "size": 5242880,
+   "formatted_size": "5 MB",
+   "height": 3000,
+   "width": 4000,
+   "resolution": 12.0,
+   "gps_latitude": 34.052235,
+   "gps_longitude": -118.243683,
+   "gps_altitude": 120.5,
+   "shot": {
+    "id": 1,
+    "name": "Nadir",
+    "shot_type": 2,
+    "shot_type_slug": "nadir"
+   }
+  }
+ ],
+ "meta": {
+  "page": 1,
+  "per_page": 100,
+  "total_count": 2500
+ }
+}

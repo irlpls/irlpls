@@ -1,0 +1,305 @@
+{
+  "id": "openaq",
+  "name": "OpenAQ",
+  "status": "unclaimed",
+  "provider_url": "https://openaq.org",
+  "adapter": "openaq",
+  "tags": [
+    "air quality",
+    "sensor",
+    "pm2.5",
+    "pm10",
+    "no2",
+    "ozone",
+    "so2",
+    "co",
+    "black carbon",
+    "reference monitor",
+    "low-cost sensor",
+    "government data",
+    "open data",
+    "aggregator",
+    "near me",
+    "nearby",
+    "global",
+    "api",
+    "free",
+    "historical data"
+  ],
+  "summary": "Nonprofit aggregator of openly licensed, ground-level air-quality data from hundreds of sources worldwide (government reference monitors since 2015, low-cost air sensors since 2021), harmonized into one free REST API (api.openaq.org/v3) with near-real-time and historical measurements. It reports what existing stations publish; it cannot deploy new sensors.",
+  "short": "Air-quality readings from government monitors and low-cost sensors in over 100 countries.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "find air-quality stations near a point (radius up to 25 km), in a bounding box, or by country",
+      "latest PM2.5, PM10, SO2, NO2, CO, O3 and BC readings at a location, plus relative humidity and temperature where reported",
+      "PM1, PM4, CO2, NO, NOx, CH4 and ultrafine particles at a limited set of locations",
+      "raw, hourly, daily and yearly measurements per sensor, with summary statistics and coverage counts",
+      "filter reference-grade monitors from other sensors",
+      "look up the data licence, provider and owner of each location",
+      "list data-quality flags raised on a location or sensor"
+    ]
+  },
+  "pricing": {
+    "model": "free within rate limits; custom plans by quote",
+    "from_usd": 0,
+    "unit": "per request (free tier)",
+    "notes": "OpenAQ FAQ: data are provided for free within rate limits. The rate-limits page lists 'General use: Free' and 'Custom use: Contact us for pricing' for higher limits under a jointly agreed Custom Use Agreement. The terms say higher rates need OpenAQ's payment terms and API License and Services Agreement. No public price for custom plans."
+  },
+  "latency": {
+    "typical": "Near real time; source reporting frequency 10 minutes to 24 hours",
+    "notes": "OpenAQ says it hosts 'near real-time and historical data' and that acceptable source data frequency is between 10 minutes and 24 hours. No end-to-end ingestion delay is published. The 'latest' value is the last point in a sensor's series, and some providers report out of order, so polling /latest does not guarantee complete coverage. Technical issues upstream or at OpenAQ can interrupt data flow. No new capture: you only get what existing stations report."
+  },
+  "coverage": {
+    "regions": [
+      "Global (wherever upstream government agencies and sensor networks publish open data; uneven)"
+    ],
+    "notes": "OpenAQ says it aggregates 'hundreds of sources worldwide' and that its data 'do not represent all air quality monitoring data in the world.' An OpenAQ slide deck from August 2024 cites 56,000 locations in 153 countries and 43 billion data points. Only stationary, ground-level data are ingested (no satellite or airborne data). Country labels come from Natural Earth boundaries and may mislabel some stations.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Varies by source. OpenAQ ingests only openly licensed data (e.g. CC0, CC BY 4.0) that it believes is available for redistribution, but gives no assurance the data are free of third-party claims; users must review and follow each source's terms (Creative Commons, open government or bespoke). Attribution to the original source where required, and to OpenAQ always, is required. Each location lists its licences, and the licences resource exposes commercialUseAllowed, attributionRequired, shareAlikeRequired, modificationAllowed and redistributionAllowed. Using the hosted API to build products that substantially duplicate or compete with OpenAQ is prohibited. Data are offered as-is without warranty. The terms do not mention AI training, resale or ownership of the data."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable in a person sense; data come from upstream agencies and sensor networks. OpenAQ names the provider and owner of each location (owner may be 'Unknown Governmental Organization') but does not document vetting who operates each station."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No attestation or signing of upstream data is documented. OpenAQ names the instrument and manufacturer per location but ingests what providers publish and harmonizes the format."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable; no imagery is collected."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "OpenAQ requires complete datetimes on ingested data but documents no check of upstream clocks; some providers report out of order.",
+      "method": "Each measurement carries its period (datetimeFrom / datetimeTo, UTC and local) as reported by the upstream source.",
+      "evidence_url": "https://docs.openaq.org/resources/measurements"
+    },
+    "location": {
+      "level": "none",
+      "unknown": "OpenAQ requires complete coordinates but does not document verifying them. Country labels are approximate (Natural Earth boundaries). For mobile locations the coordinates are the first point measured."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Raw measurements are the values as reported upstream, offered as-is with no accuracy guarantee. The API exposes data-quality flags per location and sensor (label, level, time range), but the docs do not explain how flags are raised or what they cover."
+    },
+    "corroboration": {
+      "level": "none",
+      "method": "The API lets you filter for reference monitors (monitor=true), so an agent can compare low-cost sensors against nearby reference stations itself; OpenAQ documents no cross-check of its own.",
+      "unknown": "Whether upstream providers apply QA before publishing, and how OpenAQ's flags are produced, is not documented."
+    }
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Minutes to hours for latest readings (source frequency 10 min to 24 h); archive back years",
+    "notes": "Live-ish 'latest' endpoints plus historical raw, hourly, daily and yearly series, and a bulk archive on AWS Open Data. Nothing is captured on demand."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "OpenAQ hosts 'near real-time and historical data'; acceptable source data frequency is between 10 minutes and 24 hours."
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.openaq.org",
+    "base_url": "https://api.openaq.org",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "X-API-Key",
+        "env_var": "OPENAQ_API_KEY",
+        "how_to_get": "Register at https://explore.openaq.org/register (valid name and non-disposable email; one key per individual) and copy the key from https://explore.openaq.org/account, where it can also be rotated."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/v3/locations",
+        "params": "coordinates=lat,lon + radius (meters, default 1000, max 25000) OR bbox=minLon,minLat,maxLon,maxLat; iso (ISO 3166-1 alpha-2), countries_id, monitor (bool, reference monitor), mobile (bool), providers_id, parameters_id, owner_contacts_id, manufacturers_id, instruments_id, licenses_id, order_by, sort_order, limit (default 100), page",
+        "notes": "Point+radius and bbox cannot be combined (422). Coordinates truncated to 4 decimals. coordinates without radius, or radius without coordinates, returns 422."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/v3/locations/{locations_id}",
+        "params": "locations_id",
+        "notes": "Location details: provider, owner, instruments, sensors, coordinates, mobile/monitor flags, and licences with attribution and date range."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/v3/locations/{locations_id}/latest",
+        "params": "locations_id, datetime_min, limit, page",
+        "notes": "Latest value per sensor at a location; the last point in the series, not necessarily the most recently ingested."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/v3/parameters/{parameters_id}/latest",
+        "params": "parameters_id (e.g. 2 = PM2.5), datetime_min, limit, page",
+        "notes": "Latest measurements across all sensors for one parameter."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/v3/sensors/{sensors_id}/measurements",
+        "params": "sensors_id, datetime_from, datetime_to, limit, page",
+        "notes": "Raw values as reported upstream. Hourly means at /v3/sensors/{sensors_id}/hours (datetime_from, datetime_to); daily means at /v3/sensors/{sensors_id}/days and yearly at /years (date_from, date_to). Aggregating over large ranges can time out (408); keep ranges small."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/v3/locations/{locations_id}/flags",
+        "params": "locations_id, datetime_from, datetime_to, limit, page",
+        "notes": "Data-quality flags (type label, level, time range, sensor ids). Per sensor at /v3/sensors/{sensor_id}/flags."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/v3/licenses/{licenses_id}",
+        "params": "licenses_id",
+        "notes": "Licence flags: commercialUseAllowed, attributionRequired, shareAlikeRequired, modificationAllowed, redistributionAllowed, sourceUrl. Each location lists its licence ids under licenses[]."
+      }
+    ],
+    "sdk": "Official Python SDK (https://python.openaq.org/) and R package (https://openaq.github.io/openaq-r/).",
+    "rate_limits": "Free tier: 60 requests/minute and 2,000/hour per API key. 429 on exceed; headers x-ratelimit-used/limit/remaining/reset. Repeated overruns can lead to a temporary or permanent ban (403, lifted only by contacting OpenAQ). Higher limits via a custom plan (quote).",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "Third-party wrappers in the official MCP Registry, not run by OpenAQ: io.github.cyanheads/openaq-mcp-server (npm @cyanheads/openaq-mcp-server, needs OPENAQ_API_KEY), io.github.pipeworx-io/openaq (https://gateway.pipeworx.io/openaq/mcp), io.github.malamutemayhem/openaq.",
+      "notes": "No first-party OpenAQ MCP server found."
+    },
+    "notes": "v1 and v2 were retired on 31 January 2025 and return 410. Browser (CORS) calls are blocked; call from a server. The OpenAPI document is at https://api.openaq.org/openapi.json. Bulk historical files are on AWS Open Data (s3://openaq-data-archive) without a key. The terms require your own registered key (one per individual, not to be transferred or shared) and bar downloading data except through registered, authorised use, so an agent should use its person's key and never scrape."
+  },
+  "access": {
+    "cost": "free with key",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 60,
+      "per_seconds": 60,
+      "scope": "per-key",
+      "notes": "Also 2,000 per hour per key. 429 on excess, x-ratelimit-* headers; repeated overruns can lead to a ban.",
+      "source_url": "https://docs.openaq.org/using-the-api/rate-limits"
+    }
+  },
+  "payment": {
+    "notes": "Free tier needs no payment. Custom higher-limit plans are priced by contacting OpenAQ under a Custom Use Agreement; no payment methods are published."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "sources": [
+    {
+      "claim": "Base URL https://api.openaq.org, v3 paths, X-API-Key header, sign up at explore.openaq.org, key in settings, regenerable",
+      "url": "https://docs.openaq.org/using-the-api/quick-start"
+    },
+    {
+      "claim": "Register at explore.openaq.org/register; key managed and rotated at explore.openaq.org/account; X-API-Key header",
+      "url": "https://docs.openaq.org/using-the-api/api-key"
+    },
+    {
+      "claim": "Free tier 60 req/min and 2,000 req/hour per key; custom use 'contact us for pricing' under a Custom Use Agreement; 429; rate-limit headers; repeated overruns may lead to ban",
+      "url": "https://docs.openaq.org/using-the-api/rate-limits"
+    },
+    {
+      "claim": "403 means a blocked account or IP for terms violation or rate-limit abuse; needs manual intervention",
+      "url": "https://docs.openaq.org/errors/forbidden"
+    },
+    {
+      "claim": "coordinates (lat,lon) + radius max 25,000 m, bbox order, one method at a time, 422 restrictions",
+      "url": "https://docs.openaq.org/using-the-api/geospatial"
+    },
+    {
+      "claim": "GET /v3/locations query parameters, defaults and 4-decimal precision cap",
+      "url": "https://docs.openaq.org/api/operations/locations_get_v3_locations_get"
+    },
+    {
+      "claim": "Endpoint paths and parameters (measurements/hours use datetime_from/datetime_to; days/years use date_from/date_to; latest takes datetime_min; flags endpoints); single APIKeyHeader security scheme",
+      "url": "https://api.openaq.org/openapi.json"
+    },
+    {
+      "claim": "Locations list provider, owner, instruments, sensors, licences with attribution and period; mobile coordinates are the first point measured",
+      "url": "https://docs.openaq.org/resources/locations"
+    },
+    {
+      "claim": "Latest endpoints /v3/locations/{id}/latest and /v3/parameters/{id}/latest; latest = last in series; out-of-order ingestion caveat",
+      "url": "https://docs.openaq.org/resources/latest"
+    },
+    {
+      "claim": "Sensor measurement endpoints (raw, hours, days, years), averaging rules, 408 timeout warning",
+      "url": "https://docs.openaq.org/resources/measurements"
+    },
+    {
+      "claim": "Flags endpoint returns flag type label, level, time range and sensor ids per location",
+      "url": "https://docs.openaq.org/api/operations/location_flags_get_v3_locations__locations_id__flags_get"
+    },
+    {
+      "claim": "Licenses endpoint /v3/licenses/{id} and per-licence permission fields",
+      "url": "https://docs.openaq.org/resources/licenses"
+    },
+    {
+      "claim": "Country labels from Natural Earth boundaries; may not label every station correctly",
+      "url": "https://docs.openaq.org/disclaimers/countries"
+    },
+    {
+      "claim": "Bulk archive on AWS Open Data at openaq-data-archive, daily csv.gz per location",
+      "url": "https://docs.openaq.org/aws/about"
+    },
+    {
+      "claim": "Official Python SDK and R package",
+      "url": "https://docs.openaq.org/using-the-api/libraries"
+    },
+    {
+      "claim": "Nonprofit; pollutants covered (PM2.5, PM10, SO2, NO2, CO, O3, BC, RH, temperature; limited PM1, PM4, CO2, NO, NOx, CH4, UFP); near real-time and historical; not all of the world's monitoring data; v1/v2 retired 31 Jan 2025 (410)",
+      "url": "https://docs.openaq.org/about/about"
+    },
+    {
+      "claim": "Free within rate limits; only openly licensed, stationary, ground-level data with coordinates and datetimes; acceptable frequency 10 min to 24 h; no satellite or airborne data; licence varies by source; attribute sources and OpenAQ; no guarantee data free of third-party claims; CORS blocked; Python SDK at python.openaq.org and R package at openaq.github.io/openaq-r",
+      "url": "https://docs.openaq.org/about/faq"
+    },
+    {
+      "claim": "API key required for programmatic access; one key per individual; scraping forbidden, API use sanctioned; attribution to OpenAQ and sources; no-compete restriction on hosted API; higher limits need payment terms and API License and Services Agreement; as-is, no warranty; AI training, resale and ownership not mentioned",
+      "url": "https://docs.openaq.org/about/terms"
+    },
+    {
+      "claim": "'Hundreds of sources worldwide'; nonprofit",
+      "url": "https://openaq.org/"
+    },
+    {
+      "claim": "Reference-grade government monitors since 2015, air sensors since 2021; registration required for API access",
+      "url": "https://openaq.org/about/"
+    },
+    {
+      "claim": "56,000 locations, 153 countries, 43 billion data points; sources are reference monitors and low-cost air sensors (OpenAQ slide deck, August 2024)",
+      "url": "https://haqast.wisc.edu/wp-content/uploads/sites/688/2024/08/Hagerbaumer-The-OpenAQ-Platform.pdf"
+    },
+    {
+      "claim": "Third-party OpenAQ MCP servers (cyanheads, pipeworx-io, malamutemayhem); no first-party entry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=openaq"
+    },
+    {
+      "claim": "Measurements carry the original value and period as reported upstream (datetimeFrom/datetimeTo)",
+      "url": "https://docs.openaq.org/resources/measurements"
+    }
+  ],
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

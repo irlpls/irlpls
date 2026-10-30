@@ -1,0 +1,28 @@
+{
+ "status": "pendingOperator",
+ "instruction": "Your order is confirmed.",
+ "acceptedQuote": {
+  "quoteId": "20240628-2",
+  "deliveryBy": "20 days",
+  "priceBeforeDiscount": 18000,
+  "currency": "SEK",
+  "discountProvided": "0%",
+  "finalPrice": 18000,
+  "expiryDate": "2024-03-06T10:59:30.730+01:00"
+ },
+ "id": "20230628arte",
+ "locationMap": [
+  {
+   "lat": 30.268649,
+   "lng": -97.741565
+  },
+  {
+   "lat": 30.268649,
+   "lng": -97.738435
+  },
+  {
+   "lat": 30.271351,
+   "lng": -97.738435
+  }
+ ]
+}

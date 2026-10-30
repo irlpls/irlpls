@@ -1,0 +1,221 @@
+{
+  "id": "pegelonline",
+  "name": "PEGELONLINE (German Federal Waterways)",
+  "status": "unclaimed",
+  "provider_url": "https://www.pegelonline.wsv.de",
+  "short": "Live water levels from 786 gauges on German federal waterways, every 1–15 minutes, no key.",
+  "summary": "Germany's Federal Waterways and Shipping Administration (WSV) publishes raw readings from 786 gauges on federal waterways and coasts, mostly water level, plus discharge, water temperature and other parameters at some gauges, and water-level forecasts at a few. Readings are taken every 1 to 15 minutes and served through a free, keyless REST API with the last 31 days of data.",
+  "tags": [
+    "water level",
+    "river gauge",
+    "discharge",
+    "flood",
+    "navigation",
+    "tide",
+    "germany",
+    "open data"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "gauges near a point",
+      "gauges on a named river or waterway",
+      "current water level at a gauge",
+      "current discharge, water temperature or other parameter where the gauge has it",
+      "time series of the last 31 days",
+      "water-level forecast at selected gauges"
+    ]
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "ITZBund: \"Aktuell veröffentlicht PEGELONLINE neue Pegelwerte mit einer Verzögerung von ein bis fünf Minuten.\" Series intervals (equidistance) are 1, 5, 10 or 15 minutes."
+  },
+  "latency": {
+    "typical": "1–15 minute readings, published 1–5 minutes after measurement",
+    "notes": "ITZBund says new values appear with a 1–5 minute delay; coastal gauges measure every minute and inland gauges every 15 minutes. In the live check, 502 water-level series were at 15-minute intervals, 224 at 1 minute, 10 at 10 minutes and 1 at 5 minutes. The median current reading was 16 minutes old; 3 of 737 were over 25 hours old (flagged out-dated by the API)."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "about 15–30 minutes",
+    "notes": "Live check: median age of the current water-level reading 16 minutes, 90th percentile 31 minutes. The API marks a current value 'out-dated' when it is older than 25 hours and 'commented' when the gauge reports a fault."
+  },
+  "coverage": {
+    "regions": [
+      "Germany (federal waterways and North Sea and Baltic coasts)",
+      "A few cross-border gauges in the Netherlands, Austria, Switzerland and the Czech Republic"
+    ],
+    "notes": "786 stations, 737 with a water-level series. Gauges sit on federal waterways (Rhine, Elbe, Danube, Main, Weser, Oder, canals, coasts), not on smaller state-run rivers. The Dict-API tags 719 stations Germany, 5 Netherlands, 1 Austria and 1 Switzerland. Other foreign gauges come from Rijkswaterstaat (10), viadonau (9) and Povodí Labe (6); 57 stations, including most of these, have no coordinates and cannot be found by a point search.",
+    "areas": [
+      "DE",
+      "NL",
+      "AT",
+      "CH",
+      "CZ"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Free (FAQ: \"kostenlos und frei verfügbar\"). No registration or key."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-26",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "licensing": {
+    "summary": "Data are under Datenlizenz Deutschland Zero 2.0 (DL-DE->Zero-2.0): \"Any use is permitted without restrictions or conditions.\" The terms add that data may be used commercially and non-commercially, passed to third parties, combined with other data and built into products. They are unchecked raw data with no liability or warranty for accuracy, timeliness or completeness, and the same disclaimer covers third-party data from other national and international agencies. The terms do not mention AI training or resale by name."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Automated gauges; no person takes or confirms individual readings."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or device attestation of readings is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each reading carries an ISO 8601 timestamp in German legal time with an explicit UTC offset.",
+      "unknown": "Timestamps come from the operator's own system and are not signed; how gauge clocks are kept is not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each station has published WGS84 coordinates, a river kilometre and a gauge datum.",
+      "unknown": "Coordinates are the operator's own; 57 stations have none, and nothing independent checks them."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Values are raw sensor readings; the API flags faults ('commented') and stale values ('out-dated', over 25 hours).",
+      "unknown": "The operator calls the data unchecked raw data and gives no warranty that values are correct or complete."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent confirms individual readings. Checked daily values (Terminwerte) exist at shipping gauges, but they are the operator's own check."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.pegelonline.wsv.de/webservice/dokuRestapi",
+    "base_url": "https://pegelonline.wsv.de/webservices/rest-api/v2",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No authentication or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/stations.json",
+        "params": "latitude, longitude, radius (WGS84; radius unit not documented, results consistent with km); waters (e.g. RHEIN,MAIN); fuzzyId; ids; hasTimeseries; includeTimeseries; includeCurrentMeasurement; includeCharacteristicValues; includeForecastTimeseries; limit, offset",
+        "notes": "Stations with uuid, number, name, river km, agency, coordinates and water; with includeTimeseries&includeCurrentMeasurement each series carries its current value. Refer to stations by uuid; numbers and names can change."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations/{uuid}/{timeseries}/currentmeasurement.json",
+        "params": "timeseries: W (water level), Q (discharge), WT (water temperature), etc.",
+        "notes": "Returns timestamp, value and, for water level, stateMnwMhw and stateNswHsw (low, normal, high, unknown, commented, out-dated)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations/{uuid}/{timeseries}/measurements.json",
+        "params": "start (ISO 8601 time or period such as P8D; default last 10 days), end",
+        "notes": "Raw readings for up to the last 31 days. Also .csv, and .png for a chart. Forecasts use timeseries WV; checked daily values use TRM."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/waters.json",
+        "params": "includeStations, includeTimeseries, includeCurrentMeasurement, ids",
+        "notes": "All waters, optionally with their stations and series."
+      }
+    ],
+    "rate_limits": "None published. Responses carry Cache-Control max-age (1–60 s) and an ETag for conditional GET; the docs ask clients to cache and use gzip.",
+    "sdk": "@52north/edis-lib (npm, TypeScript) wraps the REST API, the Dict-API and the EDIS MQTT stream.",
+    "notes": "Other keyless services: the Dict-API (https://dict-api.pegelonline.wsv.de/search, filters by station, water, state, country, bbox, parameter) and the HyDAS API (https://pegelonline.wsv.de/api/v1, beta, may change incompatibly), plus WMS, WFS and SOS. Push delivery over MQTT (EDIS, edis.pegelonline.wsv.de) is in a pilot phase and needs basic-auth credentials requested from ITZBund. The terms say nothing about rate limits or automation; automation_allowed is inferred from the open licence and keyless API."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "adapter": "pegelonline",
+  "sources": [
+    {
+      "claim": "REST API reference: base URL, no authentication, endpoints, parameters, 31-day history, state flags, caching headers, versioning",
+      "url": "https://www.pegelonline.wsv.de/webservice/dokuRestapi"
+    },
+    {
+      "claim": "REST API user's guide: example calls, refer to stations by UUID, unchecked raw data, DL-DE->Zero-2.0",
+      "url": "https://www.pegelonline.wsv.de/webservice/guideRestapi"
+    },
+    {
+      "claim": "Free of charge, no registration, usable front end or back end",
+      "url": "https://pegelonline.wsv.de/webservice/faq"
+    },
+    {
+      "claim": "Web services overview: free for third parties, unchecked raw data, HyDAS beta, WMS/WFS/SOS, EDIS MQTT",
+      "url": "https://pegelonline.wsv.de/webservice/ueberblick"
+    },
+    {
+      "claim": "Terms of use: DL-DE->Zero-2.0, permitted uses, no liability, third-party agency data",
+      "url": "https://pegelonline.wsv.de/gast/nutzungsbedingungen"
+    },
+    {
+      "claim": "DL-DE Zero 2.0 licence text: any use permitted without restrictions or conditions",
+      "url": "https://www.govdata.de/dl-de/zero-2-0"
+    },
+    {
+      "claim": "Publication delay of 1–5 minutes; coastal gauges every minute, inland every 15 minutes; MQTT push",
+      "url": "https://www.itzbund.de/DE/itloesungen/egovernment/echtzeitdateninfrastruktur/edis.html"
+    },
+    {
+      "claim": "EDIS library and MQTT credentials requested from ITZBund during the pilot",
+      "url": "https://pegelonline.wsv.de/webservice/edisLib"
+    },
+    {
+      "claim": "Dict-API search parameters, including country and bbox",
+      "url": "https://pegelonline.wsv.de/webservice/dictAPI"
+    },
+    {
+      "claim": "Station countries (live GET 2026-10-26: 5 Netherlands, 1 Austria, 1 Switzerland, 719 Germany)",
+      "url": "https://dict-api.pegelonline.wsv.de/search?country=niederlande"
+    },
+    {
+      "claim": "HyDAS API (beta)",
+      "url": "https://pegelonline.wsv.de/webservice/hydas"
+    },
+    {
+      "claim": "786 stations, series intervals, agencies and current readings (live GET 2026-10-26)",
+      "url": "https://pegelonline.wsv.de/webservices/rest-api/v2/stations.json?includeTimeseries=true&includeCurrentMeasurement=true"
+    },
+    {
+      "claim": "Current water level at Bonn (live GET 2026-10-26)",
+      "url": "https://pegelonline.wsv.de/webservices/rest-api/v2/stations/593647aa-9fea-43ec-a7d6-6476a76ae868/W/currentmeasurement.json"
+    },
+    {
+      "claim": "Publisher GDWS, production ITZBund",
+      "url": "https://pegelonline.wsv.de/gast/impressum"
+    }
+  ]
+}

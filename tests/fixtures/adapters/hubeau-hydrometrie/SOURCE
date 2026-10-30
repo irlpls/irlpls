@@ -1,0 +1,3 @@
+observations_tr.json: live GET https://hubeau.eaufrance.fr/api/v2/hydrometrie/observations_tr?latitude=48.85000&longitude=2.35000&distance=10&date_debut_obs=...&sort=desc&size=1000&format=json on 2026-10-28 (HTTP 206), trimmed to the 40 newest of 171 rows; count set to 40. Site-level flow rows have code_station null.
+stations.json: live GET .../referentiel/stations?code_station=F700000102,F700000103&size=2&format=json on 2026-10-28 (commentaire_station removed).
+sites.json: live GET .../referentiel/sites?code_site=F7000001&size=1&format=json on 2026-10-28 (commentaire_site removed).

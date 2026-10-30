@@ -1,0 +1,168 @@
+{
+  "id": "objectways",
+  "name": "Objectways",
+  "provider_url": "https://objectways.com",
+  "status": "unclaimed",
+  "short": "Egocentric, depth and teleoperation data for embodied AI, on demand.",
+  "tags": [
+    "egocentric video",
+    "teleoperation",
+    "UMI gripper",
+    "depth",
+    "embodied AI",
+    "robotics",
+    "custom collection",
+    "managed service"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "egocentric first-person video of household tasks (kitchen, bedroom, living room, bathroom)",
+      "RGB-D and depth-sensing data",
+      "human-guided robot teleoperation demonstrations",
+      "UMI-gripper in-the-wild wrist demos",
+      "on-demand custom collection and access to pre-collected datasets"
+    ]
+  },
+  "pricing": {
+    "model": "Quote after scoping",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "No price is published; datasets and collection are requested through the contact form."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "No turnaround is stated on the embodied-AI, egocentric or home pages."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Not stated",
+    "notes": "The page offers both 'On-demand data collection' and 'Access to pre-collected datasets'; the latter is archive, not a commission."
+  },
+  "coverage": {
+    "regions": [
+      "US (Arizona offices)",
+      "India (Tamil Nadu offices)"
+    ],
+    "notes": "The pages list offices in Phoenix, Mesa and Scottsdale, Arizona, and Karur, Coimbatore and Chennai, Tamil Nadu. Where data is collected is not stated."
+  },
+  "licensing": {
+    "summary": "Nothing is stated about ownership, licence, AI training or resale of delivered datasets. The Terms of Use cover the website and its 'Submissions' ('Objectways does not claim ownership of the materials you provide'), and a section on a recording app says app data is 'used solely for egocentric activity research and dataset collection purposes'. Neither addresses client deliverables."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No identity check of collectors is documented."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No capture-app or device attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Capture devices are not stated on the egocentric page; no C2PA or signed capture, and Objectways is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No signed or independently time-stamped capture times are documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Datasets list container, codec, resolution and frame rate (MP4/H.264, 1920x1080, 29.97 fps); site claims SOC 2 Type II and ISO 27001:2022 (organisation-level).",
+      "unknown": "Capture QC and acceptance criteria are not published; certifications cover the organisation, not the data."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of collected data is documented."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Order form or sales@objectways.com via objectways.com/contact-us/."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No server found in the official MCP Registry (searched the provider name, 2026-10-27)."
+    },
+    "notes": "No API or ordering docs. No /.well-known/ucp, agent-card.json, irlpls document found; oauth-protected-resource redirects to HTML (2026-10-27)."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No turnaround is published.",
+    "formats": [
+      "mp4"
+    ]
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No payment methods published."
+  },
+  "capture": {
+    "by": "people",
+    "consent": {
+      "documented": false,
+      "unknown": "No consent or release process for egocentric footage is published; the recording-app section of the terms says 'By using the recording features of the App, you acknowledge and consent', which concerns app users."
+    },
+    "worker_pay": {
+      "model": "not published",
+      "disclosed": false
+    }
+  },
+  "requester": {
+    "unknown": "Objectways publishes no check of who commissions collection or for what."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-27",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "Objectways (offices in Arizona, USA, and Tamil Nadu, India) lists an Embodied AI data line: egocentric first-person video, RGB-D depth, human-guided teleoperation demonstrations and in-the-wild UMI-gripper demos, with 'on-demand data collection' and 'custom data pipelines'. Its egocentric catalogue shows 15 household-task datasets (1080p, 29.97 fps). Orders go through a contact form; no price, turnaround, collection countries, consent process or licence terms are published, and its website terms cover the site only.",
+  "sources": [
+    {
+      "claim": "Embodied AI line: egocentric, depth, teleoperation, UMI gripper; on-demand collection; custom pipelines; order via contact",
+      "url": "https://objectways.com/embodied-ai-dataset/"
+    },
+    {
+      "claim": "15 egocentric datasets, MP4/H.264 1920x1080 29.97 fps, request form",
+      "url": "https://objectways.com/egocentric-datasets/"
+    },
+    {
+      "claim": "UMI gripper dataset line",
+      "url": "https://objectways.com/umigripper-datasets/"
+    },
+    {
+      "claim": "Offices (Arizona, Tamil Nadu), certifications as listed, contact",
+      "url": "https://objectways.com"
+    },
+    {
+      "claim": "Website terms and recording-app section; no deliverable-ownership clause",
+      "url": "https://objectways.com/terms-of-use/"
+    },
+    {
+      "claim": "No Objectways server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=objectways"
+    }
+  ]
+}

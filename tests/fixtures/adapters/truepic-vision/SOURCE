@@ -1,0 +1,1 @@
+All files: fixture: documented-shape, from https://vision-api.truepic.com/v3/open-api (CreateInspectionResult, InspectionSerialized), https://vision.truepic.dev/docs/view-inspections.md (status.id_internal values, result.photos fields) and https://vision.truepic.dev/docs/get-api-access.md (token response).

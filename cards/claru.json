@@ -1,0 +1,176 @@
+{
+  "id": "claru",
+  "name": "Claru",
+  "provider_url": "https://claru.ai",
+  "status": "unclaimed",
+  "short": "Custom-collected egocentric video and teleoperation data for robotics, enriched per clip.",
+  "tags": [
+    "egocentric video",
+    "teleoperation",
+    "robotics",
+    "physical AI",
+    "VLA",
+    "custom collection",
+    "annotation",
+    "contributors"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "first-person video of manipulation, locomotion, cooking, driving and workplace tasks across 10 categories",
+      "capture on GoPro and DJI wearable cameras or smartphones (4K/60fps)",
+      "teleoperation recordings with synchronised camera and action streams",
+      "per-clip enrichment: depth, pose, segmentation, optical flow, action labels",
+      "custom collection scoped per engagement"
+    ]
+  },
+  "pricing": {
+    "model": "Quote after scoping",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "No price published. 'Tell us what you're training. We'll scope the dataset.' Terms s.8 describe recurring subscription billing for the web service."
+  },
+  "latency": {
+    "typical": "Pipelines launch within days of engagement, after a 1-2 week calibration phase; then weekly delivery batches",
+    "notes": "Egocentric page. QA turnaround is stated as same-day."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured per engagement; weekly batches after calibration",
+    "notes": "A data catalog of pre-collected datasets (100+) also exists; that is archive, not a commission."
+  },
+  "coverage": {
+    "regions": [
+      "Not itemised (cities in 14+ countries claimed)"
+    ],
+    "notes": "llms.txt says '10,000+ data collectors across 100+ cities, 6 continents, 14+ countries'; the egocentric page says only 'Global coverage' and lists no countries."
+  },
+  "licensing": {
+    "summary": "The only terms found are the Terms of Service (Jan 2025, Reka AI, Inc. d/b/a Claru AI): users retain ownership of content they submit (s.4), and 'Data you provide may be used to train, improve, and develop our AI and machine learning models' (s.7). No clause covers ownership, licence, AI-training or resale rights in datasets Claru delivers, and the egocentric page says nothing on licensing. Rights in delivered data are therefore unstated; vendor_trains_on_data is the s.7 statement about data a user provides. Contributor consent process is not described beyond participation being 'voluntary'.",
+    "vendor_trains_on_data": "yes"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "'10,000+ data collectors' who join through a voluntary side-revenue model.",
+      "unknown": "Collector identity checks and consent forms are not published."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No capture-app or device attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: GoPro and DJI wearable cameras (219K+ clips) and smartphones (155K+ clips). No signed capture; Claru is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No signed or independently time-stamped capture times are documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Task instructions and quality thresholds configured per engagement; same-day QA turnaround; per-clip metadata and enrichment. Automated upload-time validation of resolution, duration, orientation and file integrity, then same-day human QA.",
+      "unknown": "Acceptance criteria and QC results are not published. 'File integrity' here means a valid file, not a tamper-evident one."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of collected data is documented."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Contact form at claru.ai/solutions/egocentric-video-data or contact@claru.ai; book a call via the link in llms.txt."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No server found in the official MCP Registry (searched the provider name, 2026-10-27)."
+    },
+    "notes": "No API or ordering docs. No /.well-known/ucp, agent-card.json, irlpls or oauth-protected-resource document found on claru.ai (2026-10-27). Terms s.6 prohibit automated systems accessing the Services without written consent, which is aimed at the web service."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "weeks",
+    "basis": "'within days of engagement' after a '1-2 week' calibration phase, then weekly batches (egocentric page).",
+    "formats": [
+      "rlds",
+      "hdf5",
+      "zarr",
+      "lerobot",
+      "webdataset",
+      "rosbag",
+      "mcap"
+    ]
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No checkout published. Terms s.8 describe advance recurring billing for subscriptions; dataset engagements are scoped by contact."
+  },
+  "capture": {
+    "by": "contributors",
+    "consent": {
+      "documented": false,
+      "unknown": "Participation is called 'voluntary'; no consent or release process is described."
+    },
+    "worker_pay": {
+      "model": "side-revenue model for collectors",
+      "disclosed": false,
+      "notes": "No rates published."
+    }
+  },
+  "requester": {
+    "unknown": "Claru publishes no check of who commissions collection or for what."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "Claru (Reka AI, Inc., d/b/a Claru AI; founded 2024) sells egocentric video, teleoperation recordings and annotations for physical AI. It states 500K+ egocentric clips and 10K+ collectors in 100+ cities. Custom collection is scoped per engagement with GoPro, DJI or smartphone capture; pipelines launch 'within days' after a 1-2 week calibration phase, then weekly batches. No price is published. Its only published terms are a subscription Terms of Service (Jan 2025) that say data provided may be used to train Claru's models, so ownership and rights of delivered datasets are not stated.",
+  "sources": [
+    {
+      "claim": "Custom collection: GoPro/DJI/smartphone, 10 categories, days to launch, 1-2 week calibration, weekly batches, same-day QA, scope-by-contact form",
+      "url": "https://claru.ai/solutions/egocentric-video-data"
+    },
+    {
+      "claim": "First-person clips 386K+ split by device; ~500 contributors figure on the teleoperation page; no price",
+      "url": "https://claru.ai/solutions/teleoperation-data"
+    },
+    {
+      "claim": "Legal entity Reka AI Inc.; 10,000+ collectors, 100+ cities, 14+ countries; delivery formats; enrichment; founded 2024; contact",
+      "url": "https://claru.ai/llms.txt"
+    },
+    {
+      "claim": "Terms of Service: content ownership, s.7 data used to train Claru models, s.6 automated access, s.8 billing",
+      "url": "https://claru.ai/terms"
+    },
+    {
+      "claim": "No Claru server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=claru"
+    },
+    {
+      "claim": "Upload-time validation of resolution, duration, orientation and file integrity, then same-day human QA",
+      "url": "https://claru.ai/solutions/egocentric-video-data"
+    }
+  ]
+}

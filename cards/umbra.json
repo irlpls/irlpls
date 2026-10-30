@@ -1,0 +1,386 @@
+{
+  "id": "umbra",
+  "name": "Umbra",
+  "status": "unclaimed",
+  "provider_url": "https://umbra.space",
+  "tags": [
+    "satellite",
+    "satellite imagery",
+    "SAR",
+    "synthetic aperture radar",
+    "radar",
+    "X-band",
+    "night",
+    "through clouds",
+    "all-weather",
+    "tasking",
+    "earth observation",
+    "remote sensing",
+    "aerial",
+    "spotlight",
+    "scan",
+    "dwell",
+    "change detection",
+    "STAC",
+    "api",
+    "global",
+    "creative commons"
+  ],
+  "summary": "Operator of a synthetic aperture radar (SAR) satellite constellation that images through clouds and at night. Its Canopy web app and REST API let you check feasibility, task a new Spotlight (5x5 km, 0.25-1 m priced) or Scan capture in a time window you set, track it, and download the delivered collect via STAC. Collects generally arrive 1-4 hours after the window closes. List prices start at $675 per 5x5 km scene at 1 m. Every Canopy registration goes through Umbra's regulatory review. Umbra also runs a public CC BY 4.0 open-data archive, but that is context only: here it is listed for new captures.",
+  "capabilities": {
+    "modalities": [
+      "aerial"
+    ],
+    "tasks": [
+      "task a new SAR Spotlight capture centred on a point (default 5x5 km scene; 4x4 km, 10x10 km and Natural Footprint scene sizes if enabled for your organization; range resolution 0.25, 0.35, 0.5, 1 or 2 m; multilook 1/2/4/8 via the API)",
+      "task a new SAR Scan strip between two points 25-100 km apart (8 km swath; 2 m up to 100 km, 1 m up to 75 km, 0.5 m up to 50 km)",
+      "Extended Dwell collects (list-priced on umbra.space; not an imaging mode in the Canopy API, which offers SPOTLIGHT and SCAN)",
+      "feasibility check: get imaging opportunities for a location and time window before ordering",
+      "track task and collect status; cancel tasks that are still SCHEDULED, SUBMITTED, ACCEPTED or ACTIVE",
+      "deliver products: GEC (always), SICD, SIDD, CPHD, CRSD, DI_GIF, DI_TIF, plus STAC metadata; CSI products for 5x5 km Spotlight",
+      "push deliveries to a configured cloud destination (AWS S3 or Google Cloud Storage delivery configs)"
+    ]
+  },
+  "pricing": {
+    "model": "per tasked collect, list price by imaging mode, scene size, resolution and number of looks",
+    "from_usd": 675,
+    "unit": "per 5x5 km Spotlight scene (1 m, 1 look)",
+    "notes": "From umbra.space/pricing and the Umbra Product Guide. Spotlight 5x5 km, 1 look: 1.0 m $675, 0.5 m $950, 0.35 m $1,750, 0.25 m $3,250; more looks raise it (e.g. 1.0 m 10-look $2,200; 0.25 m 3-look $4,900). Natural Footprint, 1 look: $1,500 (1 m) to $3,750 (0.25 m); processed to 10x10 km at no extra charge on request if the scene is large enough. Extended Dwell 5x5 km $4,750; CSI and SAR video +40% on list price. Scan by strip length: 2 m $1,250-$2,250, 1 m $2,500-$3,500, 0.5 m $4,000 (25-50 km). GEC, SICD, SIDD and JSON metadata are included; CPHD or CRSD add $250 each and switch a 5x5 km Spotlight to Natural Footprint pricing. Bistatic/multistatic: +100%. A 30-day Archive Withhold (keeps the new collect out of Umbra's archive) costs 200% of list price. Pricing is per collect; no minimum order was stated. The Canopy API has no price-quote endpoint. Fees are non-refundable under the Tasking Terms."
+  },
+  "latency": {
+    "typical": "Delivered 1-4 hours after the end of your tasking window",
+    "notes": "Task Lifecycle Tutorial: the scheduler processes the task queue every 10 minutes, and collect delivery 'will generally happen 1-4 hours after the associated Task's windowEndAt has passed.' Capture happens inside the window you set (windowStartAt/windowEndAt); the scheduler biases to the earliest feasible time in the window. In the UI the window end is limited to 7 days ahead, and scheduling reaches about 7-8 days ahead (state vectors). Umbra says it is 'generally safe to submit Tasks up to three hours before the desired collection time'. Product Guide mean revisit: 4.71 h at the equator, 3.75 h at ±30°, 2.32 h at ±50°, 0.88 h at ±67°. If feasibility returns no opportunities, the docs say to resubmit with a longer window."
+  },
+  "coverage": {
+    "regions": [
+      "Global (subject to orbit passes and restricted access areas)"
+    ],
+    "notes": "SAR sees through cloud and works at night. Any point or line can be requested; actual availability comes from the feasibility endpoint. Polar orbit (97.4°), ground range 170-1,100 km either side of the flight path. Restricted Access Areas (an API endpoint and a published GeoJSON list) block tasking: some areas need screening beyond standard KYC (ongoing conflict), some conflict with Umbra priorities, and some are limited by US regulation (e.g. resolution limits over Israel). Spotlight is 5x5 km by default; Natural Footprint is larger (commonly 7.5x11 to 16x10 km) if enabled. Scan swath is 8 km wide.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "The Satellite Tasking Services Terms and Conditions license all delivered Content under CC BY 4.0: content is 'licensed, not sold', and Umbra keeps all right, title and interest. Attribution is required, with the notice 'SAR-derived data © [YEAR] Umbra Lab, Inc.' on adapted material. Umbra's Licensing & Attribution page says customers may publish, resell at a profit without royalty, and sell derivative works. The Terms override CC BY where they conflict, e.g. US export controls and sanctions (no resale to embargoed countries). The Terms do not mention AI or machine-learning training. Per the Product Guide, new tasked collects enter Umbra's Archive Catalog (which Umbra sells) unless you buy a 30-day Archive Withhold at 200% of list price. Delivered content can be downloaded for 90 days after notice. The separate open-data archive on AWS is also CC BY 4.0.",
+    "resale": "allowed",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable in the usual sense: captures are made by Umbra's own satellites, not individual people"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No public description of signing or checksums that would prove delivered files are unmodified Umbra products; the STAC metadata documented has no checksum fields. Downloads come from pre-signed URLs on Umbra's STAC endpoint."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Collects carry SAR metadata (platform/satelliteId, range resolution, looks, polarization, grazing, azimuth and squint angles); Umbra publishes satellite IDs with NORAD numbers. SICD/CPHD are standard NGA sensor-model formats. Sensor identity and parameters are operator-asserted metadata; no independent check documented. Not on the C2PA Conforming Products List."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "STAC datetime is the centre of aperture; start_datetime and end_datetime are the first and last radar pulse, in UTC, inside the tasked window",
+      "unknown": "How pulse times are measured and checked is not publicly documented, and nothing timestamps them independently"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Collects carry footprint geometry (WGS 84); GEC is geocoded and ellipsoid-corrected; SICD includes sensor geometry. Umbra states 8 m CE90 absolute geolocation accuracy, and its automated QA includes a geolocation calibration check when calibration sites are collected.",
+      "unknown": "The 8 m CE90 figure is a system specification, not a per-collect measurement; no public per-collect geolocation report"
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Limited warranty in the Tasking Terms that delivered Content will 'reasonably be of the area of interest as requested' and meet the Product Guide specs (replace or credit, claims within 30 days). Automated QA before delivery rejects blank, eclipsed or mispointed collects (status CORRUPT, task ANOMALY).",
+      "unknown": "No public method for detecting manipulated or synthetic SAR imagery; QA checks image quality, not authenticity. Raw CPHD/CRSD lets an expert reprocess, but that is not an integrity guarantee."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No documented cross-check against other sensors; a buyer could compare against other SAR or optical providers themselves"
+    }
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured inside the window you set after ordering, delivered 1-4 hours after the window ends",
+    "notes": "IRLpls lists Umbra for new tasked captures. For context only: Canopy also has a STAC archive catalog and archive-task ordering (priced at the equivalent list price), and Umbra publishes a CC BY 4.0 open-data archive on AWS (s3 umbra-open-data-catalog, us-west-2). Those are not the offering listed here."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://docs.canopy.umbra.space",
+    "base_url": "https://api.canopy.umbra.space",
+    "auth": [
+      {
+        "type": "oauth2",
+        "header": "Authorization",
+        "env_var": "UMBRA_API_KEY",
+        "how_to_get": "OAuth2 client credentials for scripts and services: an organization admin creates one shared client_id/client_secret on the Canopy Organization page (Authentication tab), then POSTs them to https://auth.canopy.umbra.space/oauth/token with audience https://api.canopy.umbra.space and grant_type client_credentials. Tokens last 86,400 s; token requests are limited to 50 per 24 h per client, so cache them. Use audience https://api.canopy.prod.umbra-sandbox.space for the sandbox. Needs an approved Canopy account.",
+        "dynamic_registration": false,
+        "transport": "rest"
+      },
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "env_var": "UMBRA_API_KEY",
+        "how_to_get": "Copy an access token from https://canopy.umbra.space/account (expires after 24 hours). For a sandbox token, switch on 'Test Mode' in the app header and call api.canopy.prod.umbra-sandbox.space; sandbox collects are not billable. No public account sign-up flow was found: the docs point to umbra.space/contact, and every registration is subject to Umbra's regulatory review."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/tasking/feasibilities",
+        "params": "constraints (required; SPOTLIGHT with GeoJSON Point geometry, or SCAN with a 2-point LineString), windowStartAt, windowEndAt (required); contractId",
+        "notes": "Feasibility rather than price: returns id and status (RECEIVED/COMPLETED/ERROR). Poll until COMPLETED to read opportunities. Rate limit 2/s, 120/min, 3600/h."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasking/feasibilities/{id}",
+        "notes": "Poll feasibility; results are kept only about five minutes after creation. Null opportunities means resubmit with a longer window."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/tasking/tasks",
+        "params": "taskName, constraints, windowStartAt, windowEndAt (required); rangeResolutionMinMeters (Spotlight 0.25/0.35/0.5/1/2, default 1; Scan 0.5/1/2), multilookFactor (1/2/4/8), sceneSize (4x4_KM, 5x5_KM, 10x10_KM, NATURAL_FOOTPRINT), polarization, grazing angle min/max, productTypes (CPHD, GEC, SIDD, SICD, DI_GIF, DI_TIF, CRSD), deliveryConfigId, contractId, satelliteIds, tags, userOrderId",
+        "notes": "Creates a new capture (billable). New tasks should move to SUBMITTED or REJECTED within minutes. No idempotency key is documented (userOrderId is a free label, searchable on collects). Rate limit 2/s, 120/min, 300/h. Check organization settings (GET /admin/organizations/settings) for the resolutions and products your organization may use."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasking/tasks/{id}",
+        "notes": "Task status (RECEIVED, SUBMITTED, ACCEPTED, ACTIVE, SCHEDULED, TASKED, TRANSMITTED, INCOMPLETE, PROCESSING, PROCESSED, DELIVERING; terminal DELIVERED, REJECTED, CANCELED, ERROR, ANOMALY) and collectIds"
+      },
+      {
+        "action": "order",
+        "method": "PATCH",
+        "path": "/tasking/tasks/{id}/cancel",
+        "notes": "Cancel a task; works only while SCHEDULED, SUBMITTED, ACCEPTED or ACTIVE. Returns 204, or 422 on failure. Rate limit 2/s, 120/min, 300/h."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasking/collects/{id}",
+        "notes": "Collect status and history (e.g. SCHEDULED ... DELIVERED; CORRUPT if automated QA fails)"
+      },
+      {
+        "action": "list",
+        "method": "POST",
+        "path": "/tasking/collects/search",
+        "params": "query (id, taskId, status, taskType, startAt/endAt, rangeResolution, multilookFactor, polarization, geometry.intersects, userOrderId ...), limit (max 200), skip, sortBy",
+        "notes": "Your organization's collects"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/tasking/restricted-access-areas",
+        "notes": "GeoJSON FeatureCollection of places where tasking is disallowed for your organization"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/v2/stac/collections/umbra-sar/items/{item_id}",
+        "notes": "STAC API v2 Item for a delivered collect (property umbra:collect_id); assets carry pre-signed, expiring download URLs. The v1 path /stac/collections/{organization_id}/items/{collect_id} is deprecated."
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/v2/stac/search",
+        "notes": "STAC API v2, collection umbra-sar, CQL2; filter on umbra:collect_id. Signed asset URLs are included only when few items are returned (default threshold 5)."
+      }
+    ],
+    "rate_limits": "Per organization, rolling window: 25 reads/s and 5 writes/s on standard endpoints. Create Task and Cancel Task 2/s, 120/min, 300/h. Create Feasibility 2/s, 120/min, 3600/h. Client-credentials token requests 50 per 24 h per client. Limits may change.",
+    "self_serve": false,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "io.github.reesehammer/umbra-mcp (open archive only)"
+    },
+    "notes": "No RFC 9728 protected-resource metadata: api.canopy.umbra.space returns 401 on /.well-known paths. auth.canopy.umbra.space publishes RFC 8414 metadata with no registration endpoint."
+  },
+  "adapter": "umbra",
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Canopy Task Lifecycle Tutorial: collect delivery 'will generally happen 1-4 hours after the associated Task's windowEndAt has passed'. Total time also depends on the tasking window you set and on feasibility; Umbra says tasks can generally be submitted up to three hours before the desired collection time."
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Billing Terms: self-service Snapshot orders put a hold on a credit card or ACH account at checkout and charge it on delivery; Subscriptions are billed monthly for collects delivered. Enterprise accounts pre-commit to a volume, draw down a shared credit and are invoiced monthly, net 30. The Tasking Terms also allow check or wire transfer, in USD. Fees are non-refundable. No agent payment rail is documented."
+  },
+  "requester": {
+    "checks": "Tasking Terms: every Canopy registration is subject to regulatory review by Umbra or a third party, and Umbra may refuse anyone. Customers must represent they are not on US sanctions or export-control lists and must provide compliance documents on request. Restricted Access Areas need screening beyond standard KYC.",
+    "unknown": "What the regulatory review and KYC check in practice, and how long approval takes, is not published"
+  },
+  "sources": [
+    {
+      "claim": "Canopy API reference index: tasks, feasibility, collects, delivery configs, STAC v2, restricted access areas, organization settings, client credentials, sandbox host; no pricing endpoint",
+      "url": "https://docs.canopy.umbra.space/llms.txt"
+    },
+    {
+      "claim": "Authorization: Bearer <token>; token copied from canopy.umbra.space/account, expires after 24 hours",
+      "url": "https://docs.canopy.umbra.space/docs/authentication.md"
+    },
+    {
+      "claim": "OAuth2 client credentials: org-scoped client_id/secret, token endpoint auth.canopy.umbra.space/oauth/token, audience, expires_in 86400, 50 token requests per 24 h, sandbox audience",
+      "url": "https://docs.canopy.umbra.space/docs/authentication-via-client-credentials.md"
+    },
+    {
+      "claim": "Auth server RFC 8414 metadata (client_credentials grant, S256 PKCE, no registration_endpoint)",
+      "url": "https://auth.canopy.umbra.space/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Sandbox enabled by default via Test Mode; host api.canopy.prod.umbra-sandbox.space; does not generate billable collects",
+      "url": "https://docs.canopy.umbra.space/docs/developer-sandbox.md"
+    },
+    {
+      "claim": "Canopy gives 'self-service access' via web app and API; data under a creative-commons framework allowing resale, release or remix without royalties; support path is umbra.space/contact",
+      "url": "https://docs.canopy.umbra.space/docs/introduction.md"
+    },
+    {
+      "claim": "POST /tasks: required taskName, constraints, windowStartAt, windowEndAt; resolutions, multilook 1/2/4/8, sceneSize enum, productTypes enum (GEC always delivered), deliveryConfigId, satelliteIds, userOrderId; servers live and sandbox",
+      "url": "https://docs.canopy.umbra.space/reference/create_task.md"
+    },
+    {
+      "claim": "POST /tasking/feasibilities request and response (status RECEIVED/COMPLETED/ERROR, opportunities)",
+      "url": "https://docs.canopy.umbra.space/reference/create_feasibility.md"
+    },
+    {
+      "claim": "Feasibility opportunities reflect actual schedule availability; results kept five minutes",
+      "url": "https://docs.canopy.umbra.space/docs/feasibility.md"
+    },
+    {
+      "claim": "End-to-end flow; scheduler runs every 10 minutes; delivery generally 1-4 hours after windowEndAt; UI window end limited to 7 days; GEC compulsory",
+      "url": "https://docs.canopy.umbra.space/docs/task-lifecycle-tutorial.md"
+    },
+    {
+      "claim": "Scheduler batches every 10 minutes, biases to earliest time; state vectors cover 7-8 days; safe to submit up to three hours before collection",
+      "url": "https://docs.canopy.umbra.space/docs/scheduling-best-practices.md"
+    },
+    {
+      "claim": "16 task statuses; Spotlight guaranteed 5x5 km minimum footprint; Scan 25-100 km with an 8 km swath",
+      "url": "https://docs.canopy.umbra.space/docs/tasking.md"
+    },
+    {
+      "claim": "Spotlight default 5x5 km, Natural Footprint optional; product types incl. CSI (5x5 only) and DI GIF",
+      "url": "https://docs.canopy.umbra.space/docs/spotlight-tasking.md"
+    },
+    {
+      "claim": "Scan resolution vs length: 2 m 25-100 km, 1 m 25-75 km, 0.5 m 25-50 km; 8 km swath",
+      "url": "https://docs.canopy.umbra.space/docs/scan-tasking.md"
+    },
+    {
+      "claim": "Natural Footprint sizes (commonly 7.5x11 to 16x10 km), not enabled by default",
+      "url": "https://docs.canopy.umbra.space/docs/extended-area-processing.md"
+    },
+    {
+      "claim": "Delivered product types: METADATA (stac.v2.json), CPHD, SICD, SIDD, GEC, CSI SIDD/TIFF, DI GIF, CRSD",
+      "url": "https://docs.canopy.umbra.space/docs/delivered-product-types.md"
+    },
+    {
+      "claim": "Automated QA (blank, eclipsing, mispointing) before delivery; failures become CORRUPT/ANOMALY; geolocation calibration check",
+      "url": "https://docs.canopy.umbra.space/docs/automated-qa.md"
+    },
+    {
+      "claim": "STAC datetime is centre of aperture; start/end_datetime are first/last pulse in UTC",
+      "url": "https://docs.canopy.umbra.space/docs/collect-metadata.md"
+    },
+    {
+      "claim": "satelliteId values Umbra-05 to Umbra-10 with NORAD IDs",
+      "url": "https://docs.canopy.umbra.space/docs/umbra-satellites.md"
+    },
+    {
+      "claim": "PATCH /tasking/tasks/{id}/cancel, allowed statuses, 204/422",
+      "url": "https://docs.canopy.umbra.space/reference/cancel_task-1.md"
+    },
+    {
+      "claim": "GET /tasking/collects/{id}",
+      "url": "https://docs.canopy.umbra.space/reference/get_collect.md"
+    },
+    {
+      "claim": "POST /tasking/collects/search query filters and pagination (limit max 200)",
+      "url": "https://docs.canopy.umbra.space/reference/post_search_collects.md"
+    },
+    {
+      "claim": "GET /tasking/restricted-access-areas returns a GeoJSON FeatureCollection",
+      "url": "https://docs.canopy.umbra.space/reference/get_restricted_access_areas.md"
+    },
+    {
+      "claim": "Rate limits: 25 reads/s and 5 writes/s; Create/Cancel Task 2/s, 120/min, 300/h; Create Feasibility 2/s, 120/min, 3600/h",
+      "url": "https://docs.canopy.umbra.space/docs/rate-limiting.md"
+    },
+    {
+      "claim": "STAC API v1 deprecated; v2 at /v2/stac/, collection umbra-sar, item id differs from collect id, umbra:collect_id property",
+      "url": "https://docs.canopy.umbra.space/docs/migrate-to-stac-api-v2.md"
+    },
+    {
+      "claim": "STAC v2 Advanced Search and Get Item; signed URLs below a threshold of 5 items",
+      "url": "https://docs.canopy.umbra.space/reference/search_search_post-2.md"
+    },
+    {
+      "claim": "List prices for Spotlight, Natural Footprint, Dwell and Scan; CC BY 4.0; governed by Satellite Tasking Services Terms and Conditions",
+      "url": "https://umbra.space/pricing/"
+    },
+    {
+      "claim": "Product add-on prices (CPHD/CRSD +$250, CSI/SAR video +40%), Archive Withhold at 200%, bistatic +100%, per-collect pricing, archive pricing",
+      "url": "https://help.umbra.space/product-guide/umbra-pricing"
+    },
+    {
+      "claim": "Tasking Terms: regulatory review of registrations; API licence for applications; payment by check, wire or agreed methods; non-refundable fees; 90-day download window; CC BY 4.0 content licence and attribution; Umbra owns content; limited warranty; export-control representations",
+      "url": "https://umbra.space/umbra-satellite-tasking-services-terms-and-conditions/"
+    },
+    {
+      "claim": "Self-service Snapshot (card or ACH hold, charged on delivery), Subscription billing, Enterprise invoicing net 30",
+      "url": "https://help.umbra.space/product-guide/customer-support/billing-terms.md"
+    },
+    {
+      "claim": "CC BY 4.0 lets customers publish, resell and sell derivatives; Terms override CC BY (e.g. no resale to embargoed countries)",
+      "url": "https://help.umbra.space/product-guide/customer-support/licensing-and-attribution.md"
+    },
+    {
+      "claim": "Absolute geolocation accuracy 8 m (CE90); polar orbit 97.4°; ground range 170-1,100 km",
+      "url": "https://help.umbra.space/product-guide/umbra-sar-system-specifications.md"
+    },
+    {
+      "claim": "Mean revisit by latitude; Restricted Access Areas and KYC screening",
+      "url": "https://help.umbra.space/product-guide/umbra-sar-system-specifications/constellation-and-revisit.md"
+    },
+    {
+      "claim": "Open data archive (context only) is CC BY 4.0, bucket arn:aws:s3:::umbra-open-data-catalog in us-west-2",
+      "url": "https://registry.opendata.aws/umbra-open-data/"
+    },
+    {
+      "claim": "No first-party MCP Registry entry; community io.github.reesehammer/umbra-mcp covers the open archive only",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=umbra"
+    }
+  ],
+  "updated": "2026-10-28",
+  "short": "Radar satellites that image through cloud and at night, tasked by API.",
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "approval",
+    "rate_limit": {
+      "requests": 25,
+      "per_seconds": 1,
+      "scope": "per-account",
+      "notes": "Reads, per organization; writes 5/s. Create and Cancel Task 2/s, 120/min, 300/h; Create Feasibility 2/s, 120/min, 3600/h. Limits may change.",
+      "source_url": "https://docs.canopy.umbra.space/docs/rate-limiting.md"
+    }
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  }
+}

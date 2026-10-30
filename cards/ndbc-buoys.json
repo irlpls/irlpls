@@ -1,0 +1,254 @@
+{
+  "id": "ndbc-buoys",
+  "name": "NOAA NDBC buoys",
+  "status": "unclaimed",
+  "provider_url": "https://www.ndbc.noaa.gov/",
+  "tags": [
+    "buoy",
+    "buoys",
+    "offshore",
+    "ocean",
+    "marine",
+    "waves",
+    "wave height",
+    "swell",
+    "surf",
+    "sea state",
+    "wind",
+    "gust",
+    "sea surface temperature",
+    "pressure",
+    "c-man",
+    "great lakes",
+    "sailing",
+    "boating",
+    "government",
+    "free",
+    "real-time",
+    "sensor",
+    "noaa",
+    "united states",
+    "buoycam",
+    "camera",
+    "photo"
+  ],
+  "summary": "NOAA's National Data Buoy Center publishes real-time observations from moored offshore buoys, coastal C-MAN stations and partner stations (wind speed, direction and gust, significant wave height and period, air and sea temperature, pressure) as plain-text files over HTTPS, free and with no key. Most stations report hourly; the real-time directory holds the last 45 days. About 90 buoys also carry BuoyCAMs that take daylight photos of the sea surface.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "photo"
+    ],
+    "tasks": [
+      "latest offshore buoy observation: wind speed, direction and gust",
+      "significant wave height, dominant and average wave period, mean wave direction",
+      "air temperature, sea surface temperature, dew point, pressure and pressure tendency",
+      "spectral wave summaries (.spec) for buoys; oceanographic, current (ADCP), continuous-wind, solar radiation, rain and DART files where a station has them",
+      "latest observation from every reporting station in one file (latest_obs.txt, with coordinates)",
+      "latest BuoyCAM photo from a buoy (panoramic JPEG, daylight hours, UTC time stamped on the image)",
+      "last 45 days of real-time history per station"
+    ]
+  },
+  "pricing": {
+    "model": "free public government service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "No fee and no key. NDBC asks users to 'limit your retrievals to a minimal level'."
+  },
+  "latency": {
+    "typical": "Most stations report hourly, with most data available by about 25 minutes after the hour",
+    "notes": "From the NDBC real-time data access FAQ. Some stations report more often (46026 reports every 10 minutes); check the station page for its interval. A fetch at about 04:59 UTC on 2026-10-27 (2026-10-26 US time) returned a 46026 row stamped 04:30 UTC. The BuoyCAM map refreshes every 15 minutes; BuoyCAM images seen were stamped 04:10 UTC."
+  },
+  "coverage": {
+    "regions": [
+      "United States coastal and offshore waters, including the Great Lakes, Gulf of Mexico, Atlantic, Pacific, Alaska, Hawaii, Puerto Rico, the U.S. Virgin Islands, Guam and American Samoa",
+      "Partner stations relayed by NDBC: Canada, UK, New Zealand and Irish/French shelf waters, Korea, and tropical moored arrays in the Atlantic, Pacific and Indian Oceans"
+    ],
+    "notes": "Only existing fixed stations; you cannot request a new buoy. activestations.xml listed 1,352 stations on 2026-10-26 (programs: IOOS partners, NOS/CO-OPS, NDBC, international partners such as Environment and Climate Change Canada, UK Met Office and the Korean Meteorological Administration, NERRS, tsunami DART, TAO); latest_obs.txt listed 817 currently reporting stations. Data from partner stations are the partners'. Not every station reports every variable (MM marks missing values), and buoys can go adrift or offline. BuoyCAMs: 90 stations listed, 75 with a current image. activestations.xml lists 12 New Zealand stations (NEMA, GNS Science, NIWA), 14 UK Met Office and 45 ECCC. latest_obs.txt had 868 lines on 2026-10-27 (817 the day before), so the count varies. Ireland and France are named in the regions but not confirmed in areas.",
+    "areas": [
+      "US",
+      "PR",
+      "VI",
+      "GU",
+      "AS",
+      "CA",
+      "GB",
+      "KR",
+      "NZ"
+    ]
+  },
+  "licensing": {
+    "summary": "NDBC's footer 'Disclaimer' link goes to the NWS disclaimer, which says information on NWS web pages is in the public domain unless specifically noted otherwise and may be used without charge for any lawful purpose, so long as you do not claim it as your own, imply NOAA/NWS endorsement, or modify it and present it as official. Third-party information is used under licence from its provider; partner-station data (e.g. Canada, UK, Korea) may carry the partner's terms. The terms do not mention AI training or resale."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Usually under about 1.5 hours for active hourly stations; BuoyCAM images up to 16 hours old are still served",
+    "notes": "Real-time files cover the last 45 days; older data are in NDBC's historical archive, which irlpls does not list. buoycam.php returns an error once a station's photo is older than 16 hours."
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.ndbc.noaa.gov/faq/rt_data_access.shtml",
+    "base_url": "https://www.ndbc.noaa.gov",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/data/latest_obs/latest_obs.txt",
+        "notes": "One row per reporting station with station id, lat, lon, time and the standard variables; use it to find the station nearest a point."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/activestations.xml",
+        "notes": "Every active station with lat, lon, owner, program, type and flags for met, currents, water quality and DART."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/data/realtime2/{STATION}.txt",
+        "params": "STATION, e.g. 46026 (C-MAN stations use upper-case ids such as FPSN7)",
+        "notes": "Standard meteorological data, newest row first, space-separated, times in UTC, MM = missing. Other types in the same directory: .spec, .data_spec, .swdir, .swdir2, .swr1, .swr2, .cwind, .drift, .adcp, .ocean, .supl, .srad, .rain, .dart (not every station has every type)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/buoycams.php",
+        "notes": "JSON list of BuoyCAM stations with id, name, lat, lng and the latest image file name (null when none)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/buoycam.php",
+        "params": "station=STATION",
+        "notes": "Latest BuoyCAM JPEG for the station; an error image if the station has no camera or the photo is older than 16 hours. Individual images: /images/buoycam/{img}."
+      }
+    ],
+    "rate_limits": "No numbers published. NDBC asks users to 'limit your retrievals to a minimal level'; the linked NWS use policy says NWS may block IP addresses of users who impact service.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "No NOAA-run MCP server in the official MCP Registry. Third-party servers wrap NDBC, e.g. io.github.pipeworx-io/noaa-ndbc, io.github.mansurjisan/ndbc-mcp, io.github.mrfentmen/ndbc-buoy-mcp, io.github.cyanheads/noaa-marine-mcp-server, com.a2awire/data-marine-weather-buoy-observation-noaa (paid)."
+    }
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable in the usual sense: readings come from automated instruments, not individual contributors"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or integrity proof from buoy to file or image; integrity rests on NOAA operating the network and on partners for their stations"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: NDBC says it operates BuoyCAMs at several stations; each image carries the station ID and UTC time burned into the frame. Images are not signed (no C2PA); camera hardware, mounting and any processing of the panoramas are not documented on the pages read. Sensor readings have no camera."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Every row carries a UTC observation time (YY MM DD hh mm); BuoyCAM file names and images carry the UTC capture time",
+      "unknown": "How station clocks are set or checked was not found in the pages read"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed stations with published coordinates in latest_obs.txt and station pages",
+      "unknown": "Moored buoys move within their watch circle and can break free; drifting positions are in separate .drift files"
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Real-time data pass automated checks at NWSTG (transmission parity, range limit, time continuity, gust-to-speed relational checks); data from a sensor found degraded are removed or withheld",
+      "unknown": "How often bad values slip through real-time QC is not stated; stricter checks and duplicate-sensor comparisons are described for archived data. BuoyCAM images have no stated QC."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check per observation. NDBC compares duplicate sensors on the same station, but that is not independent."
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "NDBC FAQ: 'Most stations report hourly and most of the data is available by 25 minutes after the hour.'"
+  },
+  "sources": [
+    {
+      "claim": "Real-time files at data/realtime2/{station}.{type}; data types list; last 45 days; automated real-time QC; HTTPS; scripted access with wget/LWP described; keep retrievals minimal; most stations hourly, available about 25 minutes after the hour",
+      "url": "https://www.ndbc.noaa.gov/faq/rt_data_access.shtml"
+    },
+    {
+      "claim": "Live keyless fetch of station 46026 at ~04:59 UTC 2026-10-27 returned rows every 10 minutes, newest 04:30 UTC, with WDIR, WSPD, GST, WVHT, DPD, APD, MWD, PRES, ATMP, WTMP, DEWP columns",
+      "url": "https://www.ndbc.noaa.gov/data/realtime2/46026.txt"
+    },
+    {
+      "claim": "latest_obs.txt lists one row per reporting station with coordinates; 817 rows on 2026-10-26, including Canadian, UK, Korean and tropical-array stations",
+      "url": "https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt"
+    },
+    {
+      "claim": "1,352 active stations with owner and program, including Environment and Climate Change Canada, UK Met Office and Korean Meteorological Administration",
+      "url": "https://www.ndbc.noaa.gov/activestations.xml"
+    },
+    {
+      "claim": "Realtime directory holds .srad, .rain, .supl and .dart files besides the FAQ types",
+      "url": "https://www.ndbc.noaa.gov/data/realtime2/"
+    },
+    {
+      "claim": "NDBC operates BuoyCAMs at several stations, photos typically only in daylight; map refreshes every 15 minutes",
+      "url": "https://www.ndbc.noaa.gov/buoycams.shtml"
+    },
+    {
+      "claim": "BuoyCAM station list as JSON: 90 stations, 75 with a current image file",
+      "url": "https://www.ndbc.noaa.gov/buoycams.php"
+    },
+    {
+      "claim": "Latest BuoyCAM image at buoycam.php?station=xxxxx; error once the photo is older than 16 hours",
+      "url": "https://www.ndbc.noaa.gov/faq/buoycamlinks.shtml"
+    },
+    {
+      "claim": "Live keyless BuoyCAM fetch for 41004 returned a 2880x300 JPEG stamped with station ID and 10/27/2026 0410 UTC",
+      "url": "https://www.ndbc.noaa.gov/buoycam.php?station=41004"
+    },
+    {
+      "claim": "Real-time QC: parity, range-limit, time-continuity and relational checks at NWSTG; degraded-sensor data removed; duplicate-sensor comparison at NDBC",
+      "url": "https://www.ndbc.noaa.gov/faq/qc.shtml"
+    },
+    {
+      "claim": "Realtime files show times in UTC only; wind averaging and wave sampling periods",
+      "url": "https://www.ndbc.noaa.gov/faq/measdes.shtml"
+    },
+    {
+      "claim": "NWS disclaimer (NDBC footer link): public domain unless noted, free for any lawful purpose with three conditions; third-party data under the provider's licence; NWS may block abusive IPs",
+      "url": "https://www.weather.gov/disclaimer"
+    },
+    {
+      "claim": "No NOAA-run MCP server; third-party NDBC wrappers listed",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=ndbc"
+    },
+    {
+      "claim": "activestations.xml owners include NZ NEMA/GNS/NIWA (12 stations), UK Met Office (14), ECCC (45)",
+      "url": "https://www.ndbc.noaa.gov/activestations.xml"
+    }
+  ],
+  "updated": "2026-10-28",
+  "spec_version": "2026-10-26",
+  "short": "NOAA's offshore buoys and coastal stations: wind, waves, sea temperature and buoy-camera photos, free.",
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  },
+  "adapter": "ndbc-buoys"
+}

@@ -1,0 +1,1 @@
+{"jsonrpc": "2.0", "id": 2, "result": {"content": [{"type": "text", "text": "{\"tasks\": [{\"id\": \"at-9001\", \"title\": \"Photo of a shopfront\", \"state\": \"open\"}, {\"id\": \"at-8000\", \"title\": \"Other\", \"state\": \"assigned\"}]}"}]}}

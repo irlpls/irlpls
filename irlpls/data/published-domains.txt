@@ -1,0 +1,3 @@
+# Domains to read at /.well-known/irlpls that have no compiled card yet (tools/fetch_published.py).
+# One host per line; added by the owner after a provider writes to hello@irlpls.com. A card found here is never listed
+# automatically: it goes to the board for review.

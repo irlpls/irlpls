@@ -1,0 +1,282 @@
+{
+  "id": "getterdone",
+  "name": "GetterDone",
+  "status": "unclaimed",
+  "adapter": "getterdone",
+  "provider_url": "https://getterdone.ai",
+  "short": "Agent-posted bounties for US gig workers: storefront photos, price checks, on-site checks. In-person: Atlanta only.",
+  "summary": "Agent-native errand crowd: an agent posts a task with a location, reward and deadline over REST or a hosted OAuth MCP server; an identity-verified gig worker claims it and submits photos, video or text, which come back with device-GPS, EXIF time and location, duplicate, reverse-image and AI-metadata checks. In-person tasks are accepted only inside the launch area, currently Georgia (Atlanta metro); remote tasks are open to US-based workers. Owners verify identity once; per-task and daily spending caps are enforced server-side.",
+  "tags": [
+    "people",
+    "errands",
+    "photos",
+    "price-check",
+    "retail",
+    "agent-native",
+    "mcp",
+    "oauth",
+    "us",
+    "georgia",
+    "atlanta"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "storefront photo",
+      "price check",
+      "on-site verification",
+      "display/shelf photo",
+      "inspection",
+      "mystery shopping",
+      "errands",
+      "delivery"
+    ]
+  },
+  "pricing": {
+    "model": "Bounty set by buyer + platform fee",
+    "from_usd": 3,
+    "unit": "task",
+    "notes": "Reward min $1, max $100 (OpenAPI and llms.txt; the skill doc still lists $250/$500 ceilings for Established/Business owners). Fee: $2 flat for $1–$20, 20% for $20.01–$75, 15% for $75.01–$100, 10% above $100. Starter owners (card added, identity not yet verified) are capped at $25 per task and $100 per rolling 30 days. POST /api/tasks/quote returns the exact total before anything is charged. Emerging owner accounts are also capped at $500 of funding a month."
+  },
+  "latency": {
+    "typical": "30 minutes to several days",
+    "notes": "Deadline expiresInHours 0.5–720; more than 144 h needs Established or Business owner standing. Each submission opens a 24 h review window; undecided submissions settle to the worker."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Skill doc: 'Expect task completion to take anywhere from 30 minutes to several days, depending on the task and local worker availability.'"
+  },
+  "coverage": {
+    "regions": [
+      "USA: Georgia (Atlanta metro) for in-person tasks",
+      "USA (remote tasks)"
+    ],
+    "notes": "llms.txt: physical tasks are 'launching in Georgia (Atlanta metro), expanding state-by-state'; tasks outside the launch states are rejected with LOCATION_OUTSIDE_LAUNCH_AREA. Remote tasks are open to US-based workers. Terms: only persons located in the United States may perform Tasks. Worker density not published; on 2026-10-26 the public open-task list showed only 2 tasks, both platform promotions.",
+    "areas": [
+      "US-GA"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms 6.1: on full payment of the reward, the Worker assigns to the Agent Owner all right, title and interest the Worker owns in deliverables created for the Task (excluding pre-existing, third-party and open-source materials, which are licensed non-exclusively where incorporated). Terms 6.3: GetterDone keeps a licence to use submitted content only as reasonably necessary to run the service, handle disputes and fraud, and improve trust-and-safety systems. The privacy policy says usage is analysed \"to train anti-fraud AI models\"; no clause lets GetterDone train general models on submitted proof. Resale and AI training by the buyer are not mentioned.",
+    "buyer_owns_output": true
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "base_url": "https://getterdone.ai",
+    "docs_url": "https://getterdone.ai/docs/api",
+    "auth": [
+      {
+        "type": "oauth2",
+        "transport": "mcp",
+        "resource_metadata": "https://getterdone.ai/.well-known/oauth-protected-resource/mcp",
+        "scopes": [
+          "tasks:read",
+          "tasks:write",
+          "openid",
+          "email"
+        ],
+        "dynamic_registration": true,
+        "pkce": "S256",
+        "how_to_get": "Add https://getterdone.ai/mcp as a remote MCP server; the client registers itself (POST /oauth/register, RFC 7591) and the owner signs in once on the consent page. authorization_code + PKCE S256 (required); a token minted with resource=https://getterdone.ai/mcp works only at /mcp. Paid task creation still needs the owner's one-time identity check, card and funding token. Dynamic client registration is deprecated by the MCP specification of 2026-07-28 in favour of Client ID Metadata Documents (CIMD); whether GetterDone accepts CIMD is not stated."
+      },
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "env_var": "GETTERDONE_API_KEY",
+        "how_to_get": "Owner registers the agent at https://getterdone.ai/register-agent (Stripe Identity KYC + card) and gets an API key gd_<clientId>:<clientSecret>; POST /api/auth/agent/token (client_credentials, scope agent:full) returns a Bearer token valid 1 h. Developer path: GET /api/auth/agent/challenge then POST /api/auth/agent/register (proof-of-work)."
+      }
+    ],
+    "mcp": {
+      "remote": "https://getterdone.ai/mcp",
+      "registry_name": null,
+      "auth": "oauth2",
+      "first_party": true,
+      "notes": "Stateless JSON-RPC over POST. Tools include quote_task, create_task, get_task, list_tasks, get_pending_reviews, approve_task, dispute_task, cancel_task, events_poll, get_funding_status. Also a stdio package, @getterdone/mcp-server on npm (API key). Not in the official MCP Registry (search 'getterdone' returned 0 on 2026-10-26)."
+    },
+    "endpoints": [
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/api/tasks/quote",
+        "params": "same fields as create",
+        "notes": "Returns reward, platformFee, total and a 10-minute confirmationToken; nothing is charged. Required before create for consumer-connector (OAuth) tokens."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/api/tasks",
+        "params": "title, description, reward, location {lat, lng, label} or remote: true, category, expiresInHours, reviewCriteria, minTrustScore, privateDescription, tags, confirmationToken",
+        "notes": "MCP tool create_task. Card authorized at creation for reward + fee."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/api/tasks/{id}",
+        "notes": "MCP get_task. Status open → claimed → submitted → payout_pending/completed, disputed, expired or canceled. Webhooks (POST /api/agents/webhooks) and an event inbox (GET /api/agents/events) are also offered."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/api/tasks",
+        "params": "status, category, q, lat, lng, radiusKm, limit, agentId"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/tasks/{id}/proof-media/{kind}/{index}",
+        "notes": "Authenticated download of proof media."
+      }
+    ],
+    "sdk": "@getterdone/mcp-server (npm, stdio MCP server)",
+    "rate_limits": "60 reads/minute; the docs ask agents not to poll more often than every 5 minutes. Owner-level caps on open tasks and tasks created per rolling 24 h (429 TASK_LIMIT_REACHED).",
+    "notes": "OpenAPI 3.1 at https://getterdone.ai/api/openapi. Per-task and daily spending caps set by the owner are enforced server-side. A sandbox mode (simulated worker, no charge) is available."
+  },
+  "payment": {
+    "methods": [
+      "card"
+    ],
+    "agent_rails": [
+      "card_on_file_api"
+    ],
+    "agent_can_pay": true,
+    "prepaid": false,
+    "notes": "The owner's vaulted card is authorized for reward + fee when the task is created and captured when proof is submitted (deadlines over 6 days are charged at creation). Agents spend under a funding token (single-use by default, or recurring) within owner-set per-task and daily caps. No prepaid balance: fund_account is a deprecated no-op."
+  },
+  "account": {
+    "kyc": "id",
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://getterdone.ai/legal/terms"
+    }
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "The Agent Owner completes Stripe Identity verification (KYC/AML) and vaults a card before tasks can be funded; Starter owners (card, identity pending) are limited to $25 per task and $100 per 30 days. Tasks pass content moderation (keyword blocklist, AI classifier) and can be suspended when workers flag them. The Acceptable Use Policy bans following, photographing or recording a specific individual without documented consent, and tasks inside private residences.",
+    "unknown": "How moderation detects person-targeting tasks in practice is not documented; Starter owners can post before their identity is verified."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Workers must complete Stripe Connect identity verification and bank setup before they can claim a task; worker trust scores gate claims.",
+      "unknown": "No per-result proof of who captured it is published; the buyer sees only a worker nickname and profile. Stripe Connect verification is a payout KYC; no liveness or per-task re-check is documented."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No app or device attestation is documented; proof is uploaded as ordinary image and video files."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: AI-provenance read of file metadata: generator_metadata / camera_metadata / no_camera_metadata. Metadata can be stripped, so its absence proves nothing; no C2PA or signed capture."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "EXIF capture time vs the claim→submit window (within_window / before_claim / after_submit / no_timestamp).",
+      "unknown": "EXIF can be stripped or edited and carries no timezone; the check is informational only."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Device-GPS proximity check at submit, plus photo EXIF GPS vs the task location (within_radius / out_of_range / no_gps, exifDistanceKm).",
+      "unknown": "GPS spoofing is not addressed; the radius is not published; EXIF GPS can be stripped."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "criteriaCheckResult checks required keywords as substrings and minimum image/video counts against reviewCriteria; the buyer approves or disputes within 24 h, and disputes go to admin adjudication.",
+      "unknown": "The automated check cannot judge meaning; whether a photo shows the right thing is up to the buyer."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Reverse-image search and cross-worker duplicate detection flag reused media, but nothing independent confirms the observation itself."
+    }
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Coverage: physical tasks in Georgia (Atlanta metro) only, LOCATION_OUTSIDE_LAUNCH_AREA; fees; max bounty $100; hosted OAuth MCP; client_credentials tokens valid 1 h; MCP tool list",
+      "url": "https://getterdone.ai/llms.txt"
+    },
+    {
+      "claim": "Full reference: OAuth scopes, PKCE S256 required, dynamic registration; worker Stripe Connect identity verification before claiming; Starter limits; device-GPS proximity and EXIF checks",
+      "url": "https://getterdone.ai/llms-full.txt"
+    },
+    {
+      "claim": "Skill doc v1.40.0: 30 minutes to several days; per-result checks (captureTime, exifLocation, duplicate, AI provenance, reverse-image); spending caps; funding token; rate limit 60 reads/min; reward tier ceilings",
+      "url": "https://getterdone.ai/SKILL.md"
+    },
+    {
+      "claim": "OpenAPI 3.1: endpoints incl. /api/tasks/quote and proof-media; reward 1–100; expiresInHours 0.5–720; launch-area rejection",
+      "url": "https://getterdone.ai/api/openapi"
+    },
+    {
+      "claim": "OAuth protected-resource metadata for the MCP server (scopes, authorization server)",
+      "url": "https://getterdone.ai/.well-known/oauth-protected-resource/mcp"
+    },
+    {
+      "claim": "OAuth authorization-server metadata: registration_endpoint, S256 PKCE, grant types",
+      "url": "https://getterdone.ai/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Terms (updated 2 Sep 2026): US-located workers only; Work Product assigned to the Agent Owner on payment; GetterDone's limited content licence; Agents defined as authorized users",
+      "url": "https://getterdone.ai/legal/terms"
+    },
+    {
+      "claim": "Privacy policy: platform usage analysed to train anti-fraud AI models; GPS and timestamps collected with proof",
+      "url": "https://getterdone.ai/legal/privacy"
+    },
+    {
+      "claim": "Acceptable Use Policy: no stalking/photographing a specific individual without consent, no private residences; automated moderation",
+      "url": "https://getterdone.ai/legal/acceptable-use"
+    },
+    {
+      "claim": "Stdio MCP package @getterdone/mcp-server",
+      "url": "https://registry.npmjs.org/@getterdone%2fmcp-server/latest"
+    },
+    {
+      "claim": "Not in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=getterdone"
+    },
+    {
+      "claim": "Emerging accounts capped at $500 monthly funding volume",
+      "url": "https://getterdone.ai/docs/api"
+    },
+    {
+      "claim": "Privacy policy: usage analysed to train anti-fraud AI models",
+      "url": "https://getterdone.ai/legal/privacy"
+    },
+    {
+      "claim": "Worker must complete Stripe Connect identity verification and bank setup",
+      "url": "https://getterdone.ai/llms-full.txt"
+    },
+    {
+      "claim": "Agent owner registers with Stripe Identity KYC and a card; agents spend the vaulted card under a funding token",
+      "url": "https://getterdone.ai/register-agent"
+    },
+    {
+      "claim": "Terms: Agents are authorized users of the Agent Owner's account",
+      "url": "https://getterdone.ai/legal/terms"
+    },
+    {
+      "claim": "MCP specification 2026-07-28: dynamic client registration deprecated in favour of Client ID Metadata Documents",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration"
+    }
+  ]
+}

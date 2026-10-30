@@ -1,0 +1,3 @@
+provenance.json: recorded live 2026-10-28, GET https://data.vangrid.io/api/v1/provenance/cf9642dae244a213bc9c0e6d325a84be44fe8fd1f57d9b362c64493769b74a48 (the OpenAPI example hash; free, keyless).
+bounty_accepted.json: fixture: documented-shape, from https://docs.vangrid.io/api/agent-bounties (example response) and the getBounty schema in https://data.vangrid.io/openapi.json.
+payment_required*.{json,b64}: fixture: documented-shape. Amount, networks, assets and payTo from https://data.vangrid.io/openapi.json and https://data.vangrid.io/.well-known/x402; the PaymentRequired envelope (x402Version, accepts[], amount in atomic units) follows the x402 v2 specification, not a recorded 402 (the paid endpoint was not called).

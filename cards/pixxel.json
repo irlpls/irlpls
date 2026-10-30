@@ -1,0 +1,264 @@
+{
+  "id": "pixxel",
+  "name": "Pixxel",
+  "adapter": "pixxel",
+  "provider_url": "https://www.pixxel.space",
+  "short": "Order new hyperspectral satellite captures by API.",
+  "summary": "Pixxel (Bengaluru and US) sells hyperspectral satellite imagery from its own Firefly constellation through its Aurora platform: tasking orders (single or recurring) over a GeoJSON polygon and capture window, archive search and order, and delivery to a cloud store, all through a bearer-token REST API (api.pixxel.space/v0) or the Order Desk web app. Tasking is priced per km2 in prepaid tokens (1 token = 1 USD); accounts must pass KYB or KYC before the Order Desk opens.",
+  "tags": [
+    "satellite",
+    "hyperspectral",
+    "VNIR",
+    "earth observation",
+    "tasking",
+    "archive",
+    "recurring",
+    "STAC",
+    "api",
+    "india",
+    "firefly",
+    "aurora"
+  ],
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "sensor"
+    ],
+    "tasks": [
+      "task a new hyperspectral capture (VNIR bandset) over a polygon within a capture window, once or recurring",
+      "feasibility check of AOI, window and cloud cover before ordering (dry_run on the API)",
+      "search and order archive hyperspectral scenes (STAC)",
+      "deliver to an S3-style cloud store",
+      "run analytics (indices, insights, workflows) on delivered imagery"
+    ]
+  },
+  "pricing": {
+    "model": "prepaid tokens, per km2",
+    "from_usd": 8,
+    "unit": "per km2, tasking, VNIR",
+    "notes": "Pricing docs: tasking VNIR $8/km2; archive VNIR $6/km2 (20% off if older than a year); 1 token = 1 USD. Tasking API doc: orders under 100 km2 are billed as 100 km2. Cloud cover up to 10% adds 15%; up to 20% no uplift. Express 24 h delivery is listed as coming soon (+20%). Other bandsets and analytics have separate pricing not read."
+  },
+  "latency": {
+    "typical": "Capture window of at least 14 days (regular tasking); delivery 72 h after capture (tasking guide) or 14 days (pricing page)",
+    "notes": "The tasking guide says Standard delivery is 72 hours from capture; the pricing page says 'Standard delivery - 14 days from capture time'. Start date must be at least 24 hours after order placement. Docs say feasibility 'does not guarantee' fulfilment; recurring tasks that are infeasible are cancelled and not charged."
+  },
+  "coverage": {
+    "regions": [
+      "Not stated; feasibility is checked per AOI"
+    ],
+    "notes": "No country list or geographic limit found in the docs read. Coverage depends on Firefly orbits, weather and scheduling; the feasibility check returns feasible, not feasible or failed."
+  },
+  "licensing": {
+    "summary": "Pixxel Imagery EULA v1.0 (23 May 2025): limited, non-exclusive, non-transferable, revocable licence for internal use (reformat, copy, modify, display on an isolated non-commercial basis, share with need-to-know contractors). Without Pixxel's written permission you may not sublicense, sell, rent, lease or transfer imagery to a third party. Pixxel owns the imagery and 'may retain copies of any or all Imagery and data its satellite collects for any purpose'. The EULA does not mention AI or ML training.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Captured by satellites; no per-person identity check applies. Buyers are KYB/KYC checked, which is a requester check, not a capture guarantee."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No device or app attestation is documented for delivered files."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Metadata file in the delivered package. Sensor identity comes from Pixxel's own metadata XML (capture date, sensor details, processing and copyright information) in each package."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Capture time is in Pixxel's metadata; no independent time-stamp scheme is documented."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Deliveries are UTM GeoTIFFs plus a footprint GeoJSON; no accuracy figure or independent check was read."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No integrity or anti-manipulation method (signing, hashes) is documented; cloud cover is a request constraint, not a guarantee."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-check against other sources is documented."
+    }
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Tasking: captured inside your window after you order; archive: existing scenes",
+    "notes": "Search the archive first, task only if nothing fits."
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://docs.pixxel.space/developer/gettingstarted/introduction",
+    "base_url": "https://api.pixxel.space",
+    "openapi_url": "https://docs.pixxel.space/openapi.json",
+    "auth": [
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "env_var": "PIXXEL_API_TOKEN",
+        "how_to_get": "Sign in to Aurora (aurora.pixxel.space), Settings > Personal Access Tokens, create a token with a role, project access and expiry; send 'Authorization: Bearer <token>'. The Order Desk needs KYB (business) or KYC (individual, ID document, selfie and proof of residence) approval first."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/v0/projects",
+        "notes": "Orders must be linked to a project_id; service account must be added to the project in the UI"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/v0/bandsets",
+        "notes": "Bandset id required for a tasking item"
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/v0/archives/search",
+        "notes": "STAC-based archive search; collections under /v0/archives/collections"
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/v0/orders",
+        "params": "dry_run=true",
+        "notes": "Dry run validates, runs feasibility and checks wallet tokens without placing the order"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/v0/orders",
+        "params": "dry_run=false, order_items[] (bandset, geometry FeatureCollection with one polygon, name, cloud_cover, delivery_speed STANDARD, cloud_delivery, project_id, recurrence ONCE|WEEKLY|MONTHLY, start_date, end_date, usecase)",
+        "notes": "Tasking or archive order; deducts tokens"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/v0/orders/{id}"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/v0/order-items"
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/v0/catalogs/download",
+        "notes": "Catalog download, status at /v0/catalogs/download/{download_id}"
+      }
+    ],
+    "rate_limits": "Not published in the docs read.",
+    "notes": "The docs site (Mintlify-style) serves llms.txt and per-page .md files. No OAuth, dynamic registration or MCP server found."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "weeks",
+    "basis": "Pricing page: 'Regular Tasking: Provides a capture window of minimum 14 days'; tasking guide: 'Standard' delivery '72 hours' from capture."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "approval"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "prepaid_balance"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "Tokens (1 = 1 USD) bought via Stripe by workspace owners or admins with card or bank transfer; transfers over $5000 are wire only. The API spends tokens from the wallet; no agent-native payment rail found."
+  },
+  "requester": {
+    "checks": "KYB for businesses (company name and country, registered address, website, optional supporting documents) or KYC for individuals (ID document, selfie, proof of residence) before Order Desk access; the organisation owner gets an approval email.",
+    "unknown": "Review time and rejection criteria are not published; whether sanctions or end-use screening applies is not stated."
+  },
+  "providers": [
+    {
+      "name": "Pixxel Space Technologies, Inc.",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://www.pixxel.space"
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Aurora API: tasking, archive, orders; bearer PAT auth; api.pixxel.space",
+      "url": "https://docs.pixxel.space/developer/gettingstarted/introduction.md"
+    },
+    {
+      "claim": "Personal Access Token creation and Authorization: Bearer header",
+      "url": "https://docs.pixxel.space/developer/gettingstarted/authentication.md"
+    },
+    {
+      "claim": "OpenAPI paths, server https://api.pixxel.space, ApiKeyAuth header",
+      "url": "https://docs.pixxel.space/openapi.json"
+    },
+    {
+      "claim": "Tasking order guide: dry_run, bandset, AOI, 100 km2 minimum billing, cloud cover, STANDARD 72 h delivery, start at least 24 h out, recurrence, project",
+      "url": "https://docs.pixxel.space/developer/orders/tasking.md"
+    },
+    {
+      "claim": "Tasking price $8/km2 VNIR, 14-day regular window, cloud uplift, delivery 14 days / express coming soon",
+      "url": "https://docs.pixxel.space/documentation/getting-started/pricing-and-refunds/imagery-pricing/tasking.md"
+    },
+    {
+      "claim": "Archive price $6/km2 VNIR, 20% off older than a year",
+      "url": "https://docs.pixxel.space/documentation/getting-started/pricing-and-refunds/imagery-pricing/archive.md"
+    },
+    {
+      "claim": "Tokens 1 = 1 USD, Stripe card or bank transfer, owners/admins buy",
+      "url": "https://docs.pixxel.space/documentation/getting-started/pricing-and-refunds/tokens.md"
+    },
+    {
+      "claim": "Wire transfer only above $5000",
+      "url": "https://docs.pixxel.space/documentation/getting-started/pricing-and-refunds/payment-methods.md"
+    },
+    {
+      "claim": "KYB required before Order Desk",
+      "url": "https://docs.pixxel.space/documentation/tasking/access-order-desk/kyb.md"
+    },
+    {
+      "claim": "KYC (ID, selfie, proof of residence) required before Order Desk",
+      "url": "https://docs.pixxel.space/documentation/tasking/access-order-desk/kyc.md"
+    },
+    {
+      "claim": "Tasking basics: on-demand capture, recurring tasking, one-day window for assured date",
+      "url": "https://docs.pixxel.space/documentation/tasking/tasking-basics.md"
+    },
+    {
+      "claim": "Feasibility check outcomes and no-guarantee note",
+      "url": "https://docs.pixxel.space/documentation/tasking/tasking-via-order-desk/feasibility.md"
+    },
+    {
+      "claim": "Delivery package: stacked GeoTIFF (UTM), footprint GeoJSON, XML metadata; Standard 72 h",
+      "url": "https://docs.pixxel.space/documentation/tasking/tasking-via-order-desk/package-and-speed.md"
+    },
+    {
+      "claim": "Imagery EULA v1.0: internal-use licence, no sale or sublicence, Pixxel owns imagery and may retain copies",
+      "url": "https://www.pixxel.space/pixxel-imagery-end-user-license-agreement"
+    },
+    {
+      "claim": "Not in the MCP Registry (0 results)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=pixxel"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "status": "unclaimed",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27"
+}

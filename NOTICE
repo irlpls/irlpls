@@ -1,0 +1,13 @@
+irlpls
+Copyright 2026 the irlpls maintainers
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE),
+except as follows:
+
+- Capture Card data (cards/) is licensed under CC BY 4.0 (see
+  LICENSE-DATA.md).
+- Media in src/media/ is third-party material that keeps its own licence
+  (see src/media/CREDITS.md and docs/LICENSING.md). It is not covered by
+  Apache-2.0 or CC BY 4.0.
+- Provider names and marks belong to their owners. Their use here is
+  descriptive only and implies no endorsement.

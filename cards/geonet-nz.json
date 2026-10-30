@@ -1,0 +1,204 @@
+{
+  "id": "geonet-nz",
+  "name": "GeoNet (New Zealand earthquakes and volcanoes)",
+  "provider_url": "https://www.geonet.org.nz",
+  "short": "New Zealand earthquakes and volcano alert levels; free, keyless.",
+  "summary": "GeoNet, run by Earth Sciences New Zealand and funded by the NZ Government, serves its data through the keyless api.geonet.org.nz: recent earthquakes filtered by shaking intensity (MMI), single-quake detail and history, quake statistics, Volcanic Alert Levels, volcano quakes, and network station and sensor metadata. Responses are GeoJSON or JSON.",
+  "tags": [
+    "earthquake",
+    "seismic",
+    "volcano",
+    "new zealand",
+    "felt intensity",
+    "open data",
+    "geojson",
+    "cap",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "recent earthquakes in New Zealand at or above a chosen shaking intensity (MMI)",
+      "detail and revision history of one quake by publicID",
+      "quake counts and statistics",
+      "current Volcanic Alert Level of each NZ volcano",
+      "recent quakes under a given volcano",
+      "strong-motion processed intensity records",
+      "seismic and other network station and sensor metadata",
+      "CAP 1.2 quake alerts and an Atom feed of them"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Page states: \"The GeoNet project makes all its data and images freely available.\" No registration or key is mentioned."
+  },
+  "latency": {
+    "typical": "Not published; the quake list is cached for 10 seconds",
+    "notes": "No delivery delay is stated. The response header cache-control is max-age=10. Live check: the newest listed quake was a magnitude 2.6 near Kaikoura with origin 2026-10-27T15:25:22Z, in a response fetched at about 15:30Z. Quakes can later be revised or marked quality 'deleted'."
+  },
+  "coverage": {
+    "regions": [
+      "New Zealand and its surrounding region"
+    ],
+    "notes": "The live quake list contained New Zealand localities (e.g. Kaikoura, Taihape). The exact monitored area is not stated on the API page.",
+    "areas": [
+      "NZ"
+    ]
+  },
+  "licensing": {
+    "summary": "GeoNet page: \"GeoNet content is copyright Earth Sciences New Zealand\" and \"licensed under a Creative Commons Attribution 3.0 New Zealand License.\" The Data Policy asks users to acknowledge the GeoNet programme and sponsors and to cite dataset DOIs where one exists. The disclaimer says the information is provided without warranties of any kind, including accuracy, completeness and timeliness, and liability is excluded. The terms do not mention AI training or resale."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Automated networks; no person's identity is attested for a reading, though GeoNet staff can review quakes (not documented on the pages read)."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of data is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source in this API."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each quake carries an ISO 8601 origin time in UTC.",
+      "unknown": "Origin times are GeoNet's own computed values and unsigned; revisions can change them."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each quake has coordinates, depth and a nearest-locality label.",
+      "unknown": "Hypocentres are GeoNet's own estimates and unsigned."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Each quake carries a 'quality' field (documented values: best, preliminary, automatic, deleted) and a magnitude and MMI.",
+      "unknown": "The docs list the quality values but do not define them; automatic and reviewed solutions both exist and the disclaimer gives no accuracy warranty."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent is attached to individual quakes in the API response."
+    }
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "seconds to minutes for new quakes (not stated by GeoNet)",
+    "notes": "Continuously updated catalogue; history is also available by publicID."
+  },
+  "delivery": {
+    "speed": "minutes",
+    "basis": "Page: \"The data provided here is used for the GeoNet web site and other similar services.\" No latency is stated; responses are cached 10 s (cache-control max-age=10).",
+    "modes": [
+      "live"
+    ]
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.geonet.org.nz/",
+    "base_url": "https://api.geonet.org.nz",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No authentication or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/quake",
+        "params": "MMI (integer, minimum shaking intensity)",
+        "notes": "Recent quakes as GeoJSON (the live call with MMI=3 returned 100 features). Properties: publicID, time, depth, magnitude, mmi, locality, quality."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/quake/{publicID}",
+        "params": "publicID",
+        "notes": "One quake. History at /quake/history/{publicID}."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/quake/stats",
+        "notes": "Quake statistics."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/volcano/val",
+        "notes": "Volcanic Alert Level of each volcano."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/volcano/quake/{volcanoID}",
+        "params": "volcanoID",
+        "notes": "Quakes near a volcano."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/intensity",
+        "notes": "Intensity data; strong-motion processed intensity at /intensity/strong/processed/{publicID}."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/network/station",
+        "notes": "Network stations; sensor details at /network/sensors."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/cap/1.2/GPA1.0/feed/atom1.0/quake",
+        "notes": "Atom feed of CAP quake alerts; single alert at /cap/1.2/GPA1.0/quake/{ID}."
+      }
+    ],
+    "rate_limits": "None stated on the API page.",
+    "notes": "Versioning is by Accept header, e.g. Accept: application/vnd.geo+json;version=2 (a request without a version goes to the current highest). gzip is supported. The live response sent access-control-allow-origin: *. Bugs are reported to the GeoNet Help repository on GitHub. The terms do not forbid automation; automation_allowed reflects that silence."
+  },
+  "adapter": "geonet_nz",
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "gate": "none"
+  },
+  "sources": [
+    {
+      "claim": "API endpoints list, freely available data, CC BY 3.0 NZ copyright line, Accept-header versioning, gzip",
+      "url": "https://api.geonet.org.nz/"
+    },
+    {
+      "claim": "Live GET /quake?MMI=3 (100 features, publicID/time/depth/magnitude/mmi/locality/quality; cache-control max-age=10; CORS *)",
+      "url": "https://api.geonet.org.nz/quake?MMI=3"
+    },
+    {
+      "claim": "Disclaimer: no warranties of accuracy, completeness or timeliness; liability excluded; information freely available subject to terms; CC BY 3.0 NZ",
+      "url": "https://www.geonet.org.nz/disclaimer"
+    },
+    {
+      "claim": "Data policy: acknowledge GeoNet and sponsors; cite DOIs",
+      "url": "https://www.geonet.org.nz/policy"
+    },
+    {
+      "claim": "Quake quality values: best, preliminary, automatic, deleted",
+      "url": "https://api.geonet.org.nz/"
+    }
+  ],
+  "status": "unclaimed",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  }
+}

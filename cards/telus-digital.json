@@ -1,0 +1,174 @@
+{
+  "id": "telus-digital",
+  "name": "TELUS Digital (AI Data Solutions)",
+  "provider_url": "https://www.telusdigital.com",
+  "status": "unclaimed",
+  "tags": [
+    "training data",
+    "custom collection",
+    "image collection",
+    "video collection",
+    "mobile app",
+    "field operations",
+    "driving data",
+    "egocentric video",
+    "drivers",
+    "crowd",
+    "contributors",
+    "managed service",
+    "formerly TELUS International"
+  ],
+  "summary": "AI training-data arm of TELUS Digital (formerly TELUS International). Its AI Community of more than a million contributors collects image, video, speech, text, survey, geo and 3D data through TELUS's own mobile collection app, from simple digital collection to onsite moderated sessions and field operations, such as drivers uploading trip video or in-cabin and open-road collections. Sales-led managed projects; no public ordering API.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "audio",
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "custom image, video, speech and text collection through the TELUS mobile data collection app",
+      "field operations, e.g. video collections filmed by drivers (pick-ups, drop-offs and deliveries in one city)",
+      "field operations testing for in-cabin and open-road collections in more than 50 countries",
+      "egocentric and point-of-view collections with sensor setups",
+      "onsite moderated and in-facility collection sessions",
+      "geo and 3D data collection",
+      "survey data collection"
+    ]
+  },
+  "pricing": {
+    "model": "Not published; contact sales",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "from_usd 0 means unknown, not free. The data collection page offers only 'speak with an AI expert'."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "No turnaround is stated for collection projects; the page says only that bespoke datasets can be provided 'quickly and efficiently'."
+  },
+  "coverage": {
+    "regions": [
+      "450 locales (countries not listed)"
+    ],
+    "notes": "TELUS cites more than one million AI Community members in 450 locales and 500+ languages and dialects, more than 70 delivery centers, and field operations (in-cabin and open-road collections). Example field projects seen: a driver video collection in Los Angeles (2025) and a Live Photo collection in India (expired listing). Countries are not listed, and availability in a specific city is not published."
+  },
+  "licensing": {
+    "summary": "Not stated on any page read. The data collection pages do not address ownership, resale or AI-training rights in collected media; these would be in the client contract. The contributor privacy notice says project data (including images, video and voice of contributors) and some contributor demographics are provided to TELUS's customers."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Contributors give contract data including government ID; TELUS lists AI-powered identity verification and contributor vetting, proctored tasks, behavioural monitoring and anomaly detection, one account per person, and screening for impersonation or falsified credentials or location.",
+      "unknown": "Which checks apply to a given collection project, and their pass and fraud rates, are not published. The contributor privacy notice lists a government ID among contract data and IP-based country checks; it names no identity-verification vendor, liveness check or re-verification."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Capture happens in TELUS's own mobile collection app ('designed for high security and data privacy'), and one listing required a pre-approved mobile device, but no app-integrity or attestation check is documented. No C2PA signing; TELUS is not on the C2PA Conforming Products List. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "A contributor listing bans synthetic or AI-generated and duplicate submissions, but no technical check (e.g. in-app-only capture, gallery lock or signing) is documented."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No trusted capture time is documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "Screening for 'falsifying location' is mentioned, and the contributor privacy notice says IP addresses may be used for geolocation, but no method for verifying where media was captured is documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Automated data validation plus human oversight; dedicated QA experts review collected data for accuracy and compliance with project guidelines, and contributors are paid only after quality review approves a submission.",
+      "unknown": "Review criteria and error rates are not published."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check is described."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "No public API. Projects start by contacting sales ('speak with an AI expert') on telusdigital.com."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No TELUS server in the official MCP Registry (searched 'telus' and 'telusdigital', 2026-10-26)."
+    },
+    "rate_limits": "Not applicable; ordering is through sales.",
+    "notes": "No public API docs found for ordering data collection."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": false,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "notes": "No buyer payment method is published; terms are set with sales."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Collected for your project",
+    "notes": "Only commissioned collection is described here; TELUS also sells pre-curated off-the-shelf datasets, which are out of scope."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No turnaround published."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "unknown": "TELUS publishes no check of who a client is or what a collection is for."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Mobile data collection app 'designed for high security and data privacy' for image, video, speech, text and survey data; text, audio, video, image, geo and 3D collection; simple digital collection, onsite moderated sourcing or complex field operations; managed crowd, remote, in-facility and hybrid workforce; 1M+ AI Community members; 450 locales, 500+ languages and dialects; 70+ delivery centers; QA experts; AI-powered identity verification, proctoring, behavioural monitoring, anomaly detection; no pricing, 'speak with an AI expert'",
+      "url": "https://www.telusdigital.com/solutions/data-for-ai-training/data-collection-services"
+    },
+    {
+      "claim": "Field operations testing for in-cabin and global open road collections across more than 50 countries; egocentric and point-of-view collections with complex embodiments and sensor setups; pre-curated datasets",
+      "url": "https://www.telusdigital.com/solutions/data-for-ai-training"
+    },
+    {
+      "claim": "Los Angeles project: hundreds of drivers used the data collection mobile app to upload video of passenger pick-ups, drop-offs and parcel deliveries; screening for impersonation and falsified credentials or location; one account per person; least-privilege access for individuals and devices; automated validation and human oversight (posted 7 Aug 2025)",
+      "url": "https://www.telusdigital.com/insights/data-and-ai/article/video-data-collection-best-practices"
+    },
+    {
+      "claim": "Live Photo collection in India: pre-approved mobile device, paid after quality review, no synthetic/AI-generated or duplicate submissions (listing expired)",
+      "url": "https://www.workingnomads.com/jobs/live-photo-collection-study-in-india-telus-digital"
+    },
+    {
+      "claim": "Contributor privacy notice (updated 15 June 2026): contract data includes government ID; IP address may be used for geolocation; project data and some demographics are provided to customers",
+      "url": "https://www.telusdigital.com/privacy-policy/contributors"
+    },
+    {
+      "claim": "TELUS not on the C2PA Conforming Products List",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "No TELUS server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=telus"
+    },
+    {
+      "claim": "Contributor privacy notice: government ID in contract data; automated IP verification of country",
+      "url": "https://www.telusdigital.com/privacy-policy/contributors"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "short": "A training-data vendor whose app-based crowd collects custom photos, video and driving data to order.",
+  "capability": "com.irlpls.capture.card"
+}

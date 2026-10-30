@@ -1,0 +1,3 @@
+tasks_available.json: recorded live 2026-10-28, GET https://api.execution.market/api/v1/tasks/available?limit=3 (public board, keyless); title/instructions trimmed to 60 characters.
+task_completed.json: fixture: documented-shape, TaskResponse in https://execution.market/openapi.json; states from https://execution.market/skill.md.
+error_429.json: fixture: documented-shape, error envelope (detail.code, detail.retryable) from https://execution.market/skill.md "Error codes".

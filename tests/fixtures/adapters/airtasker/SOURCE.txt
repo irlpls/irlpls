@@ -1,0 +1,4 @@
+SOURCE: https://github.com/airtasker/airtasker-mcp-server (README, skills/post-task/SKILL.md), read 2026-10-28.
+fixture: hand-made. Airtasker publishes no result schema for its tools (tools/list needs a signed-in session), so the
+result payloads (id, url, tasks[].state) are ASSUMED shapes for parser tests only, not documented ones. The SKILL says
+post_task returns a task URL. tool_error.json follows the MCP spec's isError result and carries an injection attempt.

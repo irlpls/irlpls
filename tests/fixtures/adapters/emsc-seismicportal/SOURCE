@@ -1,0 +1,2 @@
+query.json: live GET https://www.seismicportal.eu/fdsnws/event/1/query?format=json&latitude=38.0&longitude=23.7&maxradius=3&starttime=2026-10-21&orderby=time&limit=3 on 2026-10-28.
+No events: the same service answered HTTP 204 with an empty body (latitude=0&longitude=-30&maxradius=0.1) on 2026-10-28.

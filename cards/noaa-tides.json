@@ -1,0 +1,269 @@
+{
+  "id": "noaa-tides",
+  "name": "NOAA tide and current stations",
+  "adapter": "noaa_tides",
+  "status": "unclaimed",
+  "provider_url": "https://tidesandcurrents.noaa.gov/",
+  "tags": [
+    "tide",
+    "tides",
+    "water level",
+    "sea level",
+    "storm surge",
+    "coastal flooding",
+    "harbor",
+    "port",
+    "coast",
+    "beach",
+    "great lakes",
+    "currents",
+    "wind",
+    "water temperature",
+    "air temperature",
+    "barometric pressure",
+    "marine",
+    "boating",
+    "surf",
+    "sensor",
+    "station",
+    "live",
+    "real-time",
+    "noaa",
+    "co-ops",
+    "nwlon",
+    "government",
+    "united states",
+    "usa",
+    "puerto rico",
+    "hawaii",
+    "alaska",
+    "public domain",
+    "free",
+    "no key"
+  ],
+  "summary": "NOAA's Center for Operational Oceanographic Products and Services (CO-OPS) runs fixed coastal, Great Lakes and Pacific-island stations reporting 6-minute water levels plus, at many sites, wind, air/water temperature, pressure, visibility and real-time currents (PORTS). A free, keyless Data Retrieval API returns the latest reading per station; a Metadata API lists stations with coordinates, sensor status and nearby stations so an agent can find the closest one.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest observed water level at a coastal or Great Lakes station (6-minute interval, relative to a chosen datum such as MLLW)",
+      "wind speed, direction and gust",
+      "air temperature, water temperature, air pressure, humidity, visibility, conductivity, salinity (where the station has the sensor)",
+      "observed currents at real-time PORTS current-meter stations",
+      "air gap (clearance between a bridge and the water surface) at air-gap stations",
+      "1-minute water level at a subset of stations",
+      "last 72 hours of preliminary data (date=recent)",
+      "find stations by type (waterlevels, met, currents, watertemp, 1minute, airgap, visibility, ...) with lat/lng, or stations near a given station within a radius"
+    ]
+  },
+  "pricing": {
+    "model": "free public government service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "No fee, no account and no API key appear in the documented parameters. Keyless calls returned live data on 2026-10-25 and again on 2026-10-26."
+  },
+  "latency": {
+    "typical": "Minutes: date=latest returns the last data point available within the last 18 minutes",
+    "notes": "Live tests on 2026-10-26 (04:59 UTC on 27 Oct): San Francisco (9414290) water level and wind were timestamped 04:54 UTC (5 minutes old); Kwajalein, Bermuda, Midway and San Juan were timestamped 04:48 UTC (11 minutes old). A 2004 CO-OPS technical report says routine transmission is every six minutes for some stations, every hour for others and every three hours for others, relayed via GOES satellite, so lag can vary by station."
+  },
+  "coverage": {
+    "regions": [
+      "United States coasts (Atlantic, Gulf, Pacific, Alaska, Hawaii)",
+      "Great Lakes",
+      "Puerto Rico and US Virgin Islands",
+      "US Pacific territories and possessions (American Samoa, Guam, Midway, Wake)",
+      "Kwajalein, Marshall Islands",
+      "Bermuda"
+    ],
+    "notes": "Fixed stations only; you cannot request a new one. A live Metadata API call on 2026-10-26 listed 302 stations of type waterlevels (most in TX, MI, AK, FL, CA, NY, WA, LA, PR), 314 of type met, 257 of type 1minute and 85 of type currents (all at PORTS harbors). Non-state stations: Apra Harbor and Pago Bay (Guam), Pago Pago (American Samoa), Midway, Wake, Kwajalein (Marshall Islands), four in the US Virgin Islands and two in Bermuda; Guam, American Samoa, Midway, Wake, Kwajalein, Bermuda and Virgin Islands stations all returned same-day water levels on 2026-10-26. Not every product exists at every station, and sensors go offline: water_temperature at San Francisco 9414290 returned 'No data was found', and its sensors resource marks that sensor status 0 with 'Suspect Data - Data failed to meet QC standards - under review.'",
+    "areas": [
+      "US",
+      "PR",
+      "VI",
+      "AS",
+      "GU",
+      "UM",
+      "MH",
+      "BM"
+    ]
+  },
+  "licensing": {
+    "summary": "Per the Tides & Currents disclaimer, information on government servers is in the public domain unless specifically annotated otherwise and may be used freely by the public. It must not be modified in content and then presented as official government material, and NOS requests attribution when its material is reproduced and re-disseminated. Raw (preliminary) data have not passed NOS quality control or quality assurance and are to be used with appropriate caution. Data are provided as-is; the user assumes the entire risk and NOS disclaims liability. The terms do not mention AI training or resale."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Typically minutes for the latest preliminary point; verified data after the following month; history back years",
+    "notes": "date=latest (last point within 18 min), date=recent (72 h) and date=today apply only to preliminary water level, meteorological data and predictions. Water level responses carry q = 'p' (preliminary) or 'v' (verified). The API docs say water level data are verified monthly for the past month (January data verified in February), with no fixed date per station. Per-request length limits: 1-minute data 4 days, 6-minute data 1 month, hourly and high/low 1 year."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "API docs: date=latest retrieves the last data point available within the last 18 minutes; a live test on 2026-10-26 returned a 5-minute-old reading."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://api.tidesandcurrents.noaa.gov/api/prod/",
+    "base_url": "https://api.tidesandcurrents.noaa.gov",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key. Docs ask callers to pass application=<your org or app name> so CO-OPS can find your queries in its logs (not required)."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/mdapi/prod/webapi/stations.json",
+        "params": "type (waterlevels, met, waterlevelsandmet, currents, watertemp, 1minute, airgap, visibility, ...); expand (details, sensors, products, datums, floodlevels, ...); units",
+        "notes": "Returns count and stations[] with id, name, lat, lng, state, timezone, tidal, greatlakes, affiliations (currents stations carry project, e.g. 'Boston Harbor PORTS'). No bbox filter on the list; filter by distance client-side. Per-station resources at /mdapi/prod/webapi/stations/{id}/details.json, sensors.json (status and outage messages), datums.json, floodlevels.json."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/mdapi/prod/webapi/stations/{id}/nearby.json",
+        "params": "radius (nautical miles; default 2)",
+        "notes": "Stations near a known station, with stationType and distance."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/prod/datagetter",
+        "params": "station (7-char ID, e.g. 9414290, or a currents ID like cb0102); product=water_level; date=latest|recent|today or begin_date/end_date/range; datum (mandatory for water level, e.g. MLLW, MSL, STND); units=metric|english; time_zone=gmt|lst|lst_ldt; format=json|xml|csv; application=irlpls",
+        "notes": "Live response: {metadata:{id,name,lat,lon}, data:[{t,v,s,f,q}]} where v = height, s = sigma of 1-second samples, f = flags O,F,R,L (outlier count, flat, rate-of-change, min/max limit), q = p preliminary / v verified. Missing product returns {error:{message}}."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/prod/datagetter",
+        "params": "same as above with product=wind | air_temperature | water_temperature | air_pressure | humidity | visibility | conductivity | salinity | air_gap | currents (bin needed at non-PORTS stations) | one_minute_water_level",
+        "notes": "Wind returns t, s (speed), d (degrees), dr (text direction), g (gust), f (X max speed exceeded, R rate of change). Also available but not observations: predictions and currents_predictions (tide/current forecasts) and ofs_water_level (model nowcast/forecast guidance)."
+      }
+    ],
+    "rate_limits": "No numbers published. Docs say CO-OPS throttles heavy volume from a single customer and recommends sleep statements between successive calls and downloading only the data needed. Per-request length limits apply (e.g. 1 month of 6-minute data). A keyless response on 2026-10-26 carried no rate-limit headers.",
+    "self_serve": true,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "No NOAA-run MCP server in the official MCP Registry. Third-party servers wrapping this API are listed, e.g. io.github.RyanCardin15/noaa-tides-and-currents-mcp, io.github.pipeworx-io/noaa-tides, io.github.cyanheads/noaa-marine-mcp-server, io.github.mrfentmen/tides-mcp."
+    }
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: readings come from automated government-operated instruments, not individual contributors"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No documented signing or attestation of data from station to API; integrity rests on NOAA operating the network over HTTPS"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable; no imagery is collected"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each value has an observation timestamp (t). CO-OPS sensor specifications say each water level value is the average of 181 one-second samples centered on each tenth of an hour, and wind speed and direction are 2-minute averages collected before each tenth of an hour.",
+      "unknown": "How station clocks are set or checked was not found in the documents read; nothing is signed or time-stamped by a third party."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed stations with published lat/lng in the Metadata API and in each data response; stations also publish surveyed benchmarks through the benchmarks resource.",
+      "unknown": "Coordinates are agency-entered; their positional accuracy was not reviewed."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Every preliminary water level value carries automated QC flags (outlier count, flat, rate-of-change and min/max tolerance) and a preliminary/verified level; verified data are reviewed monthly and may be marked inferred. CO-OPS specifies estimated accuracy of ±0.02 m per individual water level measurement relative to datum, and a three-standard-deviation outlier rejection test in each 6-minute average. Sensor outages and suspect data are reported per station in the sensors resource.",
+      "unknown": "The flags and accuracy figures are NOAA's own statements, not independently checkable per value. The latest (preliminary) values have not passed NOS QC/QA per the disclaimer, and the full verification procedure was not read."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-check between stations or independent instruments is documented in the API; sigma (s) gives within-sample spread only, and monthly verification is NOAA's own review."
+    }
+  },
+  "sources": [
+    {
+      "claim": "Data Retrieval API base URL, parameters (station, product, date options, datum mandatory for water level, units, time_zone, format, application optional and recommended), products list incl. air_gap, currents_predictions, ofs_water_level; date=latest = last point within 18 min, recent = 72 h; water level verified monthly for the past month; per-request length limits; throttling and sleep guidance; no key parameter documented",
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/"
+    },
+    {
+      "claim": "Response fields t, v, s, f, q; q p = preliminary, v = verified; preliminary flags O,F,R,L and verified flags I,F,R,T; wind fields s, d, dr, g and flags X, R",
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/responseHelp.html"
+    },
+    {
+      "claim": "Metadata API stations endpoint, type values (waterlevels, met, currents, watertemp, 1minute, airgap, visibility, ...), expand options, details/sensors/datums/benchmarks resources, nearby resource with radius in nautical miles (default 2)",
+      "url": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/"
+    },
+    {
+      "claim": "Public domain unless annotated, may be used freely; not to be modified and presented as official; attribution requested; raw data not QC'd, use with caution; as-is, user assumes risk, no NOS liability; no mention of AI training or resale",
+      "url": "https://tidesandcurrents.noaa.gov/disclaimers.html"
+    },
+    {
+      "claim": "Web services enable manual or automated machine-to-machine data retrievals; Data API, Metadata API and Derived Product API listed",
+      "url": "https://tidesandcurrents.noaa.gov/web_services_info.html"
+    },
+    {
+      "claim": "Sensor specifications (updated 12/2025): water level sensors sample and transmit at six-minute intervals; each value is the average of 181 one-second samples centered on each tenth of an hour with 3-sigma outlier rejection; estimated accuracy ±0.02 m per measurement; wind speed/direction 2-minute averages, gust max 5-second average in previous 6 minutes",
+      "url": "https://tidesandcurrents.noaa.gov/publications/CO-OPS_Measurement_Spec.pdf"
+    },
+    {
+      "claim": "2004 technical report: NWLON data relayed via GOES satellite in near real time; routine transmission every six minutes for some stations, hourly for others, every three hours for others",
+      "url": "https://tidesandcurrents.noaa.gov/publications/tech_rpt_026.pdf"
+    },
+    {
+      "claim": "Live keyless test 2026-10-26 (04:59 UTC 27 Oct): water_level and wind for 9414290 returned readings timestamped 04:54 UTC, water level q='p'; no rate-limit headers in the response",
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=water_level&date=latest&station=9414290&datum=MLLW&units=metric&time_zone=gmt&format=json&application=irlpls"
+    },
+    {
+      "claim": "Live test 2026-10-26: water_temperature at 9414290 returned 'No data was found'",
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=water_temperature&date=latest&station=9414290&units=metric&time_zone=gmt&format=json&application=irlpls"
+    },
+    {
+      "claim": "Live test 2026-10-26: 9414290 sensors resource marks Water Temperature status 0, 'Suspect Data - Data failed to meet QC standards - under review'",
+      "url": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations/9414290/sensors.json"
+    },
+    {
+      "claim": "Live test 2026-10-26: 302 waterlevels stations with lat/lng and state, incl. PR, VI, American Samoa, Bermuda and 'United States of America' entries for Guam (2), Midway, Wake and Kwajalein",
+      "url": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=waterlevels"
+    },
+    {
+      "claim": "Live test 2026-10-26: 85 currents stations, all with a PORTS project",
+      "url": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=currents"
+    },
+    {
+      "claim": "Live test 2026-10-26: 314 met stations",
+      "url": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=met"
+    },
+    {
+      "claim": "Live test 2026-10-26: 257 1minute stations",
+      "url": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=1minute"
+    },
+    {
+      "claim": "Live test 2026-10-26: Kwajalein (1820000) returned a same-day preliminary water level; Guam 1630000, Pago Pago 1770000, Bermuda 2695540, Midway 1619910, Wake 1890000, Charlotte Amalie 9751639 and San Juan 9755371 likewise",
+      "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=water_level&date=latest&station=1820000&datum=MSL&units=metric&time_zone=gmt&format=json&application=irlpls"
+    },
+    {
+      "claim": "No first-party NOAA MCP server in the official registry; third-party NOAA tides servers listed",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=noaa"
+    }
+  ],
+  "updated": "2026-10-27",
+  "short": "NOAA's coastal and Great Lakes stations: water level, wind and temperature every six minutes.",
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-26",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  }
+}

@@ -1,0 +1,261 @@
+{
+  "id": "nws",
+  "name": "NWS weather stations (NOAA)",
+  "status": "unclaimed",
+  "provider_url": "https://www.weather.gov",
+  "adapter": "nws",
+  "tags": [
+    "weather",
+    "sensor",
+    "temperature",
+    "wind",
+    "humidity",
+    "pressure",
+    "visibility",
+    "METAR",
+    "ASOS",
+    "airport",
+    "station",
+    "mesonet",
+    "live",
+    "united states",
+    "usa",
+    "us",
+    "noaa",
+    "public domain",
+    "free",
+    "no key"
+  ],
+  "summary": "Free, keyless US government API (api.weather.gov) that serves live surface observations from fixed weather stations ingested through NOAA's MADIS system: NWS-maintained ASOS airport stations plus many networks NWS does not maintain (e.g. MesoWest, APRSWXNET, HADS, RAWS). Find the stations nearest a US lat/lon, then read the latest observation or up to 7 days of history; each value carries a MADIS quality-control flag.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current temperature / dewpoint / relative humidity",
+      "wind speed, direction and gusts",
+      "barometric and sea-level pressure",
+      "visibility, present weather and sky text description",
+      "precipitation over the last 1, 3 and 6 hours",
+      "raw METAR message (METAR stations)",
+      "recent observation history for a station (7 days retained, up to 500 per request)",
+      "nearest stations for a US lat/lon"
+    ]
+  },
+  "pricing": {
+    "model": "free public government service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "No charge and no account. NWS docs say all API information is intended to be open data, free to use for any purpose."
+  },
+  "latency": {
+    "typical": "Minutes after the station reports; observations may lag the upstream MADIS source by up to about 20 minutes",
+    "notes": "NWS docs say observations may be delayed up to 20 minutes from MADIS, the upstream source, because of QC processing (and since 4 Aug 2025 should no longer routinely be delayed more than that). Live check 2026-10-26: KNYC (Central Park, ASOS) latest observation was 03:51Z when fetched at about 04:58Z (the 04:51 report was not yet in), with Cache-Control max-age=87, s-maxage=300. Its last eight records were hourly at :51 with three hours missing. Single sample, not a spec. Nothing new is captured on request: stations report on their own schedule."
+  },
+  "coverage": {
+    "regions": [
+      "United States",
+      "Puerto Rico",
+      "US Virgin Islands",
+      "Guam",
+      "Northern Mariana Islands"
+    ],
+    "notes": "Coverage is the fixed station network NWS ingests through MADIS; you cannot place a station. Live tests 2026-10-26: /stations lists stations for PR (149), GU (16), VI (13), AS (12) and MP (7), and stations in PR, GU, VI and MP returned observations from that day; none of the 12 American Samoa stations returned an observation and /points for Pago Pago lists no observation stations, so AS is left out. /points for London returns 404 'Data Unavailable For Requested Point'. Density varies: the nearest station to lower Manhattan was KNYC at 8.6 km; Vermont lists 199 stations, most from non-NWS networks (MesoWest 66, APRSWXNET 74), only one tagged ASOS. NWS says data quality can vary by provider. Rural density was not measured.",
+    "areas": [
+      "US",
+      "PR",
+      "VI",
+      "GU",
+      "MP"
+    ]
+  },
+  "licensing": {
+    "summary": "NWS says information on its web pages is in the public domain unless specifically noted otherwise and may be used without charge for any lawful purpose, as long as you do not claim it as your own (e.g. claim copyright), imply NOAA/NWS endorsement or affiliation, or modify it and present it as official. The NWS name and visual identifier are trademarked. Under 17 U.S.C. 403, works consisting predominantly of NWS material must say that material is not subject to copyright. Third-party information is used under the third party's licence. Provided as-is with no warranty. The API docs say all API information is intended to be open data, free to use for any purpose. Neither page mentions AI training or resale explicitly, and neither says which station networks in the API count as third-party data."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: readings are from automated or staffed stations, not crowd contributors; no human identity claim is made per observation"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No documented signing or attestation of the data chain from instrument to API; integrity rests on a government-operated service over HTTPS. Most stations are not maintained by NWS (only ASOS is, per the API docs), and the instruments and software of other networks are not described in the API"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable; no imagery is collected"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each observation carries an instrument report timestamp (e.g. METAR time group '270351Z' matching timestamp 2026-10-27T03:51:00+00:00 in a live response).",
+      "unknown": "How station clocks are disciplined is not documented in the API docs; no time-integrity method was found"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Observations come from fixed, registered stations with published coordinates and elevation (/stations/{id}); the observation geometry is the station's location.",
+      "unknown": "NWS does not maintain most stations (only ASOS); siting audits for other networks and whether coordinates are rounded (KNYC returned -73.98, 40.77) are not documented in the API. The value describes the station point, not the user's exact location"
+    },
+    "content": {
+      "level": "evidenced",
+      "method": "Each measured value carries a MADIS qualityControl flag: Z preliminary, no QC; C passed level 1 (validity); S passed levels 1 and 2 (internal, temporal, statistical spatial consistency); V passed levels 1-3 (incl. spatial buddy check); X failed level 1; Q passed 1, failed 2 or 3; G/B subjective good/bad; T virtual temperature not computed, QC-passing air temperature returned. MADIS publishes its tolerance limits and its reject/accept intervention lists. The latest endpoint accepts require_qc=true.",
+      "evidence_url": "https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml",
+      "unknown": "QC is automated range and consistency checking: it can miss slowly drifting or locally biased sensors, and it does not confirm the value is right. Flags are per value, so some fields in a record are unchecked (e.g. windGust and precipitation were 'Z' in a live KNYC record). NWS says data quality varies by provider and most stations are not NWS-maintained"
+    },
+    "corroboration": {
+      "level": "claimed",
+      "method": "MADIS level 3 QC compares each observation with neighbouring stations (nearest in each of eight sectors) using an Optimal Interpolation analysis ('buddy' check); a 'V' flag means it passed. MADIS keeps hourly QC failure statistics per network.",
+      "evidence_url": "https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml",
+      "unknown": "The check is the operator's own automated QC, not an independent confirmation. Buddy checks are weak where stations are sparse; the API does not expose which neighbours were used or the residuals"
+    }
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Typically under about an hour for hourly METAR stations; up to about 20 minutes QC delay on top of the reporting cycle",
+    "notes": "/observations/latest returns the newest record; /observations supports start/end for history, and NWS keeps only 7 days of station observations. Reporting interval varies by station and network and is not documented in the API docs; KNYC reported hourly at :51 in a live check. Known upstream issue: 24h max/min temperatures are always null for stations outside the central time zone (MADIS ingest bug)."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://www.weather.gov/documentation/services-web-api",
+    "base_url": "https://api.weather.gov",
+    "auth": [
+      {
+        "type": "none",
+        "header": "User-Agent",
+        "env_var": "NWS_USER_AGENT",
+        "how_to_get": "No signup. A User-Agent identifying your application is required (ideally with a website or email). NWS says this will be replaced with an API key in the future."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/points/{latitude},{longitude}",
+        "params": "latitude, longitude",
+        "notes": "Returns grid metadata including properties.observationStations, a URL like /gridpoints/{wfo}/{x},{y}/stations. 404 InvalidPoint outside coverage."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/gridpoints/{wfo}/{x},{y}/stations",
+        "params": "limit",
+        "notes": "Stations for that grid point, sorted by distance from the forecast gridpoint, closest first, with distance in metres. /points/{lat},{lon}/stations is marked deprecated in the OpenAPI spec."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/stations",
+        "params": "id (list), state (state, territory or marine area codes), limit (1-500), cursor",
+        "notes": "Station catalogue"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations/{stationId}",
+        "params": "stationId",
+        "notes": "Station metadata: coordinates, elevation, name, time zone; with Feature-Flags: obs_station_provider also provider and subProvider"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations/{stationId}/observations/latest",
+        "params": "require_qc (boolean)",
+        "notes": "Latest observation as GeoJSON; each value has unitCode, value, qualityControl"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations/{stationId}/observations",
+        "params": "start, end, limit (1-500), cursor",
+        "notes": "Observation list for a station, newest first; 7 days retained"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations/{stationId}/observations/{time}",
+        "params": "time (ISO 8601)",
+        "notes": "Single observation at a given time"
+      }
+    ],
+    "rate_limits": "Not public; 'a generous amount for typical use'. Over-limit requests return an error and may be retried after the limit clears, typically within 5 seconds; proxies are more likely to hit it. The disclaimer's abuse guidelines ask clients to match request cycles to the data refresh rate, retry failed services at 1-minute intervals, and say abusive IPs or query types may be blocked. Responses carry Cache-Control headers.",
+    "self_serve": true,
+    "notes": "The OpenAPI spec also declares an apiKeyAuth scheme (header 'API-Key'; its description says X-Api-Key) that NWS is 'testing on certain endpoints' and says imposes no limits; no observation endpoint lists it and no way to get a key is published. The obs_station_provider Feature-Flags header adds each station's provider and subProvider (e.g. ASOS, MesoWest, APRSWXNET). The disclaimer says NWS may block IPs or query types that harm the service; retry a down service at 1-minute intervals.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "No NWS-run MCP server in the official MCP Registry. Third-party servers wrap api.weather.gov, e.g. io.github.cyanheads/nws-weather-mcp-server (https://nws.caseyjhand.com/mcp), io.github.pipeworx-io/nws (https://gateway.pipeworx.io/nws/mcp), ai.smithery/smithery-ai-national-weather-service."
+    }
+  },
+  "sources": [
+    {
+      "claim": "Base URL api.weather.gov; User-Agent required, to be replaced with an API key; no fees, open data free to use for any purpose; rate limit not public but generous, retry after ~5 s; GeoJSON default; cache-friendly; observationStations sorted by distance; most stations not maintained by NWS except ASOS, data quality varies by provider; 7 days of observations retained; observations may be delayed up to 20 minutes from MADIS for QC; null 24h max/min upstream issue",
+      "url": "https://www.weather.gov/documentation/services-web-api"
+    },
+    {
+      "claim": "Endpoint paths and parameters (require_qc on latest; start/end/limit 1-500/cursor on observations; id/state on /stations; /points/{lat},{lon}/stations deprecated); userAgent and apiKeyAuth security schemes; qualityControl enum Z,C,S,V,X,Q,G,B,T referring to MADIS; land/marine region codes",
+      "url": "https://api.weather.gov/openapi.json"
+    },
+    {
+      "claim": "MADIS QC levels and flag meanings including T; tolerance limits; Optimal Interpolation buddy check with eight-sector neighbour search; reject/accept subjective intervention lists; per-network QC statistics",
+      "url": "https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml"
+    },
+    {
+      "claim": "NWS information public domain unless noted, free for any lawful purpose; no copyright claims, no implied endorsement, no presenting modified content as official; name and visual identifier trademarked; 17 U.S.C. 403 notice; third-party data under its own licence; as-is, no warranty; abuse guidelines and possible IP blocking",
+      "url": "https://www.weather.gov/disclaimer"
+    },
+    {
+      "claim": "Live test 2026-10-26 (~04:58Z): KNYC latest observation 03:51Z with raw METAR, per-value qualityControl V/C (windGust and precipitation Z), coordinates -73.98,40.77, Cache-Control max-age=87 s-maxage=300",
+      "url": "https://api.weather.gov/stations/KNYC/observations/latest"
+    },
+    {
+      "claim": "Live test: KNYC hourly records at :51, with some hours missing",
+      "url": "https://api.weather.gov/stations/KNYC/observations?limit=8"
+    },
+    {
+      "claim": "Live test: /points/40.7128,-74.006 returned observationStations /gridpoints/OKX/33,42/stations; nearest KNYC 8.6 km, then KLGA, KEWR",
+      "url": "https://api.weather.gov/gridpoints/OKX/33,42/stations"
+    },
+    {
+      "claim": "Live test: /points for London returned 404 InvalidPoint (no non-US coverage)",
+      "url": "https://api.weather.gov/points/51.5,-0.12"
+    },
+    {
+      "claim": "Live test with Feature-Flags: obs_station_provider: Vermont lists 199 stations, providers MesoWest 66, APRSWXNET 74, HADS 17, ASOS 1 and others; KNYC provider ASOS",
+      "url": "https://api.weather.gov/stations?state=VT&limit=500"
+    },
+    {
+      "claim": "Live test: territory station lists (PR 149, GU 16, VI 13, AS 12, MP 7); same-day observations from stations in PR (41053), GU (APRP7), VI (TISX) and MP (PGRO); none from any AS station",
+      "url": "https://api.weather.gov/stations?state=AS&limit=500"
+    },
+    {
+      "claim": "Live test: /points for Pago Pago, American Samoa returns no observationStations",
+      "url": "https://api.weather.gov/points/-14.2756,-170.7020"
+    },
+    {
+      "claim": "No NWS-run MCP server in the official registry; third-party wrappers listed",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=nws"
+    }
+  ],
+  "updated": "2026-10-27",
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "NWS API docs: 'Observations may be delayed up to 20 minutes from MADIS, the upstream source, due to QC processing.'"
+  },
+  "short": "US weather stations via the National Weather Service API: temperature, wind, pressure, rain and conditions.",
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-26",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  }
+}

@@ -1,0 +1,32 @@
+{
+ "id": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX",
+ "pointOfInterest": {
+  "lat": 0,
+  "lon": 0
+ },
+ "acquisitionWindow": {
+  "start": "2023-12-29T23:20:11.315Z",
+  "end": "2023-12-30T01:20:11.315Z"
+ },
+ "createdAt": "2023-12-20T15:04:05Z07:00",
+ "updatedAt": "2023-12-20T15:04:05Z07:00",
+ "imagingMode": "SCAN",
+ "contractID": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX",
+ "reference": "customer task reference 123-456",
+ "status": "RECEIVED",
+ "exclusivity": "PRIVATE",
+ "priority": "COMMERCIAL",
+ "sla": "SLA_8H",
+ "eula": "STANDARD",
+ "productsAvailableInSeconds": 2304,
+ "productTypes": [
+  "GRD"
+ ],
+ "incidenceAngle": {
+  "min": 10,
+  "max": 45
+ },
+ "lookSide": "LEFT",
+ "passDirection": "ASCENDING",
+ "imageReference": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX"
+}

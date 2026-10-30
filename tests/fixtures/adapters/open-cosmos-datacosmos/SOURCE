@@ -1,0 +1,3 @@
+fixture: documented-shape; never called (contract-only).
+price.json: https://app.open-cosmos.com/help/developer-center/datacosmos/api/ordering/pricing (single item response)
+order_paid.json, order_unpaid.json: https://app.open-cosmos.com/help/developer-center/datacosmos/api/ordering/purchasing

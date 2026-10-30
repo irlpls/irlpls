@@ -1,0 +1,226 @@
+{
+  "id": "alertcalifornia",
+  "name": "ALERTCalifornia cameras (UC San Diego)",
+  "status": "unclaimed",
+  "provider_url": "https://cameras.alertcalifornia.org/",
+  "tags": [
+    "webcam",
+    "wildfire",
+    "smoke",
+    "PTZ",
+    "mountain",
+    "backcountry",
+    "california",
+    "night vision",
+    "live camera"
+  ],
+  "short": "1,289 wildfire-watch PTZ cameras across California; latest frame about every 15 s, no key.",
+  "summary": "UC San Diego's statewide network of high-definition pan-tilt-zoom wildfire cameras with near-infrared night vision, aimed by trained first responders. A public ArcGIS feature service lists every camera with location, online status, current pan/tilt/zoom and a latest-frame image URL. Free for non-commercial use under CC BY-NC-ND 4.0.",
+  "capabilities": {
+    "modalities": [
+      "photo"
+    ],
+    "tasks": [
+      "current still from a fixed-site PTZ camera",
+      "visual check for smoke, fire, snow, weather or visibility in California wildlands",
+      "night view via near-infrared",
+      "find cameras by county, radius or bounding box"
+    ]
+  },
+  "pricing": {
+    "model": "free (non-commercial)",
+    "from_usd": 0,
+    "unit": "image",
+    "notes": "Free for non-commercial use with credit. For-profit (commercial) use needs a commercial licence negotiated with UC San Diego's OIC 'with appropriate licensing fees'; no price published."
+  },
+  "latency": {
+    "typical": "seconds to minutes",
+    "notes": "Provider: camera images update approximately every 15 seconds; camera direction and viewsheds update every two minutes, and images may run ahead of the orientation fields. Sampled 2026-10-26 ~22:01 PDT: latest-frame redirected to JPEGs 24 s and 31 s old; layer max viewTime ~2.5 min old, but some rows' viewTime lag ~24 h even when the frame is seconds old."
+  },
+  "coverage": {
+    "regions": [
+      "United States (California)"
+    ],
+    "notes": "1,289 cameras in the feed, 1,252 online at ~22:01 PDT on 2026-10-26 (1,251 on 2026-10-27); all within California (feed extent 32.59 to 41.93 N). Ridgetop/backcountry sites that can see up to 60 miles by day and 120 miles on a clear night; not street cameras. Operators move the PTZ view and cameras sweep 360 degrees about every two minutes, so the field of view changes. Some mountaintop cameras go offline in winter ('winter mode'). Check isOnline and viewTime per camera: one feed row had a viewTime of 2026-10-25, so some cameras are stale.",
+    "areas": [
+      "US-CA"
+    ]
+  },
+  "licensing": {
+    "summary": "ALERTCalifornia program data is copyrighted by UC San Diego (Regents of the University of California) and licensed CC BY-NC-ND 4.0: non-commercial use with credit 'ALERTCalifornia | UC San Diego', no derivatives; do not crop the information bar or partner logos on screen grabs. For-profit use must contact OIC to negotiate a commercial licence with fees. The terms have no explicit resale clause: \"forbidden\" is inferred from CC BY-NC-ND (no commercial use, no derivatives). AI or ML training is not named; NC and ND make it risky. automation_allowed true only means no ban on automated access; use stays non-commercial.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Capture is automatic. Cameras are aimed by trained first responders and emergency managers, but who aimed a given frame is not exposed."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No capture-app or device attestation is published; frames carry ordinary EXIF (make, model, firmware) that is not signed."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Fixed Axis PTZ cameras operated by UC San Diego; the acquisition engine pulls images from the physical cameras over Axis VAPIX. A sampled frame's EXIF reads AXIS Q6075-E, 1920x1080. No per-image sensor proof: EXIF is unsigned, the sampled JPEG had no C2PA manifest, and Axis is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Capture timestamp in the redirected object path, in the x-amz-meta-context timestamp and in EXIF DateTime; per-camera viewTime field in the feed.",
+      "unknown": "Not signed or time-stamped by a third party; the layer's viewTime can lag the image by hours."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed site coordinates in the feature service, plus pan/tilt/zoom attached to each stored image and in positionPan/positionTilt/viewZoomScale.",
+      "unknown": "What is in frame depends on the current PTZ; the provider says images may advance ahead of orientation and viewshed updates."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No integrity checks on public frames are documented."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Colocated cameras exist (colocatedCameras field), and AI fire detections are vetted by watchstanders, but no cross-check of public frames is published."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://www.arcgis.com/home/item.html?id=0c1c1166688f4f2db938194799337be4",
+    "base_url": "https://services8.arcgis.com/X84q166Srnyl4JMV/arcgis/rest/services/ALERTCalifornia_Camera_Feed/FeatureServer/0",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "The ArcGIS feature service and the latest-frame images are public; no key or sign-in."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/query",
+        "params": "where=isOnline='online' (or county='<name>'); geometry=<lon,lat>&geometryType=esriGeometryPoint&distance=<m>&units=esriSRUnit_Meter&inSR=4326; outFields=*; resultOffset for paging; f=json",
+        "notes": "Returns cameraName, siteId, county, isOnline, colocatedCameras, cameraURL, positionPan, positionTilt, viewZoomScale, viewTime and imageURL per camera. At most 50 records per response (maxRecordCount 50)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://cameras.alertcalifornia.org/public-camera-data/{cameraId}/latest-frame.jpg",
+        "notes": "302 to a timestamped 1920x1080 JPEG; Cache-Control max-age=10. The stored object carries device, pan, tilt, zoom and timestamp in x-amz-meta-context, and expires after about two days."
+      }
+    ],
+    "rate_limits": "Not published. The feature service returns at most 50 records per query.",
+    "self_serve": true,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No entry in the official MCP Registry (searched alertcalifornia, alert-california, ucsd)."
+    },
+    "notes": "No OAuth: /.well-known/oauth-protected-resource and oauth-authorization-server return 404 on alertcalifornia.org and docs.rd.alertcalifornia.org, 403 on cameras.alertcalifornia.org. The 'Frontend API' at docs.rd.alertcalifornia.org is the operator backend behind an authenticated proxy (CIAM OAuth), not a public API; public users cannot move cameras."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "seconds to minutes",
+    "notes": "Provider: images update approximately every 15 seconds."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "ArcGIS item: 'Camera images update approximately every 15 seconds.' Live samples on 2026-10-26 were 24 s and 31 s old."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-26",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "batch_max": 50,
+      "scope": "unknown",
+      "notes": "No request rate published; the feature layer returns at most 50 records per query (maxRecordCount).",
+      "source_url": "https://www.arcgis.com/home/item.html?id=0c1c1166688f4f2db938194799337be4"
+    }
+  },
+  "payment": {
+    "methods": [],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "No payment for non-commercial use. A commercial licence is negotiated with UC San Diego OIC; no payment method is published."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "None for the public feed. First-responder log-ins (which can move cameras) are reserved for emergency managers trained by ALERTCalifornia. Archive footage requests are taken from media, scientists, partners and government agencies by email; law firms must use UC San Diego's Policy and Records Administration portal.",
+    "unknown": "Nothing can be commissioned; what checks apply to a commercial licence is not published."
+  },
+  "updated": "2026-10-28",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Feature service: 1,289 cameras, 1,252 online, fields (pan/tilt/zoom, viewTime, imageURL, colocatedCameras), viewTime lag, extent within California",
+      "url": "https://services8.arcgis.com/X84q166Srnyl4JMV/arcgis/rest/services/ALERTCalifornia_Camera_Feed/FeatureServer/0/query"
+    },
+    {
+      "claim": "Layer metadata: query-only capability, maxRecordCount 50",
+      "url": "https://services8.arcgis.com/X84q166Srnyl4JMV/arcgis/rest/services/ALERTCalifornia_Camera_Feed/FeatureServer/0?f=json"
+    },
+    {
+      "claim": "ArcGIS item: CC BY-NC-ND 4.0 licence and OIC commercial licence; images update ~every 15 s, direction/viewsheds every 2 min; near-infrared night vision; 360-degree sweeps; 60/120-mile view",
+      "url": "https://www.arcgis.com/sharing/rest/content/items/0c1c1166688f4f2db938194799337be4?f=json"
+    },
+    {
+      "claim": "Terms: copyrighted, CC BY-NC-ND 4.0, commercial licence via OIC with fees; footage request routes",
+      "url": "https://alertcalifornia.org/terms/"
+    },
+    {
+      "claim": "Credit line 'ALERTCalifornia | UC San Diego'; do not crop the information bar or partner logos",
+      "url": "https://alertcalifornia.org/crediting-and-branding/"
+    },
+    {
+      "claim": "Non-commercial use with credit; trained first responders move cameras; public cannot; winter mode; first-responder log-ins; archive requests",
+      "url": "https://alertcalifornia.org/faqs/"
+    },
+    {
+      "claim": "Near-infrared night vision, sweeps every two minutes, AI fire detection vetted by watchstanders",
+      "url": "https://alertcalifornia.org/technology/"
+    },
+    {
+      "claim": "Latest-frame redirect, x-amz-meta-context PTZ and timestamp, EXIF AXIS Q6075-E, ~2-day object expiry; sampled 24 s old (2026-10-26)",
+      "url": "https://cameras.alertcalifornia.org/public-camera-data/Axis-AntelopeYreka2/latest-frame.jpg"
+    },
+    {
+      "claim": "Latest frame 31 s old while the layer's viewTime for the same camera was ~24 h old (2026-10-26)",
+      "url": "https://cameras.alertcalifornia.org/public-camera-data/Axis-AntelopeMtn/latest-frame.jpg"
+    },
+    {
+      "claim": "Frontend API is the operator backend behind an authenticated proxy, not a public API",
+      "url": "https://docs.rd.alertcalifornia.org/Alert.CA.ImageAcquisition/frontend-api/introduction/"
+    },
+    {
+      "claim": "Acquisition engine talks to physical Axis cameras over VAPIX",
+      "url": "https://docs.rd.alertcalifornia.org/Alert.CA.ImageAcquisition/vapix-service/talking-to-cameras/"
+    },
+    {
+      "claim": "PTZ position stored as blob metadata with each image",
+      "url": "https://docs.rd.alertcalifornia.org/Alert.CA.ImageAcquisition/image-storage-service/storing-images/"
+    },
+    {
+      "claim": "No MCP Registry entry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=alertcalifornia"
+    },
+    {
+      "claim": "Axis is not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "Feed count 1,289 total / 1,251 online; viewTime field can be stale",
+      "url": "https://alertcalifornia.org/faqs/"
+    }
+  ],
+  "adapter": "alertcalifornia"
+}

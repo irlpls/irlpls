@@ -1,0 +1,35 @@
+{
+ "type": "Feature",
+ "geometry": {
+  "type": "Point",
+  "coordinates": [
+   -57.111470534,
+   -37.46393458,
+   13.065776825
+  ]
+ },
+ "properties": {
+  "order_id": "000123",
+  "contract_id": "cont.1234abcd-1234-abcd-abcd-dcba4321",
+  "contract_name": "Tasking & Archive",
+  "sku": "TSKRSH",
+  "product_name": "Rush Tasking",
+  "order_name": "Lighthouse Point Maritime Analysis",
+  "parameters": {
+   "start": "2025-09-22T10:00:00Z",
+   "end": "2025-09-29T10:00:00Z",
+   "processing_level": "L1D_SR",
+   "task_id": 456789
+  },
+  "status": "received",
+  "created_at": "2025-01-01T16:57:02.623928",
+  "updated_at": "2025-01-01T16:57:02.623928",
+  "latest_event": {
+   "id": "evt.1",
+   "type": "OrderReceived",
+   "details": {},
+   "message": "Order received by system.",
+   "timestamp": "2025-01-01T10:00:00Z"
+  }
+ }
+}

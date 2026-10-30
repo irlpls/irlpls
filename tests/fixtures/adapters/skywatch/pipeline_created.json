@@ -1,0 +1,26 @@
+{
+ "data": {
+  "id": "8d3f0a2e-1c34-4c39-9f6b-3d2f3b8a1e11",
+  "start_date": "2026-10-31",
+  "end_date": "2026-11-07",
+  "resolution_low": 1,
+  "resolution_high": 0.5,
+  "cloud_cover_percentage": 100,
+  "interval": "7d",
+  "result_delivery": {
+   "max_latency": "0d",
+   "priorities": [
+    "latest"
+   ]
+  },
+  "output": {
+   "id": "a8f2c1d0-geotiff",
+   "format": "geotiff",
+   "mosaic": "unstitched"
+  },
+  "max_cost": 262.5,
+  "created_at": "2026-10-28T10:00:00Z",
+  "updated_at": "2026-10-28T10:00:00Z",
+  "status": "pending"
+ }
+}

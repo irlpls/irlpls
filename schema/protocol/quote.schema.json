@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://irlpls.com/2026-10-26/schemas/protocol/quote.json",
+  "title": "irlpls Quote (DRAFT)",
+  "description": "The quote operation. A quote request is POSTed to {endpoint}/quotes; the response is a Quote holding one offer (a provider) or several (a router). Draft: docs/protocol/PROTOCOL-DRAFT.md.",
+  "$ref": "#/$defs/quote",
+  "$defs": {
+    "quote_request": {
+      "type": "object",
+      "required": ["request"],
+      "properties": {
+        "request": {
+          "description": "An irlpls Request (STANDARD Section 4). It MUST NOT carry `policy`: the Policy stays with the requester or router. quantity is at most 10000.",
+          "allOf": [
+            {"$ref": "https://irlpls.com/2026-10-26/schemas/request.json"},
+            {"not": {"required": ["policy"]}},
+            {"properties": {"quantity": {"maximum": 10000}}}
+          ]
+        },
+        "constraints": {"$ref": "#/$defs/constraints"}
+      }
+    },
+    "constraints": {
+      "description": "Hard limits. A provider that cannot meet one makes no offer (it answers with a problem). A router checks offers against them again.",
+      "type": "object",
+      "properties": {
+        "max_total": {"$ref": "common.json#/$defs/money"},
+        "deliver_by": {"type": "string", "format": "date-time"},
+        "rights_needed": {"type": "array", "items": {"enum": ["commercial_use", "redistribution", "modification", "ai_training", "resale", "buyer_owns_output"]}},
+        "proof": {
+          "type": "object",
+          "propertyNames": {"$ref": "common.json#/$defs/guarantee_key"},
+          "additionalProperties": {"enum": ["claimed", "evidenced"]}
+        },
+        "scene_nonce": {"type": "boolean", "description": "The buyer's order nonce must be visible in the capture."}
+      }
+    },
+    "offer": {
+      "type": "object",
+      "required": ["id", "provider", "route", "firm"],
+      "properties": {
+        "id": {"type": "string"},
+        "provider": {
+          "type": "object",
+          "required": ["card_id"],
+          "properties": {
+            "card_id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+            "name": {"type": "string"},
+            "card_url": {"$ref": "common.json#/$defs/https_url"}
+          }
+        },
+        "route": {"enum": ["live", "commission"]},
+        "firm": {"type": "boolean", "description": "true: the provider's own binding price until expires_at. false: indicative, from the card (a router's estimate); a paid order then needs a firm quote or a max_total."},
+        "quantity": {"type": "integer", "minimum": 1},
+        "total": {"$ref": "common.json#/$defs/money"},
+        "unit_price": {"$ref": "common.json#/$defs/money"},
+        "unit": {"type": "string"},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "deliver_by": {"type": "string", "format": "date-time", "description": "The provider's own estimate."},
+        "rights": {
+          "type": "object",
+          "description": "Rights this offer grants the buyer; absent = not granted.",
+          "properties": {
+            "commercial_use": {"enum": ["allowed", "forbidden"]},
+            "redistribution": {"enum": ["allowed", "forbidden"]},
+            "modification": {"enum": ["allowed", "forbidden"]},
+            "ai_training": {"enum": ["allowed", "forbidden"]},
+            "resale": {"enum": ["allowed", "forbidden"]},
+            "buyer_owns_output": {"type": "boolean"}
+          }
+        },
+        "proof": {"$ref": "common.json#/$defs/proof_levels", "description": "Levels deliveries under this offer will carry, per guarantee."},
+        "scene_nonce": {"type": "boolean"},
+        "order_url": {"$ref": "common.json#/$defs/https_url", "description": "Where to POST the order. MUST be the provider card's protocol.endpoint + /orders (checked by the client). Required on a firm offer."},
+        "provider_quote_id": {"type": "string", "description": "Router only: the id of the provider's own quote behind this offer. The client never orders the router's quote_id at the provider; it re-quotes at the provider with the exact request and orders that quote (STANDARD 14.11)."},
+        "provider_quote_url": {"$ref": "common.json#/$defs/https_url", "description": "Router only: {provider endpoint}/quotes/{provider_quote_id}, where the client can read the provider's quote itself."},
+        "terms_url": {"$ref": "common.json#/$defs/https_url"},
+        "continue_url": {"$ref": "common.json#/$defs/https_url", "description": "A step only a person can take (sign-up, billing, KYC)."},
+        "fit": {"type": ["integer", "null"], "minimum": 0, "maximum": 100, "description": "Router only: per-request ranking aid (STANDARD 7). Never a provider property."}
+      },
+      "allOf": [
+        {"if": {"required": ["firm"], "properties": {"firm": {"const": true}}}, "then": {"required": ["total", "expires_at", "order_url"]}},
+        {"if": {"required": ["provider_quote_id"]}, "then": {"required": ["provider_quote_url", "order_url"]}}
+      ]
+    },
+    "quote": {
+      "type": "object",
+      "required": ["id", "created_at", "expires_at", "request_sha256", "offers"],
+      "properties": {
+        "id": {"type": "string"},
+        "created_at": {"type": "string", "format": "date-time"},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "request_sha256": {"$ref": "common.json#/$defs/sha256", "description": "Lower-case hex SHA-256 of the RFC 8785 form of the `request` member this quote request carried, as the server received it. An order of this quote's offer carries the same value, and so do its receipts."},
+        "offers": {"type": "array", "items": {"$ref": "#/$defs/offer"}, "minItems": 1},
+        "questions": {"type": "array", "items": {"$ref": "common.json#/$defs/question"}, "description": "Non-blocking questions only; a blocking one is a needs_input problem."},
+        "ruled_out": {"type": "array", "items": {"$ref": "common.json#/$defs/ruled_out"}, "description": "Router only."}
+      }
+    }
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "id": "snappr",
+  "name": "Snappr",
+  "provider_url": "https://www.snappr.com",
+  "status": "unclaimed",
+  "short": "Book a vetted professional photographer or videographer to a location; images back via API.",
+  "summary": "On-demand professional photo and video shoots by independent-contractor photographers matched by Snappr. Enterprise customers can check coverage and availability, book a shoot by lat/lng or address, and fetch the delivered images and videos through a REST API with an OpenAPI 3.1 description, a sandbox and webhooks. The same API also runs editing jobs and AI-generated 'Magic' menu images, which are not new captures.",
+  "tags": [
+    "photography",
+    "videography",
+    "on-demand",
+    "professional",
+    "real estate",
+    "storefront",
+    "restaurant menu",
+    "automotive",
+    "video"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video"
+    ],
+    "tasks": [
+      "on-location photoshoot",
+      "on-location video shoot",
+      "real estate listing photos and virtual tours",
+      "storefront/menu photos",
+      "automotive listing photos and 360 walkarounds",
+      "e-commerce product photos",
+      "headshots and portraits",
+      "event coverage",
+      "image editing jobs"
+    ]
+  },
+  "pricing": {
+    "model": "per shoot; API bookings draw down prepaid credits",
+    "from_usd": 0,
+    "unit": "shoot",
+    "notes": "Pay as you go: free, 15% service fee per shoot; Pro (USA only) $49/yr (limited time, list $99), 9% fee; Enterprise: custom pricing, annual contract with credits, no service fee, unused credits roll over monthly. Per-shoot rates are shown only in the booking flow; the /shoots page says 'Fixed prices from less than $100' without a figure. Terms: one Credit costs $1.00 USD (Pro credits). Each API booking returns the credits charged. from_usd 0 means not published."
+  },
+  "latency": {
+    "typical": "gallery typically within 48 hours of the shoot (events up to 72)",
+    "notes": "Shoot time is booked via GET /availability; on-demand shoots can be booked 'with as little as 2 hours notice' (/shoots page). Enterprise turnaround is set per program, standard 48 hours after the shoot."
+  },
+  "coverage": {
+    "regions": [
+      "US",
+      "CA",
+      "AU",
+      "NZ",
+      "GB",
+      "EU",
+      "SG"
+    ],
+    "notes": "FAQ: instant booking across the US, Australia, Canada, the UK, the EU, Singapore and New Zealand, covering ~90% of the population in those markets; shoots also possible in parts of the Philippines and Israel. Enterprise: 'Worldwide', by scaling the creator network to a program's countries and metros. Areas list the instant-booking markets (EU = its 27 member states); PH, IL and enterprise 'worldwide' are partial or by arrangement. GET /coverage answers per location and shoot type.",
+    "areas": [
+      "US",
+      "CA",
+      "AU",
+      "NZ",
+      "GB",
+      "SG",
+      "AT",
+      "BE",
+      "BG",
+      "HR",
+      "CY",
+      "CZ",
+      "DK",
+      "EE",
+      "FI",
+      "FR",
+      "DE",
+      "GR",
+      "HU",
+      "IE",
+      "IT",
+      "LV",
+      "LT",
+      "LU",
+      "MT",
+      "NL",
+      "PL",
+      "PT",
+      "RO",
+      "SK",
+      "SI",
+      "ES",
+      "SE"
+    ]
+  },
+  "licensing": {
+    "summary": "FAQ: customers 'retain full rights to the delivered content and may use the images and videos however you choose'. Terms (last updated July 31, 2026): photographers assign all Photograph Content and IP to Snappr; on full payment Snappr assigns the content in 'Purchased Prints' to the customer, and anything not purchased stays Snappr's. Customers grant Snappr a perpetual, irrevocable, sublicensable licence to use the photos for marketing and advertising, and 'Snappr may use all Photograph Content distributed via the Platform to train, develop, and improve Snappr's machine learning algorithms and artificial intelligence systems.' Customer AI-training and resale rights are not named; treat as unstated. Enterprise contracts may differ and are not public.",
+    "buyer_owns_output": true,
+    "vendor_trains_on_data": "yes"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "FAQ: every creator passes multi-step vetting (portfolio, experience, equipment, reliability) and is rated per shoot. Terms: photographers must consent to a third-party background check (e.g. Checkr) before activation. Assigned photographer's name and id are returned on each booking.",
+      "evidence_url": "https://www.snappr.com/terms",
+      "unknown": "The Terms contradict themselves: one section requires a background check, another says Snappr 'may, but is not required to, conduct background checks on Photographers'. Snappr may also swap the photographer after booking. No public proof of who was on site."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Photographers use their own professional cameras; no capture app or device attestation is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Deliverables are edited JPEGs (RAW optional for Enterprise). Editing services include object removal, retouching, virtual staging and sky/lawn replacement, and Snappr also sells AI image generation, so delivered pixels may be altered. No sensor provenance or C2PA; Snappr is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "The API exposes the booked start_at and record created_at/updated_at, not per-image capture time."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "Booking lat/lng is the requested place, not a verified capture location; image objects carry no coordinates."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "On-demand: each project gets a quality review against the shoot brief. Enterprise: every asset reviewed by automated workflows plus human QC against the client's style guide and shot list; flagged shots re-edited or re-shot.",
+      "evidence_url": "https://www.snappr.com/faq",
+      "unknown": "On-demand galleries edited by the photographer 'may not undergo our standard quality-control review'. QC criteria are not public."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "None described."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://docs.snappr.com/",
+    "base_url": "https://api.snappr.com",
+    "auth": [
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "env_var": "SNAPPR_API_KEY",
+        "how_to_get": "Snappr for Enterprise customers only; get or regenerate the key in the Snappr portal (one active key per user). Sandbox https://sandbox.snappr.com uses a separate sandbox key and returns dummy data. Optional header accept-version: 1.0.0 (the only version)."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/coverage",
+        "params": "latitude+longitude or address; shoottype (required); creator_id",
+        "notes": "Boolean coverage for a place and shoot type, independent of date."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/availability",
+        "params": "latitude+longitude or address; shoottype, duration (minutes), date (required); days_span (1-50); creator_id",
+        "notes": "Available start times, returned in UTC."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/shoottypes",
+        "notes": "Shoot type names for the shoottype parameter."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/bookings",
+        "params": "latitude+longitude or address, shoottype, start_at (UTC, or null to let the end-customer pick via scheduling_url), duration, customer_firstname, customer_email, customer_mobilephone (required); title, location_notes, style_notes, customer_surname, customer_company, internal_id, creator_id, tags",
+        "notes": "Charges credits immediately (402 InsufficientCredits if the balance is short). 400 NotAvailable/NoCoverage if no photographer. No idempotency key documented; internal_id can tag bookings."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/bookings",
+        "params": "limit, offset, status"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/bookings/{booking_uid}",
+        "notes": "status e.g. paid, paid_pending_schedule, completed, cancelled; credits charged; assigned creator."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/bookings/{booking_uid}/images",
+        "params": "limit, offset",
+        "notes": "Signed url_original and url_thumb per image."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/bookings/{booking_uid}/videos",
+        "params": "limit, offset",
+        "notes": "Signed url_original per video."
+      }
+    ],
+    "rate_limits": "1,000 requests per minute per API key (OpenAPI RateLimit response); 429 on excess, respect X-RateLimit-Remaining.",
+    "self_serve": false,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No entry in the official MCP Registry (searched 2026-10-26)."
+    },
+    "notes": "OpenAPI 3.1: https://docs.snappr.com/openapi.json. Webhooks (set in the portal) POST on booking creation and update and on Magic Job images_delivered. Also: /editing-jobs (beta) and /magic-jobs (AI-generated menu images from a restaurant's listing, not captures), each with /images, plus /presets and /editing-job-types. The Terms ban data mining, robots and scraping of the site, so automation is allowed only through the Enterprise API, which is the sanctioned channel. Ownership passes to the customer only on full payment, for purchased content."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "FAQ: gallery 'typically within 48 hours after any shoot type other than events. Event photoshoots may take up to 72 hours'; Enterprise standard turnaround 48 hours after the shoot."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "enterprise",
+    "rate_limit": {
+      "requests": 1000,
+      "per_seconds": 60,
+      "scope": "per-key",
+      "notes": "429 on excess; respect X-RateLimit-Remaining.",
+      "source_url": "https://docs.snappr.com/openapi.json"
+    }
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "prepaid_balance"
+    ],
+    "agent_can_pay": true,
+    "prepaid": true,
+    "notes": "On-demand: card, debit card or bank account at booking; payments are final and non-refundable except as stated. Pro members can buy Credits ($1.00 each). Enterprise: annual contract with credits; each API booking deducts credits from the prepaid balance, so an agent can pay within the balance, but top-ups happen only in the portal."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Account registration with true, accurate information; under-13s barred and under-18s need a parent's approval. API access only on an Enterprise contract, after a demo with sales. Each API booking names an end-customer with email and mobile phone.",
+    "unknown": "No identity verification or review of what is being photographed is documented for requesters."
+  },
+  "updated": "2026-10-27",
+  "sources": [
+    {
+      "claim": "API, endpoints, parameters, auth, sandbox, credits, webhooks, errors, Enterprise-only, Magic and editing jobs",
+      "url": "https://docs.snappr.com/"
+    },
+    {
+      "claim": "OpenAPI 3.1 description: servers, bearer auth, sandbox key, booking statuses, days_span, rate limit 1,000/min per key",
+      "url": "https://docs.snappr.com/openapi.json"
+    },
+    {
+      "claim": "Tiers and fees, Enterprise API access, credit rollover",
+      "url": "https://www.snappr.com/tiers"
+    },
+    {
+      "claim": "Regions, turnaround, vetting, QC and its on-demand exception, editing services, formats, customer rights",
+      "url": "https://www.snappr.com/faq"
+    },
+    {
+      "claim": "IP assignment and transfer of Purchased Prints, marketing licence, ML/AI training, background checks (required and optional), Credits at $1, payment methods, registration, scraping ban",
+      "url": "https://www.snappr.com/terms"
+    },
+    {
+      "claim": "Fixed prices from less than $100, booking with 2 hours notice, 48-hour delivery",
+      "url": "https://www.snappr.com/shoots"
+    },
+    {
+      "claim": "Upfront pricing in the booking flow, video shoots, 48-72 hour galleries",
+      "url": "https://www.snappr.com/pay-as-you-go"
+    },
+    {
+      "claim": "No MCP Registry entry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=snappr"
+    },
+    {
+      "claim": "Not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "adapter": "snappr"
+}

@@ -1,0 +1,122 @@
+{
+ "about": "Typical asks per catalog family (irlpls/catalog.py FAMILIES), used for 'Where it ranks' on provider-published card pages and in check.html. Asks are taken verbatim from tests/test_match_bench.py; a family with no bench ask uses its catalog example_needs (marked source: catalog). Labels are short names for the ask, nothing more. Ranks are computed by irlpls.match.rank (and IRLMatch in the browser) against the listed cards; nothing here is a result.",
+ "families": {
+  "river-water-level": [
+   {"ask": "is the Guadalupe River at Comfort, TX flooding right now", "label": "River flooding, Comfort TX"},
+   {"ask": "river level on Shoal Creek in Austin, TX right now", "label": "Creek level, Austin TX"},
+   {"ask": "river level in Vienna, Austria", "label": "River level, Vienna"},
+   {"ask": "river level in Paris, France", "label": "River level, Paris"}
+  ],
+  "coast-tide-wave": [
+   {"ask": "tide level at Galveston, TX right now", "label": "Tide, Galveston TX"},
+   {"ask": "storm surge at the coast in Charleston, SC right now", "label": "Storm surge, Charleston SC"},
+   {"ask": "how big are the waves offshore of San Francisco, CA right now", "label": "Waves off San Francisco"},
+   {"ask": "sea surface temperature at the buoy off Cape Cod, MA right now", "label": "Sea temperature, Cape Cod"}
+  ],
+  "weather-station": [
+   {"ask": "current temperature and wind in Denver, CO", "label": "Temperature and wind, Denver"},
+   {"ask": "is it raining in Chicago, IL right now", "label": "Rain now, Chicago"},
+   {"ask": "weather in London, UK right now", "label": "Weather now, London"}
+  ],
+  "air-quality": [
+   {"ask": "air quality in Fresno, CA right now", "label": "Air quality, Fresno CA"},
+   {"ask": "PM2.5 readings near Delhi, India right now", "label": "PM2.5, Delhi"},
+   {"ask": "how smoky is the air in Portland, OR right now", "label": "Smoke, Portland OR"},
+   {"ask": "air quality sensor readings in London this morning", "label": "Air sensors, London"}
+  ],
+  "earthquake": [
+   {"ask": "latest earthquakes in Japan", "label": "Latest earthquakes, Japan"},
+   {"ask": "earthquakes near Anchorage, Alaska today", "label": "Earthquakes, Anchorage"},
+   {"ask": "earthquake near Los Angeles in the last hour", "label": "Earthquake, Los Angeles"}
+  ],
+  "wildfire-detection": [
+   {"ask": "are there any wildfires burning near Paradise, CA right now", "label": "Wildfires, Paradise CA"},
+   {"ask": "active fire hotspots in Alberta, Canada today", "label": "Fire hotspots, Alberta"},
+   {"ask": "wildfire hotspots in California in the past 2 days", "label": "Fire hotspots, California"}
+  ],
+  "ship-positions": [
+   {"ask": "current ship positions in the Gulf of Finland", "label": "Ships, Gulf of Finland", "source": "catalog"},
+   {"ask": "vessels near the port of Helsinki now", "label": "Vessels, Helsinki", "source": "catalog"}
+  ],
+  "traffic-road-camera": [
+   {"ask": "is traffic backed up on the Bay Bridge in San Francisco, CA right now", "label": "Traffic, Bay Bridge"},
+   {"ask": "highway camera photo of I-5 in Seattle right now", "label": "Highway camera, Seattle"},
+   {"ask": "traffic camera at a junction in London, UK right now", "label": "Traffic camera, London"},
+   {"ask": "live traffic camera on the highway in Austin, TX", "label": "Traffic camera, Austin TX"}
+  ],
+  "wildfire-camera": [
+   {"ask": "camera view of smoke near Lake Tahoe, CA now", "label": "Smoke camera, Lake Tahoe", "source": "catalog"}
+  ],
+  "webcam-anywhere": [
+   {"ask": "live webcam of the beach in Lisbon, Portugal", "label": "Beach webcam, Lisbon"},
+   {"ask": "beach webcam in Tarifa, Spain now", "label": "Beach webcam, Tarifa", "source": "catalog"}
+  ],
+  "photo-of-address": [
+   {"ask": "photo of the storefront at 123 Main St, Springfield, IL today", "label": "Storefront photo, Springfield IL"},
+   {"ask": "exterior photos of a house for a mortgage appraisal in Columbus, OH", "label": "House exterior, Columbus OH"},
+   {"ask": "inspection photos of a damaged car for an insurance claim in Atlanta, GA tomorrow", "label": "Car damage photos, Atlanta"},
+   {"ask": "photo of a storefront in Nairobi, Kenya today", "label": "Storefront photo, Nairobi"}
+  ],
+  "store-shelf-check": [
+   {"ask": "photos of the cereal shelf display at a grocery store in Dallas, TX", "label": "Shelf photos, Dallas"},
+   {"ask": "check shelf prices at grocery stores in Toronto, Canada", "label": "Shelf prices, Toronto"}
+  ],
+  "errand-anywhere": [
+   {"ask": "someone to stand in line at a bakery in Toronto, Canada", "label": "Stand in line, Toronto"},
+   {"ask": "someone to attend an event in London, UK with timed selfie check-ins", "label": "Attend an event, London"},
+   {"ask": "photo of a storefront in Nairobi, Kenya today", "label": "Storefront photo, Nairobi"}
+  ],
+  "address-verification": [
+   {"ask": "verify the address 12 Allen Avenue, Ikeja, Lagos with GPS photos", "label": "Address check, Lagos", "source": "catalog"}
+  ],
+  "property-scan-3d": [
+   {"ask": "3D model and measurements of the house at 8 Elm St, Dallas, TX", "label": "3D house model, Dallas", "source": "catalog"}
+  ],
+  "street-level-imagery": [
+   {"ask": "fresh dashcam video of Congress Avenue in Austin, TX within 2 days", "label": "Dashcam video, Austin TX"},
+   {"ask": "street-level video of a road in Tokyo, Japan this week", "label": "Street video, Tokyo"}
+  ],
+  "drone-capture": [
+   {"ask": "drone photos of a roof in Phoenix, AZ this week", "label": "Roof by drone, Phoenix"},
+   {"ask": "drone orthomosaic of a construction site in Toronto, Canada", "label": "Site survey, Toronto"},
+   {"ask": "drone inspection of a wind turbine in Germany", "label": "Wind turbine, Germany"},
+   {"ask": "thermal inspection of a solar farm in Arizona", "label": "Solar farm thermal, Arizona"}
+  ],
+  "satellite-optical": [
+   {"ask": "satellite image of a farm field in Iowa within 2 weeks", "label": "Farm field, Iowa"},
+   {"ask": "rush tasking of a high resolution optical satellite image of a mine in Chile", "label": "Rush optical, Chile"},
+   {"ask": "optical satellite photo of a farm", "label": "Optical photo of a farm"}
+  ],
+  "satellite-radar": [
+   {"ask": "radar satellite image through clouds at night of the port of Rotterdam, Netherlands", "label": "Radar at night, Rotterdam"},
+   {"ask": "radar satellite image of a port in Singapore with repeat tasking every day", "label": "Daily radar, Singapore"},
+   {"ask": "radar image of a port through clouds", "label": "Radar through cloud"}
+  ],
+  "satellite-thermal-hyperspectral": [
+   {"ask": "satellite heat signature of a refinery in Texas at night", "label": "Heat at night, Texas"},
+   {"ask": "thermal infrared satellite image of a power plant in Germany", "label": "Thermal, Germany"}
+  ],
+  "free-latest-satellite": [
+   {"ask": "latest free Sentinel image of Lake Mead", "label": "Free Sentinel pass, Lake Mead", "source": "catalog"}
+  ],
+  "dataset-egocentric": [
+   {"ask": "500 first-person video clips of a hand opening a push-bar door within 7 days", "label": "500 door clips, 7 days"},
+   {"ask": "first-person video of household tasks for robotics training", "label": "Household tasks, robotics"},
+   {"ask": "video collection with AR/VR glasses and wearables in rented homes", "label": "Wearable video, homes"}
+  ],
+  "dataset-driving": [
+   {"ask": "dashcam video of near-miss edge cases for autonomous vehicle training", "label": "Near-miss dashcam clips"},
+   {"ask": "cyclist at dusk", "label": "Cyclist at dusk"},
+   {"ask": "fresh dashcam video of flooded street", "label": "Flooded street, dashcam"}
+  ],
+  "dataset-crowd-media": [
+   {"ask": "audio recordings of 300 people saying a wake word", "label": "300 wake-word recordings"},
+   {"ask": "2000 images of gestures and facial expressions for a computer vision dataset", "label": "2000 gesture images"},
+   {"ask": "1000 photos of pets and animals taken by contributors", "label": "1000 pet photos"}
+  ],
+  "survey-participants": [
+   {"ask": "200 participants to record a short video of their kitchen within 3 days", "label": "200 kitchen videos"},
+   {"ask": "300 responses to a 5-minute survey from US adults, within 3 days", "label": "300 survey responses, US", "source": "catalog"}
+  ]
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "time_series_id": "8b7214ef4ece4f5683f8d86549e7b402",
+    "monitoring_location_id": "USGS-08167000",
+    "parameter_code": "00060",
+    "statistic_id": "00011",
+    "time": "2026-10-29T02:20:00+00:00",
+    "value": "78.4",
+    "unit_of_measure": "ft^3/s",
+    "approval_status": "Provisional",
+    "qualifier": null,
+    "last_modified": "2026-10-29T02:27:22.850426+00:00",
+    "method_category": null
+   },
+   "id": "c2e3f814-349d-4326-808f-5aeea3ca00c7",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -98.89716666666668,
+     29.965238888888887
+    ]
+   }
+  }
+ ],
+ "numberReturned": 1,
+ "links": [
+  {
+   "type": "application/geo+json",
+   "rel": "self",
+   "title": "This document as GeoJSON",
+   "href": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/items?f=json&bbox=-99.06099,29.83256,-98.74901,30.10284&parameter_code=00060&limit=200"
+  },
+  {
+   "rel": "alternate",
+   "type": "application/ld+json",
+   "title": "This document as RDF (JSON-LD)",
+   "href": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/items?f=jsonld&bbox=-99.06099,29.83256,-98.74901,30.10284&parameter_code=00060&limit=200"
+  },
+  {
+   "type": "text/html",
+   "rel": "alternate",
+   "title": "This document as HTML",
+   "href": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/items?f=html&bbox=-99.06099,29.83256,-98.74901,30.10284&parameter_code=00060&limit=200"
+  },
+  {
+   "type": "text/csv; charset=utf-8",
+   "rel": "alternate",
+   "title": "This document as CSV",
+   "href": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/items?f=csv&bbox=-99.06099,29.83256,-98.74901,30.10284&parameter_code=00060&limit=200"
+  },
+  {
+   "type": "application/json",
+   "title": "Latest continuous",
+   "rel": "collection",
+   "href": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous"
+  }
+ ],
+ "timeStamp": "2026-10-29T02:35:27.450218Z"
+}

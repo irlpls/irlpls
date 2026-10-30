@@ -1,0 +1,247 @@
+{
+  "id": "quest",
+  "name": "Quest",
+  "provider_url": "https://hireahuman.quest",
+  "status": "unclaimed",
+  "tags": [
+    "agent-native",
+    "mcp",
+    "bearer",
+    "errand",
+    "go and look",
+    "gig",
+    "human task",
+    "local inspection",
+    "mystery shopping",
+    "photo evidence",
+    "singapore",
+    "malaysia",
+    "philippines",
+    "san francisco"
+  ],
+  "summary": "Singapore-based local-task marketplace (Quest Hyphen Inc Pte. Ltd., also branded \"Quest: Hire a Human\") where a person, business or their AI agent posts a paid quest and nearby workers (\"Heroes\") send offers. It targets quick in-person tasks of under about 30 minutes: queue, collect or drop off, check whether a place is open or an item is in stock, photograph a shelf or location, mystery shop, run a short survey. An agent can post quests and browse open quests over a first-party remote MCP server with a Bearer API key; viewing offers, hiring, paying and approving completion are done by the person in the Quest app or on the website. Works in Singapore, Malaysia and the Philippines, with San Francisco as an early US market.",
+  "short": "A local-task marketplace in Singapore, Malaysia, the Philippines and San Francisco; agents post tasks over MCP.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "text-report"
+    ],
+    "tasks": [
+      "check whether a place is open or an item is in stock",
+      "photograph a shelf or a location",
+      "verify a listing or a business address on site",
+      "mystery shopping with photos and a receipt",
+      "short in-person surveys and user tests",
+      "queue, collect or drop off an item, file paperwork",
+      "event and business help (flyers, display checks, booth slots)"
+    ]
+  },
+  "pricing": {
+    "model": "the poster sets a budget in local currency and workers send offers; Quest takes 10% from the worker; a customer fee is described inconsistently (see notes)",
+    "from_usd": 0,
+    "unit": "quest (price set by the poster, one-time or per hour)",
+    "notes": "from_usd 0 means not published: each quest's price is set by the poster (whole units of SGD, MYR, PHP or USD; scopeOfReach global posts in USD) and can be negotiated. The agent pages say 'No fee to post or hire. Quest takes 10% from the human after each completed hire.' But the Terms charge the Citizen a Connection Fee on top of the Agreed Price when an offer is accepted, the FAQ says Quest charges 'a fixed booking fee + processing fees to customer upon payment', and the home page says the customer pays 'a small, transparent service fee shown before you confirm'. The fee amount is not published. postQuest can return 'maximum price exceeded' with a maxPrice ceiling. Boost and Priority (Highlights/Notifications Blast) are optional paid upgrades; the FAQ says premium features are available on quests from $30. Cancellation: the party responsible pays a cancellation fee (10% of the quest price for a Hero; the Citizen forfeits the service fee)."
+  },
+  "latency": {
+    "typical": "Not published; offers usually arrive within hours, and the work happens at the date and time window the poster sets",
+    "notes": "Quest's blog says that over the last 180 days every one of 25,741 posts got at least one offer (2.5 on average) and that 'most tasks start receiving offers within hours of posting'. That is time to an offer, not to delivery. The person must then pick an offer and pay in the app or on the website, since the MCP server cannot hire yet. postQuest takes dueDate (exact, before or range) and a timeRange, plus an optional urgent flag; new posts are moderated ('pending: posted, being checked, then shown to humans')."
+  },
+  "coverage": {
+    "regions": [
+      "Singapore",
+      "Malaysia",
+      "Philippines",
+      "USA: San Francisco (early market)"
+    ],
+    "notes": "Provider: 'Singapore, Malaysia and the Philippines, with San Francisco as our early US market. Availability varies by area.' The home page claims 750k+ humans and '10+ countries', and the Terms carry country terms for further markets (AU, CA, HK, ID, JP, KR, PK, TH), but the agent docs name only these four markets. Worker counts are sign-ups, not verified local availability. San Francisco is coded as US-CA because ISO 3166 has no city codes.",
+    "areas": [
+      "SG",
+      "MY",
+      "PH",
+      "US-CA"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms (last updated April 2026) contain no assignment of rights in a Hero's work to the Citizen, and the Model Quest Contract is silent on ownership. Users grant Quest an unrestricted, worldwide, royalty-free licence to use, reproduce, modify and adapt content posted on the platform for publishing it, providing the service and promoting Quest. The Terms also say: 'any content (whether provided by Quest, a User or a third party) on the Quest Platform may not be used on third party sites or for other business purposes without Quest's prior written permission.' Proof photos are sent in Quest chat, so whether that clause covers them is not stated. Neither the Terms nor the Privacy Policy mention AI or machine-learning training or resale."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Guidelines require real names matching an official identification document; optional account verification on the profile page (Singapore only, per the FAQ); Identity Verification Services include phone verification, payment-information verification, social-media links and badges; ratings and reviews. Marketing pages say sensitive work is background-checked.",
+      "evidence_url": "https://hireahuman.quest/faq",
+      "unknown": "The Terms say Quest 'does not undertake any investigation' of Heroes (no criminal, licence or character checks), that its verification 'may not be fully accurate', and that badges are point-in-time checks. Outside Singapore account verification is not available. What 'background-checked' covers and who does it is not stated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Proof is sent through Quest chat in the app or website; no app or device attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Nothing says proof photos must be taken live with the device camera; gallery uploads, edited images or photos of a screen are not addressed."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No trusted capture time is documented for proof; the chat message time is all a poster sees."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "The Privacy Policy says the app may collect precise device location, but no check that proof was captured at the quest address is documented."
+    },
+    "content": {
+      "level": "none",
+      "method": "The poster states what done looks like (a photo, a receipt, a short message), reviews it and releases the held payment; Quest support mediates disputes and cancellations.",
+      "unknown": "Quest disclaims the truth and accuracy of user information; staged or fabricated proof is caught only by the poster's own review."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No platform cross-check. A poster can ask for up to 20 humans per quest (numOffers), but independent captures would be buyer-arranged, not a provider guarantee."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://hireahuman.quest/agents/docs",
+    "base_url": "https://mcp.hireahuman.quest/mcp",
+    "auth": [
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "env_var": "QUEST_API_KEY",
+        "how_to_get": "Sign in at hireahuman.quest, open https://hireahuman.quest/profile/api-keys, click Generate new key and copy it (shown once; registry example prefix qmcp_). Send as 'Authorization: Bearer <key>'. Revocable on the same page. OAuth is not supported yet."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "MCP",
+        "path": "postQuest",
+        "params": "title, desc, startingCountry, dueDate, dueDateType [exact|before|range], timeRange, numberOfHours, numOffers (1-20), paymentRecurrence [one time payment|per hour], price (whole currency units), scopeOfReach [local|global]; optional startingAddress (required unless online), endingCountry, endingAddress, dateRangeEnd, requirements, screeningQuestions, additionalPurchasesPrice, priceNegotiable, urgent, portfolioLinkRequired",
+        "notes": "Posts a quest; returns {status, questID} with status pending, duplicate, maximum price exceeded (with maxPrice and currency), illegal-content, auto-delete, admin-delete or user-banned. Account and country come from the key. Nothing is paid: the person picks an offer and pays in the app or on the website."
+      },
+      {
+        "action": "list",
+        "method": "MCP",
+        "path": "getQuestsV2",
+        "params": "countryCode, category, subCategory, location [in-person|online], chosenLocations, lat, lng, radius (metres), sortOrder [nearby|price-min|price-max], minAmount, maxAmount (smallest currency unit), offset, currentPage",
+        "notes": "Browse open quests to check going rates; returns questID, title, price, district, countryCode, startingCountry, startingLocation, datePosted, dueDate and offerCount, with no poster personal details."
+      },
+      {
+        "action": "status",
+        "method": "MCP",
+        "path": "whoAmI",
+        "notes": "Returns userID, idMcpApiKey and calledAt for the key; a connection test, not order status. There is no MCP tool for offers, hiring, order status or fetching proof yet ('A hire tool is in development')."
+      }
+    ],
+    "mcp": {
+      "remote": "https://mcp.hireahuman.quest/mcp",
+      "registry_name": "quest.hireahuman/quest",
+      "auth": "bearer",
+      "first_party": true,
+      "notes": "Streamable HTTP only. Registry entry v1.0.0, published 2026-10-21, requires an Authorization header. Coming soon per the provider: hireHuman (pick an offer and fund the quest), manageQuest (chat, approve completion, rate) and OAuth for OAuth-only clients such as ChatGPT."
+    },
+    "notes": "Quest asks agents to confirm task, location, time and budget with their person before calling postQuest ('Real people will travel to do it') and to keep contact details out of descriptions. An agent operating a browser may also post, review offers, hire and pay on hireahuman.quest while signed in as its user, with the user's approval."
+  },
+  "adapter": "quest",
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [
+      "card"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "Credit or debit card (Visa or Mastercard) through Stripe, in the Quest app or on the website; PayNow is 'coming soon'. When the person accepts an offer, the Agreed Price is paid into Quest's Payment Account and held until they release it on completion. Over MCP an agent cannot hire or pay: 'Your user picks an offer and approves the payment.' Refunds go to the original card or as Stored Value."
+  },
+  "account": {
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://hireahuman.quest/agents"
+    }
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Posters must be natural persons over 16 with a Quest account; the API key ties every quest to that account. Posts are moderated (postQuest can return illegal-content, auto-delete, admin-delete or user-banned). User Guidelines ban quests 'that may result in the invasion of personal privacy', including 'investigating and/or gathering personal information without the concerned individual's consent or knowledge', plus illegal, deceptive and cash-based quests.",
+    "unknown": "No identity check of posters is documented outside optional Singapore verification; whether moderation blocks a request to photograph or follow a specific person, as opposed to gathering their personal information, is not stated."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured when the hired worker does the task, at the date and time window the poster sets",
+    "notes": "No archive; proof is whatever the poster asks for in the quest description."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No delivery time is published. Blog: 'Most tasks start receiving offers within hours of posting' (time to an offer, not to delivery); the poster sets the due date and time window."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "What Quest is, task types (be there, go and look, show up for business), under about 30 minutes, MCP URL, Bearer key, no OAuth, three tools, hire/pay not over MCP, browser agents may hire with approval, no fee to post or hire, 10% from the human, Boost and Priority, coverage SG/MY/PH plus San Francisco",
+      "url": "https://hireahuman.quest/llms.txt"
+    },
+    {
+      "claim": "MCP docs: Streamable HTTP, API key from profile/api-keys, postQuest required and optional inputs and return statuses, getQuestsV2 inputs and returns, whoAmI returns, hire tool in development, OAuth coming, confirm before posting",
+      "url": "https://hireahuman.quest/agents/docs"
+    },
+    {
+      "claim": "Agent page: three live tools, hireHuman and manageQuest coming soon, user approves every hire and payment, agent cannot hire or pay on its own, Quest moderates posts and holds the payment",
+      "url": "https://hireahuman.quest/agents"
+    },
+    {
+      "claim": "MCP Registry entry quest.hireahuman/quest v1.0.0, remote https://mcp.hireahuman.quest/mcp, required Authorization header (Bearer qmcp_ key), published 2026-10-21",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=hireahuman"
+    },
+    {
+      "claim": "Terms (April 2026): Connection Fee charged to the Citizen, 10% Hero Service Fee, Agreed Price paid into the Payment Account, no investigation of Heroes, Identity Verification Services may not be accurate, badges point-in-time, licence to Quest over posted content, content may not be used on third-party sites or for other business purposes without permission, users over 16 and natural persons, Stripe as payment provider, Singapore entity Quest Hyphen Inc Pte. Ltd.",
+      "url": "https://hireahuman.quest/terms"
+    },
+    {
+      "claim": "Privacy Policy (April 2026): precise device location may be collected; no mention of AI or machine-learning training",
+      "url": "https://hireahuman.quest/privacy"
+    },
+    {
+      "claim": "FAQ: account verification only in Singapore, card-only payment, 10% commission from heroes plus a fixed booking fee and processing fees to the customer, premium features from $30, cancellation and refund rules",
+      "url": "https://hireahuman.quest/faq"
+    },
+    {
+      "claim": "Payments: Stripe card payments held until released by the Citizen, PayNow coming soon, dispute support",
+      "url": "https://hireahuman.quest/payments"
+    },
+    {
+      "claim": "User Guidelines: real names matching official ID, ban on quests that invade personal privacy or gather personal information without consent, no cash-based or deceitful quests, Visa/Mastercard in-app payment",
+      "url": "https://hireahuman.quest/user-guidelines"
+    },
+    {
+      "claim": "Cancellation policy: responsible Hero pays 10% of the quest price; responsible Citizen forfeits the service fee",
+      "url": "https://hireahuman.quest/cancellation-policy"
+    },
+    {
+      "claim": "Home page: 750k+ humans, 10+ countries, service fee shown before you confirm, sensitive work is background-checked, field-data examples (photograph store shelves, verify a business address)",
+      "url": "https://hireahuman.quest/"
+    },
+    {
+      "claim": "Mystery shopping page: photos and receipts come back with the report; payment held until the poster approves",
+      "url": "https://hireahuman.quest/quests/field-data/hire/mystery-shopping"
+    },
+    {
+      "claim": "Blog (2026-09-30): all 25,741 posts in the last 180 days got at least one offer, average 2.5; most tasks start receiving offers within hours",
+      "url": "https://hireahuman.quest/blog/100-percent-tasks-get-offers"
+    },
+    {
+      "claim": "Agents post quests over MCP; the user approves every hire and payment",
+      "url": "https://hireahuman.quest/agents"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

@@ -1,0 +1,17 @@
+{
+ "data": {
+  "plan": "build",
+  "resolution": "high",
+  "area_km2": 25,
+  "tasking": {
+   "price_km2": 10.5,
+   "minimum_area_km2": 25,
+   "discount_price_km2": 10.5,
+   "interval_quantity": 1,
+   "interval_cost": 262.5,
+   "max_cost": 262.5
+  },
+  "max_cost": 262.5,
+  "prepurchase_balance": 0
+ }
+}

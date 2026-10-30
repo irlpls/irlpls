@@ -1,0 +1,4 @@
+collections_tasking.json: live, recorded 2026-10-28 from keyless GET https://api.up42.com/v2/collections?type=TASKING&size=3
+Everything else: fixture: documented-shape, from https://docs.up42.com/developers/api-tasking (estimate, status tables),
+https://docs.up42.com/developers/authentication (token), https://developer.up42.com/reference/createv2orderunderworkspace,
+https://developer.up42.com/reference/getorderv2 and https://developer.up42.com/reference/cancelorder (response schemas).

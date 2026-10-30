@@ -1,0 +1,35 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e . pytest jsonschema playwright && python -m playwright install --with-deps chromium
+      - run: python build.py --public
+      - run: pytest -q tests
+      - name: cards validate against the Capture Card schema
+        run: |
+          python - <<'PY'
+          import json, glob, jsonschema
+          schema = json.load(open("schema/capture-card.schema.json"))
+          keys = {"human","application","camera","time","location","content","corroboration"}
+          for f in sorted(glob.glob("cards/*.json")):
+              c = json.load(open(f))
+              jsonschema.validate(c, schema)
+              assert set(c["verification"]) == keys, f
+          print("all cards valid")
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: site JS parses
+        run: |
+          node --check site/match.js && node --check site/app.js
+          sed -n '/<script>/,/<\/script>/p' site/index.html | sed '1d;$d' > /tmp/landing.js && node --check /tmp/landing.js

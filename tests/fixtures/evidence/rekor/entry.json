@@ -1,0 +1,22 @@
+{
+  "24296fb24b8ad77a2904b90639c2e5a8c6a3cfb2768c0d31e46ed536c7d405671a28909be7eab17f": {
+    "body": "eyJhcGlWZXJzaW9uIjoiMC4wLjEiLCJraW5kIjoiaGFzaGVkcmVrb3JkIiwic3BlYyI6eyJkYXRhIjp7Imhhc2giOnsiYWxnb3JpdGhtIjoic2hhMjU2IiwidmFsdWUiOiI4Yjc0MjBmNjRiMTk0NWNiOTM4MDkxNjkyMGZhNDdlOGUwMTUwMjk0N2Y5N2YzZTQyYzljZDMyNjcwYjYxM2ZlIn19LCJzaWduYXR1cmUiOnsiY29udGVudCI6ImMybG5ibUYwZFhKbCIsInB1YmxpY0tleSI6eyJjb250ZW50IjoiY0hWaWJHbGpJR3RsZVE9PSJ9fX19",
+    "integratedTime": 1793102400,
+    "logID": "836ff184e7b41b1e13cb5fd89fa1de98dbbab99e9d2918913ff43b86a5c7c213",
+    "logIndex": 3,
+    "verification": {
+      "inclusionProof": {
+        "checkpoint": "rekor.example - 1193050959916656506\n5\nEWhBRCok/OMck0rfGNviVVlhP0AXcA7hEIPOZIG9blg=\n\n\u2014 rekor.example AKKilzBEAiAvybrqURd+Gkjm1u3ERHruC9wdidAneK4aJjFgsXIhRQIgJgmXnniNDX4ctXfWJOUlFLUhVpgyameYeyJWubLS6GY=\n",
+        "hashes": [
+          "3d1de776df086c1ae9f7049d2bb0c0475ad14185f987e064e8d10dcb2db4a322",
+          "3badc80537f029e1bb77280dc85203cf2ed9748dc8f571230fcba5c326c91068",
+          "d74a2d1f2af1c1cad6c5e8a86fc869162e7d1ea01e729abff17851d10948f994"
+        ],
+        "logIndex": 3,
+        "rootHash": "116841442a24fce31c934adf18dbe25559613f4017700ee11083ce6481bd6e58",
+        "treeSize": 5
+      },
+      "signedEntryTimestamp": "MEYCIQDJa4UWbs9OuBaVu2XHh79lgnaZbd7tCZSzqZKV2Hl5jwIhAMosU8f8P9I8n3WQkKE2pUroT1A/5wadG1EMBvl43htZ"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+# DRAFT, not deployed. app name must be unique on Fly.
+app = "irlpls-mcp"
+primary_region = "iad"
+[build]
+  dockerfile = "deploy/Dockerfile"
+[http_service]
+  internal_port = 8765
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 25
+    hard_limit = 50
+[[http_service.checks]]
+  method = "POST"
+  path = "/mcp"
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "10s"
+  headers = {Content-Type = "application/json", Accept = "application/json, text/event-stream"}
+  # an empty POST returns 4xx; a TCP check is the safer choice if this flaps:
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

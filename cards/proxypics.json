@@ -1,0 +1,293 @@
+{
+  "id": "proxypics",
+  "name": "ProxyPics",
+  "provider_url": "https://www.proxypics.com",
+  "status": "unclaimed",
+  "tags": [
+    "property",
+    "real estate",
+    "exterior photos",
+    "inspection",
+    "on-demand",
+    "crowd",
+    "field agent",
+    "mortgage",
+    "insurance",
+    "facility management",
+    "proof of presence",
+    "geotagged",
+    "view360",
+    "lidar",
+    "floor plan",
+    "us",
+    "api",
+    "sandbox",
+    "webhooks"
+  ],
+  "summary": "Marketplace that sends nearby 'Proxies' (independent-contractor data collectors) to a US address to take photos and answer questions in the ProxyPics app, ordered through a public, self-serve REST API with a sandbox and webhooks. A 'Direct' mode instead texts a point of contact (such as the homeowner or property staff) a link so they capture the photos themselves.",
+  "short": "A nearby person goes to a US address and takes photos in the ProxyPics app.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "exterior property photos, address verification and street scenes",
+      "custom photo tasks and question groups from a template",
+      "interior photos by appointment (with access authorisation)",
+      "View360 panoramic photos",
+      "floor plan scans and 3D LiDAR scans",
+      "photo or video evidence of claimed damage",
+      "day or night photo requests, e.g. nighttime sign and lighting audits",
+      "property condition / Uniform Property Dataset (UPD) reports",
+      "appraisal requests",
+      "PDF report and photo ZIP of the completed job"
+    ]
+  },
+  "pricing": {
+    "model": "per request; the Client pays a platform fee per request, with an optional price_boost",
+    "from_usd": 0,
+    "unit": "photo request (current price not published)",
+    "notes": "from_usd 0 means not published, not free. No price list on proxypics.com or in the API docs. The Participation Agreement says Clients are charged a fee for each request, in USD, that fees may vary, and that Clients should check the fees each time they use the Platform; the Client is billed as soon as the Proxy submits. Each API photo request carries a `cost` in cents (including any `price_boost`), so the price is visible after the request is created, and a PhotoRequestCostUpdated webhook reports fee changes. A 2018 BuiltIn Chicago article reported a flat $5 per photo with the photographer keeping $3.25; that is eight years old and not used as the price."
+  },
+  "latency": {
+    "typical": "Under 24 hours (provider marketing); often under two hours in high-volume markets (HousingWire profile)",
+    "notes": "Crowdsource page advertises 'Delivered Under 24 Hours'; the About page says Proxies 'often deliver results within hours if not minutes'. HousingWire's company profile says 96% of assignments are completed in under 24 hours. No contractual SLA found. Requests can be scheduled (`scheduled_at`) or given an expiry (`expires_at`); expired requests can be extended through the API. After submission the Client has 120 hours to reject."
+  },
+  "coverage": {
+    "regions": [
+      "US"
+    ],
+    "notes": "Advertised as nationwide US, 24/7 with no blackout dates, day or night. Network size claims vary by source: 180K+ data collectors (Crowdsource and Real Estate pages), 395,000-plus Proxy panel and 415,000+ assignments fulfilled in 2025 (HousingWire profile). Rural density and fill rates are not published.",
+    "areas": [
+      "US"
+    ]
+  },
+  "licensing": {
+    "summary": "ProxyPics owns the deliverables, not the buyer. Under the Participation Agreement (which covers Clients and Proxies) Proxy work product is a work made for hire for ProxyPics and all rights vest in ProxyPics; ProxyPics 'may grant Clients and its Affiliates the right to use, reproduce, distribute, display, and otherwise exploit such work product in connection with Client requests and ProxyPics's business'. The Platform Provider terms also assign all Submissions to ProxyPics. No public client licence states the scope of that grant, resale or AI training. ProxyPics processes work product and metadata for quality assurance, fraud prevention, support, product improvement and service delivery, and may use de-identified, aggregated data for analytics; AI or model training is not named.",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Proxies register with true identity details (business name, address, phone, email, tax ID), may hold only one account, may not share it, and must personally perform each order; ProxyPics may require identity verification. Background checks by a third party are optional, paid by the Proxy, and needed only for interior-access and appointment orders. Marketing says 'Tiered Proxies (Licensed and Background Checked)'.",
+      "evidence_url": "https://www.proxypics.com/participation-agreement",
+      "unknown": "Most Proxies may not be background-checked: the check is voluntary and only gates interior and appointment orders, and the Participation Agreement says ProxyPics does 'not conduct any screening or other verification with respect to Clients or Proxies'. How identity is confirmed, and how account sharing is detected, is not published. Orders that need no licence go to all nearby Proxies."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Photos must be taken inside the ProxyPics app (the FAQ says outside-app photos are refused by 'anti-fraud technology') and proxies may not spoof location, timestamps or device information, but no app-integrity or attestation check is documented, and emulators or modified clients are not addressed. In Direct mode the photo taker is the point of contact (often the owner). Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: 'Camera Roll Locked' feature so photos cannot be imported from the gallery. Whether a live camera pointed at a screen or printout is detected. No C2PA or other signed capture."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "'Time Stamped Photos ... validate the exact date and time the photo was taken'; terms require capture at or near the time of the visit",
+      "evidence_url": "https://www.proxypics.com/anti-fraud",
+      "unknown": "Whether the timestamp is device clock or server-side, and whether it is signed. The public API schema gives only order-level times (`completed_at`), not per-photo capture times. The FAQ says some clients 'require us to time stamp or geo-code the photos', suggesting it may not apply to every order."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Georeference: photos get GPS coordinates and are pinned to a map; the app prevents taking photos outside a set radius of the subject; the FAQ says all photos are geo-tagged; GPS spoofing is banned in the Participation Agreement",
+      "evidence_url": "https://www.proxypics.com/anti-fraud",
+      "unknown": "Radius size and GPS-spoofing resistance are not published. The public API schema exposes only the request's latitude and longitude, not per-photo coordinates (they may appear in the PDF report)."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "AI plus a ProxyPics quality-control team review submissions for quality, order requirements and fraud, including orders the AI did not flag; the client can approve or reject each completed request through the API within 120 hours, for wrong property or work not requested, and rejected jobs are redone or reposted",
+      "evidence_url": "https://www.proxypics.com/anti-fraud",
+      "unknown": "Review criteria, error and fraud rates, and whether staged scenes or wrong-property photos are caught"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No public method for independent second captures or cross-checks of the same property"
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.proxypics.com",
+    "base_url": "https://api.proxypics.com/api/v3",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "x-api-key",
+        "env_var": "PROXYPICS_API_KEY",
+        "how_to_get": "Sign up at https://app.proxypics.com/auth/signup, then Profile > Integrations (https://app.proxypics.com/profile) to generate an API key and configure webhooks. Creating requests needs a credit card on the account. A sandbox (https://sandbox.proxypics.com/api/v3, web app https://sandbox-app.proxypics.com) simulates photo submission, approval and rejection and accepts the test card 4111 1111 1111 1111."
+      },
+      {
+        "type": "api_key_query",
+        "env_var": "PROXYPICS_API_KEY",
+        "how_to_get": "The same API key, passed as the `api_key` query parameter."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/photo-request-templates",
+        "notes": "Lists templates (products) whose token can be passed as template_token."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/photo-requests",
+        "params": "address (required), latitude, longitude, city, state, zip, template_token (recommended) or photo_request_platform (crowdsource|direct) + tasks/question_groups, expires_at, price_boost (cents), scheduled_at, appointment, lockbox, additional_notes, external_id, contacts_attributes; Direct needs property_owner_phone and direct_due_date; UPD via uniform_property_dataset_report_attributes",
+        "notes": "Creates a crowdsource (nearby Proxy) or Direct (SMS to a point of contact) request. The response includes `cost` in cents."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/photo-requests/{id}",
+        "notes": "Status is unassigned, assigned, completed, rejected, expired or fulfilled. Webhooks report added, assigned, upload started, completed, report generated, expired, cancelled, on hold, cost updated and more."
+      },
+      {
+        "action": "order",
+        "method": "PUT",
+        "path": "/photo-requests/{id}/approve",
+        "notes": "Approve a completed request; after payment confirmation it is fulfilled and the PDF report generated. PUT /photo-requests/{id}/reject sends it back for re-capture."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/photo-requests/{id}",
+        "notes": "When fulfilled, the request carries download_photos_url (photo ZIP) and download_report_url (PDF report)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/photo-requests",
+        "params": "page, per_page",
+        "notes": "Paginated list of your photo requests."
+      },
+      {
+        "action": "order",
+        "method": "DELETE",
+        "path": "/photo-requests/{id}",
+        "notes": "Cancel. Immediate if unassigned; otherwise support is notified to cancel."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/appraisal-requests",
+        "params": "type (appraisal product)",
+        "notes": "Separate appraisal products; GET /appraisal-requests/{id} for status."
+      }
+    ],
+    "rate_limits": "Not stated in the public API docs",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No MCP server found; the official MCP Registry has no entry for ProxyPics (searched 2026-10-26)."
+    },
+    "notes": "Also: duplicate, extend, messages, webhooks, API-key management and CSV-upload endpoints. Idempotency keys are not documented; `external_id` can tag a request with your own ID."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "prepaid_balance"
+    ],
+    "agent_rails": [
+      "card_on_file_api"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "A credit card on the account is needed to create requests, and the Client is billed when the Proxy submits. Clients can also prepay 'Prepaid Jobs' by credit card or a funded prepaid account (bank funds can take up to four days). API orders draw on the person's account; there is no agent-native payment rail."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Clients register with a name and a valid email, and need a credit card on the account to create requests. ProxyPics may require identity verification for access to the Platform or certain services, but its Participation Agreement says it does 'not conduct any screening or other verification with respect to Clients or Proxies'.",
+    "unknown": "Whether ProxyPics reviews what is being requested at an address (for example, requests aimed at a person rather than a property) is not published."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after you order, usually within 24 hours (provider claim)",
+    "notes": "No archive search; every request is a new capture at a given address."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Crowdsource page: 'Delivered Under 24 Hours'; Real Estate page: 'we measure our completion times in hours'; HousingWire profile: 96% of assignments completed in under 24 hours, often under two hours in high-volume markets."
+  },
+  "adapter": "proxypics",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Public OpenAPI 3.0.3 spec: live and sandbox base URLs, x-api-key header or api_key query auth, key generated in Profile > Integrations, sandbox test card, webhook events, photo-request, template, appraisal, webhook and other endpoints, create-request fields, `cost` in cents, statuses, download_photos_url and download_report_url, latitude/longitude per request only",
+      "url": "https://docs.proxypics.com/public/swagger.json"
+    },
+    {
+      "claim": "API integration page: create photo requests, get status notifications, download photos and reports; integration pitched for automation",
+      "url": "https://www.proxypics.com/api-integration"
+    },
+    {
+      "claim": "Self-serve signup link on the homepage; real-time photos of real estate across the United States; nighttime sign and light audits",
+      "url": "https://www.proxypics.com/"
+    },
+    {
+      "claim": "Crowdsource: 'Delivered Under 24 Hours', panel of over 180K data collectors nationwide day or night, Tiered Proxies (Licensed and Background Checked), photos submitted on site via the app, QC team plus AI review, download via email or API",
+      "url": "https://www.proxypics.com/crowdsource"
+    },
+    {
+      "claim": "Direct: point of contact (homeowner or property staff) gets an SMS with the app download link and submits on site",
+      "url": "https://www.proxypics.com/direct"
+    },
+    {
+      "claim": "About: photos, videos, scans and questionnaires; results often within hours if not minutes",
+      "url": "https://www.proxypics.com/about-us"
+    },
+    {
+      "claim": "Real Estate: nationwide, 24/7, no blackout dates, completion times measured in hours; View360, floor plan scan, 3D LiDAR scan; 180K+ Proxies",
+      "url": "https://www.proxypics.com/real-estate"
+    },
+    {
+      "claim": "Insurance: photo or video evidence of claimed damage; LiDAR and floor plan scans",
+      "url": "https://www.proxypics.com/insurance"
+    },
+    {
+      "claim": "Anti-fraud: georeferenced photos, capture blocked outside a radius of the subject, time-stamped photos, AI/ML review, camera roll locked, manual review of flagged and unflagged orders",
+      "url": "https://www.proxypics.com/anti-fraud"
+    },
+    {
+      "claim": "FAQ: photos must be taken in the app; all photos geo-tagged with lat/long; some clients require time stamp or geo-code; client approves or rejects within 24-48 hours",
+      "url": "https://www.proxypics.com/faq"
+    },
+    {
+      "claim": "Participation Agreement (updated 2026-04-22, covers Clients and Proxies): per-request Client fee; billed on submission; Prepaid Jobs by card or prepaid account; 120-hour rejection window; work product vests in ProxyPics, which may grant Clients use rights; data use for QA, fraud prevention and product improvement; no screening of Clients or Proxies; optional identity verification; one account, no sharing, no location spoofing",
+      "url": "https://www.proxypics.com/participation-agreement"
+    },
+    {
+      "claim": "Platform Provider terms (updated 2026-07-22): Proxy registration details, one account; background checks optional, paid, needed only for interior and appointment orders; all Submissions assigned to ProxyPics; exterior-only access unless authorised",
+      "url": "https://www.proxypics.com/terms"
+    },
+    {
+      "claim": "96% of assignments completed under 24 hours, often under two hours in high-volume markets; 395,000-plus Proxy panel; 415,000+ assignments in 2025; real-time AI validation plus human QC",
+      "url": "https://www.housingwire.com/company-profile/proxypics/"
+    },
+    {
+      "claim": "2018 launch pricing: flat $5 per photo, photographer keeps $3.25 (article of 27 July 2018; historical, not used as price)",
+      "url": "https://www.builtinchicago.org/articles/proxy-pics-chicago-demand-photography-startup"
+    },
+    {
+      "claim": "API orders bill the card on the client's account when the Proxy submits",
+      "url": "https://www.proxypics.com/participation-agreement"
+    }
+  ]
+}

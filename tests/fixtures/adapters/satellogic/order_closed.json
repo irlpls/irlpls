@@ -1,0 +1,23 @@
+{
+ "type": "Feature",
+ "geometry": {
+  "type": "Point",
+  "coordinates": [
+   -57.111470534,
+   -37.46393458,
+   13.065776825
+  ]
+ },
+ "properties": {
+  "order_id": "000123",
+  "sku": "TSKRSH",
+  "status": "closed",
+  "latest_event": {
+   "id": "1234abcd-1234-abcd-abcd-dcba4321",
+   "type": "OrderClosed",
+   "details": {},
+   "message": "Order closed successfully",
+   "timestamp": "2025-01-12T17:04:16.287728"
+  }
+ }
+}

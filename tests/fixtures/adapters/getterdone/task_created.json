@@ -1,0 +1,4 @@
+{"success": true, "data": {"id": "sbx_task_xyz789", "title": "Photograph the storefront of Joe's Pizza at 42 Main St", "category": "Photography",
+ "reward": 10, "platformFee": 2, "escrowedAmount": 12, "escrowStatus": "held", "fundingMechanism": "sandbox", "sandbox": true,
+ "status": "open", "location": {"lat": 33.749, "lng": -84.388, "label": "42 Main St, Atlanta, GA"},
+ "reviewCriteria": {"minImages": 1}, "createdAt": "2026-10-28T10:00:00Z", "deadline": "2026-10-29T10:00:00Z"}}

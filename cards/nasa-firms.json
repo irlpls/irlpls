@@ -1,0 +1,254 @@
+{
+  "id": "nasa-firms",
+  "name": "NASA FIRMS active fires",
+  "status": "unclaimed",
+  "provider_url": "https://firms.modaps.eosdis.nasa.gov/",
+  "tags": [
+    "fire",
+    "fires",
+    "wildfire",
+    "wildfires",
+    "active fire",
+    "hotspot",
+    "hotspots",
+    "burning",
+    "thermal anomaly",
+    "satellite",
+    "VIIRS",
+    "MODIS",
+    "Landsat",
+    "near real-time",
+    "nasa",
+    "government",
+    "free",
+    "sensor",
+    "global"
+  ],
+  "summary": "NASA's Fire Information for Resource Management System (FIRMS) publishes active fire and thermal hotspot detections from the MODIS, VIIRS and Landsat satellite sensors, globally within about 3 hours of an overpass and faster (real-time / ultra real-time) over the US and Canada. Global and regional CSV, KML and shapefile files of the last 24 hours, 48 hours and 7 days download with no key; a free MAP_KEY unlocks an area API returning CSV detections for any bounding box over 1-5 days.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "active fire hotspot detections in a bounding box (or the world) for the last 1-5 days",
+      "keyless global or regional CSV/KML/shapefile of detections from the last 24 hours, 48 hours or 7 days",
+      "VIIRS (S-NPP until Nov. 2, 2026, NOAA-20, NOAA-21) and MODIS near-real-time fire detections (Terra and Aqua MODIS wind down in late 2026/early 2027)",
+      "Landsat fire detections over the US and Canada",
+      "per-detection fields such as brightness, scan/track pixel size, confidence, fire radiative power, acquisition date and time, satellite, day/night"
+    ]
+  },
+  "pricing": {
+    "model": "free public government service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "Free. The 24h/48h/7d files need no key; the area API needs a free MAP_KEY requested with an email address."
+  },
+  "latency": {
+    "typical": "Within 3 hours of overpass globally (best effort); within 30 minutes (real-time) or within about a minute to 5 minutes (ultra real-time) over the US and Canada; Landsat 30-60 minutes (US and Canada)",
+    "notes": "From the FIRMS FAQ and area API page. The FAQ gives both 'within a minute' and 'within 5 minutes' for ultra real-time; the API page says under 60 seconds 'for much of the US and Canada'. RT/URT detections are replaced by NRT ones once processed, or after 6 hours. The keyless 24h/48h/7d files are refreshed every 60 minutes; web services use the most recently processed data. Detections exist only when a satellite passes over, generally about twice a day per sensor (more towards the poles). Suomi NPP data delivery ceases on Nov. 2, 2026. The FAQ also says RT within one hour in another section, so treat the stated minutes as targets."
+  },
+  "coverage": {
+    "regions": [
+      "Global"
+    ],
+    "notes": "Worldwide for MODIS and VIIRS; Landsat and the faster real-time products cover the US and Canada only. Cloud and smoke can hide fires; small or short fires between overpasses can be missed.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "No FIRMS-specific licence. NASA ESDIS data-use guidance: data from NASA-led missions are CC0 unless marked otherwise, while non-NASA data follow their sponsor's licence; NASA asks to be acknowledged ('NASA FIRMS') and must not be implied to endorse a product. LANCE data are provided 'as is'. AI training and resale are not mentioned. Landsat is USGS-operated, so CC0 is not clearly stated for the Landsat NRT layer."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes to about 3 hours after the latest overpass",
+    "notes": "The API also serves standard-processing (SP) data for past dates; irlpls lists FIRMS for its near-real-time detections."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://firms.modaps.eosdis.nasa.gov/api/",
+    "base_url": "https://firms.modaps.eosdis.nasa.gov",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "The 24h/48h/7d CSV, KML and shapefile files under /data/active_fire/ download without a key."
+      },
+      {
+        "type": "other",
+        "env_var": "FIRMS_MAP_KEY",
+        "how_to_get": "Sign up for a free MAP_KEY with an email address at https://firms.modaps.eosdis.nasa.gov/api/map_key/; the key is emailed and goes in the URL path."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/area/csv/{MAP_KEY}/{SOURCE}/{AREA_COORDINATES}/{DAY_RANGE}",
+        "params": "SOURCE: VIIRS_SNPP_NRT, VIIRS_NOAA20_NRT, VIIRS_NOAA21_NRT, MODIS_NRT, LANDSAT_NRT (US/Canada), or *_SP for standard processing; AREA_COORDINATES: west,south,east,north or world; DAY_RANGE 1-5",
+        "notes": "Most recent detections from today back DAY_RANGE-1 days. A /{DATE} suffix returns DATE to DATE+DAY_RANGE-1 instead. An invalid key returns HTTP 400 'Invalid MAP_KEY.'"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/data/active_fire/{product}/csv/{PREFIX}_{Region}_{24h|48h|7d}.csv",
+        "params": "e.g. /data/active_fire/noaa-20-viirs-c2/csv/J1_VIIRS_C2_Global_24h.csv, /data/active_fire/noaa-21-viirs-c2/csv/J2_VIIRS_C2_Global_24h.csv, /data/active_fire/modis-c6.1/csv/MODIS_C6_1_Global_24h.csv; regions include Global, USA_contiguous_and_Hawaii, Canada, Europe, South_America and others",
+        "notes": "No key. Refreshed every 60 minutes. KML and shapefile versions exist alongside."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/api/active_fire_files/all?format=json",
+        "notes": "No key. JSON list of every downloadable 24h/48h/7d file (CSV, KML, SHP) by sensor and region, as used by the FIRMS Active Fire Data page."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/api/data_availability/csv/{MAP_KEY}/{SENSOR}",
+        "params": "SENSOR: ALL, LANDSAT_NRT, MODIS_NRT, MODIS_SP, VIIRS_NOAA20_NRT, VIIRS_NOAA20_SP, VIIRS_NOAA21_NRT, VIIRS_NOAA21_SP, VIIRS_SNPP_NRT, VIIRS_SNPP_SP",
+        "notes": "Date availability of SP and NRT data per sensor."
+      }
+    ],
+    "rate_limits": "5000 transactions per 10-minute interval per MAP_KEY; larger requests (e.g. 7 days) can count as several transactions.",
+    "self_serve": true,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "io.github.pipeworx-io/nasa-firms (Pipeworx, third party), remote https://gateway.pipeworx.io/nasa-firms/mcp"
+    }
+  },
+  "adapter": "nasa_firms",
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Detections are made by algorithms on satellite data, not by people"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or published hashes of delivered files"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Each detection names the satellite and instrument (MODIS, VIIRS, Landsat). Sensor identity is operator-asserted metadata"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each detection carries the acquisition date and time (UTC) of the overpass",
+      "unknown": "How timestamps are validated is not documented in pages read"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each detection carries the latitude and longitude of the centre of the satellite pixel where the fire was seen (about 375 m for VIIRS, 1 km for MODIS, 30 m for Landsat), with scan/track pixel dimensions",
+      "unknown": "The fire can be anywhere within the pixel, and pixels grow towards the swath edge; NRT geolocation error is usually under 100 m but can be several kilometres after spacecraft manoeuvres or space-weather events"
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Detections carry a confidence value; the FAQ says VIIRS data 'have been extensively tested', MODIS validation used coincident ASTER observations, and Landsat validation used aerial, commercial satellite, MODIS and VIIRS data",
+      "unknown": "False detections are known (e.g. super-heated smoke plumes at night, sun glint on reflective roofs, degraded data after spacecraft manoeuvres); per-detection error rates are not published"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Each detection stands alone; a buyer can compare across sensors (VIIRS vs MODIS) themselves"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "FIRMS FAQ: 'FIRMS makes the NRT data available within 3 hours of a satellite observation (on a best-effort basis); the RT data are available within 30 minutes of overpass and the URT within 5 minutes.' (US and Canada for RT/URT)"
+  },
+  "sources": [
+    {
+      "claim": "Earthdata alert (issued 2025-05-02, read 2026-10-28): Suomi NPP delivery ceases Nov. 2, 2026; Terra and Aqua platforms begin shutting down operations in late 2026/early 2027",
+      "url": "https://www.earthdata.nasa.gov/data/alerts-outages/transition-from-modis-viirs"
+    },
+    {
+      "claim": "Area API URL pattern and optional DATE suffix; SOURCE list (LANDSAT_NRT US/Canada only, MODIS_NRT, VIIRS_SNPP/NOAA20/NOAA21_NRT, *_SP); DAY_RANGE 1-5; free MAP_KEY; 5000 transactions per 10 minutes; URT under 60 seconds for much of the US and Canada; RT/URT replaced by NRT or dropped after 6 hours; 'download script' use",
+      "url": "https://firms.modaps.eosdis.nasa.gov/api/area/"
+    },
+    {
+      "claim": "API services index (area, data_availability, map_key, kml_fire_footprints; country API currently not available)",
+      "url": "https://firms.modaps.eosdis.nasa.gov/api/"
+    },
+    {
+      "claim": "MAP_KEY is free, requested with an email address and sent by email",
+      "url": "https://firms.modaps.eosdis.nasa.gov/api/map_key/"
+    },
+    {
+      "claim": "data_availability endpoint and SENSOR list",
+      "url": "https://firms.modaps.eosdis.nasa.gov/api/data_availability/"
+    },
+    {
+      "claim": "NRT within 3 hours (best effort), RT within 30 minutes, URT within 5 minutes (elsewhere 'within a minute') for US/Canada; Landsat 30-60 mins US/Canada; pixel sizes 375 m / 1 km / 30 m; location is pixel centre; NRT geolocation error and manoeuvres; 24h/48h/7d files updated every 60 minutes; VIIRS extensively tested; MODIS ASTER validation; Landsat validation; known false detections; cite 'NASA FIRMS'; full and open sharing",
+      "url": "https://www.earthdata.nasa.gov/data/tools/firms/faq"
+    },
+    {
+      "claim": "Suomi NPP data delivery ceases Nov. 2, 2026; users should move to NOAA-20 and NOAA-21",
+      "url": "https://firms.modaps.eosdis.nasa.gov/content/notifications/firms/news.html"
+    },
+    {
+      "claim": "LANCE: full and open sharing; data provided 'as is', users bear all responsibility and liability",
+      "url": "https://www.earthdata.nasa.gov/data/projects/lance"
+    },
+    {
+      "claim": "ESDIS data-use guidance: NASA-led mission data CC0 unless marked; non-NASA data follow the sponsor's licence; acknowledge NASA; no implied endorsement",
+      "url": "https://www.earthdata.nasa.gov/engage/open-data-services-software-policies/data-use-guidance"
+    },
+    {
+      "claim": "Keyless list of downloadable 24h/48h/7d CSV, KML and shapefile files per sensor and region",
+      "url": "https://firms.modaps.eosdis.nasa.gov/api/active_fire_files/all?format=json"
+    },
+    {
+      "claim": "Keyless global 24h VIIRS NOAA-20 CSV returned real detections (fetched 2026-10-26, latest acquisition 2026-10-27 02:06 UTC)",
+      "url": "https://firms.modaps.eosdis.nasa.gov/data/active_fire/noaa-20-viirs-c2/csv/J1_VIIRS_C2_Global_24h.csv"
+    },
+    {
+      "claim": "Calling the area API with an invalid key returns HTTP 400 'Invalid MAP_KEY.' (tested 2026-10-26)",
+      "url": "https://firms.modaps.eosdis.nasa.gov/api/area/csv/BADKEY/VIIRS_NOAA20_NRT/world/1"
+    },
+    {
+      "claim": "No first-party FIRMS MCP server in the official registry; a third-party Pipeworx server io.github.pipeworx-io/nasa-firms is listed",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=firms"
+    },
+    {
+      "claim": "Area API: MAP_KEY required, 5000 transactions per 10-minute interval; bad key returns 'Invalid MAP_KEY.' HTTP 400",
+      "url": "https://firms.modaps.eosdis.nasa.gov/api/area/"
+    },
+    {
+      "claim": "Keyless static file returned CSV on 2026-10-27",
+      "url": "https://firms.modaps.eosdis.nasa.gov/data/active_fire/noaa-20-viirs-c2/csv/J1_VIIRS_C2_Global_24h.csv"
+    }
+  ],
+  "updated": "2026-10-28",
+  "spec_version": "2026-10-26",
+  "short": "NASA satellite detections of active fires worldwide, within hours of each overpass, free with no key.",
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "automation_allowed": true,
+    "gate": "none",
+    "notes": "key_required is false only for the static files under /data/active_fire/. The area API needs a free MAP_KEY (limit 5,000 transactions per 10 minutes). Some other FIRMS download folders ask for an Earthdata Login.",
+    "rate_limit": {
+      "requests": 5000,
+      "per_seconds": 600,
+      "scope": "per-key",
+      "notes": "Transactions per MAP_KEY per 10 minutes; a large request (several days) can count as several transactions.",
+      "source_url": "https://firms.modaps.eosdis.nasa.gov/api/map_key/"
+    }
+  },
+  "payment": {
+    "methods": [],
+    "notes": "No payment: the service is free."
+  },
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "None for the keyless files; the area API needs a MAP_KEY issued to an email address.",
+    "unknown": "Nothing is commissioned; satellites observe on their own schedule."
+  }
+}

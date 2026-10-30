@@ -1,0 +1,79 @@
+{
+ "id": 10168587,
+ "name": "Main House",
+ "reconstruction_state": "completed",
+ "external_identifier": "8675309",
+ "org": {
+  "id": 463605
+ },
+ "address": {
+  "location_line_1": "4312 Meadow Drive",
+  "city": "Santa Maria",
+  "region": "CA",
+  "postal_code": "93455",
+  "country": "US",
+  "latitude": "34.8784998",
+  "longitude": "-120.4139807"
+ },
+ "captures": [
+  {
+   "id": 558711,
+   "state": "completed",
+   "type": "sparse_exterior",
+   "deliverable": "complete",
+   "created_at": "2025-03-16T23:55:50.094Z"
+  }
+ ],
+ "models": [
+  {
+   "id": 15081686,
+   "name": "Garage",
+   "state": "failed",
+   "failure_reason": "Lack of exterior shots",
+   "deliverable": "complete",
+   "capture_id": 558714,
+   "artifacts": {
+    "measurements": {
+     "pdf": "https://hover.to/api/v3/models/15081686/artifacts/measurements.pdf",
+     "json": "https://hover.to/api/v3/models/15081686/artifacts/measurements.json"
+    }
+   },
+   "images": [
+    {
+     "id": 166283885,
+     "url": "https://hover.to/api/v2/images/166283885/image.jpg",
+     "created_at": "2025-03-16T23:58:14.231Z"
+    }
+   ],
+   "updated_at": "2025-03-17T00:02:58.411Z"
+  },
+  {
+   "id": 15081683,
+   "name": "Main House",
+   "state": "complete",
+   "failure_reason": null,
+   "deliverable": "complete",
+   "capture_id": 558711,
+   "artifacts": {
+    "measurements": {
+     "pdf": "https://hover.to/api/v3/models/15081683/artifacts/measurements.pdf",
+     "json": "https://hover.to/api/v3/models/15081683/artifacts/measurements.json",
+     "xlsx": "https://hover.to/api/v3/models/15081683/artifacts/measurements.xlsx"
+    }
+   },
+   "images": [
+    {
+     "id": 166283852,
+     "url": "https://hover.to/api/v2/images/166283852/image.jpg",
+     "created_at": "2025-03-16T23:56:03.946Z"
+    },
+    {
+     "id": 166283860,
+     "url": "https://hover.to/api/v2/images/166283860/image.jpg",
+     "created_at": "2025-03-16T23:56:03.955Z"
+    }
+   ],
+   "updated_at": "2025-03-17T00:01:00.000Z"
+  }
+ ]
+}

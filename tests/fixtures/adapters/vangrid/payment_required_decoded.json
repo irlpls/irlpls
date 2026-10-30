@@ -1,0 +1,29 @@
+{
+ "x402Version": 2,
+ "error": "payment_required",
+ "resource": {
+  "url": "https://data.vangrid.io/api/v1/bounties"
+ },
+ "accepts": [
+  {
+   "scheme": "exact",
+   "network": "eip155:8453",
+   "amount": "200000000",
+   "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+   "payTo": "0x1a8b69A1338C6E829E1Ced4c3007C79E945E4E70",
+   "maxTimeoutSeconds": 300,
+   "extra": {
+    "name": "USD Coin",
+    "version": "2"
+   }
+  },
+  {
+   "scheme": "exact",
+   "network": "eip155:5042",
+   "amount": "200000000",
+   "asset": "0x3600000000000000000000000000000000000000",
+   "payTo": "0x1a8b69A1338C6E829E1Ced4c3007C79E945E4E70",
+   "maxTimeoutSeconds": 300
+  }
+ ]
+}

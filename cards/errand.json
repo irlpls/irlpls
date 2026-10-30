@@ -1,0 +1,276 @@
+{
+  "id": "errand",
+  "name": "Errand",
+  "status": "unclaimed",
+  "adapter": "errand",
+  "provider_url": "https://errand.be",
+  "short": "Agents send a nearby person in Seoul (Gangnam beta) for in-app camera photos and answers.",
+  "summary": "Agent-native errand dispatch in Seoul. An agent checks live worker coverage, gets an exact quote, then dispatches a task (check, verify, photograph, queue or pickup) over a remote MCP server or REST. Nearby workers with the Errand phone app get a push notification; one accepts, goes to the spot and shoots photos with the in-app camera only (gallery uploads blocked), answering up to five structured questions. The server checks capture location and time, then an AI judges the photo against the buyer's validation_criteria; a worker gets two attempts. Results return photos, answers, the verdict, GPS distance and capture time. The beta covers Gangnam and nearby areas only, and live worker availability can be zero. Prepaid in Korean won, topped up by bank transfer.",
+  "tags": [
+    "people",
+    "errands",
+    "photos",
+    "price-check",
+    "queue",
+    "retail",
+    "agent-native",
+    "mcp",
+    "oauth",
+    "korea",
+    "seoul",
+    "gangnam"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "text-report"
+    ],
+    "tasks": [
+      "check (is a store, pop-up, office or venue open)",
+      "verify (product on shelf, price)",
+      "photograph (storefront, menu, sign, notice, product, queue)",
+      "queue (queue length or waiting time, allowed queue tasks)",
+      "pickup (small item)",
+      "structured on-site answers"
+    ]
+  },
+  "pricing": {
+    "model": "Reward set by the buyer + platform fee of 20% (minimum ₩500), prepaid in KRW",
+    "from_usd": 1.13,
+    "unit": "task",
+    "notes": "Reward per task ₩1,000–₩200,000; the smallest possible charge is ₩1,000 + ₩500 fee = ₩1,500 (≈ $1.13 at 1,325.28 KRW/USD, ECB reference rate 2026-10-26). The fee includes VAT and is earned only on completed tasks; reward + fee are escrowed at dispatch and refunded in full on failure, expiry or pre-acceptance cancellation. Examples: reward ₩5,000 → charge ₩6,000; ₩10,000 → ₩12,000. Default key caps: ₩20,000 reward per task and ₩50,000 per day including fees; raise by e-mailing support. The worker page says tasks posted so far paid ₩8,000–₩15,000. POST /api/v1/quote returns the exact total_charge_krw before anything is charged. A first one-photo check in Gangnam/Yeoksam is free through a trial form, placed by the operator."
+  },
+  "latency": {
+    "typical": "Tens of minutes to hours; the buyer sets a deadline of 10 minutes to 24 hours",
+    "notes": "expires_in_minutes 10–1440; the docs recommend 120 or more to allow for travel. Most of the time is a worker accepting and travelling; AI verification takes 10–30 seconds. The worker page says a task usually takes 10–30 minutes on site. Unfinished tasks expire automatically and are refunded. The operator-placed free trial is 'usually same day to next day'."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Docs: 'expires_in_minutes ✓ 10–1440. 이동 시간을 고려해 120 이상 권장' (10–1440; 120 or more recommended to allow for travel time). FAQ: verification takes 10–30 seconds; most of the time is the worker accepting, travelling and shooting."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Minutes at delivery: captured on site after dispatch",
+    "notes": "Each result carries captured_at and checks.capture_age_min. Photo URLs are signed and expire after 1 hour; a read-only share_url lasts 30 days."
+  },
+  "coverage": {
+    "regions": [
+      "South Korea: Seoul, Gangnam / Yeoksam and nearby areas (beta)"
+    ],
+    "notes": "llms.txt: 'Current beta coverage is Seoul, focused on Gangnam and nearby areas. Worker availability is live and can be zero.' The terms (C-1) describe the service as a Gangnam-area beta. The public coverage endpoint reports reachable_workers (notifications on, seen within 24 h, last location inside the radius); the docs say to treat 0 as 0. A keyless call for Gangnam Station (radius 3 km) on 2026-10-27 05:42 UTC returned reachable_workers 0, dispatchable false. Each API key can also be limited to an allowed area.",
+    "areas": [
+      "KR-11"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms B-3: the requester may use task results (photos, location and time, answers) for its own business purposes ('자신의 업무 목적으로 이용할 수 있습니다'). Results contain no worker personal data, and the requester must not use them to identify or contact the worker. Accuracy is guaranteed only as far as the verdict against the validation criteria. Ownership, resale and AI training are not mentioned. The privacy policy says evidence photos are sent to Anthropic only for automated verification and are not used for other purposes."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 60,
+      "per_seconds": 60,
+      "scope": "per-ip",
+      "notes": "The public coverage endpoint; 429 RATE_LIMITED on excess. Authenticated endpoints: the key's daily budget is the practical limit.",
+      "source_url": "https://errand.be/docs"
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "base_url": "https://errand.be",
+    "docs_url": "https://errand.be/docs",
+    "auth": [
+      {
+        "type": "oauth2",
+        "transport": "mcp",
+        "resource_metadata": "https://errand.be/.well-known/oauth-protected-resource",
+        "dynamic_registration": true,
+        "pkce": "S256",
+        "how_to_get": "Connect an OAuth-capable MCP client to https://errand.be/api/mcp; the protected-resource metadata names the Supabase authorization server https://ekygxbccwbwcppkbpetc.supabase.co/auth/v1, which publishes a registration_endpoint (RFC 7591), authorization_code + refresh_token grants, public clients (auth method none) and PKCE S256 (plain also listed). The resource metadata lists no scopes. Docs: OAuth is for MCP; REST uses the API key. Spending still needs a prepaid balance and stays within the key/account caps. Dynamic client registration is deprecated by the MCP specification of 2026-07-28 in favour of Client ID Metadata Documents (CIMD); whether Errand accepts CIMD is not stated."
+      },
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "env_var": "ERRAND_API_KEY",
+        "how_to_get": "Enter an e-mail at https://errand.be and type the 6-digit code; an er_live_ key is issued at once and shown once. Send 'Authorization: Bearer er_live_…'. Works for REST and as the developer/CLI fallback for MCP."
+      }
+    ],
+    "mcp": {
+      "remote": "https://errand.be/api/mcp",
+      "registry_name": "be.errand/errand",
+      "auth": "oauth2 or bearer API key",
+      "first_party": true,
+      "notes": "Stateless Streamable HTTP (POST JSON-RPC only; GET returns 405). Registry latest 0.2.1 (published 2026-09-17). Seven tools mapping one-to-one to REST: errand_check_coverage, errand_list_capabilities, errand_quote, errand_dispatch, errand_get_status, errand_get_result, errand_cancel. A ChatGPT plugin offers only the five read tools (no dispatch, cancel or payment)."
+    },
+    "endpoints": [
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/api/v1/quote",
+        "params": "task_type, lat, lng, reward_krw",
+        "notes": "MCP errand_quote. Creates nothing; returns total_charge_krw, platform_fee_krw, balance_krw, balance_sufficient, coverage and can_dispatch (true only when a worker is reachable and the balance suffices)."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/api/v1/dispatches",
+        "params": "task_type (check|verify|photograph|queue|pickup), title (4–120), instructions (10–2000), validation_criteria (10–1000), lat, lng, radius_m (100–10000), reward_krw (1000–200000), expires_in_minutes (10–1440); optional address_hint, report_fields (≤5: key, label, type text|number, unit, placeholder), webhook_url",
+        "notes": "MCP errand_dispatch. Escrows reward + fee. Text the worker reads should be in Korean. 422 UNSAFE_TASK / PRIVACY_VIOLATING_TASK on content rejection."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/api/v1/dispatches/{id}",
+        "notes": "MCP errand_get_status. open → accepted → arrived (GPS confirmed on site) → submitted → completed; terminal failures failed (both attempts rejected), expired, cancelled, all refunded. webhook_url receives mission.completed / failed / cancelled / expired."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/v1/dispatches/{id}/result",
+        "notes": "MCP errand_get_result. Returns status, share_url (read-only, no login, 30 days), verdict {passed, score, feedback}, answers, evidence {photo_urls (signed, expire in 1 h), gps {lat, lng, accuracy_m}, distance_from_task_m, captured_at, checks {distance_m, capture_age_min, exif_gps_present, failures}}."
+      }
+    ],
+    "sdk": "Claude plugin ChloePark85/errand-plugin (GitHub, MIT; bundles the remote MCP server and a skill); ClawHub skill errand-ai (ERRANDAI_API_KEY)",
+    "rate_limits": "Public coverage endpoint: 60 requests/minute per IP (429 RATE_LIMITED). Authenticated endpoints: the key's daily budget is the practical limit.",
+    "notes": "Other operations: GET /api/v1/coverage and keyless GET /api/public/coverage?lat=&lng=&radius_m= (online_workers, reachable_workers, dispatchable); GET /api/v1/capabilities (balance, caps, allowed task types, fees); POST /api/v1/dispatches/{id}/cancel (only while open; full refund). Each key carries caps on reward per task, daily budget, allowed task types and allowed area (403 CAP_MAX_REWARD, CAP_DAILY_BUDGET, CAP_TASK_TYPE, CAP_AREA). No OpenAPI file is published."
+  },
+  "payment": {
+    "methods": [
+      "prepaid_balance"
+    ],
+    "agent_can_pay": true,
+    "prepaid": true,
+    "notes": "KRW prepaid balance, topped up only by Korean bank transfer (deposit-code method), minimum ₩10,000 per top-up, credited after the deposit is confirmed. An agent spends from the balance on its own within the key's caps (escrow at dispatch); it cannot top up. Unused balance is refunded on request (terms B-2)."
+  },
+  "account": {
+    "kyc": "email",
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://errand.be/terms"
+    }
+  },
+  "capture": {
+    "by": "people",
+    "worker_pay": {
+      "model": "Fixed reward per task set by the buyer, paid in full to the worker; no worker fee",
+      "disclosed": true,
+      "notes": "Credited to the app wallet when verification passes; withdrawals from ₩5,000 to the worker's own bank account in 1–2 business days; 3.3% income tax withheld under the Income Tax Act. Tasks posted so far paid ₩8,000–₩15,000. Workers who fail both attempts get nothing for that task."
+    }
+  },
+  "requester": {
+    "checks": "The requester verifies an e-mail to get an API key; every request made with the key counts as the requester's own (terms B-1). Keys carry owner-set caps on reward, daily budget, task types and area. Tasks are content-screened: 422 UNSAFE_TASK or PRIVACY_VIOLATING_TASK rejects tasks that endanger the worker or make them photograph people, ID documents or screens. Terms B-4 ban illegal, dangerous or discriminatory tasks, tasks that infringe others' rights, tasks that ask a worker's identity or private contact, and tasks for surveillance or tracking.",
+    "unknown": "No identity check beyond e-mail is documented. How the content screening works, and how reliably it catches person-targeting, is not published."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Workers sign in to the Errand iOS/Android app with e-mail, Apple or Google; one account per person, age 14+; withdrawals go to a bank account in the worker's own name, and tax data is collected when withholding applies.",
+      "unknown": "No identity verification is required to start ('별도 신청은 없어요', no separate application); nothing per result proves who captured it, and the buyer never sees the worker."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Capture is restricted to the Errand app's camera (gallery uploads blocked), but no App Attest, Play Integrity or other server-verified attestation is documented, so a modified app or emulator is not ruled out. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: In-app camera only; terms A-3 forbid photos from the library, screen captures and photos taken elsewhere, and screening rejects tasks that ask workers to photograph screens. No sensor-level or C2PA signing; nothing published shows a photo of a screen or a generated image would be caught at capture."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "The server checks capture time before AI judging; results include captured_at and checks.capture_age_min.",
+      "unknown": "The time comes from the worker's phone app; no signed timestamp is documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "GPS arrival check ('arrived' status), then a server check of capture location; results include gps {lat, lng, accuracy_m}, distance_from_task_m, checks.distance_m and exif_gps_present. Terms A-5 ban location spoofing.",
+      "unknown": "Anti-spoofing beyond the terms is not documented; the pass/fail distance threshold is not published."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "An AI model (photos sent to Anthropic for verification, per the privacy policy) judges the photo against the buyer's validation_criteria and returns verdict {passed, score, feedback}; two attempts per task, then the task fails and is refunded.",
+      "unknown": "The verdict is automated with no human review documented; structured answers are the worker's own and are not checked."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Each task goes to one worker; nothing independent confirms the observation."
+    }
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Agent index: Seoul beta focused on Gangnam, availability live and can be zero; task kinds; seven MCP tools; safe flow (quote then confirm); escrow and full refunds; account caps; MCP, REST, docs, Claude plugin URLs; registry name be.errand/errand",
+      "url": "https://errand.be/llms.txt"
+    },
+    {
+      "claim": "API docs: e-mail-verified er_live_ key or OAuth 2.1 for MCP; 20% fee min ₩500, escrow and refunds; quote, dispatch, status, result, cancel, coverage, capabilities endpoints and fields; field limits; lifecycle and webhooks; in-app camera only, server location/time check, AI judging against validation_criteria, two attempts; result shape; error codes incl. PRIVACY_VIOLATING_TASK; rate limits; bank-transfer top-ups min ₩10,000; free first check",
+      "url": "https://errand.be/docs"
+    },
+    {
+      "claim": "Homepage FAQ: fee and examples, refunds, verification method, Gangnam beta, verification 10–30 s, deadline 10 min–24 h, cancel before acceptance, prepaid bank transfer, default caps ₩20,000/task and ₩50,000/day; key issued on sign-up",
+      "url": "https://errand.be/"
+    },
+    {
+      "claim": "MCP page: remote MCP URL, Streamable HTTP, OAuth 2.1 or API key, tool list, ChatGPT plugin read-only, coverage Gangnam/Yeoksam, Korean bank transfer top-ups",
+      "url": "https://errand.be/mcp"
+    },
+    {
+      "claim": "Terms (effective 2026-09-07), operator 유빅콜렉티브: worker evidence via in-app camera with location/time, no gallery/screen captures; AI + automatic checks, two attempts; worker pay and withholding; ban on location spoofing; requester API key and caps; fee 20% min ₩500 incl. VAT, escrow; results usable for the requester's own business purposes; bans on surveillance/tracking tasks; Gangnam beta",
+      "url": "https://errand.be/terms"
+    },
+    {
+      "claim": "Privacy policy (effective 2026-09-07): location only while working, capture location and time; photos only from the in-app camera; evidence photos sent to Anthropic for automated verification only; Supabase (AWS Seoul) storage; worker identity not shared with requesters",
+      "url": "https://errand.be/privacy"
+    },
+    {
+      "claim": "Worker page: sign in with e-mail/Apple/Google, no separate application; tasks so far ₩8,000–₩15,000; 10–30 minutes per task; withdrawals from ₩5,000, 3.3% withholding; Gangnam only",
+      "url": "https://errand.be/worker"
+    },
+    {
+      "claim": "OAuth protected-resource metadata: resource https://errand.be/api/mcp, Supabase authorization server, bearer in header",
+      "url": "https://errand.be/.well-known/oauth-protected-resource"
+    },
+    {
+      "claim": "Authorization-server metadata: registration_endpoint (dynamic registration), PKCE S256/plain, authorization_code and refresh_token, token auth method none",
+      "url": "https://ekygxbccwbwcppkbpetc.supabase.co/.well-known/oauth-authorization-server/auth/v1"
+    },
+    {
+      "claim": "Official MCP Registry: be.errand/errand, latest 0.2.1 (2026-09-17), remote https://errand.be/api/mcp",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=errand"
+    },
+    {
+      "claim": "Keyless live coverage endpoint returned online_workers 0, reachable_workers 0, dispatchable false for Gangnam Station, radius 3 km",
+      "url": "https://errand.be/api/public/coverage?lat=37.4979&lng=127.0276&radius_m=3000"
+    },
+    {
+      "claim": "Claude plugin (MIT): bundles the remote MCP server and a skill; key shown once; coverage checks work without a key",
+      "url": "https://github.com/ChloePark85/errand-plugin"
+    },
+    {
+      "claim": "USD/KRW 1,325.28 on 2026-10-26 (ECB reference rate) for from_usd",
+      "url": "https://api.frankfurter.dev/v1/latest?base=USD&symbols=KRW"
+    },
+    {
+      "claim": "Errand is not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "Account: e-mail-verified key; every request made with the key counts as the requester's own (terms B-1); agents connect over MCP",
+      "url": "https://errand.be/terms"
+    },
+    {
+      "claim": "MCP specification 2026-07-28: dynamic client registration deprecated in favour of Client ID Metadata Documents",
+      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration"
+    }
+  ]
+}

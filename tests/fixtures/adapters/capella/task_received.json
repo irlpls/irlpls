@@ -1,0 +1,27 @@
+{
+ "type": "Feature",
+ "geometry": {
+  "type": "Point",
+  "coordinates": [
+   -71.09727327650678,
+   42.34643585900935
+  ]
+ },
+ "properties": {
+  "taskingrequestId": "45b0e94b-6107-4671-ab13-d526e45d88c2",
+  "taskingrequestName": "Tasking Test 1",
+  "windowOpen": "2024-10-01T00:00:00.000Z",
+  "windowClose": "2024-10-08T00:00:00.000Z",
+  "collectionTier": "standard",
+  "collectionType": "spotlight",
+  "preApproval": false,
+  "transactionStatus": "",
+  "statusHistory": [
+   {
+    "time": "2022-12-05T14:32:05.847Z",
+    "code": "received",
+    "message": "Request created"
+   }
+  ]
+ }
+}

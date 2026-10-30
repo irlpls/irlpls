@@ -1,0 +1,181 @@
+{
+  "id": "digitraffic-marine-ais",
+  "name": "Digitraffic Marine (Finnish AIS vessel positions)",
+  "provider_url": "https://www.digitraffic.fi/en/marine-traffic/",
+  "short": "Live AIS ship positions in Finnish waters; free, keyless, CC BY.",
+  "summary": "Fintraffic's Digitraffic open-data service serves vessel locations and vessel metadata collected from AIS messages broadcast by vessels in Finnish waters, gathered from the Finnish Transport Infrastructure Agency's data sources, by keyless REST/JSON and by MQTT over WebSockets. AIS Class A position and metadata messages only, with fishing vessels removed.",
+  "tags": [
+    "ship",
+    "vessel",
+    "ais",
+    "maritime",
+    "finland",
+    "baltic",
+    "mqtt",
+    "open data",
+    "no key",
+    "live tracking"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest position, speed, course and heading of vessels in Finnish waters",
+      "vessel details by MMSI: name, call sign, IMO, destination, draught, ship type, dimensions",
+      "vessel locations changed since a given time",
+      "push stream of vessel locations and metadata over MQTT, per vessel or all",
+      "port calls and sea-state estimates from the same service"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "No price or key is mentioned on the pages read; the data are open data under CC BY 4.0."
+  },
+  "latency": {
+    "typical": "Seconds to a minute (not published as a figure)",
+    "notes": "The location response carries a dataUpdatedTime stamp and each position has a timestampExternal in epoch milliseconds. Live check: dataUpdatedTime was 2026-10-27T15:40:21Z in a request made at about 15:40Z. MQTT topics also have a status message giving when each type was last updated."
+  },
+  "coverage": {
+    "regions": [
+      "Finnish waterways (Gulf of Finland, Baltic and Bothnian coasts as received)"
+    ],
+    "notes": "The page is titled 'Open data from Finnish waterways' and the data come from the Finnish Transport Infrastructure Agency's sources. Live sample: vessels at about 60N 25-28E (Gulf of Finland). The pages read do not give receiver coverage. Only AIS class A messages are served; fishing vessels (type 30) are filtered out and other vessel types are modified by published rules.",
+    "areas": [
+      "FI"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms of service: \"Fintraffic's open data is licensed under the Creative Commons 4.0 By license. It gives the right to distribute, remix, tweak, and build upon our data, even commercially, as long as you credit the source.\" Required attribution example: \"Source: Fintraffic / digitraffic.fi, license CC 4.0 BY\". The terms do not mention AI training or resale by name."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "AIS is broadcast by vessels; no identity of a person is attested."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "AIS messages are not signed in this feed."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each location has a timestamp and timestampExternal, and the response has dataUpdatedTime.",
+      "unknown": "These come from the vessel and the receiver/service and are unsigned."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Positions are the vessel's own AIS-reported GNSS fix, with a posAcc accuracy flag.",
+      "unknown": "AIS positions are self-reported and can be wrong or spoofed; nothing here authenticates them."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Digitraffic documents filtering (fishing vessels removed) and modification of vessel type values.",
+      "unknown": "The feed is not a complete vessel census: filtered types and non-class-A traffic are absent."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent confirmation of a position is provided."
+    }
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "seconds to minutes",
+    "notes": "REST gives the latest known position per vessel; MQTT pushes updates."
+  },
+  "delivery": {
+    "speed": "minutes",
+    "basis": "MQTT over WebSockets gives push updates (wss://meri.digitraffic.fi:443/mqtt); the REST locations response carries dataUpdatedTime.",
+    "modes": [
+      "live"
+    ]
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/marine-traffic/",
+    "base_url": "https://meri.digitraffic.fi",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key. Send Accept-Encoding: gzip (mandatory; 406 otherwise) and, recommended, a Digitraffic-User header naming your app, with no personal data."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/api/ais/v1/locations",
+        "params": "latitude, longitude, radius (km, haversine), from/to (epoch ms; from defaults to 24 hours back), mmsi (per the OpenAPI document)",
+        "notes": "GeoJSON FeatureCollection with mmsi, sog, cog, navStat, rot, posAcc, raim, heading, timestamp, timestampExternal. The live call with no filter returned 924 vessels."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/api/ais/v1/vessels",
+        "notes": "Vessel metadata: callSign, destination, draught, eta, imo, mmsi, name, posType, reference points, shipType, timestamp."
+      },
+      {
+        "action": "list",
+        "method": "MQTT wss://meri.digitraffic.fi:443/mqtt",
+        "path": "vessels-v2/{mmsi}/locations and vessels-v2/{mmsi}/metadata",
+        "notes": "MQTT over WebSockets; wildcards allowed (vessels-v2/#); vessels-v2/status gives last update time. Test server meri-test.digitraffic.fi."
+      }
+    ],
+    "rate_limits": "Per the instructions page, without the Digitraffic-User header the limits are per IP, including 60 requests/minute for general use, 5 for MQTT and 60 for the tie/meri V1 interfaces; exceeding gives 429. Using the header raises the allowance (amount not stated).",
+    "notes": "The positions are of ships, not people, but crew and passengers could be traced; follow rule 9 of the agent manual for any request about a specific named person. Gzip is mandatory except for weather camera images. API versions are announced beta first and deprecated ones run six more months with Deprecation and Sunset headers."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "gate": "none",
+    "rate_limit": {
+      "requests": 60,
+      "per_seconds": 60,
+      "scope": "per-ip",
+      "notes": "Without the Digitraffic-User header (MQTT: 5 per minute); the header raises the allowance (no figure published). 429 on excess. gzip required.",
+      "source_url": "https://www.digitraffic.fi/en/support/instructions/"
+    }
+  },
+  "sources": [
+    {
+      "claim": "Marine traffic data: AIS locations and vessels endpoints, MQTT address, topics, Finnish waterways, Finnish Transport Infrastructure Agency sources, example locations and metadata messages",
+      "url": "https://www.digitraffic.fi/en/marine-traffic/"
+    },
+    {
+      "claim": "AIS: class A messages only, fishing vessels filtered, vessel type rules",
+      "url": "https://www.digitraffic.fi/en/marine-traffic/ais/"
+    },
+    {
+      "claim": "Terms: CC 4.0 BY, commercial use, attribution requirements and example",
+      "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+      "claim": "Digitraffic-User header, mandatory gzip (406), per-IP rate limits without header, 429, API lifecycle",
+      "url": "https://www.digitraffic.fi/en/support/instructions/"
+    },
+    {
+      "claim": "Live GET of /api/ais/v1/locations (924 features, dataUpdatedTime) and /api/ais/v1/vessels",
+      "url": "https://meri.digitraffic.fi/api/ais/v1/locations"
+    },
+    {
+      "claim": "OpenAPI: /api/ais/v1/locations parameters latitude, longitude, radius (km), from (default 24 h back), to, mmsi; property meanings (sog 102.3, cog 360 and heading 511 = not available; timestampExternal = record time in epoch ms)",
+      "url": "https://meri.digitraffic.fi/swagger/openapi.json"
+    }
+  ],
+  "status": "unclaimed",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  },
+  "adapter": "digitraffic-marine-ais"
+}

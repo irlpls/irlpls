@@ -1,0 +1,260 @@
+{
+  "id": "wsdot-cameras",
+  "name": "WSDOT highway cameras",
+  "status": "unclaimed",
+  "provider_url": "https://wsdot.wa.gov/traffic/api/",
+  "adapter": "wsdot_cameras",
+  "tags": [
+    "traffic camera",
+    "highway camera",
+    "cctv",
+    "webcam",
+    "traffic",
+    "road",
+    "highway",
+    "freeway",
+    "interstate",
+    "mountain pass",
+    "snow",
+    "road conditions",
+    "airport",
+    "ferry terminal",
+    "seattle",
+    "spokane",
+    "portland",
+    "washington state",
+    "dot",
+    "government",
+    "free",
+    "keyless",
+    "image",
+    "photo",
+    "live",
+    "real-time"
+  ],
+  "summary": "Washington State DOT publishes about 1,700 camera feeds (state highways, mountain passes, airports, ferry terminals, and some partner cameras such as Oregon DOT's around Portland), each a still JPEG that refreshes about every 5 minutes with the date and time printed on it. The full camera list with image links is free and keyless as RSS, KML or an ArcGIS feature service, and the images themselves need no key. The Traveler Information REST API adds road, milepost, owner and active-status fields and needs a free access code sent by email.",
+  "short": "Live still images from about 1,700 Washington State highway, pass, airport and ferry cameras; free, no key needed.",
+  "capabilities": {
+    "modalities": [
+      "photo"
+    ],
+    "tasks": [
+      "list every camera with title, coordinates and current image URL, keyless (RSS, KML or ArcGIS FeatureServer)",
+      "query cameras by area or attribute through the keyless ArcGIS FeatureServer",
+      "list highway cameras with coordinates, road name, milepost, direction, region, owner and active status (REST API, access code)",
+      "search cameras by state route, region and milepost range (REST API, access code)",
+      "fetch a camera's current still image, stamped with date and time",
+      "see traffic, snow and road conditions on Washington highways and mountain passes, and conditions at airports and ferry terminals"
+    ]
+  },
+  "pricing": {
+    "model": "free public government service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "No charge. The camera list (RSS, KML, ArcGIS) and the images need no key; the REST API needs a free access code sent by email."
+  },
+  "latency": {
+    "typical": "Images refresh about every 5 minutes (WSDOT); in a 28-image sample on 2026-10-26, 26 were under 10 minutes old and most under 2 minutes.",
+    "notes": "In the same sample one listed image (I-5 at MP 139.2: Emerald St) had not changed since 2026-07-02 and one airport image returned 404, so check the time printed on each image or its Last-Modified header."
+  },
+  "coverage": {
+    "regions": [
+      "United States (Washington)",
+      "United States (Oregon, Portland area)"
+    ],
+    "notes": "1,706 cameras listed on 2026-10-26 across WSDOT regions ER, NC, NW, OL, OS, SC, SW and WA: mostly Washington state highways and passes, plus about 100 airport cameras, about 45 ferry-terminal cameras, and 65 Oregon cameras in the Portland area (region OS, many served from Oregon DOT's tripcheck.com). Some cameras belong to other agencies (CameraOwner, OwnerURL fields), and the REST IsActive field can be false.",
+    "areas": [
+      "US-WA",
+      "US-OR"
+    ]
+  },
+  "licensing": {
+    "summary": "WSDOT provides travel information 'as-is' and 'as available' and disclaims all warranties of accuracy and timeliness. Images carry a '© WSDOT' overlay and the website footer says 'All Rights Reserved'. The ArcGIS camera service's licence says the feed is intended for 'low volume' use and that WSDOT may cancel or restrict access for any reason. No reuse licence for camera images was found, and nothing names AI training or resale. Some images come from other agencies (e.g. Oregon DOT)."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "About 5 minutes or less",
+    "notes": "Only the current image is served; no archive of past frames is offered. Each image has its date and time printed in the corner."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://wsdot.wa.gov/traffic/api/",
+    "base_url": "https://wsdot.wa.gov/Traffic/api/HighwayCameras/HighwayCamerasREST.svc",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "The RSS, KML and ArcGIS camera lists and the image URLs on images.wsdot.wa.gov need no key."
+      },
+      {
+        "type": "api_key_query",
+        "env_var": "WSDOT_ACCESS_CODE",
+        "how_to_get": "Enter your email address on https://wsdot.wa.gov/traffic/api/ to be sent an Access Code; pass it as the AccessCode query parameter. Needed for the REST and WSDL services only."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "https://wsdot.wa.gov/traffic/api/HighwayCameras/rss.aspx",
+        "notes": "Keyless. RSS 2.0 of all cameras: guid (camera ID), title, link (image URL), image width and height. The item date is the feed date, not the image time."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "https://wsdot.wa.gov/traffic/api/HighwayCameras/kml.aspx",
+        "notes": "Keyless. KML of all cameras grouped by region folder, with coordinates and image URL."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "https://data.wsdot.wa.gov/arcgis/rest/services/TravelInformation/TravelInfoCamerasWeather/FeatureServer/0/query",
+        "params": "where, geometry, outFields, resultRecordCount, f",
+        "notes": "Keyless ArcGIS query. Fields: OBJECTID (CameraID), CameraTitle, ImageURL, CompassDirection; point geometry in Web Mercator unless outSR is set. Licence: 'low volume' use. maxRecordCount 2000, so one query can return all 1,706 cameras."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/GetCamerasAsJson",
+        "params": "AccessCode",
+        "notes": "All cameras: CameraID, CameraLocation (Description, Direction, Latitude, Longitude, MilePost, RoadName), CameraOwner, OwnerURL, Description, DisplayLatitude, DisplayLongitude, ImageURL, ImageWidth, ImageHeight, IsActive, Region, SortOrder, Title. Returns HTTP 401 'The supplied access code was missing or invalid' without a code. JSONP via callback."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/SearchCamerasAsJson",
+        "params": "AccessCode, StateRoute, Region, StartingMilepost, EndingMilepost"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/GetCameraAsJson",
+        "params": "AccessCode, CameraID"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://images.wsdot.wa.gov/{region}/{camera}.jpg",
+        "notes": "Keyless current JPEG, as given in each camera's ImageURL; Last-Modified header gives the image time. Some ImageURLs point to other hosts (e.g. tripcheck.com)."
+      }
+    ],
+    "rate_limits": "No numeric limit published. The ArcGIS service is 'intended for low volume use' and WSDOT may cancel or restrict access.",
+    "self_serve": true,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "No WSDOT-run MCP server in the official MCP Registry. Third-party: io.github.cyanheads/wsdot-mcp-server (remote https://wsdot.caseyjhand.com/mcp; describes highway conditions, ferries, tolls and border waits)."
+    }
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Fixed agency cameras, not people"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing of images; nothing shows the image left the camera unmodified"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Each image comes from a named, fixed camera listed by WSDOT, with an owner field. No capture signing; trust rests on WSDOT and partner-agency operations"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "WSDOT says each image includes the date and time; the time is printed on the image, and the image server sends a Last-Modified header",
+      "unknown": "The timestamp is an unsigned overlay. Some listed cameras serve stale images (one sampled image was months old), so a recent time must be checked on every image."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Cameras have published coordinates, road name, milepost and view direction; WSDOT says images include state route and milepost",
+      "unknown": "Pan-tilt cameras may point elsewhere than the listed direction"
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No review of image content"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "None documented"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "WSDOT ArcGIS camera layer: 'The image is refreshed approximately every 5 minutes and includes details such as date, time, state route number, and milepost number.'"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "sources": [
+    {
+      "claim": "Traveler Information API list (Highway Cameras with Doc, WSDL, REST, RSS and KML; Mountain Pass Conditions, Traffic Flow, Travel Times, Weather Stations, etc.); designed for third parties; Access Code sent by email",
+      "url": "https://wsdot.wa.gov/traffic/api/"
+    },
+    {
+      "claim": "Camera REST operations GetCameraAsJson, GetCamerasAsJson, SearchCamerasAsJson (and XML variants)",
+      "url": "https://wsdot.wa.gov/traffic/api/HighwayCameras/HighwayCamerasREST.svc/Help"
+    },
+    {
+      "claim": "SearchCamerasAsJson parameters AccessCode, StateRoute, Region, StartingMilepost, EndingMilepost; JSONP supported",
+      "url": "https://wsdot.wa.gov/traffic/api/HighwayCameras/HighwayCamerasREST.svc/Help/operations/SearchCamerasAsJson"
+    },
+    {
+      "claim": "Camera JSON fields: CameraID, CameraLocation, CameraOwner, OwnerURL, ImageURL, ImageWidth, ImageHeight, IsActive, Region, Title",
+      "url": "https://wsdot.wa.gov/traffic/api/HighwayCameras/HighwayCamerasREST.svc/Help/operations/GetCamerasAsJson"
+    },
+    {
+      "claim": "GetCamera, GetCameras, SearchCameras functions and parameters; Region values from GetCameras",
+      "url": "https://wsdot.wa.gov/traffic/api/Documentation/group___highway_cameras.html"
+    },
+    {
+      "claim": "Calling GetCamerasAsJson without a code returns HTTP 401 'The supplied access code was missing or invalid' (tested 2026-10-26)",
+      "url": "https://wsdot.wa.gov/traffic/api/HighwayCameras/HighwayCamerasREST.svc/GetCamerasAsJson"
+    },
+    {
+      "claim": "Keyless RSS of all 1,706 cameras with image URLs (fetched 2026-10-26); camera hosts and regions",
+      "url": "https://wsdot.wa.gov/traffic/api/HighwayCameras/rss.aspx"
+    },
+    {
+      "claim": "Keyless KML of all 1,706 cameras with coordinates, in region folders ER, NC, NW, OL, OS, SC, SW, WA; OS cameras are in the Portland, Oregon area (fetched 2026-10-26)",
+      "url": "https://wsdot.wa.gov/traffic/api/HighwayCameras/kml.aspx"
+    },
+    {
+      "claim": "Images refresh approximately every 5 minutes and include date, time, state route and milepost; feed intended for 'low volume' use and WSDOT may cancel or restrict access",
+      "url": "https://data.wsdot.wa.gov/arcgis/rest/services/TravelInformation/TravelInfoCamerasWeather/MapServer/info/iteminfo?f=pjson"
+    },
+    {
+      "claim": "Keyless ArcGIS camera layer: fields OBJECTID (CameraID), CameraTitle, ImageURL, CompassDirection; count 1,706 (queried 2026-10-26)",
+      "url": "https://data.wsdot.wa.gov/arcgis/rest/services/TravelInformation/TravelInfoCamerasWeather/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json"
+    },
+    {
+      "claim": "Keyless live image with '© WSDOT' and 'Oct 26, 2026 9:59 PM PDT' printed on it; Last-Modified under 2 minutes old (fetched 2026-10-26)",
+      "url": "https://images.wsdot.wa.gov/sw/005vc07860.jpg"
+    },
+    {
+      "claim": "A listed camera image last modified 2026-07-02 (stale image still served)",
+      "url": "https://images.wsdot.wa.gov/nw/005vc13921.jpg"
+    },
+    {
+      "claim": "Information provided 'as-is' and 'as available'; no warranties of accuracy or timeliness; site footer 'All Rights Reserved'",
+      "url": "https://wsdot.wa.gov/about/policies/travel-information-disclaimer"
+    },
+    {
+      "claim": "Third-party WSDOT MCP server io.github.cyanheads/wsdot-mcp-server; no WSDOT-run entry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=wsdot"
+    }
+  ],
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

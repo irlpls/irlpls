@@ -1,0 +1,4 @@
+SOURCE: https://dronebaseapi.docs.apiary.io/ (blueprint https://jsapi.apiary.io/apis/dronebaseapi/blueprint,
+last updated 2026-03-18; read 2026-10-28): Find Mission, Mission Create Preview (V1, V2), Mission Update Hooks,
+Mission Images examples. fixture: documented-shape (trimmed; the complete mission and asset URLs are hand-made in the
+documented schema).

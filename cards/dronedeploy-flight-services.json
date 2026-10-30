@@ -1,0 +1,237 @@
+{
+  "id": "dronedeploy-flight-services",
+  "name": "DroneDeploy Flight Services",
+  "provider_url": "https://www.dronedeploy.com",
+  "status": "unclaimed",
+  "short": "DroneDeploy sends a pilot to fly the drone missions you plan in DroneDeploy, in 17 listed countries.",
+  "summary": "DroneDeploy's Flight Services, also called Data on Demand, send a Part 107-certified pilot (via partners outside the US) to fly the maps, photos, videos or panoramas you plan in a DroneDeploy project. The data is uploaded to your project. Typical turnaround is about a week in the US and 1–6 weeks elsewhere. Teams and Enterprise customers only; priced per flight minute from a prepaid flight bank.",
+  "tags": [
+    "Data on Demand",
+    "drone",
+    "construction",
+    "reality capture"
+  ],
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "photo",
+      "video"
+    ],
+    "tasks": [
+      "mapping flight",
+      "site photos",
+      "site video",
+      "panoramas",
+      "map missions with customer-surveyed ground control points"
+    ]
+  },
+  "pricing": {
+    "model": "per flight minute, drawn from a prepaid flight bank under contract",
+    "from_usd": 0,
+    "unit": "Mavic 3 Enterprise flight minute",
+    "notes": "No public rates. 'All Data on Demand mission pricing is based on flight time in Mavic 3 Enterprise minutes.' Credits are bought in a flight bank with an expiration date. Needs a Teams or Enterprise subscription; a quote is confirmed on a scoping call."
+  },
+  "latency": {
+    "typical": "about 1 week (US); 1–2 weeks in US, AU, DE, GB, AT, NZ; 2–4 weeks in CA, ES, BR, MX, AR, FR, RO; 4–6 weeks in IN, PH, SG, JP",
+    "notes": "Orders are processed Mon–Fri, 9 am–5 pm EST; others the next business day. The scheduled flight date is emailed within 24–48 hours. Most missions are under 60 minutes of flight time; data is often reviewable the same day it is uploaded."
+  },
+  "coverage": {
+    "regions": [
+      "North America",
+      "Latin America",
+      "Europe",
+      "Asia-Pacific"
+    ],
+    "areas": [
+      "US",
+      "AU",
+      "DE",
+      "GB",
+      "AT",
+      "NZ",
+      "CA",
+      "ES",
+      "BR",
+      "MX",
+      "AR",
+      "FR",
+      "RO",
+      "IN",
+      "PH",
+      "SG",
+      "JP"
+    ],
+    "notes": "The help center lists 17 countries with turnaround estimates and says operations are provided 'in many places across the globe through partners', some easier to fly than others. Countries outside the list are not ruled out but not stated."
+  },
+  "licensing": {
+    "summary": "The Master Services Agreement (updated 2026-02-20) says the customer owns all Customer Content, defined to include content the customer 'collects or generates in its use of the Services' and 'data gathered by a Robot, camera or other User device'. It does not mention Flight Services, Data on Demand or pilots, so whether flown deliverables count as Customer Content is not stated. DroneDeploy takes a licence to Customer Content only as reasonably necessary to provide, maintain, improve and update its products, to prevent or address service issues, as required by law, as permitted by its Privacy Policy, or as the customer permits in writing. The MSA bars reselling the Service but says nothing about reselling data. AI or ML training is not mentioned."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "All pilots are Part 107 certified, certified through DroneDeploy training with mission-specific training, and fully insured",
+      "unknown": "How certification is checked, and which certification applies to partner pilots outside the US"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No app or device attestation is stated. Pilots fly the customer's DroneDeploy flight plans and data is uploaded to the customer's project, but it is not stated that the DroneDeploy app must be used. No C2PA signing; not on the C2PA Conforming Products List. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: All pilots must use a 20MP camera; flight time is priced in Mavic 3 Enterprise minutes. Nothing shows each file came from a real drone camera; no signing or device attestation"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "A flight-date email after the mission, and scheduled and completed flight dates in the Data on Demand dashboard",
+      "unknown": "No signed or independently timestamped capture time"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Pilots are instructed to follow the customer's flight plans explicitly",
+      "unknown": "Pilots may deviate for safety, FAA compliance or on-site direction; flight logs and geotags are not offered as proof"
+    },
+    "content": {
+      "level": "claimed",
+      "method": "A QA team checks data on every project so it is 'delivered to spec'",
+      "unknown": "QA criteria are not published"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of the capture is offered"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "weeks",
+    "basis": "'The typical turnaround time for orders located in the United States is 1 week'; other countries 1–2, 2–4 or 4–6 weeks (help.dronedeploy.com, Data on Demand)."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "notes": "Captured after you order."
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://developer-docs.dronedeploy.com/api/introduction",
+    "base_url": "https://www.dronedeploy.com/graphql",
+    "auth": [
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "how_to_get": "Enterprise customers only: ask sales@dronedeploy.com for API access; an admin or owner then generates the key under Account Preferences > API Key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "POST",
+        "path": "/graphql",
+        "params": "query viewer { organization { plans(first, after) } }",
+        "notes": "Lists the organization's plans (maps), paged."
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/graphql",
+        "params": "mutation createExport(input: {planId, parameters: {layer}}); then node(id) { ... on MapPlan { exports { status downloadPath } } }",
+        "notes": "Creates and fetches exports of delivered map data."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No DroneDeploy server in the official MCP Registry (searched 2026-10-26)."
+    },
+    "notes": "The public API has no documented way to order a Flight Services mission; orders are placed with Request in the DroneDeploy web app. The API can read plans and export delivered data. Data on Demand activity is also available through Data Exchange (Enterprise). Machine user accounts that act on behalf of multiple users need prior written consent (MSA 4.4, last bullet)."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "methods": [
+      "invoice",
+      "card"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "Missions draw on a prepaid flight bank of credits with an expiration date. The MSA allows card billing in advance or invoices due net 30 under an Order Form."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Only Teams and Enterprise customers whose subscription accounts team has granted access can order. Each order names a site contact (name and phone) and can carry a purchase order number. The MSA forbids intentionally collecting images of people or personal information, military or harmful use, and use in US-embargoed countries.",
+    "unknown": "No documented check that the requester is authorised to have the site flown, or of the purpose."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Flight Services = Data on Demand; Teams and Enterprise only; ordering via Request in a project; maps, photos, videos, panoramas; Mon–Fri 9–5 EST processing; US turnaround 1 week; 17-country turnaround table; global through partners; Part 107 and DroneDeploy-trained pilots; 20MP camera; pricing in Mavic 3 Enterprise minutes; data uploaded to project with flight-date email",
+      "url": "https://help.dronedeploy.com/hc/en-us/articles/4445707539351-Data-on-Demand"
+    },
+    {
+      "claim": "Access granted by subscription accounts team; special instructions and PO number; pilots follow flight plans explicitly unless safety/FAA/on-site direction; site contact; scheduled-date email within 24–48 hours; data uploaded to project",
+      "url": "https://help.dronedeploy.com/hc/en-us/articles/4421890375063-How-To-Order-a-Mission"
+    },
+    {
+      "claim": "GCP missions: customer surveys the site and lays out GCPs; DroneDeploy and partners do not survey",
+      "url": "https://help.dronedeploy.com/hc/en-us/articles/4484452648215-Ordering-a-Mission-with-GCPs"
+    },
+    {
+      "claim": "Flight bank: purchased, consumed and remaining credits with expiration date; mission status with scheduled and completed flight dates; Data Exchange access",
+      "url": "https://help.dronedeploy.com/hc/en-us/articles/41520556666519-Analytics-Dashboard-Data-on-Demand"
+    },
+    {
+      "claim": "Help-center article text read through the public Zendesk API (the HTML pages return 403)",
+      "url": "https://help.dronedeploy.com/api/v2/help_center/en-us/sections/4421890349847/articles.json"
+    },
+    {
+      "claim": "Scoping call then one-click ordering; pilot dispatched within a week; fully insured, Part 107, mission-specific training; most missions under 60 minutes; data often same day; QA to spec; nearly 10,000 missions since 2020",
+      "url": "https://www.dronedeploy.com/data-on-demand"
+    },
+    {
+      "claim": "Customer owns Customer Content; definition of Customer Content; DroneDeploy licence to improve products; no resale of the Service; machine accounts need consent; no intentional collection of images of people; embargoed countries; card or invoice net 30",
+      "url": "https://dronedeploy.com/about/terms"
+    },
+    {
+      "claim": "GraphQL endpoint and Bearer Authorization header",
+      "url": "https://developer-docs.dronedeploy.com/api/introduction"
+    },
+    {
+      "claim": "API key from sales for enterprise or Developer Partner accounts",
+      "url": "https://developer-docs.dronedeploy.com/api/authentication.md"
+    },
+    {
+      "claim": "List plans query",
+      "url": "https://developer-docs.dronedeploy.com/api/examples/fetching-all-plans-for-your-organization.md"
+    },
+    {
+      "claim": "createExport mutation and fetching exports",
+      "url": "https://developer-docs.dronedeploy.com/api/examples/creating-an-export.md"
+    },
+    {
+      "claim": "API available to Enterprise customers",
+      "url": "https://help.dronedeploy.com/hc/en-us/articles/27659888106391-DroneDeploy-API-Getting-Started"
+    },
+    {
+      "claim": "Enterprise admins or owners generate the API key in Account Preferences",
+      "url": "https://help.dronedeploy.com/hc/en-us/articles/1500004860561-REST-API-Key"
+    },
+    {
+      "claim": "No DroneDeploy server in the MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=dronedeploy"
+    },
+    {
+      "claim": "DroneDeploy is not on the C2PA Conforming Products List",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+  ]
+}

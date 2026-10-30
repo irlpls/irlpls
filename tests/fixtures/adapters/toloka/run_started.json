@@ -1,0 +1,18 @@
+{
+  "_fixture": "documented-shape",
+  "_source": "https://platform.toloka.ai/api/v2-beta/doc POST /api/v2-beta/pipelines/{pipelineId}/runs",
+  "response": {
+    "id": "run-42",
+    "datasetId": "ds-1",
+    "status": "pending",
+    "createdAt": "2026-10-28T10:00:00Z",
+    "error": null,
+    "result": {
+      "total": 500,
+      "completed": 0,
+      "failed": 0,
+      "canceled": 0,
+      "paused": 0
+    }
+  }
+}

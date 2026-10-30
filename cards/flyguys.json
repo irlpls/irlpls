@@ -1,0 +1,233 @@
+{
+  "id": "flyguys",
+  "name": "FlyGuys",
+  "provider_url": "https://flyguys.com",
+  "short": "Nationwide US drone, LiDAR and inspection missions flown by a pilot network.",
+  "summary": "FlyGuys (Lafayette, Louisiana) runs FlyGuys Capture, a platform that dispatches missions to a network of FAA-certified (Part 107) drone pilots for aerial imagery, mapping, LiDAR, inspections, thermal and multispectral capture, with QA before delivery. It publishes a Swagger API (api.flyguys.com) to create jobs from a catalogue package id and a location, read job status, update status, and fetch delivered files via temporary S3 or Azure credentials; access runs through an Azure API Management developer portal. Pricing is quoted per project.",
+  "tags": [
+    "drone",
+    "aerial",
+    "uav",
+    "lidar",
+    "mapping",
+    "photogrammetry",
+    "inspection",
+    "thermal",
+    "multispectral",
+    "pilot network",
+    "usa",
+    "api",
+    "commission"
+  ],
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "photo",
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "order a drone mission (aerial imagery, orthomosaic, 3D, LiDAR, roof or tower inspection, thermal, multispectral) at a US address or polygon",
+      "create a job through the API from a catalogue package id, location and annotated areas",
+      "read job status and update it (for example put on hold)",
+      "list and download delivered files through temporary S3 or Azure storage credentials"
+    ]
+  },
+  "pricing": {
+    "model": "quote per project; volume discounts and MSAs",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "FAQ: 'FlyGuys does not offer set packages'; LiDAR 'generally range from $6,500 to $9,000 per day and up to $12,000 depending on client needs'. No per-mission list price for imagery was found."
+  },
+  "latency": {
+    "typical": "2 to 5 business days after the flight for non-LiDAR work",
+    "notes": "FAQ: 'Projects are typically ready within 2-5 business days with an ASAP mindset for all non-LiDAR work' and 'We fly as soon as possible based on factors such as weather, pilot availability, site availability and airspace restrictions.' Time to first flight is not stated. The MSA gives the client 7 days to report non-conforming deliverables, which are re-flown at FlyGuys' cost."
+  },
+  "coverage": {
+    "regions": [
+      "United States"
+    ],
+    "notes": "FAQ: 'If you are within the US, absolutely! All inquiries originating outside the United States will be considered on an individual basis.' The AI-assistants page says 'Geographic coverage: United States, with additional capabilities evaluated according to project requirements.' Pilots need their own drone and a Part 107 licence.",
+    "areas": [
+      "US"
+    ]
+  },
+  "licensing": {
+    "summary": "FAQ: 'FlyGuys owns all data collected using our technology unless otherwise specified by the client.' The Master Services Terms (6 Aug 2024 docx) say FlyGuys owns the Services' intellectual property, that re-use of deliverables for other purposes is at the client's risk, and that deliverables are AS-IS; no clause on AI training or resale was found, and any licence to the client is set in the Task Order.",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "unknown": "Pilots must hold their own drone and an FAA Part 107 certificate and register their FAA number in the pilot portal; FlyGuys assigns a mission coordinator. How identity and certificate are verified is not published.",
+      "method": "Pilot portal registration with FAA number",
+      "evidence_url": "https://flyguys.com/faq/"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No device or app attestation of captures is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No capture-device signing (such as C2PA) is documented; recommended drones (Mavic 3 Enterprise, Matrice 4) are named but not attested."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Mission records carry timestamps; no independent time-stamp scheme is documented."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Jobs carry a coordinate and annotated polygons; flight-log or geotag verification is not described."
+    },
+    "content": {
+      "level": "claimed",
+      "unknown": "FlyGuys says it performs QA/QC review of collected data before delivery; no public method or evidence.",
+      "method": "Internal QA/QC review",
+      "evidence_url": "https://flyguys.com/how-flyguys-works/"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check is documented."
+    }
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Flown after you order",
+    "notes": "Weather, pilot, site and airspace permitting."
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://api.flyguys.com/swagger/ui/index",
+    "base_url": "https://api.flyguys.com",
+    "openapi_url": "https://api.flyguys.com/swagger/docs/v1",
+    "auth": [
+      {
+        "type": "oauth2",
+        "dynamic_registration": false,
+        "transport": "rest",
+        "how_to_get": "POST /token (form: grant_type=client_credentials, client_id, client_secret) returns a bearer access token (the developer portal example shows expires_in 7000); then send 'Authorization: Bearer <token>' and a client_id header. Credentials come from signing up at the Azure API Management developer portal dev-connect.flyguys.com; whether sign-up is approved by FlyGuys was not verified."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/Jobs",
+        "params": "package.id, location (name, address, coordinate, annotations FeatureCollection with catalog_item_ids)",
+        "notes": "Creates a mission; the package id comes from a catalogue the client is given"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/Jobs/{id}"
+      },
+      {
+        "action": "status",
+        "method": "POST",
+        "path": "/Mission",
+        "params": "mission.id, status (for example put_on_hold), status_update_reason",
+        "notes": "Updates mission status"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/Files/{jobId}",
+        "notes": "Also /Files/v2/{jobId} for Azure blobs"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/S3Credentials",
+        "notes": "Temporary STS credentials; client_id header required. /AzureStorageCredentials for a SAS"
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "Swagger title 'Flyguys APIs'; the sample request uses a demo package. No quote endpoint, OAuth discovery, dynamic registration or MCP server found (Registry search 0). FlyGuys also publishes a page 'Official FlyGuys information for AI assistants and search engines'."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "FAQ: 'Projects are typically ready within 2-5 business days with an ASAP mindset for all non-LiDAR work.'"
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "approval"
+  },
+  "capture": {
+    "by": "people"
+  },
+  "payment": {
+    "methods": [
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "notes": "MSA: FlyGuys invoices on completion unless the Task Order says otherwise, payable in US dollars on receipt. No API payment."
+  },
+  "requester": {
+    "checks": "Master Services Terms and a Task Order per project; MSAs encouraged for recurring work. The FAQ says it cannot assist in the search for missing pets.",
+    "unknown": "Customer vetting and permitted-use screening are not published."
+  },
+  "providers": [
+    {
+      "name": "FlyGuys, Inc.",
+      "roles": [
+        "producer",
+        "processor"
+      ],
+      "url": "https://flyguys.com"
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Swagger UI for the FlyGuys API",
+      "url": "https://api.flyguys.com/swagger/ui/index"
+    },
+    {
+      "claim": "Swagger 2.0 document: /Jobs, /Mission, /Files, /S3Credentials, /AzureStorageCredentials, /token",
+      "url": "https://api.flyguys.com/swagger/docs/v1"
+    },
+    {
+      "claim": "Developer portal (Azure API Management) sign-up and token example",
+      "url": "https://dev-connect.flyguys.com/"
+    },
+    {
+      "claim": "FAQ: turnaround 2-5 business days, data ownership, US coverage, LiDAR cost range, no set packages, pilot requirements (Part 107, own drone)",
+      "url": "https://flyguys.com/faq/"
+    },
+    {
+      "claim": "Capture platform: 20,000+ FAA-certified pilots, API-first, self-service portal",
+      "url": "https://flyguys.com/flyguys-capture-software/"
+    },
+    {
+      "claim": "How it works: QA/QC then delivery",
+      "url": "https://flyguys.com/how-flyguys-works/"
+    },
+    {
+      "claim": "Services, geographic coverage United States",
+      "url": "https://flyguys.com/official-flyguys-information-for-ai-assistants-and-search-engines/"
+    },
+    {
+      "claim": "Master Services Terms (docx): IP, deliverables AS-IS, 7-day review, invoicing",
+      "url": "https://flyguys.com/wp-content/uploads/2025/02/flyguys_online_master_services_agreement_terms__8-6-24_-1.docx"
+    },
+    {
+      "claim": "Terms and Conditions page links the Master Services Terms",
+      "url": "https://flyguys.com/terms-and-conditions/"
+    },
+    {
+      "claim": "Not in MCP Registry (0 results)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=flyguys"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "status": "unclaimed",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "adapter": "flyguys"
+}

@@ -1,0 +1,2 @@
+weather_simple.xml: live GET https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::simple&bbox=24.4872,59.9448,25.3928,60.3952&parameters=t2m,ws_10min,wg_10min,wd_10min,rh,p_sea,r_1h&starttime=2026-10-28T21:59:00Z&timestep=10 on 2026-10-28, trimmed to 3 of 7 stations and the last 2 of 6 time steps (42 members; NaN values kept as sent).
+exception_report.xml: live GET of the same stored query with bbox=bad on 2026-10-28 (HTTP 400 body).

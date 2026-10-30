@@ -1,0 +1,15 @@
+{
+ "id": "438661c3-e768-4750-89b5-af34275bb79a",
+ "title": "Photo of the cafe entrance",
+ "status": "completed",
+ "category": "physical_presence",
+ "bounty_usd": 5.0,
+ "deadline": "2026-10-29T03:49:00+00:00",
+ "created_at": "2026-10-28T03:49:01+00:00",
+ "agent_id": "0x940ecb27d8f4f7009c8bc12969496e9639717638",
+ "payment_network": "base",
+ "payment_token": "USDC",
+ "payment_tx": "0xabc",
+ "escrow_status": "released",
+ "completed_at": "2026-10-28T09:00:00+00:00"
+}

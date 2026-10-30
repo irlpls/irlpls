@@ -1,0 +1,3 @@
+SOURCE: https://api.flyguys.com/swagger/docs/v1 (Swagger 2.0; read 2026-10-28): POST /Jobs, GET /Jobs/{id},
+GET /Files/{jobId} examples and the JobModel404Get schema; the token response follows the developer portal example
+(expires_in 7000). fixture: documented-shape (trimmed; the access token is hand-made).

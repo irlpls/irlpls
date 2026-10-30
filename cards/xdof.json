@@ -1,0 +1,215 @@
+{
+  "id": "xdof",
+  "name": "XDOF",
+  "provider_url": "https://www.xdof.ai",
+  "status": "unclaimed",
+  "short": "Robot training data to order: teleoperation, egocentric capture and real-robot policy evaluations.",
+  "tags": [
+    "robotics",
+    "physical AI",
+    "teleoperation",
+    "egocentric video",
+    "bimanual manipulation",
+    "policy evaluation",
+    "DAgger",
+    "managed service",
+    "training data",
+    "custom collection"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "custom robot data collection to client specifications, with annotation",
+      "bespoke teleoperation data recorded on the specific robot being trained",
+      "generalized teleoperation data on bimanual YAM stations (pick and place, folding, insertion, tool use, assembly, tying)",
+      "egocentric data from collectors wearing body sensors while doing everyday tasks",
+      "collection at partner venues: retail, logistics, industrial and urban sites",
+      "DAgger-style data collection",
+      "real-world policy evaluations on XDOF's robot fleet, returning success rates, failure modes and every trial episode with language annotations"
+    ]
+  },
+  "pricing": {
+    "model": "Quote after contact",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "No prices are published. The site offers only 'Talk to us' / 'Contact us'; there is no pricing page."
+  },
+  "latency": {
+    "typical": "Not published for data collection; evaluations: initial results within 24 hours",
+    "notes": "XDOF states no turnaround for collection projects. For its Evaluations service it says: 'We can turn around initial results within 24 hours.'"
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after the project is scoped with the client",
+    "notes": "XDOF also releases open datasets (ABC-130K, Apache 2.0, on Hugging Face). Those are not commissions."
+  },
+  "coverage": {
+    "regions": [
+      "US (San Mateo, CA)",
+      "Indonesia (Jakarta)",
+      "Latin America (Mexico and Brazil, being built out)",
+      "China and Southeast Asia (operations teams)"
+    ],
+    "notes": "No coverage list is published. Job posts show an Indonesian entity in Jakarta running large-scale collection projects, a Mexico/Brazil collection network being built, and project teams across China, the US and Southeast Asia. Evaluations run on what XDOF calls its 'global robot fleet'."
+  },
+  "licensing": {
+    "summary": "No commercial or data terms are published. The site Terms of Service (updated 9 Sep 2026) cover the website and unspecified 'services' generically: users keep ownership of content they submit, and XDOF gets a licence to use it 'solely in connection with operating and providing the Site and our services'. They contain no terms on ownership of collected data, AI training, resale, or whether XDOF trains on client data. The Privacy Policy (16 Jun 2026) covers site-user personal data and says nothing about training or client data. The open ABC-130K dataset is Apache 2.0, but that is a public release, not commissioned data."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "XDOF's own trained operators ('expert operators trained in the exact tasks being run'); training is not an identity check at enrolment, and none is documented (STANDARD §3). How operators are vetted, identified, paid or consented is not published."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "XDOF's own stations and collection hardware (bimanual YAM arms from I2RT; GELLO teleoperation), deployed and calibrated by its operations teams; no capture-app or device attestation is documented. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Each YAM station has wrist cameras on both arms and an overhead camera. Camera models and resolutions are not published for collection projects. No C2PA or signed capture; XDOF is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No signed or independently time-stamped capture times are documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is documented; captures happen at XDOF stations, partner venues or the client's robot, as agreed."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Collection and annotation specs are set with the client; 'multi-tiered spot-check mechanisms' and an Audit Team check delivery quality. Evaluations exclude operator-invalidated takes.",
+      "unknown": "Acceptance criteria and QC results for client projects are not published."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of collected data is documented."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Contact XDOF through www.xdof.ai/contact; projects are scoped with the team."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No XDOF server in the official MCP Registry (searched 'xdof', 2026-10-26)."
+    },
+    "notes": "No public API or ordering docs. docs.xdof.ai redirects to a login on api.xdof.ai (Foundry, XDOF's customer data viewer), so docs exist only for account holders. robots.txt disallows /api/. No OAuth metadata on xdof.ai or api.xdof.ai."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No turnaround is published for data collection. The only stated speed is for the Evaluations service: 'We can turn around initial results within 24 hours.'"
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No payment methods or checkout are published; engagements start through the contact page."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "unknown": "XDOF publishes no check of who commissions collection or for what."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "XDOF collects robot training data to order for robotics labs and companies. It offers teleoperation on the client's own robot or on its bimanual YAM stations, egocentric capture by collectors wearing body sensors (press describes this as a planned tier), collection at partner venues, and annotation. Its Evaluations service runs client policies on its robot fleet and returns every trial episode. Its founders built the GELLO teleoperation system. It has operations in San Mateo and Jakarta, and is building a network in Mexico and Brazil. Sales only: nothing is priced, no collection turnaround is stated, and no data or licence terms are published.",
+  "sources": [
+    {
+      "claim": "Mission; partners with robotics labs and companies to deliver production-scale datasets, robotic systems and tooling; co-founders authored GELLO",
+      "url": "https://www.xdof.ai/about"
+    },
+    {
+      "claim": "XDOF announcement (17 Jun 2026): datasets, robotic systems and tooling for robotics labs",
+      "url": "https://www.xdof.ai/blog/announcing-xdof"
+    },
+    {
+      "claim": "Evaluations service: global robot fleet, expert operators, every trial episode with language annotations, bimanual YAM arms from I2RT, initial results within 24 hours, DAgger-style data collection, 'Talk to us'",
+      "url": "https://www.xdof.ai/products/evaluations"
+    },
+    {
+      "claim": "ABC-130K: 130K+ episodes, task categories, YAM stations, Apache 2.0, 'if you ever need more data ... reach out'",
+      "url": "https://www.xdof.ai/blog/abc-130k"
+    },
+    {
+      "claim": "ABC-130k on Hugging Face: Apache 2.0, MCAP episodes, teleoperation, gated access",
+      "url": "https://huggingface.co/api/datasets/XDOF/ABC-130k"
+    },
+    {
+      "claim": "YAM stations: two 6-DoF arms with grippers, wrist cameras on both arms and an overhead camera; station fleet; operator-invalidated takes excluded",
+      "url": "https://www.xdof.ai/blog/evaluating-llms"
+    },
+    {
+      "claim": "Data pyramid: bespoke teleoperation on the specific robot, generalized teleoperation, egocentric data; global teleoperators and data gatherers; data cleaning and annotation",
+      "url": "https://siliconangle.com/2026/06/17/robotic-teleoperation-data-startup-xdof-launches-70m-funding/"
+    },
+    {
+      "claim": "Combines remote teleoperation with collectors wearing body sensors for everyday tasks; teleoperators and egocentric operators; 20 customers; Series A $70M; Series B talks (shortlink; returns 403 to non-browser clients)",
+      "url": "https://techcrunch.com/?p=3161014"
+    },
+    {
+      "claim": "LATAM (Mexico/Brazil) collection network: venues in retail, logistics, industrial and urban settings; collection teams and SOPs; multi-modal collection hardware deployed and calibrated",
+      "url": "https://www.xdof.ai/careers/latam-operations-lead-fab0cea4-1ac2-4e0d-b7e0-fec47e21fb48"
+    },
+    {
+      "claim": "Data collection projects to client requirements; collection and annotation specs; teams across China, the US and Southeast Asia; multi-tiered spot checks",
+      "url": "https://www.xdof.ai/careers/strategic-project-lead-574477cf-6fa1-4644-8927-67cfe47b015f"
+    },
+    {
+      "claim": "XDOF Indonesia (Jakarta): large-scale collection projects; Acquisition, Implementation, Audit and Annotation teams",
+      "url": "https://www.xdof.ai/careers/project-manager-be7bfa83-a5d2-46dc-891f-f4cb439333b0"
+    },
+    {
+      "claim": "Open roles by location: San Mateo, Jakarta, Mexico",
+      "url": "https://www.xdof.ai/careers"
+    },
+    {
+      "claim": "Site Terms of Service (updated 9 Sep 2026): generic scope: website and unspecified services, no data terms, User Content licence, no data or AI-training terms; xdof, Inc., San Mateo, CA",
+      "url": "https://www.xdof.ai/terms"
+    },
+    {
+      "claim": "Contact page is the only way to engage",
+      "url": "https://www.xdof.ai/contact"
+    },
+    {
+      "claim": "docs.xdof.ai redirects to a login on api.xdof.ai (Foundry); api.xdof.ai serves no OAuth metadata or OpenAPI file",
+      "url": "https://docs.xdof.ai/"
+    },
+    {
+      "claim": "robots.txt disallows /api/",
+      "url": "https://www.xdof.ai/robots.txt"
+    },
+    {
+      "claim": "No XDOF server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=xdof"
+    },
+    {
+      "claim": "XDOF not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "Privacy Policy (updated 16 Jun 2026): site-user personal information only; no mention of training, machine learning or client data",
+      "url": "https://www.xdof.ai/privacy"
+    }
+  ]
+}

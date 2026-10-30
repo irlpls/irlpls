@@ -1,0 +1,4 @@
+{"success": true, "data": {"id": "sbx_task_xyz789", "status": "completed", "sandbox": true, "reward": 10, "platformFee": 2, "escrowedAmount": 12,
+ "location": {"lat": 33.749, "lng": -84.388, "label": "42 Main St, Atlanta, GA"},
+ "proofOfWork": {"text": "Storefront photographed; sign reads Joe's Pizza, hours 11-10.", "images": ["https://getterdone.ai/api/tasks/sbx_task_xyz789/proof-media/images/0"], "videos": []},
+ "criteriaCheckResult": {"passed": true}, "imageAuthenticityResult": null, "claimedAt": "2026-10-28T10:00:30Z"}}

@@ -1,0 +1,33 @@
+{
+ "tasking_tier": "fastView",
+ "request_description": "Example FastView request",
+ "start_collect_datetime": "2025-10-16t00:00:00z",
+ "geometry": {
+  "latitude": 40.5,
+  "longitude": -120.5,
+  "buffer": "8x8"
+ },
+ "tasking_details": {
+  "max_gsd": 0.59
+ },
+ "product_details": {
+  "product_type": "system-ready",
+  "licensing": {
+   "end_use_code": "AGR"
+  }
+ },
+ "output_configs": [
+  {
+   "type": "amazon_s3",
+   "bucket": "my-bucket",
+   "prefix": "my-prefix"
+  }
+ ],
+ "notifications": [
+  {
+   "type": "email",
+   "target": "user@example.com",
+   "level": "FINAL_ONLY"
+  }
+ ]
+}

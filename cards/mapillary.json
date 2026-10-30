@@ -1,0 +1,282 @@
+{
+  "id": "mapillary",
+  "name": "Mapillary",
+  "status": "unclaimed",
+  "provider_url": "https://www.mapillary.com",
+  "adapter": "mapillary",
+  "short": "An archive of crowdsourced street-level photos.",
+  "tags": [
+    "street-level imagery",
+    "street view",
+    "photo",
+    "panorama",
+    "crowdsourced",
+    "map features",
+    "traffic signs",
+    "object detections",
+    "road",
+    "street",
+    "city",
+    "archive",
+    "api",
+    "meta",
+    "openstreetmap",
+    "geotagged"
+  ],
+  "summary": "Meta-owned archive of crowdsourced, geotagged street-level photos and panoramas (more than 3 billion images, contributors in 190 countries), searchable through the Mapillary Graph API by small bounding box, by point and radius (up to 50 m), or by capture date, plus machine-detected map features (traffic signs and points) and per-image detections. It returns existing imagery only: you cannot commission a new capture.",
+  "capabilities": {
+    "modalities": [
+      "photo"
+    ],
+    "tasks": [
+      "search existing street-level images by bbox (< 0.01 deg square) and capture date",
+      "find the best image near a point (lat/lng, radius up to 50 m, ranked by proximity, recency and 360°)",
+      "fetch image thumbnails (256/512/1024/2048 px and original) and metadata (captured_at, geometry, computed_geometry, compass angle, panorama flag, camera make/model, creator, organization, quality_score, on_foot)",
+      "search machine-detected map features (traffic signs, points) by bbox, type and first/last seen date, with the images each was derived from",
+      "per-image object detections (segmentation polygons with class values)",
+      "coverage and map-feature vector tiles"
+    ]
+  },
+  "delivery": {
+    "modes": [],
+    "speed": "unknown",
+    "basis": "Archive only: no new capture can be ordered."
+  },
+  "pricing": {
+    "model": "free (access token required)",
+    "from_usd": 0,
+    "unit": "per API call",
+    "notes": "Mapillary's platform page says imagery is accessible in the cloud 'for free'. No pricing page exists (www.mapillary.com/pricing returns 'We couldn't find the page'). Access needs a client token from an app registered in the developer dashboard. Commercial use is limited to the purposes in Terms Section 12 (see licensing)."
+  },
+  "payment": {
+    "notes": "No payment is published or required: the API is free with a client token. No payment methods are listed."
+  },
+  "latency": {
+    "typical": "Seconds per API call (search returns existing imagery); no turnaround for new capture because none can be ordered",
+    "notes": "No official API latency figure found. How long after upload an image becomes searchable (processing, blurring) was not confirmed."
+  },
+  "freshness": {
+    "mode": "archive",
+    "typical_age": "Varies widely by place: from recent to many years old; depends on when a contributor last drove or walked there",
+    "notes": "Every image carries captured_at, and search can filter with start_captured_at / end_captured_at, so an agent can reject stale results. There is no way to request fresh capture of a location."
+  },
+  "coverage": {
+    "regions": [
+      "Global (wherever contributors have uploaded imagery; density uneven)"
+    ],
+    "notes": "Coverage is whatever contributors have captured. Mapillary's about page says contributors in 190 countries and more than two billion images; its home page says more than 3,000,000,000 images. Coverage vector tiles (mly1_public, mly1_computed_public) show where imagery exists. Terms Section 22 bars use from US-embargoed jurisdictions. No per-region density figures were found.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms (effective 15 February 2024) Section 3: other users' content is under CC BY-SA 4.0 unless Mapillary indicates otherwise; some data sets may carry other terms such as CC BY-NC-SA, and those licence terms win where they conflict with the Terms. Section 12: commercial use is allowed only for (i) 'improvement, training, and development of products, services, maps, studies, platforms, websites, applications, software, algorithms, datasets, solutions, or technologies' and (ii) providing services to clients, and requires safeguards against re-identification or unblurring and a process to report incidents to vendor-incident@meta.com. Section 5 bans selling or reselling the Mapillary Services without a separate written agreement, unapproved data mining or scraping, re-identification or unblurring, and use for real-time navigation or autonomous vehicle control. Section 11: apps must materially supplement Mapillary, not merely redistribute content; downloaded images and API-derived data must show the Mapillary logo and link back. Section 13 allows use for OpenStreetMap and Overture Maps contributions. Content is owned by Mapillary or its licensors (contributors keep their rights), so a user gets a licence, not ownership. Resale is left unset: the Terms ban reselling the Services, but the CC BY-SA licence on user content allows commercial redistribution under share-alike, and the Terms say the licence wins in a conflict. The Terms never say 'AI' or 'machine learning', so AI training is not stated; §12's 'training ... algorithms, datasets' wording suggests commercial training use is permitted, and CC BY-SA share-alike applies to derivatives.",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "method": "Each image exposes creator (username and id) and, where affiliated, an organization",
+      "unknown": "Nothing documents whether a contributor is a distinct, real or identified person; uploads also come from organizations and professional rigs"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No public attestation of which app or uploader produced an image; Mapillary accepts uploads from any camera and from desktop and command-line uploaders"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Image metadata includes camera make, model and camera_type, filterable by make and model with a bbox. Make, model and altitude come from contributed metadata (the docs cite Exif for altitude and orientation) with no documented hardware attestation; they can be wrong or edited. Mapillary is not on the C2PA conforming products list"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each image has a captured_at timestamp, filterable in search",
+      "unknown": "Where the timestamp comes from (device clock, Exif or GPS) and whether Mapillary checks it are not documented"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each image has its original geometry and compass_angle, plus computed_geometry and computed_compass_angle from Mapillary's structure-from-motion processing",
+      "unknown": "Original GPS can be noisy or edited; how computed positions are derived and how far they can be trusted is not specified beyond pointers to OpenSfM"
+    },
+    "content": {
+      "level": "none",
+      "method": "Faces and licence plates are automatically blurred (privacy, not authenticity); each image has a predicted visual quality_score",
+      "unknown": "No documented checks for staged, edited or synthetic images. Blurring changes the content and can miss faces and plates (a 2018 company blog reports 99.9% detection)"
+    },
+    "corroboration": {
+      "level": "none",
+      "method": "Map features are derived from multiple detections in multiple images (first_seen_at / last_seen_at, with the contributing images listed)",
+      "unknown": "Nothing cross-checks an individual image. Dense places may have many overlapping images an agent can compare itself; sparse places may have one"
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://www.mapillary.com/developer/api-documentation",
+    "base_url": "https://graph.mapillary.com",
+    "auth": [
+      {
+        "type": "other",
+        "header": "Authorization: OAuth <token>",
+        "env_var": "MAPILLARY_ACCESS_TOKEN",
+        "how_to_get": "Register an app at https://www.mapillary.com/dashboard/developers to get a client access token (needs a Mapillary account). The header form works for Entity API calls."
+      },
+      {
+        "type": "api_key_query",
+        "env_var": "MAPILLARY_ACCESS_TOKEN",
+        "how_to_get": "Same client token sent as ?access_token=XXX. Preferred for vector tiles; strongly discouraged for user access tokens."
+      },
+      {
+        "type": "oauth2",
+        "transport": "rest",
+        "scopes": [
+          "read",
+          "write",
+          "upload"
+        ],
+        "dynamic_registration": false,
+        "how_to_get": "Authorization code flow for user tokens: send the user to https://www.mapillary.com/connect?client_id=...&response_type=code, then POST the code to https://graph.mapillary.com/token with Authorization: OAuth <client secret>. Tokens expire (example expires_in 9000 s) and are refreshed at the same endpoint. Needs a pre-registered app; no self-registration, PKCE or RFC 9728 metadata is documented."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/images",
+        "params": "bbox=left,bottom,right,top (< 0.01 deg square), start_captured_at, end_captured_at (ISO 8601), limit (max/default 2000), creator_username, is_pano (needs bbox or creator_username), make, model (bbox only), organization_id, sequence_ids, fields=id,captured_at,geometry,computed_geometry,compass_angle,is_pano,thumb_256_url,thumb_1024_url,thumb_2048_url,thumb_original_url,creator,quality_score,on_foot,...",
+        "notes": "Core call: existing images of a place and time window. Paging (after cursor) works only with creator_username. Thumbnails are URLs in the response."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/images",
+        "params": "lat, lng, radius (metres, default and max 50), limit (default 1, max 100), fields=...",
+        "notes": "Image radius search (added 2 April 2026): returns the 'best' images near a point by proximity, recency and 360° preference. Cannot be combined with bbox, tile, s2, image_ids or sequence_ids."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/:image_id",
+        "params": "fields=... (e.g. thumb_2048_url,captured_at,geometry,detections.value)",
+        "notes": "Single image metadata and thumbnail URLs. Several entities of one type at once: GET /?ids=ID1,ID2"
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/map_features",
+        "params": "bbox (< 0.01 deg square), object_values (wildcards, comma-separated), start_first_seen_at, end_first_seen_at, start_last_seen_at, end_last_seen_at, limit (max 2000), fields=id,object_value,object_type,geometry,aligned_direction,first_seen_at,last_seen_at,images",
+        "notes": "Machine-detected map objects such as traffic signs; GET /:map_feature_id fetches one, and fields=images lists the images it was derived from"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/:image_id/detections",
+        "params": "fields=id,created_at,geometry,image,value",
+        "notes": "Object detections in an image; geometry is a base64-encoded vector-tile polygon (extent 4096). Also /:map_feature_id/detections"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/image_ids",
+        "params": "sequence_id",
+        "notes": "Image ids in a capture sequence; fields param not honored"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}",
+        "params": "access_token",
+        "notes": "Coverage vector tiles (Mapbox Vector Tile spec; layers overview, sequence, image). Also mly1_computed_public, mly_map_feature_point and mly_map_feature_traffic_sign"
+      }
+    ],
+    "rate_limits": "Entity APIs 60,000/min per app; Search APIs 10,000/min per app; tiles 50,000/day. Over the limit the Graph API returns 'Application request limit reached' (code 4); tiles return 4xx. Terms Section 11 lets Mapillary throttle or revoke client_ids.",
+    "self_serve": true,
+    "sdk": "mapillary-python-sdk (https://github.com/mapillary/mapillary-python-sdk; the docs recommend it for areas larger than the bbox limit); MapillaryJS viewer; embed iframe at https://www.mapillary.com/embed?image_key=IMAGE_ID",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "Third-party wrapper in the official MCP Registry, not run by Mapillary: io.github.pipeworx-io/mapillary (v0.1.3, remote https://gateway.pipeworx.io/mapillary/mcp).",
+      "notes": "No first-party Mapillary MCP server found."
+    },
+    "notes": "All requests to graph.mapillary.com and tiles.mapillary.com need a token; a keyless call returns 'Invalid OAuth 2.0 Access Token' (code 190) and tiles return 403. Entity endpoints have only limited bbox search; the docs expect vector tiles for spatial filtering at scale."
+  },
+  "access": {
+    "cost": "free with key",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none",
+    "notes": "Terms §5 allow access only through published interfaces; documented limits per app are 60,000 per minute (Entity API), 10,000 per minute (Search) and 50,000 per day (tiles).",
+    "rate_limit": {
+      "requests": 10000,
+      "per_seconds": 60,
+      "scope": "per-key",
+      "notes": "Search APIs, per app; entity APIs 60,000 per minute; tiles 50,000 per day. Over the limit: 'Application request limit reached' (code 4).",
+      "source_url": "https://www.mapillary.com/developer/api-documentation"
+    }
+  },
+  "capture": {
+    "by": "contributors"
+  },
+  "sources": [
+    {
+      "claim": "Base URLs graph.mapillary.com and tiles.mapillary.com; auth via Authorization: OAuth header or access_token query param; client token from developer dashboard; OAuth 2.0 authorization code flow with read/write/upload scopes, token exchange and refresh",
+      "url": "https://www.mapillary.com/developer/api-documentation"
+    },
+    {
+      "claim": "/images search params, bbox < 0.01 deg square (since 16 January 2026), image fields (thumbnails 256/512/1024/2048/original, captured_at, geometry, computed_geometry, make, model, creator, organization, quality_score, on_foot), paging only with creator_username",
+      "url": "https://www.mapillary.com/developer/api-documentation"
+    },
+    {
+      "claim": "Image radius search (lat, lng, radius max 50 m, limit max 100), added 2 April 2026",
+      "url": "https://www.mapillary.com/developer/api-documentation"
+    },
+    {
+      "claim": "Map features derived from multiple detections in multiple images; map_features search; detections; image_ids by sequence; multiple entities; vector tile endpoints",
+      "url": "https://www.mapillary.com/developer/api-documentation"
+    },
+    {
+      "claim": "Rate limits: entity 60,000/min, search 10,000/min, tiles 50,000/day per app; error responses",
+      "url": "https://www.mapillary.com/developer/api-documentation"
+    },
+    {
+      "claim": "mapillary-python-sdk recommended for large areas",
+      "url": "https://github.com/mapillary/mapillary-python-sdk"
+    },
+    {
+      "claim": "Terms effective 15 February 2024, provided by Meta Platforms Ireland: user content under CC BY-SA 4.0 unless indicated otherwise (Section 3); Mapillary or licensors own content; resale of Services, scraping, unblurring and real-time navigation banned (Section 5); blurring of faces and plates (Section 6); developer client_id, logo attribution, throttling (Section 11); commercial use for training and development of algorithms and datasets and services for clients, with anti-reidentification safeguards (Section 12); OSM and Overture use (Section 13); export controls (Section 22)",
+      "url": "https://www.mapillary.com/terms"
+    },
+    {
+      "claim": "Automatic blurring of faces and licence plates; any camera can upload; cloud access to imagery for free",
+      "url": "https://www.mapillary.com/platform"
+    },
+    {
+      "claim": "More than 3,000,000,000 street-level images; any camera, anywhere",
+      "url": "https://www.mapillary.com/"
+    },
+    {
+      "claim": "Started 2013; joined Facebook (now Meta) in 2020; 190 countries; more than two billion contributed images",
+      "url": "https://www.mapillary.com/about"
+    },
+    {
+      "claim": "Blurring model detects 99.9% of identifiable faces and licence plates (company blog, 19 April 2018)",
+      "url": "https://blog.mapillary.com/update/2018/04/19/accurate-privacy-blurring-at-scale.html"
+    },
+    {
+      "claim": "Acquired by Meta (Facebook) in June 2020; commercial use made free of charge after the acquisition",
+      "url": "https://en.wikipedia.org/wiki/Mapillary"
+    },
+    {
+      "claim": "Third-party MCP wrapper io.github.pipeworx-io/mapillary; no first-party entry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=mapillary"
+    },
+    {
+      "claim": "Rate limits per app: 60,000/min Entity, 10,000/min Search, 50,000/day tiles",
+      "url": "https://www.mapillary.com/developer/api-documentation"
+    }
+  ],
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

@@ -1,0 +1,41 @@
+{
+ "status": "quoteReceived",
+ "instruction": "Your quote has been received. Please review it and take action by either accepting or rejecting your quote. Once you accept the quote, the drone operators will start capturing your data.",
+ "quotes": [
+  {
+   "quoteId": "20240628-2",
+   "quoteName": "quote 3",
+   "description": "This quote covers your order of 100 hectares of 2D orthomosaics at 3 cm resolution in Namibia. No discount is used.",
+   "deliveryBy": "20 days",
+   "priceBeforeDiscount": 1800,
+   "currency": "USD",
+   "discountProvided": "0%",
+   "reasonForDiscount": null,
+   "finalPrice": 1800,
+   "expiryDate": "2024-03-06T10:59:30.730+01:00"
+  }
+ ],
+ "rejectedQuotes": [],
+ "id": "20230628arte",
+ "deliveryDeadline": "2024-09-19",
+ "orderPrice": "",
+ "orderStatus": "inReview",
+ "locationMap": [
+  {
+   "lat": 30.268649,
+   "lng": -97.741565
+  },
+  {
+   "lat": 30.268649,
+   "lng": -97.738435
+  },
+  {
+   "lat": 30.271351,
+   "lng": -97.738435
+  }
+ ],
+ "mapTypes": [
+  "ndvi",
+  "digitalTerrainModel"
+ ]
+}

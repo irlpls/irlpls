@@ -1,0 +1,19 @@
+{
+ "api_version": "3.92.0",
+ "id": 1843,
+ "message": "Inspection created",
+ "response_code": 200,
+ "result": {
+  "id": 1843,
+  "created_at": "2026-10-28T10:00:00.000Z",
+  "updated_at": "2026-10-28T10:00:00.000Z",
+  "status": {
+   "id": 1,
+   "id_internal": "STATUS_WAITING_ON_PHOTOS",
+   "name": "Created",
+   "notes_external": null,
+   "uuid": null
+  },
+  "inspection_link": "visionbytruepic.com/23AUkqg1xRb"
+ }
+}

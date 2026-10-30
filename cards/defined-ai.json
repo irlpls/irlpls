@@ -1,0 +1,232 @@
+{
+  "id": "defined-ai",
+  "name": "Defined.ai",
+  "provider_url": "https://defined.ai",
+  "status": "unclaimed",
+  "adapter": "defined-ai",
+  "tags": [
+    "training data",
+    "custom collection",
+    "image collection",
+    "video collection",
+    "speech collection",
+    "egocentric video",
+    "robotics sensor data",
+    "gestures",
+    "facial expressions",
+    "crowd",
+    "contributors",
+    "managed service",
+    "enterprise API",
+    "formerly DefinedCrowd"
+  ],
+  "summary": "AI training-data company (formerly DefinedCrowd) that, besides its dataset marketplace, runs custom collections with a vetted global crowd through its Neevo platform: images (everyday objects, facial expressions, gestures), video (egocentric POV, action sequences, behavioural clips), speech recordings, and wearable sensor data for robotics. Collections are scoped to demographic, language and compliance requirements. Sales-led and quote-only; an enterprise REST API (OAuth2 client credentials) lets account holders clone project templates, upload prompts, track status and download deliverables.",
+  "short": "A training-data vendor that commissions custom image, video, speech and sensor collections from a vetted crowd.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "audio",
+      "sensor"
+    ],
+    "tasks": [
+      "custom image collection (everyday objects, facial expressions, gestures) by a vetted crowd",
+      "custom video collection (egocentric POV, cinematic-quality video, action sequences, behavioural clips)",
+      "custom speech collection (scripted monologues recorded on contributors' devices, spontaneous dialogues and IVR calls over telephony)",
+      "synchronized wearable sensor collection for robotics (POV video, gaze, depth, hand and body motion capture, grip force)",
+      "collections scoped to demographic, language and compliance requirements"
+    ]
+  },
+  "pricing": {
+    "model": "Quote",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "from_usd 0 means unknown, not free. No prices for custom collection; volume discounts by quotation. Marketplace payments are USD by ACH bank transfer, with purchase orders and SOWs on request; no refunds."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "The data-collection page says datasets are 'delivered quickly and competitively' with no timeline; the FAQ says custom orders take longer than marketplace purchases. One robotics case study reports 225 hours of sensor data collected in two weeks within a two-month timeframe."
+  },
+  "coverage": {
+    "regions": [
+      "150+ countries (not listed)"
+    ],
+    "notes": "Defined.ai cites 1.6M+ contributors in 150+ countries (also '150+ markets') and 500+ languages and locales across all services; how many capture images or video, and where, is not published. The public API's language list names locales, not collection countries. An in-house recording studio operates in Lisbon."
+  },
+  "licensing": {
+    "summary": "The FAQ says all Defined.ai datasets are covered by its standard Data License Agreement (effective 30 Nov 2022). That licence is non-exclusive, non-sublicensable and non-transferable; §1(c) permits internal use and commercial exploitation of models trained, tested or benchmarked on the data, provided the data is not made available and the model does not output recognisable contributor content (e.g. TTS voices, avatars). §1(b)(ii) and §1(c) forbid selling, sublicensing or otherwise commercialising the data itself, and §4 says Defined.ai owns all rights in the data. The site says every dataset is 'fully consented, copyright-cleared, and privacy-compliant' (GDPR, HIPAA). Use is for internal business operations only (§1(c)), and on termination (60 days' notice, or breach) the licensee must delete or return all copies of the data (§8), despite the FAQ calling the licence perpetual. Whether a custom collection contract changes these terms, including ownership or exclusivity, is not published.",
+    "ai_training": "allowed",
+    "resale": "forbidden"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "A 'vetted' crowd recruited through owned channels, ad platforms and local partners; contributors accept the terms, privacy policy and a job-specific NDA and MSA; 'rigorously trained, verified annotators'. Scripted-speech deliveries include information about the speaker.",
+      "unknown": "Screening method and identity checks for contributors who capture images or video are not documented."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Collection runs through Defined.ai's Neevo platform and tools, but no check that a capture came from a genuine, unmodified app or device is documented. Scripted-speech deliveries name the recording device, without proof."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No check against imported, re-captured or generated media is described."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No trusted capture time is documented in general. One robotics case study describes timestamped streams with global UTC time, as a project requirement, without a checkable proof."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location capture or check is documented in general. One robotics case study mentions location metadata as a project requirement, with no verification described."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Multi-layer validation: automated checks plus multi-pass human review, with real-time monitoring dashboards; scripted speech is validated by multiple human annotators; the robotics case study tracked drop-frame rate and frame rate as KPIs.",
+      "unknown": "Review criteria and error rates are not published."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check of individual captures is described. ISO 27001, 27701 and 42001 certifications cover management systems, not the captured content."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://developers.definedcrowd.com/",
+    "base_url": "https://api.production-na01.definedcrowd.com/v2.0/public",
+    "auth": [
+      {
+        "type": "oauth2",
+        "header": "Authorization",
+        "how_to_get": "Client-credentials flow at https://auth.definedcrowd.com/connect/token with an Access Key ID and Secret created in the Enterprise Portal (enterprise.definedcrowd.com); an Enterprise account is set up by contacting sales@defined.ai. Send the token as 'Authorization: Bearer <JWT>'.",
+        "scopes": [
+          "PublicAPIv2"
+        ],
+        "dynamic_registration": false,
+        "transport": "rest"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/projects",
+        "notes": "List the account's projects."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/projects/{sourceProjectId}/clone",
+        "notes": "Clone a project from a workflow template; then upload input units (POST /projects/{projectId}/inputUnits, schema from GET /projects/{projectId}/inputUnitsSchema). The project starts automatically when the upload finishes."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/projects/{projectId}/status"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/projects/{projectId}/deliverables/{deliverableId}/download",
+        "notes": "List deliverables first with GET /projects/{projectId}/deliverables."
+      }
+    ],
+    "rate_limits": "Not published.",
+    "notes": "OpenAPI 3.0.1 at https://api.production-na01.definedcrowd.com/swagger/docs/external. The named workflow templates are Mean Opinion Score, Pronunciation Validation and ABx testing (audio and text evaluation); the docs say templates 'can be data collection specific', showing customer prompts in Defined.ai's collection tools, but no image or video collection template is documented. Also: subscriptions (email or webhook notifications), cancel, delete, and a 402 'accountNotEnoughCredits' error. GET /languages answers without a key. No MCP server: the MCP Registry has no Defined.ai or DefinedCrowd entry.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null
+    }
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "enterprise"
+  },
+  "payment": {
+    "methods": [
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "notes": "USD by ACH bank transfer; purchase orders, SOWs and other documentation on request (FAQ, written for marketplace purchases). Custom collections are priced by quotation."
+  },
+  "requester": {
+    "unknown": "No checks on who commissions a collection are published. Academic discounts follow 'a certain due diligence'; the licence includes US export-control obligations."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Collected for your project",
+    "notes": "Defined.ai also sells 700+ ready-made datasets on its marketplace; only custom collection is described here."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No turnaround published; the site says only 'delivered quickly and competitively', and the FAQ says custom orders take longer."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Custom collection across audio, image, video, text and multimodal: everyday objects, facial expressions, gestures; egocentric POV, cinematic, action-sequence and behavioural clips; sensor-based robotics data; 1.6M+ experts, 150+ countries, 500+ languages; 'delivered quickly and competitively'; fully consented and copyright-cleared; multi-layer validation and real-time dashboards (redirect target of the old /ai-data-collection-generation URL)",
+      "url": "https://defined.ai/solutions/data-collection"
+    },
+    {
+      "claim": "Custom collection scoped to accuracy, demographic, language and compliance requirements; 700+ marketplace datasets; Crowd-as-a-Service; 150+ markets; legal documents list",
+      "url": "https://defined.ai/llms.txt"
+    },
+    {
+      "claim": "Contributor recruitment and NDA/MSA; scripted speech recorded on-device with speaker and device information; dialogue and IVR via telephony; standard licence covers all datasets and permits commercialised models; custom collection can be ordered; USD ACH payment, POs and SOWs; no refunds; custom orders take longer; academic due diligence",
+      "url": "https://defined.ai/faq"
+    },
+    {
+      "claim": "Data License Agreement: non-exclusive, non-sublicensable licence; no sale or sublicensing of the data (§1(b)); models trained, tested or benchmarked on the data may be commercialised (§1(c)); Licensor owns the data (§4); export control (§9(g))",
+      "url": "https://defined.ai/data-license-agreement"
+    },
+    {
+      "claim": "Website terms: robots and automated access to the website are prohibited (applies to the website, not the API)",
+      "url": "https://defined.ai/terms-of-use"
+    },
+    {
+      "claim": "Public API: Enterprise account via sales; OAuth2 client credentials with PublicAPIv2 scope; base URL; clone, upload, status and deliverables endpoints; workflow templates",
+      "url": "https://developers.definedcrowd.com/"
+    },
+    {
+      "claim": "OpenAPI 3.0.1 document with endpoints, Bearer JWT header and error codes",
+      "url": "https://api.production-na01.definedcrowd.com/swagger/docs/external"
+    },
+    {
+      "claim": "OAuth metadata: token endpoint, PublicAPIv2 scope, client_credentials grant, PKCE plain/S256, no registration endpoint",
+      "url": "https://auth.definedcrowd.com/.well-known/openid-configuration"
+    },
+    {
+      "claim": "Robotics sensor collection: 225 hours of synchronized POV video, gaze, depth, motion-capture and force data in two weeks within two months; drop-frame KPI; UTC time and location metadata as project requirements",
+      "url": "https://defined.ai/case-study/sensor-data-collection-robotics"
+    },
+    {
+      "claim": "Crowd-as-a-Service via the Neevo platform; scripted speech recorded on mobile devices and validated by multiple annotators",
+      "url": "https://defined.ai/use-cases/crowd-as-a-service-use-case"
+    },
+    {
+      "claim": "ISO 27001, 27701 and 42001 certification; consent-based sourcing with no scraping; multi-pass QA and verified annotators",
+      "url": "https://defined.ai/about-us/ai-governance"
+    },
+    {
+      "claim": "No Defined.ai or DefinedCrowd server in the MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=definedcrowd"
+    },
+    {
+      "claim": "DLA §1(c) internal use, §8 termination and deletion",
+      "url": "https://defined.ai/data-license-agreement"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

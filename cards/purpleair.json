@@ -1,0 +1,286 @@
+{
+  "id": "purpleair",
+  "name": "PurpleAir",
+  "status": "unclaimed",
+  "provider_url": "https://www.purpleair.com",
+  "tags": [
+    "air quality",
+    "sensor",
+    "pm2.5",
+    "pm10",
+    "crowd-hosted",
+    "api",
+    "temperature",
+    "humidity",
+    "historical data"
+  ],
+  "summary": "Network of over 35,000 consumer-owned optical particulate sensors that report every two minutes, read through a points-metered REST API (api.purpleair.com) with real-time and historical data back to 2016.",
+  "short": "Crowd-hosted air-quality sensors reporting every 2 minutes, read through a prepaid points API.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "PM1.0 / PM2.5 / PM10 air quality",
+      "temperature",
+      "humidity",
+      "latest readings for all public sensors in a bounding box",
+      "historical sensor data retrieval (real-time to yearly averages)"
+    ]
+  },
+  "pricing": {
+    "model": "prepaid API points, charged per call and per field per data row",
+    "from_usd": 10,
+    "unit": "minimum points purchase ($10 buys 1,000,000 points at 100,000 points per USD)",
+    "notes": "New users get 1,000,000 points on sign-up. Live tier table (minimum purchase $10): $10-$49 at 100,000 points/USD, $50-$249 at 150,000, $250-$499 at 200,000, $500-$999 at 300,000, $1,000-$4,999 at 500,000, $5,000+ at 1,000,000. Cost per call = endpoint base cost + (cost of all fields x data rows); base cost is at most 5 points (get_sensor 1, get_sensor_history 2); fields cost 1-2 points per row in the published examples. Example: one sensor's pm2.5 every 10 minutes costs 432 points a day. The full per-field table is on the Developer Dashboard (login, not read). Sensor owners still spend points on their own sensors' data, but PurpleAir gives free points on request by email and plans to automate that. Values are subject to change. A points subscription also exists in the account area (terms not public)."
+  },
+  "latency": {
+    "typical": "Sensors report every 2 minutes; the real-time endpoints return each sensor's latest report",
+    "notes": "PurpleAir's API guidelines say sensors report every two minutes and real-time data is held in memory, so querying more often than once a minute is unnecessary. Repeated calls return the same data until the sensor next reports; request last_seen to see when. No service level: the Fair Use Policy says availability and response times are not guaranteed. No new deployments to order: data comes only from sensors owners have already installed."
+  },
+  "coverage": {
+    "regions": [
+      "Global (wherever owners have installed sensors; distribution uneven)"
+    ],
+    "notes": "PurpleAir says over 35,000 sensors worldwide. Coverage is wherever owners have installed and registered sensors, and only public sensors are readable without the owner's read key. You cannot request a new placement. No per-country list or density figures are published.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "PurpleAir's Terms (updated 18 July 2022) say PurpleAir owns all PurpleAir Data and any derivatives' underlying data. The licence is non-exclusive, non-transferable and non-sublicensable. You may use the data internally to test and develop your own product, and distribute that product commercially only to end users for their internal, non-commercial, non-public use, after written notice to PurpleAir. No raw data to third parties, no reselling the data or an API modelled on it, and no competing air-quality database without written permission. API calls must be made only by you, and keys must not be shared. A grantback licence gives PurpleAir rights in your derivatives, explicitly including AI algorithms trained on PurpleAir data and their outputs. You may not combine the data with open-source-licensed materials. Attribution is required: 'Data from PurpleAir' for direct use, 'Powered by PurpleAir' for derived data, with a link for APIs and ML models. Health or emergency uses need a disclaimer. The terms do not explicitly allow or forbid AI training; they attach the grantback to it.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Whether a sensor owner is a real, distinct person; owners register sensors themselves and API keys are tied to a developer account, not to sensor hosts"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Whether readings come from unmodified PurpleAir firmware or hardware; the terms forbid modifying sensors, but no attestation or signing is documented"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: this is a particulate sensor network and collects no imagery"
+    },
+    "time": {
+      "level": "none",
+      "method": "The API exposes time stamps for each sensor's readings and a last_seen time, as the sensors and PurpleAir report them.",
+      "unknown": "How sensor clocks are set or checked is not documented; no timing-integrity method is documented and nothing is signed."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "The Terms say each sensor's location is extrapolated from Google's Wi-Fi-based location services together with the location the owner enters, calculated on the sensor or on PurpleAir's servers. The owner sets the inside/outside label.",
+      "unknown": "How the Wi-Fi fix and the owner's entry are reconciled, and whether a moved or misregistered sensor is detected; the Terms call the location 'likely' and publish no per-sensor check"
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Whether a sensor is exposed to staged or local sources (smoke, cooking, indoor placement); the provider disclaims accuracy and documents no tamper checks. The dual laser counters (A and B channels) are exposed as fields, but no provider-side flagging method is documented"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "PurpleAir documents no per-sensor cross-check against reference monitors. The only independent check recorded here (AQ-SPEC) tested three units of one model near Los Angeles in 2016-2017 and says nothing about current models, other climates or any individual sensor in the network"
+    }
+  },
+  "attestations": [
+    {
+      "verifier": "South Coast AQMD AQ-SPEC",
+      "scope": "Accuracy of the PurpleAir PA-II model against reference instruments (content/corroboration), three units",
+      "result": "Field (12/18/2016-01/26/2017): PM1.0 R2 > 0.96, PM2.5 R2 > 0.93, PM10 R2 > 0.66; laboratory PM2.5 R2 > 0.99; data recovery 95%",
+      "url": "https://www.aqmd.gov/docs/default-source/aq-spec/summary/purpleair-pa-ii---summary-report.pdf?sfvrsn=16"
+    }
+  ],
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.purpleair.com/",
+    "base_url": "https://api.purpleair.com/v1",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "X-API-Key",
+        "env_var": "PURPLEAIR_API_KEY",
+        "how_to_get": "Log in to the Developer Dashboard (https://develop.purpleair.com) with a Google or Google-associated email (otherwise email contact@purpleair.com) and create a READ key. WRITE keys are only for creating and deleting groups and members. Private sensors also need each sensor's read_key."
+      },
+      {
+        "type": "api_key_query",
+        "how_to_get": "The same key may be sent as the api_key query-string parameter (or in a POST JSON body); the docs prefer the header."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/sensors",
+        "params": "fields (required, comma-separated), nwlat, nwlng, selat, selng (bounding box), location_type (0 outside, 1 inside), max_age (seconds; default 604800; 0 = any age), modified_since, show_only (comma-separated sensor_index list), read_keys",
+        "notes": "Latest data from many sensors, by default every public sensor; no limit on the number of sensors per call. Use modified_since for repeated polling. Default rate limit 500 ms."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/sensors/:sensor_index",
+        "params": "fields, read_key",
+        "notes": "Latest data for one sensor; repeated calls return the same data until the sensor next reports; request last_seen to see when. Default rate limit 100 ms."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/sensors/:sensor_index/history",
+        "params": "fields (required), start_timestamp, end_timestamp (UNIX seconds or ISO 8601), average (minutes: 0 real-time up to 30 days per request, 10 up to 60 days, 30 up to 90 days, 60 up to 180 days, 360 up to 1 year, 1440 up to 2 years, 10080 up to 5 years, 43200 up to 20 years, 525600 up to 100 years), privacy (auto or both), read_key",
+        "notes": "Also /history/csv. Default rate limit 1000 ms. Supply both timestamps to save points."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/groups/:group_id/members",
+        "params": "fields, location_type, read_keys, show_only, modified_since, max_age, nwlat, nwlng, selat, selng",
+        "notes": "Latest data for every sensor in a group you created (groups are created with a WRITE key via POST /groups and POST /groups/:group_id/members). Default rate limit 500 ms."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/keys",
+        "notes": "Checks a key's validity and type. Default rate limit 100 ms."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/organization",
+        "notes": "Information on the organization that owns the key. Default rate limit 1000 ms."
+      }
+    ],
+    "rate_limits": "Per-endpoint default rate limits (100 ms for /keys, single sensor and most group calls; 400 ms for /groups; 500 ms for /sensors and group members; 1 s for history and /organization). Exceeding one returns RateLimitExceededError; PurpleAir can adjust limits per key on request. Every call also spends prepaid points; with too few points the API returns PaymentRequiredError. The Fair Use Policy lets PurpleAir throttle or disable keys used for scraping or unusually heavy use, and asks bulk historical requests (thousands of sensors) to go by email instead.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No PurpleAir server in the official MCP Registry (search 'purpleair' returned 0 on 2026-10-26)."
+    },
+    "notes": "The API docs are an apidoc site (version 1.0.15, generated 2026-09-09); the endpoint data is in https://api.purpleair.com/api_data.js. Keyless requests return 403 ApiKeyMissingError. The Terms say API calls must be made only by the key holder and keys must not be shared with any third party. Owners on the same network can also read a sensor locally at its IP address /json without the API."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "hosted_checkout",
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "Points are prepaid and bought in the PurpleAir store (minimum $10), which uses Shopify. The store accepts Visa, Mastercard, Amex and Discover cards, Shop Pay, PayPal, Google Pay, Apple Pay and Meta Pay. Purchase orders (Net 30) for schools, government, businesses and non-profits, and checks, money orders and wire transfers, go by emailing Billing@purpleair.com for an invoice. No agent payment protocol is published."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "About 2 minutes for the latest reading of an active sensor; history back to early 2016",
+    "notes": "Sensors report every two minutes. last_seen shows each reading's age, and max_age and modified_since filter out stale sensors. History: raw data up to 30 days per request, longer windows at 10-minute to yearly averages. Nothing is captured on demand: only sensors owners have already installed."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "PurpleAir API Use Guidelines: \"PurpleAir sensors report data every two minutes\" and \"Real-time data is instantly available in memory.\""
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "API keys need a Developer Dashboard account behind a Google or Google-associated login. The Terms require accurate account information, legal age, and written notice to PurpleAir before commercial distribution.",
+    "unknown": "No further identity or purpose vetting is documented. Requesters only read existing sensors and never direct anyone to a place."
+  },
+  "adapter": "purpleair",
+  "sources": [
+    {
+      "claim": "Base URL https://api.purpleair.com/v1; apidoc version 1.0.15, generated 2026-09-09",
+      "url": "https://api.purpleair.com/api_project.js"
+    },
+    {
+      "claim": "Endpoints /sensors, /sensors/:sensor_index, /sensors/:sensor_index/history(/csv), /groups and members, /keys, /organization with their parameters (bounding box, location_type, max_age default 604800, modified_since, show_only, read_keys, average windows up to 525600, privacy); per-endpoint default rate limits; RateLimitExceededError; X-API-Key header preferred, api_key query string or POST body; READ vs WRITE keys; Developer Dashboard with Google login; 1 million free starting points; last_seen field",
+      "url": "https://api.purpleair.com/api_data.js"
+    },
+    {
+      "claim": "API documentation home (renders client-side; content read from api_data.js)",
+      "url": "https://api.purpleair.com/"
+    },
+    {
+      "claim": "Keyless request to /v1/sensors returns 403 ApiKeyMissingError (probed 2026-10-26)",
+      "url": "https://api.purpleair.com/v1/sensors?fields=pm2.5"
+    },
+    {
+      "claim": "Live points tier table and $10 minimum purchase (public JSON behind the store)",
+      "url": "https://www.purpleair.com/api/v1/store/api-points-tiers"
+    },
+    {
+      "claim": "Points-based billing; tier table; cost formula; base cost at most 5 points; get_sensor 1, get_sensor_history 2; field costs 1-2 points; 432 points a day example; one million starting points; values subject to change",
+      "url": "https://community.purpleair.com/t/api-pricing/4523"
+    },
+    {
+      "claim": "Sensor owners' own-data pulls still use points; free points on request by email; earning points planned; the map stays free",
+      "url": "https://community.purpleair.com/t/api-points-for-sensor-owners/7525"
+    },
+    {
+      "claim": "Account via Google login on develop.purpleair.com; 1 million points on sign-up; dataset back to early 2016; no limit on sensors per Get Sensors Data call; keys must not be shared",
+      "url": "https://community.purpleair.com/t/about-the-purpleair-api/7145"
+    },
+    {
+      "claim": "Developer Dashboard structure (organizations, projects, keys); PaymentRequiredError when out of points",
+      "url": "https://community.purpleair.com/t/new-api-online-dashboard/3981"
+    },
+    {
+      "claim": "Sensors report every two minutes; real-time data held in memory; modified_since; bulk historical requests by email; access may be lost for over-querying",
+      "url": "https://community.purpleair.com/t/api-use-guidelines/1589"
+    },
+    {
+      "claim": "Terms of Service (updated 18 July 2022): PurpleAir owns all data; licence grants and end-user limits; no raw data to third parties or competing database; only the key holder makes API calls; grantback licence naming AI training data and outputs; no open-source materials; attribution; location from Google Wi-Fi location plus owner entry; health and emergency disclaimers; API Fair Use Policy (Exhibit A); Shopify payments",
+      "url": "https://www.purpleair.com/api/v1/store/policies/terms-of-service"
+    },
+    {
+      "claim": "Terms of Service page (renders client-side; text read from the store policies JSON above)",
+      "url": "https://www.purpleair.com/policies/terms-of-service"
+    },
+    {
+      "claim": "Data License (updated 18 July 2022): grantback, attribution, distribution limited to one level removed, cannot resell data or an API modelled on it, Fair Use Policy",
+      "url": "https://www.purpleair.com/api/v1/pages/license"
+    },
+    {
+      "claim": "Data Attribution guide: 'Data from PurpleAir' for direct use, 'Powered by PurpleAir' for derived data, a link for APIs and ML models, health or emergency disclaimer",
+      "url": "https://www.purpleair.com/api/v1/pages/attribution"
+    },
+    {
+      "claim": "Store payment methods: cards, Shop Pay, PayPal, Google Pay, Apple Pay, Meta Pay; purchase orders Net 30; checks, money orders, wire by invoice",
+      "url": "https://www.purpleair.com/api/v1/community/pages/payment-methods"
+    },
+    {
+      "claim": "Over 35,000 sensors worldwide; real-time readings updated every 2 minutes; points bought in the store cart (site JavaScript bundle, since www.purpleair.com renders client-side)",
+      "url": "https://www.purpleair.com/_expo/static/js/web/AppEntry-351c95d0fef2614f6dd6e82cb5ac94f5.js"
+    },
+    {
+      "claim": "No PurpleAir server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=purpleair"
+    },
+    {
+      "claim": "AQ-SPEC PA-II evaluation: three units, field PM1 R2>0.96, PM2.5 R2>0.93, PM10 R2>0.66, lab PM2.5 R2>0.99, 95% data recovery, deployment 12/18/2016-01/26/2017",
+      "url": "https://www.aqmd.gov/docs/default-source/aq-spec/summary/purpleair-pa-ii---summary-report.pdf?sfvrsn=16"
+    },
+    {
+      "claim": "AQ-SPEC field evaluation of PA-II against GRIMM and BAM reference instruments",
+      "url": "https://www.aqmd.gov/docs/default-source/aq-spec/field-evaluations/purple-air-pa-ii---field-evaluation.pdf?sfvrsn=2"
+    },
+    {
+      "claim": "Owners can read their sensor locally at its IP address /json without the API; one million points cover years of single-sensor data",
+      "url": "https://community.purpleair.com/t/api-limits/4467"
+    }
+  ],
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

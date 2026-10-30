@@ -1,0 +1,3 @@
+MODIS_C6_1_Global_24h.csv: live GET https://firms.modaps.eosdis.nasa.gov/data/active_fire/modis-c6.1/csv/MODIS_C6_1_Global_24h.csv on 2026-10-28, trimmed to 8 rows.
+area_VIIRS_NOAA20_NRT.csv: fixture: documented-shape (hand-made; no MAP_KEY used). Columns from the FIRMS area API docs, SOURCE https://firms.modaps.eosdis.nasa.gov/api/area/ and the VIIRS attribute list linked there. Values invented for tests.
+HTTP 400 body "Invalid MAP_KEY." recorded live from GET /api/area/csv/abc/VIIRS_NOAA20_NRT/-120,35,-119,36/1 on 2026-10-28.

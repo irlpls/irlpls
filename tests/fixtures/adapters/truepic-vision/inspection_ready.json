@@ -1,0 +1,62 @@
+{
+ "api_version": "3.92.0",
+ "id": 1843,
+ "message": "OK",
+ "response_code": 200,
+ "result": {
+  "id": 1843,
+  "created_at": "2026-10-28T10:00:00.000Z",
+  "updated_at": "2026-10-28T12:00:00.000Z",
+  "status": {
+   "id": 2,
+   "id_internal": "STATUS_READY_FOR_REVIEW",
+   "name": "Ready for Review",
+   "notes_external": null,
+   "uuid": null
+  },
+  "verification_result": "warn",
+  "inspection_link": "visionbytruepic.com/23AUkqg1xRb",
+  "customer_first_name": "the owner",
+  "customer_address": "1 Main St, Austin, TX",
+  "photos": [
+   {
+    "id": 501,
+    "verification_code": "TPV-ABC123",
+    "type": "image",
+    "status": "pass",
+    "is_verified": true,
+    "is_existing_image": false,
+    "is_deleted": false,
+    "lat": "30.2672",
+    "lng": "-97.7431",
+    "formatted_address": "1 Main St, Austin, TX 78701",
+    "gps_accuracy": "5",
+    "distance_from_customer_address": "12.4",
+    "original_image": "https://vision-media.truepic.com/o/501.jpg?token=signed",
+    "image": "https://vision-media.truepic.com/i/501.jpg?token=signed",
+    "device_time": "2026-10-28T11:05:00.000Z",
+    "make": "Apple",
+    "model": "iPhone"
+   },
+   {
+    "id": 502,
+    "verification_code": "TPV-DEF456",
+    "type": "video",
+    "status": "warn",
+    "is_verified": true,
+    "is_existing_image": true,
+    "is_deleted": false,
+    "lat": null,
+    "lng": null,
+    "original_image": "https://vision-media.truepic.com/o/502.mp4?token=signed",
+    "device_time": "2026-10-28T11:06:00.000Z"
+   },
+   {
+    "id": 503,
+    "is_deleted": true,
+    "type": "image",
+    "status": "fail"
+   }
+  ]
+ }
+}

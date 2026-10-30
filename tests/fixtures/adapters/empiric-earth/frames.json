@@ -1,0 +1,19 @@
+{
+ "frames": [
+  {"frame_id": "56f8d643be2ff1e674598eccfae2b3e2",
+   "frame_url": "https://external-api.getnexar.com/aod/full/ride/cc07d59669bfa317a4136a7d93965b04/fod_709F23AE-6F53-49E8-A473-98FEB7DBE973.jpg",
+   "thumbnail_url": "https://external-api.getnexar.com/aod/thumbnail/ride/cc07d59669bfa317a4136a7d93965b04/fod_709F23AE-6F53-49E8-A473-98FEB7DBE973.jpg",
+   "captured_at": "1793188800000", "timezone_offset": -14400, "h3_index_res12": "631243922682792959",
+   "gps_info": {"longitude": -73.985751, "latitude": 40.733587}, "direction": "NORTH_WEST",
+   "camera_heading": 298.8096008300781, "frame_quality": 0.9148776531219482, "frame_context": "NIGHTTIME",
+   "osm_info": {"osm_node_id_from": "8310246171", "osm_node_id_to": "3985008876", "road_type": "RESIDENTIAL"}},
+  {"frame_id": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
+   "frame_url": "https://external-api.getnexar.com/aod/full/ride/0000000000000000000000000000000a/fod_EXAMPLE-2.jpg",
+   "thumbnail_url": "https://external-api.getnexar.com/aod/thumbnail/ride/0000000000000000000000000000000a/fod_EXAMPLE-2.jpg",
+   "captured_at": "1793192400000", "timezone_offset": -14400, "h3_index_res12": "631243922682792960",
+   "gps_info": {"longitude": -73.9861, "latitude": 40.7339}, "direction": "SOUTH",
+   "camera_heading": 181.2, "frame_quality": 0.81, "frame_context": "DAYLIGHT",
+   "osm_info": {"osm_node_id_from": "1", "osm_node_id_to": "2", "road_type": "PRIMARY"}}
+ ],
+ "frames_fetched": 2
+}

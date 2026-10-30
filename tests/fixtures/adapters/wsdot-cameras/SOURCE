@@ -1,0 +1,2 @@
+arcgis_near.json: GET https://data.wsdot.wa.gov/arcgis/rest/services/TravelInformation/TravelInfoCamerasWeather/FeatureServer/0/query?where=1%3D1&geometry=-122.3321%2C47.6062&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&distance=2000&units=esriSRUnit_Meter&outFields=*&outSR=4326&resultRecordCount=5&f=json (keyless, recorded 2026-10-28T22:56Z)
+Image Last-Modified sampled by HEAD https://images.wsdot.wa.gov/nw/005vc16511.jpg -> "Wed, 28 Oct 2026 22:56:19 GMT"

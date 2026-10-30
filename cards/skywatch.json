@@ -1,0 +1,273 @@
+{
+  "id": "skywatch",
+  "name": "SkyWatch EarthCache",
+  "adapter": "skywatch",
+  "provider_url": "https://skywatch.com",
+  "short": "One API to search and task satellite imagery from many providers.",
+  "summary": "SkyWatch Space Applications (Canada) runs EarthCache, an aggregator of satellite, aerial and open imagery from many providers behind one REST API (api.skywatch.co/earthcache, x-api-key), a public keyless MCP endpoint for search and pricing, and a signed-in MCP server (mcp.skywatch.com, OAuth) that can place archive and tasking orders. Tasking orders (offering search, cost calculation, then a pipeline order) need a window of at least 7 days and are placed at least 2 days before start.",
+  "tags": [
+    "satellite",
+    "aggregator",
+    "earth observation",
+    "tasking",
+    "archive",
+    "SAR",
+    "optical",
+    "aerial",
+    "sentinel",
+    "landsat",
+    "api",
+    "mcp",
+    "oauth",
+    "webhooks",
+    "canada"
+  ],
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "video"
+    ],
+    "tasks": [
+      "search the imagery archive by polygon, date, cloud cover and resolution (REST, WebSocket, MCP)",
+      "calculate price and probability of collection before ordering",
+      "browse offerings and configurations for a location (search by partner, category archive or tasking)",
+      "order archive imagery and create tasking orders (future captures, recurring interval of 7 days or more) as pipelines",
+      "webhooks on pipeline events; AOI monitors; DirectView/WMTS tiles"
+    ]
+  },
+  "pricing": {
+    "model": "per km2 by offering and resolution; quoted by the price calculator",
+    "from_usd": 0,
+    "unit": "not published; use POST /price/calculate",
+    "notes": "No public rate card found. Docs: tasking requires max_cost taken from the cost calculator; archive minimum AOI above 1 km2; Sentinel-2 is free; 'Orders are machine-to-machine, no refunds'."
+  },
+  "latency": {
+    "typical": "Tasking: order at least 2 days before start; minimum window 7 days",
+    "notes": "Docs: 'Place taskings at least 2 days before start to allow provider scheduling/cancellation if needed'; cannot cancel within 48 hours of start; fulfilment treated as complete at about 80-85% AOI coverage. Delivery times per offering are not stated in the docs read."
+  },
+  "coverage": {
+    "regions": [
+      "Global, subject to each provider's offerings"
+    ],
+    "notes": "Docs: missing offerings mean 'access restrictions or provider constraints (territory, embargo, high/low demand regions)'. SAR, elevation and some Airbus/Planet configurations are 'Non-Standard' and need coordination with support before ordering.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "No SkyWatch imagery licence or terms of service was found on skywatch.com or the docs site (the site footer lists only privacy and cookie policies). Imagery comes from third-party providers whose own licences presumably apply; SkyWatch's rights terms are not stated here. Resale, AI training and ownership are therefore left unstated."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Captured by satellites or aircraft of the underlying providers; no person is identity-checked."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No attestation of delivered files is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). Offerings and search results carry provider and sensor metadata passed through from the operator."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Search results carry capture timestamps from the provider; no independent check documented."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Results have footprints and GeoTIFF outputs; georeferencing accuracy is not stated."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No integrity or anti-manipulation method is documented."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-provider checking is documented, though the MCP search has a compare_providers mode a buyer could use."
+    }
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Archive: whatever exists; tasking: captured after you order inside a window of 7 days or more",
+    "notes": "Archive search and tasking share one order API."
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://docs.skywatch.com/docs/",
+    "base_url": "https://api.skywatch.co/earthcache",
+    "openapi_url": "https://docs.skywatch.com/openapi-spec.json",
+    "auth": [
+      {
+        "type": "oauth2",
+        "resource_metadata": "https://mcp.skywatch.com/.well-known/oauth-protected-resource",
+        "scopes": [
+          "offline_access"
+        ],
+        "dynamic_registration": false,
+        "pkce": "S256",
+        "transport": "mcp",
+        "how_to_get": "Add https://mcp.skywatch.com/mcp to an MCP client and sign in with a SkyWatch Explore (free, self-service) or Hub account. The authorization server advertises client_id_metadata_document_supported, public clients (token auth none) and S256 PKCE, but no registration_endpoint, so an agent cannot self-register by RFC 7591. Explore accounts can order archive imagery and standard tasking; the assistant shows price and asks to confirm before ordering."
+      },
+      {
+        "type": "api_key_header",
+        "header": "x-api-key",
+        "env_var": "SKYWATCH_API_KEY",
+        "how_to_get": "Log in to a SkyWatch Hub account, open account settings and copy the API key (no 'Bearer' prefix). Hub accounts are by invitation from an organisation admin per the MCP docs."
+      },
+      {
+        "type": "none",
+        "how_to_get": "Public MCP v1 endpoint https://api.skywatch.co/mcp needs no account: search_archive_imagery, calculate_pricing, get_satellites, get_offerings only."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/archive/search",
+        "notes": "Results at GET /archive/search/{id}/search_results; WebSocket alternative"
+      },
+      {
+        "action": "list",
+        "method": "POST",
+        "path": "/products/offerings/search/",
+        "params": "location (required), resolution_low, resolution_high, product_name, partner_name, category archive|tasking"
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/price/calculate",
+        "params": "resolution, location, start_date, end_date, interval, product.configuration.offering_id"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/pipelines",
+        "params": "name, future dates, max_cost from calculator, interval >= 7d, aoi, output geotiff, product.configuration.offering_id",
+        "notes": "Creates archive or tasking orders"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/pipelines/{id}",
+        "notes": "Interval results at /pipelines/{id}/interval_results"
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/outputs/{id}"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/pipelines"
+      }
+    ],
+    "rate_limits": "Not stated in the docs read (limits-errors page covers geometry and cost rules only).",
+    "mcp": {
+      "remote": "https://mcp.skywatch.com/mcp",
+      "registry_name": null,
+      "auth": "OAuth sign-in with a SkyWatch account, S256 PKCE, scope offline_access, no dynamic registration endpoint advertised",
+      "first_party": true,
+      "notes": "Not in the official MCP Registry (search=skywatch returned 0). Unsigned: 5 tools. Explore accounts: 24 tools including ordering. The older public server at https://api.skywatch.co/mcp answered a JSON-RPC initialize without credentials (server skywatch-mcp-server 1.0.0)."
+    },
+    "notes": "Constraints from llms.txt: single polygon only, max 500 vertices recommended, tasking output geotiff with mosaic unstitched, min_aoi_coverage_percentage typically 85 or less."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "weeks",
+    "basis": "Docs: 'Minimum interval: 7 days' and 'Place orders at least 2 days before start'."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "approval"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "notes": "Docs list a payment-methods API and budgets per project, and the MCP says orders charge the account after a confirmed price; the actual methods (card, invoice, credits) were not itemised in the pages read, so this list is the Hub/Explore norm, not verified."
+  },
+  "requester": {
+    "checks": "Account sign-in; Hub roles Reader, Creator and SuperAdmin decide who can order; SuperAdmin approves orders waiting for approval.",
+    "unknown": "Whether SkyWatch screens buyers (identity, sanctions, end use) is not documented in the pages read."
+  },
+  "providers": [
+    {
+      "name": "SkyWatch Space Applications Inc.",
+      "roles": [
+        "reseller"
+      ],
+      "url": "https://skywatch.com"
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Base URL, x-api-key auth, categories, constraints (tasking min interval 7 days, order 2 days ahead, cannot cancel within 48 h), servers",
+      "url": "https://docs.skywatch.com/llms.txt"
+    },
+    {
+      "claim": "OpenAPI 3.1 paths, servers, x-api-key and Bearer JWT schemes",
+      "url": "https://docs.skywatch.com/openapi-spec.json"
+    },
+    {
+      "claim": "MCP manifest v1.7",
+      "url": "https://docs.skywatch.com/.well-known/mcp.json"
+    },
+    {
+      "claim": "API key from Hub account settings",
+      "url": "https://docs.skywatch.com/docs/general/api-authentication"
+    },
+    {
+      "claim": "Tasking workflow: offerings search, cost calculation, POST /earthcache/pipelines",
+      "url": "https://docs.skywatch.com/docs/tasking/tasking-workflow"
+    },
+    {
+      "claim": "Offerings search and Standard vs Non-Standard offerings",
+      "url": "https://docs.skywatch.com/docs/products/offerings-and-configs"
+    },
+    {
+      "claim": "Price calculation, max_cost required for tasking",
+      "url": "https://docs.skywatch.com/docs/pricing/pricing"
+    },
+    {
+      "claim": "Limits: single polygon, tasking max_cost must match",
+      "url": "https://docs.skywatch.com/docs/limits-errors"
+    },
+    {
+      "claim": "MCP v2.0: sign-in, Explore vs Hub abilities, confirm before order, tools",
+      "url": "https://docs.skywatch.com/docs/mcp/setup-guide"
+    },
+    {
+      "claim": "Public MCP v1 at api.skywatch.co/mcp, no key, search/pricing tools",
+      "url": "https://docs.skywatch.com/docs/mcp/mcp-server"
+    },
+    {
+      "claim": "Protected-resource metadata for mcp.skywatch.com",
+      "url": "https://mcp.skywatch.com/.well-known/oauth-protected-resource"
+    },
+    {
+      "claim": "Authorization-server metadata: S256, CIMD supported, no registration_endpoint",
+      "url": "https://mcp.skywatch.com/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Not in MCP Registry (0 results)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=skywatch"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "status": "unclaimed",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27"
+}

@@ -1,0 +1,179 @@
+{
+  "id": "shaip",
+  "name": "Shaip",
+  "provider_url": "https://www.shaip.com",
+  "status": "unclaimed",
+  "tags": [
+    "training data",
+    "custom collection",
+    "image collection",
+    "video collection",
+    "egocentric video",
+    "first-person video",
+    "wearable",
+    "mobile app",
+    "consented",
+    "crowd",
+    "contributors",
+    "managed service",
+    "speech collection",
+    "field collection"
+  ],
+  "summary": "Managed AI training-data vendor whose contributors and in-house workforce capture custom image, video and speech datasets to a spec (subject, volume, locales, demographics, consent), using the Shaip Work app in the field or head-mounted rigs for first-person video. Every project is scoped and quoted by sales under a contract, starts with a pilot, and passes multi-stage QA before delivery.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "audio",
+      "sensor"
+    ],
+    "tasks": [
+      "custom image collection to a spec (objects, people, faces, documents, food, landmarks, hand gestures), with documented participant releases",
+      "custom egocentric (first-person) video with head-mounted or wearable rigs and full-body and hand motion tracking, in homes, kitchens, factories, warehouses, offices or outdoors",
+      "custom speech and audio collection (scripted, spontaneous, dialogue, wake words) in 150+ languages and dialects",
+      "on-site and field collection at a location you name, and capture on specific mobile devices or custom cameras",
+      "multi-sensor and teleoperation capture for physical AI (depth, LiDAR, IMU, hand and eye tracking, GPS), time-synchronized",
+      "field capture by taskers in the Shaip Work mobile app",
+      "pilot batch before full collection; annotation of the collected data on request"
+    ]
+  },
+  "pricing": {
+    "model": "Custom quote after a scoping call",
+    "from_usd": 0,
+    "unit": "project (hours, clips or batch)",
+    "notes": "from_usd 0 means not published. Shaip says there is no flat rate and it does not publish fixed rates. Image cost depends on volume, type, regions, metadata and consent; egocentric video on hours or clips, task complexity, environments, participant diversity and annotation depth; larger milestone-based programs are priced per batch. Quotes usually arrive within two business days."
+  },
+  "latency": {
+    "typical": "Weeks (pilot: weeks from signed brief to first batch)",
+    "notes": "Shaip says typical physical-AI pilot timelines run in weeks from signed brief to first-batch delivery; studio and egocentric captures are faster, multi-sensor rigs slower. Quotes usually within two business days. One case study reports 10,000 valid hours of egocentric VR motion data from about 4,000 participants delivered in a single month."
+  },
+  "coverage": {
+    "regions": [
+      "Global contributor network, 100+ countries (list not published)"
+    ],
+    "notes": "Company figures: 500,000+ crowd-scale contributors, 10,000+ in-house workforce, 100+ countries, 150+ languages and dialects; 30K+ vetted egocentric collectors and 50 cities of egocentric coverage; one landmark project covered 40+ countries. Shaip names no countries, so availability in a specific city is not published."
+  },
+  "licensing": {
+    "summary": "Marketing pages say images are 'fully-consented' with 'documented participant releases', every egocentric clip is captured under signed commercial-use participant releases with a 'commercial-use license', de-identification is available, and datasets ship with an auditable provenance record. The public Terms of Service cover the website, plus a payments clause that refers to the platform; customer purchases are governed by a Master Services Agreement or Statement of Work that is not public. Buyer ownership, AI-training rights, resale and whether Shaip reuses delivered data are not stated publicly."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Contributors are described as a 'vetted' and 'credentialed' network plus a 10,000+ in-house workforce; participants sign releases.",
+      "unknown": "How vetting works, whether identity is checked, and duplicate-account controls are not documented. The Shaip Work App Store listing tells contributors 'No special skill or experience required'."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Field capture uses the Shaip Work app (web, iOS; the Android link on Shaip's site returns 404 on Google Play), but no app or device integrity checks are documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Automated checks for blurry images, faces and duplicate images are described, but nothing checks for gallery imports, re-captured screens or generated media. The platform page says taskers collect 'real-world or synthetic data'."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "Delivered with metadata and, for multi-sensor rigs, time-synchronized streams, but no trusted capture time is documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "The Shaip Work App Store privacy label says the app may collect precise location (developer's statement, not verified by Apple), but no geolocation check on delivered images or video is documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Six Sigma stage-gate QA with multi-stage validation, gold tasks and compliance checks on every batch; AI-assisted checks (duplicate, blurry image, face, landmark, content moderation, diversity) before human review; accuracy, visibility and consistency checks with retakes for egocentric video.",
+      "unknown": "Error rates and acceptance criteria are not published. Shaip says each dataset ships with an 'auditable provenance record'; its contents (consent records vs. per-file custody) are not published."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check of submissions is described."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "No API. Contact sales through the form on shaip.com ('Contact Us', 'Request a sample dataset'); work is placed under a Master Services Agreement or Statement of Work."
+      }
+    ],
+    "rate_limits": "Not applicable; ordering is through sales.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No Shaip server in the official MCP Registry (searched 'shaip', 2026-10-26)."
+    },
+    "notes": "No public API docs. shaip.com serves a Rank Math llms.txt (a page index only); every /.well-known/ path probed returns 410 Gone."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured for your project after scoping",
+    "notes": "Shaip also sells off-the-shelf datasets and synthetic data; only the custom collection service is described here."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "weeks",
+    "basis": "Physical AI FAQ: 'Typical pilot timelines run in weeks from signed brief to first-batch delivery.'"
+  },
+  "updated": "2026-10-28",
+  "sources": [
+    {
+      "claim": "Custom image collection: subject, volume, locales, demographics, formats and consent; pilot; vetted global contributor network; Six Sigma QA with multi-stage validation, gold tasks and compliance checks; fully-consented sourcing with documented participant releases; no flat rate, custom quote; image types; landmark images from 40+ countries",
+      "url": "https://www.shaip.com/offerings/image-data-collection/"
+    },
+    {
+      "claim": "Egocentric video: head-mounted/wearable rigs with full-body and hand motion tracking; 30K+ collectors, 100K+ clips, 50 cities; signed commercial-use releases, commercial-use license, de-identification; multi-stage QA with retakes; .mp4/.json/keypoint delivery; quote usually within two business days; pricing by hours/clips/complexity/environments, milestone programs per batch; 10,000 hours in a single month case study",
+      "url": "https://www.shaip.com/offering/egocentric-video-data-collection/"
+    },
+    {
+      "claim": "Shaip Work: taskers collect real-world or synthetic data in the field with the Shaip mobile app; metadata at tasker/asset/subject level; QA teams with multi-level audits; Shaip Intelligence automated checks (duplicate, blurry image, face detection) before human validation",
+      "url": "https://www.shaip.com/data-platform/"
+    },
+    {
+      "claim": "500,000+ contributors, 10,000+ in-house workforce, 100+ countries, 150+ languages; ShaipCloud app on web, Android and iOS; speech, on-site, field and device-specific collection; CCTV/surveillance video collection; no fixed rates published",
+      "url": "https://www.shaip.com/data-collection/"
+    },
+    {
+      "claim": "Pilot timelines run in weeks from signed brief to first batch; sensor modalities (depth, LiDAR, IMU, hand and eye tracking, GPS); signed consent and auditable provenance record",
+      "url": "https://www.shaip.com/physical-ai/"
+    },
+    {
+      "claim": "Website terms only; customer payments and refunds governed by the MSA or SOW, otherwise final and non-refundable; Shaip legal entities",
+      "url": "https://www.shaip.com/terms-of-service/"
+    },
+    {
+      "claim": "Shaip Work app: 'No special skill or experience required'; privacy label lists precise location, photos or videos and audio data (developer's statement, not verified by Apple)",
+      "url": "https://apps.apple.com/us/app/shaip-work/id6447959870"
+    },
+    {
+      "claim": "No Shaip server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=shaip"
+    },
+    {
+      "claim": "'every dataset ships with an auditable provenance record'",
+      "url": "https://www.shaip.com/physical-ai/"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "short": "A managed vendor whose contributors capture consented custom image, video and speech datasets to your spec.",
+  "access": {
+    "cost": "quote",
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "people"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No buyer payment method is published. The Terms of Service say customer payments and refunds are governed by the Master Services Agreement or Statement of Work, and are otherwise final and non-refundable."
+  },
+  "requester": {
+    "checks": "The sales contact form asks for name, email, phone, company and country; work proceeds only under a signed MSA or SOW.",
+    "unknown": "No check of who a buyer is or what a commission is for is documented. Shaip also advertises CCTV and surveillance video collection, with no stated limits on person-targeting."
+  }
+}

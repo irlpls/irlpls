@@ -1,0 +1,38 @@
+[
+ {
+  "id": "41004",
+  "name": "EDISTO - 41 NM Southeast of Charleston, SC",
+  "lat": 32.502,
+  "lng": -79.099,
+  "img": "Z20A_2026_10_28_2210.jpg",
+  "width": 2880,
+  "height": 300
+ },
+ {
+  "id": "41013",
+  "name": "Frying Pan Shoals, NC",
+  "lat": 33.436,
+  "lng": -77.764,
+  "img": null,
+  "width": null,
+  "height": null
+ },
+ {
+  "id": "46026",
+  "name": "SAN FRANCISCO - 18NM West of San Francisco, CA",
+  "lat": 37.75,
+  "lng": -122.838,
+  "img": "W49A_2026_10_28_2210.jpg",
+  "width": 2880,
+  "height": 300
+ },
+ {
+  "id": "46042",
+  "name": "MONTEREY - 27NM WNW of Monterey, CA",
+  "lat": 36.787,
+  "lng": -122.408,
+  "img": "Z85A_2026_10_28_2210.jpg",
+  "width": 2880,
+  "height": 300
+ }
+]

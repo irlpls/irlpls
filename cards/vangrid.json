@@ -1,0 +1,320 @@
+{
+  "id": "vangrid",
+  "name": "Vangrid",
+  "provider_url": "https://vangrid.io",
+  "status": "unclaimed",
+  "adapter": "vangrid",
+  "short": "Pay a USDC bounty by x402 and a contributor films a place; you get a capture link and a 3D model.",
+  "summary": "Vangrid runs a bounty board for ground-level video captures of real places. An agent posts a bounty in one HTTP call, paying the amount in USDC on Base or Arc through x402 with no account or API key; contributors with the Vangrid capture app film it, the agent reviews watermarked previews and accepts one, and receives a capture link (processed on the device: Vangrid's docs say requesters never receive raw video) plus a textured 3D model (GLB). Every capture is fingerprinted (content sha256, coarse geohash, timestamp) and the fingerprints are committed in Merkle trees whose roots are attested on Base through EAS, so anyone can check that a capture's hash existed by the end of its window. Faces, plates and bodies are blurred on the device. Pay-per-request endpoints also return metadata for captures already anchored.",
+  "tags": [
+    "bounty",
+    "x402",
+    "usdc",
+    "base",
+    "arc",
+    "3d-reconstruction",
+    "glb",
+    "video",
+    "street-level",
+    "provenance",
+    "blockchain-anchored",
+    "mcp",
+    "no-account"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video"
+    ],
+    "tasks": [
+      "walk-around video capture of a specific place (loading dock, forecourt, junction, building, stock room)",
+      "3D reconstruction of the accepted capture as a textured GLB mesh",
+      "ground-level spatial data for robotics, mapping and world models",
+      "lookup of already-anchored captures by area and time window (metadata only)",
+      "free provenance check of a capture's sha256 against its Base anchor"
+    ]
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "Agent bounty docs: 'A person has to go and film, so this takes hours or days.' Deadline 1 to 30 days (default 7); reconstruction after acceptance 'typically takes 30 minutes or more'."
+  },
+  "latency": {
+    "typical": "Hours to days for a contributor to film; then 30+ minutes of reconstruction after you accept",
+    "notes": "The bounty is posted to the board within a minute of payment. Submissions arrive when a contributor goes and films; nothing guarantees anyone will. The deadline is 1 to 30 days (default 7); after it, or on cancel while open, the full amount is refunded on the network it was paid on. Accepting is final."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Usually filmed after the bounty is posted, but a contributor may submit a clip captured earlier",
+    "notes": "The bounties guide says a contributor can 'Record a new one, or use a clip you have already captured.' Submissions show submitted_at, not capture time; the capture time is in the anchored fingerprint, checkable with the free provenance endpoint. The pay-per-request index returns metadata (sha256, geohash, capture time, anchor) of existing captures, not media."
+  },
+  "pricing": {
+    "model": "bounty (escrowed USDC, set by the buyer)",
+    "from_usd": 50,
+    "unit": "per bounty",
+    "notes": "The buyer sets amount_usdc in whole USDC; the server's default minimum and maximum are 50 and 5,000 (quoted in the discovery metadata). The amount is escrowed on chain and released on acceptance: Vangrid currently keeps a 10% platform fee and about $5 for reconstruction and pays the rest to the contributor (a $50 reward pays $40); the docs call these figures examples that can change. Reconstruction is included; no second payment. Full refund on cancel while open or on expiry. Pay-per-request data: $0.01 per spatial query, $0.005 per observation, provenance check free; prices are quoted per request and can change. Enterprise API pricing is by quote."
+  },
+  "payment": {
+    "methods": [
+      "x402",
+      "crypto"
+    ],
+    "agent_rails": [
+      "x402"
+    ],
+    "agent_can_pay": true,
+    "prepaid": true,
+    "notes": "Agents pay through x402 v2 (exact scheme) in USDC on Base (eip155:8453) or Arc (eip155:5042); the 402 quote lists both and the transfer settles before the bounty is created. No gas needed on Base. People post on the web board by funding the escrow from a wallet. The amount is escrowed up front and refunded to the paying wallet on cancel or expiry. Enterprise pilots are priced by contract."
+  },
+  "account": {
+    "kyc": "none",
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://docs.vangrid.io/api/agent-bounties.md"
+    }
+  },
+  "coverage": {
+    "regions": [
+      "Global, uneven (densest in metropolitan areas)"
+    ],
+    "notes": "Coverage follows contributors: densest in metro areas, sparser elsewhere. The Terms (s.15) say the service is not offered to residents of Illinois, Texas and Washington (USA), Germany, France, Italy, mainland China, Russia, Iran, North Korea, Syria, Cuba and Crimea (this applies to anyone using the service, so presumably also to bounty buyers), and uploads are blocked in some regions by capture location and network region. Contributors may not capture private property, home or vehicle interiors, schools, playgrounds, healthcare, places of worship, military or critical-infrastructure perimeters, or identifiable minors. A public explorer tree from 2026-09-24 listed captures from cities on several continents (e.g. Istanbul, Atlanta, Amsterdam, Nairobi, Sydney, Jakarta, Tokyo)."
+  },
+  "licensing": {
+    "summary": "The Terms say contributors keep ownership of their captures and grant Vangrid a worldwide, non-exclusive, royalty-free, sublicensable, transferable licence to process, distribute and commercialise them and their derivatives. What licence the bounty buyer receives to the capture or model is not stated anywhere. The Privacy Policy says Vangrid processes captures to train spatial models and may license filtered datasets to defense and government customers under use restrictions, robotics, world-model and AI labs, and infrastructure operators, so a commissioned capture is not exclusive.",
+    "buyer_owns_output": false,
+    "vendor_trains_on_data": "yes"
+  },
+  "capture": {
+    "by": "contributors"
+  },
+  "requester": {
+    "checks": "None documented for buyers: there is no account and no API key; an agent pays from any wallet, gets a one-time agent_token, and Vangrid posts the title and brief to the board from its operator wallet within a minute. The rules sit with contributors: the Terms forbid capturing private spaces, identifiable minors and sensitive sites, and ban harassing or stalking any person.",
+    "unknown": "Whether briefs are screened before posting, and how a request to film a specific person would be refused, is not stated."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": false,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none",
+    "notes": "Terms s.8 bans 'bots, automated tools, fabricated GPS data, or spoofed locations' for all users; read in context it targets faked captures, and the agent API with x402 is explicitly offered."
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.vangrid.io/api/agent-bounties",
+    "base_url": "https://data.vangrid.io/api/v1",
+    "openapi_url": "https://data.vangrid.io/openapi.json",
+    "auth": [
+      {
+        "type": "other",
+        "header": "PAYMENT-SIGNATURE",
+        "how_to_get": "x402 v2: call without payment, read the 402 PAYMENT-REQUIRED header, sign an exact USDC authorization on Base or Arc and retry. No account or key; needs a wallet holding USDC.",
+        "transport": "rest"
+      },
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "how_to_get": "The agent_token (vgb_...) returned once by POST /bounties; it is the only credential for that bounty's status, accept and cancel calls.",
+        "transport": "rest"
+      },
+      {
+        "type": "none",
+        "how_to_get": "GET /provenance/{hash} is free and needs no payment or token.",
+        "transport": "rest"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/bounties",
+        "params": "title (3-200 chars), brief (20-4000 chars), amount_usdc (integer; default range 50-5000), deadline_days (1-30, default 7)",
+        "notes": "Paid by x402: the price is exactly amount_usdc, settled before processing. Returns bounty_id, agent_token (once), poll_url."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/bounties/{id}",
+        "params": "Authorization: Bearer <agent_token>",
+        "notes": "Free. Status (paid, open, accepting, accepted, cancelling, cancelled, expired, expired_refunded, failed), onchain_id, board_url, transactions, and submissions with watermarked preview_url (15 min) and quality_status pass/fail."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/bounties/{id}",
+        "params": "Authorization: Bearer <agent_token>",
+        "notes": "After POST /bounties/{id}/accept {submission_id} (free, final, releases the escrow), the accepted submission carries full_capture_url, model_glb_url and model_zip_url as signed links valid 15 minutes. POST /bounties/{id}/cancel refunds while open."
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/spatial/query",
+        "params": "aoi (GeoJSON Point with radius_m 1-5000, or Polygon up to 100 km2), from, to, limit (1-1000)",
+        "notes": "$0.01 by x402. Returns already-anchored captures: sha256, 6-character geohash, captured_at and Base anchor. No media."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/observations/{id}",
+        "params": "id = capture sha256",
+        "notes": "$0.005 by x402. One anchored observation. GET /provenance/{hash} answers the same check for free."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": true,
+      "auth": "x402 from a local wallet (EVM_PRIVATE_KEY), with MAX_USD_PER_CALL and MAX_USD_PER_BOUNTY caps",
+      "notes": "Open-source (MIT) stdio server github.com/vangrid-labs/bounty-mcp, run with npx -y github:vangrid-labs/bounty-mcp. Tools: vangrid_post_bounty, vangrid_bounty_status, vangrid_accept_submission, vangrid_cancel_bounty, vangrid_coverage_query, vangrid_observation, vangrid_verify_provenance. Accept and cancel are free and irreversible and not covered by the spend caps. Not in the official MCP Registry."
+    },
+    "notes": "Discovery: an x402 manifest at https://data.vangrid.io/.well-known/x402 lists the paid resources, networks and payTo address. A separate Enterprise Spatial API (api.vangrid.io/v1, bearer API keys, spatial query, ingest, streaming) is granted per pilot by contacting sales."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Contributors sign in with a wallet and need an invite code to upload; no identity check is documented, and buyers see no contributor identity."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Captures are recorded in the Vangrid capture app (browser or Android) and checked at ingest for quality, length, camera/location consistency and duplicates (content checks, not attestation). Vangrid says hardware-backed device attestation is 'not live yet' and that the fingerprint 'says nothing about the device that produced it'. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Recorded through the app's camera; the Terms ban fabricated, manipulated, staged or AI-generated content; ingest rejects duplicates. No signed capture or C2PA; Vangrid is not on the C2PA conforming products list, so nothing proves the video came from a real sensor rather than a screen or generator."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each capture's fingerprint (content sha256, coarse geohash, timestamp) becomes a leaf in a Merkle tree (keccak256, sorted pairs, odd nodes hashed with themselves) whose root is attested on Base through EAS when its window closes (about every 15 to 35 minutes). Vangrid's provenance endpoint maps a sha256 to its leaf, root and attestation.",
+      "evidence_url": "https://explorer.vangrid.io/api/trees/5776",
+      "unknown": "Claimed, not evidenced: the leaf encoding is not published, so linking a capture's sha256 to its leaf requires Vangrid's provenance endpoint, and the published proofs omit the self-pair steps for odd nodes (61 of 317 leaves in tree 5776 fail an independent sorted-pair recomputation, though Vangrid's endpoint reports one of them verified). Restore evidenced when Vangrid publishes the leaf encoding and odd-node rule, or proofs a standard verifier accepts. The anchor shows a leaf existed no later than the window close; the capture time inside the fingerprint is device-reported, a bounty submission may be a clip filmed before the bounty was posted, and the attester address is not documented as Vangrid's."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Location is optional; when given it is checked for consistency with camera signals at ingest, and a 6-character geohash (about 1.2 km by 0.6 km) is anchored in the fingerprint.",
+      "unknown": "The anchored location is device-reported and coarse; GPS/motion cross-correlation against spoofing is 'not live yet', and some bounties may receive captures with no location at all."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Automated quality check per submission (quality_status pending/pass/fail); the buyer reviews a watermarked preview against the brief before accepting one.",
+      "unknown": "The automated check covers quality and length, not whether the clip shows the place in the brief; that judgment is the buyer's."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "A bounty delivers one contributor's capture. Independent verifiers under collateral are 'not live yet'; the multi-view ground_truth_score described for the enterprise query API is not part of bounty delivery."
+    }
+  },
+  "provenance": {
+    "custody": {
+      "level": "claimed",
+      "method": "Each capture's fingerprint is registered as a leaf in a Merkle tree whose root is attested on Base through EAS; Vangrid's provenance endpoint returns a capture's leaf, root and attestation.",
+      "evidence_url": "https://explorer.vangrid.io/api/trees/5776",
+      "unknown": "A registration record, not per-hop custody. The leaf encoding is unpublished and 61 of 317 proofs in tree 5776 fail an independent recomputation, so the capture-to-anchor link rests on Vangrid's API; whether the delivered full_capture_url hashes to the anchored sha256 is not stated.",
+      "sources": [
+        {
+          "claim": "Explorer API: Merkle roots, levels and proofs; on-chain EAS attestation of each root",
+          "url": "https://explorer.vangrid.io/api/trees/5776"
+        }
+      ]
+    }
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Tagline 'Sovereign data rail for real-time ground truth, enabling world models and autonomous systems'",
+      "url": "https://vangrid.io"
+    },
+    {
+      "claim": "Agent bounty API: no account or key; x402 on Base or Arc; POST /bounties fields and ranges (default 50-5000 USDC, deadline 1-30 days); agent_token bearer; statuses; preview and model links valid 15 min; quality_status; accept/cancel; full refund; 'hours or days'; MCP tools",
+      "url": "https://docs.vangrid.io/api/agent-bounties.md"
+    },
+    {
+      "claim": "Bounties: 10% platform fee and ~$5 reconstruction from the reward; GLB mesh; reconstruction 30+ min; escrow in USDC on Base; full refund; contributors may submit a previously captured clip; only a dataset hash goes on chain",
+      "url": "https://docs.vangrid.io/contribute/bounties.md"
+    },
+    {
+      "claim": "Pay-per-request: $0.01 spatial query, $0.005 observation, free provenance; 6-character geohash (~1.2 x 0.6 km); EAS anchor fields; OpenAPI and x402 manifest; MCP server setup",
+      "url": "https://docs.vangrid.io/api/pay-per-request.md"
+    },
+    {
+      "claim": "OpenAPI 1.0.0: seven endpoints, x402 PAYMENT-SIGNATURE and agentToken bearer security schemes, server data.vangrid.io",
+      "url": "https://data.vangrid.io/openapi.json"
+    },
+    {
+      "claim": "x402 manifest: paid resources (spatial query, observation, bounties), networks eip155:8453 and eip155:5042",
+      "url": "https://data.vangrid.io/.well-known/x402"
+    },
+    {
+      "claim": "Verification: live ingest checks (quality, camera/location consistency, duplicates), capture fingerprint, Merkle root anchored on Base; device attestation, sensor cross-correlation and independent verification not live",
+      "url": "https://docs.vangrid.io/protocol/verification.md"
+    },
+    {
+      "claim": "Public explorer of anchored Merkle trees, leaves and inclusion proofs (latest tree attested 2026-10-27 UTC)",
+      "url": "https://explorer.vangrid.io/"
+    },
+    {
+      "claim": "Sample check: provenance endpoint returned verified=true for capture cf9642...4a48 (tree 4145, captured 2026-09-24T06:31:34Z)",
+      "url": "https://data.vangrid.io/api/v1/provenance/cf9642dae244a213bc9c0e6d325a84be44fe8fd1f57d9b362c64493769b74a48"
+    },
+    {
+      "claim": "Sample tree 4145 leaves and proofs; the leaf's 11-node proof recomputes (keccak256, sorted pairs) to the attested root",
+      "url": "https://explorer.vangrid.io/api/trees/4145"
+    },
+    {
+      "claim": "EAS attestation on Base for tree 4145's root, created 2026-09-24 07:06:12 UTC, not revoked",
+      "url": "https://base.easscan.org/attestation/view/0x1b0a4d4221b2721f6386abf40787dc06690ad781e877e64db98db9e49ddbd9df"
+    },
+    {
+      "claim": "Capture app in browser or Android; on-device blurring of faces and plates; location optional; uploads unavailable in some regions",
+      "url": "https://docs.vangrid.io/contribute/capture.md"
+    },
+    {
+      "claim": "Terms (May 22, 2026): contributor obligations and banned subjects; contributors retain ownership and license Vangrid; no AI-generated content; excluded jurisdictions; harassment/stalking ban",
+      "url": "https://docs.vangrid.io/legal/terms-of-service.md"
+    },
+    {
+      "claim": "Privacy Policy: data processed to train spatial models; filtered datasets licensed to defense, robotics, AI labs and infrastructure operators; operator Aurevion Group Ltd. (BVI)",
+      "url": "https://docs.vangrid.io/legal/privacy-policy.md"
+    },
+    {
+      "claim": "Edge nodes: coverage follows contributors, densest in metro areas, sparser elsewhere",
+      "url": "https://docs.vangrid.io/concepts/edge-nodes.md"
+    },
+    {
+      "claim": "Wallet sign-in, invite code needed to upload; requester receives the 3D model",
+      "url": "https://docs.vangrid.io/faq.md"
+    },
+    {
+      "claim": "Enterprise API keys by contacting sales; pricing scoped per deployment; access granted per pilot",
+      "url": "https://docs.vangrid.io/api/authentication.md"
+    },
+    {
+      "claim": "MCP server README: seven tools, stdio, MIT, spend caps, accept/cancel irreversible and outside caps",
+      "url": "https://github.com/vangrid-labs/bounty-mcp"
+    },
+    {
+      "claim": "Not in the official MCP Registry (search 'vangrid' returns 0)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=vangrid"
+    },
+    {
+      "claim": "Explorer API: tree 5776 root, levels and per-leaf proofs (recomputed 2026-10-28: 256 of 317 leaves verify)",
+      "url": "https://explorer.vangrid.io/api/trees/5776"
+    },
+    {
+      "claim": "EAS attestation on Base carrying tree 5776's Merkle root",
+      "url": "https://base.easscan.org/attestation/view/0x2e8b9900e8d4fb43132d3581339d08c5afd2a918068a24e2a6951602aa49fe75"
+    },
+    {
+      "claim": "Verification doc: fingerprint = content hash, coarse geohash, timestamp; device attestation and independent verifiers not live",
+      "url": "https://docs.vangrid.io/protocol/verification.md"
+    },
+    {
+      "claim": "Account: none; agents post bounties by x402 from their own wallet, no account or key",
+      "url": "https://docs.vangrid.io/api/agent-bounties.md"
+    }
+  ]
+}

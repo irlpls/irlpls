@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://irlpls.com/2026-10-26/schemas/request.json",
+  "title": "irlpls Request 2026-10-26",
+  "description": "A request for NEW real-world data, as sent by a requester (an agent or a person's agent) to a broker. Natural language is primary; every other field is an optional hint the requester already knows. The broker fills in the rest and asks only questions that change the outcome.",
+  "type": "object",
+  "required": [
+    "need"
+  ],
+  "properties": {
+    "need": {
+      "type": "string",
+      "description": "What to observe or capture, in plain language"
+    },
+    "why": {
+      "type": "string",
+      "description": "The decision or purpose it serves; lets the broker suggest substitutes and set tolerances"
+    },
+    "place": {
+      "type": "string"
+    },
+    "lat": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "lon": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+    },
+    "country_code": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$"
+    },
+    "within_minutes": {
+      "type": "integer",
+      "description": "Deadline for delivery"
+    },
+    "quantity": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "mode": {
+      "enum": [
+        "live",
+        "commission"
+      ],
+      "description": "Usually inferred by the broker: live = reporting now; commission = captured to order"
+    },
+    "terms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "modalities": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "photo",
+          "video",
+          "audio",
+          "aerial",
+          "sensor",
+          "text-report"
+        ]
+      }
+    },
+    "require": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "human",
+          "application",
+          "camera",
+          "time",
+          "location",
+          "content",
+          "corroboration"
+        ]
+      },
+      "description": "Guarantees the requester needs proof of. A broker MUST add time, location and content (Section 4)"
+    },
+    "max_price_usd": {
+      "type": "number"
+    },
+    "policy": {
+      "$ref": "https://irlpls.com/2026-10-26/schemas/policy.json"
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Distinct asks joined by \"and\" in the need. A hint only: a broker may match the request whole or ask once per part."
+    },
+    "targets_person": {
+      "type": "boolean",
+      "description": "The request watches, follows or photographs a specific person. Set by the requester or detected in the need; people-based providers are then ruled out unless the policy allows it."
+    }
+  }
+}

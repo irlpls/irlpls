@@ -1,0 +1,250 @@
+{
+  "id": "tfl-jamcams",
+  "name": "TfL JamCams",
+  "status": "unclaimed",
+  "provider_url": "https://api.tfl.gov.uk/",
+  "adapter": "tfl_jamcams",
+  "tags": [
+    "traffic camera",
+    "jamcam",
+    "cctv",
+    "webcam",
+    "traffic",
+    "road",
+    "street",
+    "junction",
+    "london",
+    "transport for london",
+    "tfl",
+    "united kingdom",
+    "government",
+    "free",
+    "image",
+    "photo",
+    "video clip",
+    "live",
+    "real-time"
+  ],
+  "summary": "Transport for London's Unified API lists about 900 London road 'JamCam' traffic cameras with coordinates, view direction and links to each camera's latest still image and a short looped video clip. TfL says the TfL-branded, date- and time-stamped images refresh every three minutes or more often. Free; keyless calls work at a lower rate limit, and a free TfL API portal key raises it.",
+  "short": "Latest stills and short clips from about 900 London traffic cameras, free from Transport for London.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video"
+    ],
+    "tasks": [
+      "list London traffic cameras with name, coordinates and view direction",
+      "find traffic cameras within a radius of a point in London",
+      "latest still image (JPG) of a London road or junction",
+      "latest short looped video clip (MP4) from the same camera",
+      "see traffic and road conditions on London streets"
+    ]
+  },
+  "pricing": {
+    "model": "free public service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "Free under TfL's Transport Data Service terms. Anonymous access is limited to 50 requests a minute; a free '500 requests a minute' product key is available on the TfL API portal, and higher quotas are available on request."
+  },
+  "latency": {
+    "typical": "TfL says images are refreshed every three minutes, sometimes more often; a sampled image was about 5 minutes old on 2026-10-26",
+    "notes": "TfL's open-data page gives a fresh feed copy every 2 minutes, at most 2 minutes from capture to display, and at most 15 minutes before information should be updated. Images are not captured while a camera is in use for managing traffic, being maintained, or during a fault. The 'modified' timestamps in camera records are database artefacts, not image times. Only the latest image is provided (no past images)."
+  },
+  "coverage": {
+    "regions": [
+      "United Kingdom (London)"
+    ],
+    "notes": "Greater London roads only. 890 cameras were listed on 2026-10-26, 805 of them flagged available. Cameras can be added or removed, and TfL has reported outages where images or clips were not supplied.",
+    "areas": [
+      "GB"
+    ]
+  },
+  "licensing": {
+    "summary": "TfL Transport Data Service licence, based on Open Government Licence v2.0 with TfL amendments: worldwide, royalty-free, perpetual, non-exclusive; you may copy, publish, distribute, adapt and exploit the information commercially and non-commercially, including in your own product. You must attribute 'Powered by TfL Open Data' (plus the Ordnance Survey/Geomni statements), follow TfL branding guidelines, keep to at most 500 calls per minute per feed, and give accurate registration details. TfL's open-data page adds that JamCam images must not be cropped and already carry TfL branding. The licence transfers no intellectual property rights, comes 'as is' with no guarantee of continued supply, and TfL may revise it without notice. The terms do not mention AI training or resale specifically.",
+    "buyer_owns_output": false
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Up to about 3 minutes per TfL; about 5 minutes observed",
+    "notes": "No past images via the API. Each still carries a burned-in date and time stamp."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://api-portal.tfl.gov.uk/",
+    "base_url": "https://api.tfl.gov.uk",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key needed; anonymous access is limited to 50 requests a minute. A keyless call returned the full camera list on 2026-10-26."
+      },
+      {
+        "type": "api_key_query",
+        "env_var": "TFL_APP_KEY",
+        "how_to_get": "Optional. Register on https://api-portal.tfl.gov.uk/, subscribe to the '500 requests a minute' product, and append the key as the app_key query parameter (app_id is no longer required)."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/Place/Type/JamCam",
+        "notes": "All cameras: id, commonName, lat, lon, and additionalProperties available, imageUrl (S3 JPG), videoUrl (S3 MP4), view."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/Place",
+        "params": "lat, lon, radius (metres), type=JamCam",
+        "notes": "Cameras near a point, with distance."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/Place/{id}",
+        "params": "id, e.g. JamCams_00002.00865",
+        "notes": "One camera record. The image and clip themselves are fetched by GET from the imageUrl and videoUrl it gives (https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/<camera>.jpg|.mp4)."
+      }
+    ],
+    "rate_limits": "Anonymous: 50 requests a minute. Free key: 500 requests a minute; higher quotas on request. The licence caps use at 500 calls per minute per data feed and lets TfL throttle excessive use.",
+    "self_serve": true,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No TfL or JamCam server in the official MCP Registry (searched tfl, transport for london, jamcam, london on 2026-10-26)."
+    },
+    "notes": "Swagger 2.0 description at https://api.tfl.gov.uk/swagger/docs/v1. No OAuth: /.well-known/oauth-protected-resource and oauth-authorization-server return 404 on api.tfl.gov.uk and api-portal.tfl.gov.uk."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 50,
+      "per_seconds": 60,
+      "scope": "unknown",
+      "notes": "Anonymous access. Higher quotas on request.",
+      "source_url": "https://api-portal.tfl.gov.uk/products",
+      "with_key": {
+        "requests": 500,
+        "per_seconds": 60,
+        "scope": "per-key",
+        "source_url": "https://api-portal.tfl.gov.uk/products"
+      }
+    }
+  },
+  "payment": {
+    "methods": [],
+    "notes": "No payment: the service is free."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "None for keyless calls. A key needs a TfL API portal account with an activated email, and the licence requires accurate registration details.",
+    "unknown": "Nothing is commissioned; the cameras run on TfL's own schedule."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Fixed TfL cameras, not people"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing of images or clips; nothing documents how they are produced or whether they are processed"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Each image and clip comes from a named TfL camera and carries TfL branding. No capture signing; nothing checkable proves the frame came from that camera's sensor"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "TfL says images are date and time stamped (burned into the frame); the S3 file also has a Last-Modified header",
+      "unknown": "The stamp is unsigned text in the image; record 'modified' timestamps are database artefacts and say nothing about the image"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each camera has coordinates, a location name (also burned into the image) and a view direction",
+      "unknown": "Movable cameras may face elsewhere; TfL says images are not captured while a camera is in use for managing traffic, but this is not proven per image"
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No review of content"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "None documented"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "TfL: images are 'refreshed every three minutes - sometimes more often'; feed copy every 2 minutes, at most 2 minutes from capture to display."
+  },
+  "sources": [
+    {
+      "claim": "Keyless call returned 890 JamCams (805 available) with id, commonName, lat, lon, available, imageUrl, videoUrl, view (tested 2026-10-26)",
+      "url": "https://api.tfl.gov.uk/Place/Type/JamCam"
+    },
+    {
+      "claim": "Sampled image and clip Last-Modified about 5 minutes before fetch; image 352x288 with burned-in date/time, location name and TfL logo; clip about 10 seconds (2026-10-26)",
+      "url": "https://s3-eu-west-1.amazonaws.com/jamcams.tfl.gov.uk/00002.00865.jpg"
+    },
+    {
+      "claim": "Nearby search by lat, lon, radius and type=JamCam returns cameras with distance; single record by id",
+      "url": "https://api.tfl.gov.uk/Place?lat=51.5074&lon=-0.1278&radius=500&type=JamCam"
+    },
+    {
+      "claim": "Place endpoints and app_key query auth in the Unified API Swagger description",
+      "url": "https://api.tfl.gov.uk/swagger/docs/v1"
+    },
+    {
+      "claim": "Register, subscribe to the 500 requests/minute product, append app_key as a query parameter; app_id no longer required",
+      "url": "https://api-portal.tfl.gov.uk/"
+    },
+    {
+      "claim": "Anonymous access limited to 50 requests a minute; free '500 requests a minute' product; higher quotas on request",
+      "url": "https://api-portal.tfl.gov.uk/products"
+    },
+    {
+      "claim": "JamCam images TfL branded, date and time stamped, refreshed every three minutes or more often; feed copy every 2 min, max 2 min capture to display, max 15 min; not captured when a camera is used for managing traffic, maintained or faulty; must not crop images (archived copy of tfl.gov.uk/info-for/open-data-users/our-open-data, captured 2026-09-14; live page blocks automated fetches)",
+      "url": "https://web.archive.org/web/20260914170926/https://tfl.gov.uk/info-for/open-data-users/our-open-data"
+    },
+    {
+      "claim": "Transport Data Service licence: OGL v2.0 with TfL amendments; commercial use, distribution and adaptation allowed; 'Powered by TfL Open Data' attribution; 500 calls per minute per feed; no IP transfer; as-is, no guaranteed supply; revisable without notice (archived copy captured 2026-09-10; live page blocks automated fetches)",
+      "url": "https://web.archive.org/web/20260910192212/https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service"
+    },
+    {
+      "claim": "JamCam feeds give regularly updated still images plus short looped video clips (UKAuthority, 2016; archived copy)",
+      "url": "https://web.archive.org/web/20240613113714/https://www.ukauthority.com/articles/tfl-opens-car-park-and-jamcam-data-feeds/"
+    },
+    {
+      "claim": "'modified' dates on JamCam records are database artefacts that change only on rebuilds, not when images change (TfL Tech Forum; archived copy)",
+      "url": "https://web.archive.org/web/20250516191753/https://techforum.tfl.gov.uk/t/unexplained-modified-dates-on-the-jamcams/424"
+    },
+    {
+      "claim": "Only real-time JamCam images are provided, no historic images (TfL Tech Forum; archived copy)",
+      "url": "https://web.archive.org/web/20250501071047/https://techforum.tfl.gov.uk/t/jamcam-multiple-historic-images/1016"
+    },
+    {
+      "claim": "Reported outage where JamCam images and clips were not supplied due to a technical fault (TfL Webteam, 2018; archived copy)",
+      "url": "https://web.archive.org/web/20250516092946/https://techforum.tfl.gov.uk/t/live-jamcam-images-and-clips/596"
+    },
+    {
+      "claim": "No TfL or JamCam MCP server in the official registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=tfl"
+    },
+    {
+      "claim": "No OAuth or discovery documents (/.well-known/* return 404)",
+      "url": "https://api.tfl.gov.uk/.well-known/oauth-protected-resource"
+    }
+  ],
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

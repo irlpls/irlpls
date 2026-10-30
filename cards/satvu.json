@@ -1,0 +1,340 @@
+{
+  "id": "satvu",
+  "name": "SatVu",
+  "adapter": "satvu",
+  "status": "unclaimed",
+  "provider_url": "https://www.satellitevu.com/",
+  "tags": [
+    "satellite",
+    "satellite imagery",
+    "thermal",
+    "thermal infrared",
+    "infrared",
+    "MWIR",
+    "mid-wave infrared",
+    "heat",
+    "heat signature",
+    "surface temperature",
+    "night",
+    "HotSat",
+    "tasking",
+    "assured tasking",
+    "earth observation",
+    "remote sensing",
+    "aerial",
+    "api",
+    "STAC",
+    "global"
+  ],
+  "short": "Thermal infrared satellite images of heat, day or night, tasked by API under a SatVu contract.",
+  "summary": "SatVu (Global Satellite Vu Ltd, London) operates the HotSat mid-wave infrared satellites, which image heat at up to 3.5 m resolution, day and night. Contract holders use its web app, REST API or Python SDK to run a free feasibility check, get a price and place Standard tasking orders (a date window of at least 7 days) or Assured orders (a chosen pass in the next 8 days), including recurring series. SatVu states delivery within 72 hours of capture, 95% of the time. HotSat-2 has been in commercial operation since June 2026. HotSat-3 launched in October 2026 and is being commissioned. SatVu tasking is also sold through SkyFi.",
+  "capabilities": {
+    "modalities": [
+      "aerial",
+      "sensor"
+    ],
+    "tasks": [
+      "Standard tasking of a new thermal infrared capture of a point target within a date window of at least 7 days, placed at least 24 hours ahead, with off-nadir (0-45 degrees), cloud cover (25-100%) and day/night/both settings",
+      "Assured tasking of a specific satellite pass in the next 8 days, at the highest priority, delivered regardless of cloud cover",
+      "recurring order series over the same location on a repeating cadence",
+      "free feasibility check before ordering (usually under a minute)",
+      "price check before placing an order, including licence-level and catalog-withhold add-ons",
+      "track, modify or cancel orders; order-status webhooks",
+      "Primary (all frames, radiometrically corrected) and Surface Brightness Temperature (orthorectified, in kelvin) products",
+      "heat signatures of industrial sites, buildings and activity, day or night"
+    ]
+  },
+  "pricing": {
+    "model": "per tasked scene, at prices set in each contract (GBP or EUR), plus percentage uplifts for licence level and catalog withhold",
+    "from_usd": 0,
+    "unit": "per tasked scene (price not published)",
+    "notes": "from_usd 0 means not published, not free. Each contract has its own product prices and a credit limit. The price endpoint returns base, add-on and total amounts in minor currency units before you order. SatVu's documented example contract shows licence uplifts of 0% (Evaluation), 50% (single entity) and 100% (2-5 entities), and a 30% uplift for a 7-day catalog withhold. Contracts can carry a minimum purchase per term. SatVu says SkyFi also sells its imagery with published pricing and no long-term contract."
+  },
+  "latency": {
+    "typical": "Capture within your window (Standard, at least 7 days) or chosen pass (Assured, next 8 days), then delivery within 72 hours of capture, 95% of the time",
+    "notes": "Feasibility usually returns in under a minute and is not a capture guarantee. Standard orders are delivered only when their parameters are met; SatVu retries at later opportunities and guarantees no minimum capture rate. The capture-to-delivery target comes from SatVu's preliminary Tasking Terms of Service v1.0 (May 2026)."
+  },
+  "coverage": {
+    "regions": [
+      "Global (any point on Earth, subject to satellite passes and your contract's geographical access)"
+    ],
+    "notes": "Point targets only. A scene is about 3.5 x 4.5 km at nadir, and an order is fulfilled only if a 1 km radius around the point is fully in the scene. Each contract sets its geographical access, either global or a region. Cloud blocks thermal infrared; Standard orders set a cloud-cover limit, Assured orders do not. One satellite is operational today: HotSat-2 has been in commercial operation since June 2026. HotSat-3 launched in October 2026 and is being commissioned; SatVu says two satellites will give a 1-2 day revisit anywhere, and up to 12 a day at northern latitudes. SkyFi's announcement on SatVu's site says HotSat-3 tasking is expected in early 2027. HotSat-1 suffered an anomaly in December 2023.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "SatVu's EULA (22 July 2026) grants a non-exclusive, non-transferable licence. Products are 'licenced, not sold' and SatVu keeps the IP. You choose a licence level per order. Commercial levels are single organisation, 2-5 entities, more than 5 entities, or public release. They allow internal non-commercial use, plus small web extracts with no georeferencing, at most 2048 x 2048 px and attributed '(c) [YEAR] SatVu'. Clause 3.1.3 bans selling or supplying imagery or derivatives to third parties beyond your licence level; reselling needs a separate reseller contract. Data Derivatives (contain no imagery and are irreversible) and algorithms you develop with the products stay yours (clause 10.3), but commercial use must be disclosed to SatVu first. The EULA does not mention AI or machine-learning training by buyers.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "New capture after ordering; delivered within 72 hours of capture (95%)",
+    "notes": "SatVu also sells a catalog of past captures, including other customers' tasking orders after any withhold period. irlpls lists SatVu for new tasked captures."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://docs.satellitevu.com/developers/api/overview",
+    "base_url": "https://api.satellitevu.com/otm/v2",
+    "auth": [
+      {
+        "type": "oauth2",
+        "header": "Authorization",
+        "env_var": "SATVU_CLIENT_ID",
+        "how_to_get": "OAuth2 client credentials: copy the Client ID and Client Secret from your user profile in the SatVu web app, then POST grant_type=client_credentials with audience https://api.satellitevu.com/ to https://auth.satellitevu.com/oauth/token. Send the result as 'Authorization: Bearer <token>'; tokens last 60 minutes. You only get an account after SatVu sets up a contract with your organisation.",
+        "dynamic_registration": false,
+        "transport": "rest"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/{contract_id}/tasking/feasibilities/",
+        "notes": "Feasibility request: free and places no order. Statuses: pending, processing, failed, feasible, not feasible. For Assured orders, GET /{contract_id}/tasking/feasibilities/{id}/response returns the available passes, each with the signature used to order it."
+      },
+      {
+        "action": "quote",
+        "method": "POST",
+        "path": "/{contract_id}/tasking/price/",
+        "notes": "Price for the order parameters plus licence_level and addon:withhold. Returns base, add-on and total amounts in minor units. Standard orders use the same payload as feasibility and order."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/{contract_id}/tasking/orders/",
+        "notes": "Places a Standard or Assured tasking order; the price is deducted from the contract credit limit. No idempotency key is documented. Recurring series: POST /{contract_id}/tasking/series/. Cancel while staged: POST /{contract_id}/tasking/orders/{order_id}/cancel."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/{contract_id}/tasking/orders/{order_id}",
+        "notes": "Order statuses: staged, in progress, fulfilled, failed, cancelled, expired, with status_history. Task attempts: GET .../tasks. Webhook topic tasking:order_status (Standard Webhooks, signed)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/{contract_id}/tasking/orders/"
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/{contract_id}/search/",
+        "notes": "Searches your own orders and feasibility requests, e.g. by intersecting geometry. Archive search is a separate STAC Catalog API."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/{contract_id}/tasking/orders/{order_id}/download",
+        "notes": "Returns a link to a .zip of the delivered data once the order is fulfilled: Cloud Optimized GeoTIFFs, STAC JSON metadata, UDM and PNG previews."
+      }
+    ],
+    "sdk": "satvu (PyPI, Python 3.10+), version 0.12.0",
+    "rate_limits": "Not published.",
+    "self_serve": false,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "SatVu has no entry in the official MCP Registry. SatVu tasking can also be ordered through SkyFi's MCP server (see the skyfi card)."
+    },
+    "notes": "Public OpenAPI file: https://api.satellitevu.com/otm/v2/openapi.json. The authorization server is https://auth.satellitevu.com, which publishes metadata at /.well-known/oauth-authorization-server and /.well-known/openid-configuration. It has no registration endpoint, and the API publishes no protected-resource metadata. A separate integration contract returns simulated 'NotSat' data free of charge for testing. Other APIs: Policy (/policy/v1, list contracts), Wallet (credit balance), ID (webhooks), Catalog (STAC), Orders (catalog orders), Reseller."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "contract"
+  },
+  "payment": {
+    "methods": [
+      "invoice"
+    ],
+    "agent_can_pay": true,
+    "prepaid": false,
+    "notes": "An API order is charged to the contract's credit limit with no checkout step, so an agent holding the credentials can buy within that limit. SatVu invoices a tasking order only after it delivers data that meets the order's parameters. Invoices are due in 30 days unless the contract says otherwise, paid by ACH, wire or similar; no cheques. Cancelling a staged order is free."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "Organisations sign an agreement and pass KYC before they get platform access. Resellers must register each end-user organisation (name, company, country) for KYC before ordering for it; most approvals take about 5 minutes, some 1-3 business days. The EULA forbids giving access to people or organisations from, or controlled from, China, Russia, Syria, Belarus, North Korea or Iran.",
+    "unknown": "What the direct-customer KYC checks is not published, and no screening of individual targets or purposes is documented."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Captured by SatVu satellites, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Delivered files carry STAC metadata but no published signature or checksum, so tampering after delivery cannot be detected. Only webhook notifications are signed. The order 'signature' field is an HS256 feasibility token, not a data signature."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Captured by a HotSat mid-wave infrared (MCT) frame camera, as 'snap videos' of up to 25 frames in one second. The Primary product delivers every frame with its calibration parameters. Sensor origin is SatVu's own statement; it is not signed or C2PA-attested."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each frame carries an acquisition-start timestamp in the frame index file and STAC metadata. The order API gives acquisition details and a timestamped status history.",
+      "unknown": "Timestamps are set by SatVu and not signed or independently time-stamped."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Georeferencing starts from onboard attitude and orbit (AOCS) telemetry and is refined with tie points against Sentinel-2 mosaics, then orthorectified on the Copernicus GLO-30 DEM. Stated accuracy is 15 m CE90 or better for Surface Brightness Temperature (0-30 degrees off-nadir), or 200 m CE90 when refinement fails. An order is fulfilled only if a 1 km circle around the target is inside the scene.",
+      "unknown": "SatVu says its georeferencing accuracy was independently validated, but the Product Quality Assurance Report has not been published yet."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "At delivery SatVu checks that the capture meets the order: the target circle is in the scene and cloud cover is within the limit (every image is cloud-assessed, with a per-pixel quality mask).",
+      "unknown": "Nothing is published for detecting altered imagery. Cloud classification is less accurate by day."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent confirms individual captures. SatVu says its temperature calibration was checked against NOAA's VIIRS sensor, with results still to be published."
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "\"Capture-to-Delivery: ≤ 72 hours, measured monthly at 95% performance.\" Standard orders \"require a minimum 7-day imaging window\" and must be placed \"≥ 24 hours prior to TOI\"; Assured passes can be chosen \"only... for the next 8 days\". (source: SatVu Tasking Terms of Service PDF; the 72 h figure is not on the product pages)"
+  },
+  "sources": [
+    {
+      "claim": "Standard tasking (target, timeframe, off-nadir, cloud cover, day/night) and Assured tasking (specific pass, higher priority); recurring series; price estimation; REST API and web app; tasking needs a contract with the tasking product",
+      "url": "https://docs.satellitevu.com/guides/tasking/overview"
+    },
+    {
+      "claim": "Feasibility is free, places no order, usually takes under a minute, and is not a capture guarantee; statuses pending/processing/failed/feasible/not feasible; Assured feasibility is mandatory and limited to the next 8 days; not available for series",
+      "url": "https://docs.satellitevu.com/guides/tasking/feasibility"
+    },
+    {
+      "claim": "Order parameters; Assured delivery guaranteed regardless of cloud; series; licence and withhold add-ons; order and task statuses; 1 km circle fulfilment rule; scene about 4.5 x 3.5 km; free cancellation while staged",
+      "url": "https://docs.satellitevu.com/guides/tasking/order"
+    },
+    {
+      "claim": "Bearer tokens valid 60 minutes; Client ID/Secret from the user profile; contract ID in the URL path; base https://api.satellitevu.com/otm/v2/",
+      "url": "https://docs.satellitevu.com/developers/key-principles"
+    },
+    {
+      "claim": "OAuth2 client_credentials token request to https://auth.satellitevu.com/oauth/token with audience https://api.satellitevu.com/; list of APIs (ID, Wallet, Policy, Catalog, Orders, Tasking, Reseller)",
+      "url": "https://docs.satellitevu.com/developers/api/overview"
+    },
+    {
+      "claim": "Authorization server metadata: client_credentials and other grants, no registration endpoint",
+      "url": "https://auth.satellitevu.com/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Tasking API OpenAPI: feasibility, price, order, status, list, search, download, series, outage endpoints; OrderStatus enum; Price in minor units; OpenID Connect security scheme",
+      "url": "https://api.satellitevu.com/otm/v2/openapi.json"
+    },
+    {
+      "claim": "Standard tasking flow by API: feasibility, price with licence_level and addon:withhold, order, download link to a .zip",
+      "url": "https://docs.satellitevu.com/developers/api/standard-tasking"
+    },
+    {
+      "claim": "Assured tasking flow: passes with signature from the feasibility response; order by signature",
+      "url": "https://docs.satellitevu.com/developers/api/assured-tasking"
+    },
+    {
+      "claim": "Order status history, tasks endpoint, order search, modify and cancel endpoints",
+      "url": "https://docs.satellitevu.com/developers/api/track-and-manage-tasking-orders"
+    },
+    {
+      "claim": "Access only after an agreement with SatVu; contract credit limit; tasking invoiced only after successful delivery matching requirements",
+      "url": "https://docs.satellitevu.com/guides/account/accessing-the-satvu-platform"
+    },
+    {
+      "claim": "Contract parameters: credit limit, products, licence options, geographical access (global or a region), catalog withhold options",
+      "url": "https://docs.satellitevu.com/guides/account/contract-restrictions"
+    },
+    {
+      "claim": "Example licence uplifts 0/50/100% and 7-day withhold uplift 30%; product currencies GBP/EUR; Policy API",
+      "url": "https://docs.satellitevu.com/developers/api/contract-information"
+    },
+    {
+      "claim": "Webhooks follow Standard Webhooks, signed with a per-webhook secret; tasking:order_status topic",
+      "url": "https://docs.satellitevu.com/guides/account/webhooks"
+    },
+    {
+      "claim": "Integration contract with simulated 'NotSat' data, not billed",
+      "url": "https://docs.satellitevu.com/developer-guides/integration-environment"
+    },
+    {
+      "claim": "Reseller contracts; end-user KYC (name, company, country), usually about 5 minutes, sometimes 1-3 business days",
+      "url": "https://docs.satellitevu.com/guides/resellers/reseller-overview"
+    },
+    {
+      "claim": "Python SDK 'satvu' on PyPI, Python 3.10+",
+      "url": "https://docs.satellitevu.com/developers/python-sdk/overview"
+    },
+    {
+      "claim": "satvu SDK version 0.12.0",
+      "url": "https://pypi.org/pypi/satvu/json"
+    },
+    {
+      "claim": "Capture-to-delivery within 72 hours at 95%; Standard window at least 7 days; orders at least 24 hours before TOI; 15 m / 200 m CE90; no minimum capture rate; Assured limited during the preliminary phase",
+      "url": "https://cdn.prod.website-files.com/664e1cfdaf0f190ac9bb6e1e/6a0aff21befcf9b2884fd667_SatVu%20Tasking%20Terms%20of%20Service%20v1.0.pdf"
+    },
+    {
+      "claim": "Snap videos of up to 25 frames; per-frame timestamps; AOCS georeferencing refined with Sentinel-2 tie points; GLO-30 orthorectification; independent validation and VIIRS comparison with results to be published in a PQAR; tasking product table",
+      "url": "https://cdn.prod.website-files.com/664e1cfdaf0f190ac9bb6e1e/6abb8384157c8e23961d35d5_SatVu%20Imagery%20Guide%20v2.3.pdf"
+    },
+    {
+      "claim": "Up to 3.5 m resolution, day and night; HotSat-2 commercially operational; HotSat-3 launched October 2026 and entering commercial operations shortly",
+      "url": "https://www.satellitevu.com/"
+    },
+    {
+      "claim": "MWIR sensor, 15 m CE90, scene about 3.5 x 4.5 km, all imagery cloud-assessed; deliverables COG, STAC JSON metadata, UDM, PNG",
+      "url": "https://www.satellitevu.com/products/thermal-imagery"
+    },
+    {
+      "claim": "Standard and Assured tasking; 'Contact Sales'; feasibility and price check before ordering",
+      "url": "https://www.satellitevu.com/products/tasking"
+    },
+    {
+      "claim": "EULA: non-exclusive, non-transferable licence; licence levels; ban on selling or supplying to third parties beyond the licence level (3.1.3); products licensed not sold (10.1); Data Derivatives; restricted territories (3.2); API licence for your own interfaces",
+      "url": "https://www.satellitevu.com/end-user-licence-agreement"
+    },
+    {
+      "claim": "Invoicing monthly or as agreed; payment within 30 days by ACH, wire or similar; minimum fees per term",
+      "url": "https://www.satellitevu.com/terms-and-conditions"
+    },
+    {
+      "claim": "HotSat-2 launched March 30, 2026 on Transporter-16",
+      "url": "https://www.satellitevu.com/news/satvu-set-to-revolutionise-earth-intelligence-with-the-successful-launch-of-their-hotsat-2-thermal-satellite"
+    },
+    {
+      "claim": "HotSat-2 Start of Commercial Operations, June 29, 2026",
+      "url": "https://www.satellitevu.com/news/satvu-declares-hotsat-2-start-of-commercial-operations"
+    },
+    {
+      "claim": "HotSat-3 launched on Transporter-18 and entering commissioning; with two satellites, revisit every 1-2 days, up to 12 times a day at northern latitudes",
+      "url": "https://www.satellitevu.com/news/satvu-launches-hotsat-3-doubling-constellation-capacity-and-advancing-high-resolution-thermal-intelligence-from-space"
+    },
+    {
+      "claim": "SkyFi sells SatVu archive and HotSat-2 Standard/Assured tasking with published pricing and no long-term contract, including through its MCP; HotSat-3 tasking expected early 2027",
+      "url": "https://www.satellitevu.com/news/skyfi-integrates-satvu-to-deliver-high-resolution-thermal-satellite-imagery"
+    },
+    {
+      "claim": "HotSat-1 anomaly announced December 15, 2023",
+      "url": "https://www.satellitevu.com/news/hotsat-1s-pathfinder-success-transforms-setback-into-opportunity-for-satvu"
+    },
+    {
+      "claim": "No SatVu server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=satvu"
+    },
+    {
+      "claim": "Assured tasking: the order signature is a feasibility token (JWT, HS256)",
+      "url": "https://docs.satellitevu.com/developers/api/assured-tasking"
+    }
+  ],
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

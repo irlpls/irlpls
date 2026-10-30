@@ -1,0 +1,174 @@
+{
+  "id": "unidata",
+  "name": "Unidata",
+  "provider_url": "https://unidata.pro",
+  "status": "unclaimed",
+  "short": "Egocentric and teleoperation robot data collected to order.",
+  "tags": [
+    "egocentric video",
+    "teleoperation",
+    "kinesthetic",
+    "robotics",
+    "physical AI",
+    "consented",
+    "custom collection",
+    "hand pose",
+    "IMU"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "first-person video of household activities (coffee-making, cooking, object handling, chores)",
+      "RGB video with depth, full-body pose, hand pose, 6DoF head pose and synchronised IMU",
+      "teleoperation on the client's robot via VR controllers, space mice or exoskeleton rigs",
+      "kinesthetic demonstrations with joint states, end-effector pose and force-torque logged",
+      "custom collection scoped per client"
+    ]
+  },
+  "pricing": {
+    "model": "Quote after scoping",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "No price is published. 'we'll scope, price, and schedule' (egocentric page); for robotics, pricing is agreed at the 'Agreement & NDA' stage."
+  },
+  "latency": {
+    "typical": "Most projects start delivering within two weeks",
+    "notes": "Stated on the egocentric page; the robotics page gives no turnaround."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after scoping and a sample or pilot",
+    "notes": "A base dataset (4,050 hours, 15,000+ scenarios) is also licensed; that is archive, not a commission."
+  },
+  "coverage": {
+    "regions": [
+      "Not stated"
+    ],
+    "notes": "No collection countries are listed. Contact address is Meydan Grandstand, Dubai, UAE."
+  },
+  "licensing": {
+    "summary": "Egocentric page: 'Every participant signs a commercial-use release before recording' and the base dataset is 'available under a commercial license'. Robotics page: 'All data collected on your equipment belongs to you and stays under NDA.' The terms-of-use URL currently serves only a cookie policy, so no contractual ownership, AI-training or resale clause could be read. The privacy policy names consent as the basis for 'Training and/or testing of neural network algorithm models' using anonymised data, in a different context (anti-spoofing). AI training and resale of delivered data are not stated.",
+    "buyer_owns_output": true
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Participants sign a commercial-use release ('Mixed age and gender across hundreds of contributors'); a release is a rights document, not an identity check at enrolment (STANDARD §3). How collectors are recruited, identified or vetted is not published."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No capture-app or device attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Wearable and tracking rigs: Pico 4 Ultra headsets, motion trackers, ZED stereo cameras, tactile gloves, grippers (robotics page). No C2PA or signed capture; Unidata is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Streams are time-synchronised across modalities (IMU, depth, pose).",
+      "unknown": "Synchronisation aligns streams to each other; no signed capture time."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "A sample or pilot batch precedes the agreement, then 'Quality Control' (robotics page); a Quality Control Department page exists.",
+      "unknown": "Acceptance criteria and QC results are not published."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of collected data is documented."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Contact via unidata.pro/contact-us (info@unidata.pro); steps: briefing and scope, sample or pilot, agreement and NDA."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No server found in the official MCP Registry (searched the provider name, 2026-10-27)."
+    },
+    "notes": "No API or ordering docs. No /.well-known/ucp, agent-card.json, irlpls or oauth-protected-resource document found (2026-10-27)."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "weeks",
+    "basis": "'Most projects start delivering within two weeks.' (a start, not completion)",
+    "formats": [
+      "mp4",
+      "rrd",
+      "json"
+    ]
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No payment methods published; terms are agreed at the Agreement & NDA stage."
+  },
+  "capture": {
+    "by": "people",
+    "consent": {
+      "documented": true,
+      "method": "'Every participant signs a commercial-use release before recording.'",
+      "evidence_url": "https://unidata.pro/data-collection/egocentric-video-data/",
+      "unknown": "The release text, bystander handling and withdrawal are not published."
+    },
+    "worker_pay": {
+      "model": "not published",
+      "disclosed": false
+    }
+  },
+  "requester": {
+    "unknown": "Unidata publishes no check of who commissions collection or for what; projects start with a briefing and an NDA."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "Unidata (Unidata L.L.C-FZ, Dubai) collects first-person video of daily activities with synchronised depth, pose and IMU, and teleoperation or kinesthetic demonstrations on the client's own robot. Scope, volume and price are agreed with the team; no price is published. It states that every participant signs a commercial-use release and that most projects start delivering within two weeks. Its terms page published today is only a cookie policy, so ownership and AI-training rights of delivered data are not stated beyond 'data collected on your equipment belongs to you'.",
+  "sources": [
+    {
+      "claim": "Egocentric offering: 15,000+ scenarios, 4,050 hours, RGB/depth/pose/hand pose/IMU, tactile on roadmap, 'we'll scope, price, and schedule', 'Most projects start delivering within two weeks', mp4/rrd/json, commercial-use release, 'available under a commercial license'",
+      "url": "https://unidata.pro/data-collection/egocentric-video-data/"
+    },
+    {
+      "claim": "Teleoperation and kinesthetic collection on client robots, equipment list, five-step process incl. Agreement & NDA with pricing, 'All data collected on your equipment belongs to you and stays under NDA'",
+      "url": "https://unidata.pro/robotics-training-data/"
+    },
+    {
+      "claim": "Legal entity Unidata L.L.C-FZ; terms-of-use URL serves cookie policy only",
+      "url": "https://unidata.pro/terms.md"
+    },
+    {
+      "claim": "Privacy policy: consent basis for neural-network training on anonymised data; no ownership clause",
+      "url": "https://unidata.pro/privacy-policy/"
+    },
+    {
+      "claim": "Contact address Dubai, UAE",
+      "url": "https://unidata.pro/llms.txt"
+    },
+    {
+      "claim": "No Unidata server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=unidata"
+    }
+  ]
+}

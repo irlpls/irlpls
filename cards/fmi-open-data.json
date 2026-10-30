@@ -1,0 +1,177 @@
+{
+  "id": "fmi-open-data",
+  "name": "FMI Open Data (Finnish Meteorological Institute observations)",
+  "provider_url": "https://en.ilmatieteenlaitos.fi/open-data",
+  "short": "Finnish weather, sea level, lightning and air quality; keyless, CC BY.",
+  "summary": "The Finnish Meteorological Institute publishes much of its data as open data through OGC WFS and WMS services. The keyless WFS at opendata.fmi.fi offers stored queries for observations (weather stations, mareographs, lightning, air quality, magnetometers and more) alongside forecasts and radar; the data are licensed CC BY 4.0, which also covers the Radiation and Nuclear Safety Authority's data and air-quality data in the service.",
+  "tags": [
+    "weather",
+    "observations",
+    "finland",
+    "sea level",
+    "lightning",
+    "air quality",
+    "radiation",
+    "wfs",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest weather station observations (temperature and others) for a place or area",
+      "mareograph (sea level) observations",
+      "lightning observations",
+      "hourly air-quality observations",
+      "magnetometer observations",
+      "radiation measurements from the Radiation and Nuclear Safety Authority"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "The open data page says data can be downloaded \"in machine-readable format free of charge\". No key was needed in the live call."
+  },
+  "latency": {
+    "typical": "About 10 minutes for station observations (one sample; not published)",
+    "notes": "The live call with timestep=10 returned a latest timestamp of 15:40:00Z at about 15:41Z, but its value was NaN (no reading yet), so the freshest filled value was older. No delivery delay is stated on the pages read."
+  },
+  "coverage": {
+    "regions": [
+      "Finland (land stations, Baltic coast mareographs, lightning, air quality)"
+    ],
+    "notes": "The pages read describe Finnish Meteorological Institute data; geographic extent of each stored query is not listed there.",
+    "areas": [
+      "FI"
+    ]
+  },
+  "licensing": {
+    "summary": "Licence page: \"The Creative Commons Attribution 4.0 International license (CC BY 4.0) shall be used by the Finnish Meteorological Institute's open data service. The license shall apply to the FMI's and the Radiation and Nuclear Safety Authority's open data sets as well as air quality data sets that are stored in the open data web-service.\" The WFS page says \"User must accept Creative Commons license before using the open data service interfaces.\" The terms read do not mention AI training or resale by name."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Automated stations; no person confirms readings."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each value carries a UTC timestamp (BsWfs:Time).",
+      "unknown": "Timestamps are the institute's own and unsigned."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each value carries station coordinates (gml:pos).",
+      "unknown": "Coordinates are the institute's own and unsigned."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Values are the institute's observations; missing readings are returned as NaN.",
+      "unknown": "The pages read state no quality-control level or accuracy warranty for observations."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent is attached to individual readings."
+    }
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "about 10 minutes (one sample; not published)",
+    "notes": "Observations are continuously updated; the same service also serves forecasts and radar, which are not observations."
+  },
+  "delivery": {
+    "speed": "minutes",
+    "basis": "Open data manual: \"Download Services provide a continuous online access to the most up-to-date data, implemented using OGC Web Feature Service (WFS).\"",
+    "modes": [
+      "live"
+    ]
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://en.ilmatieteenlaitos.fi/open-data-manual",
+    "base_url": "https://opendata.fmi.fi",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key. The service says the user must accept the Creative Commons licence."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/wfs?service=WFS&version=2.0.0&request=listStoredQueries",
+        "notes": "Lists stored queries, including fmi::observations::weather::simple, fmi::observations::mareograph::instant::simple, fmi::observations::lightning::simple, fmi::observations::airquality::hourly::simple, fmi::observations::magnetometer::simple."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id={query}",
+        "params": "e.g. place, parameters (t2m), starttime, endtime, timestep (minutes), maxlocations",
+        "notes": "XML (GML) response. The live call with fmi::observations::weather::simple, place=Helsinki, parameters=t2m returned timestamped t2m values with station coordinates."
+      }
+    ],
+    "rate_limits": "The WFS page says: \"Download Service has limit of 20000 requests per day; View Service has limit of 10000 requests per day; Download and View Services have combined limit of 600 requests per 5 minutes\" (described as user specific; how a user is identified is not stated).",
+    "notes": "Requests are plain GET. An S3 bucket for open data is also listed in the site menu (not read)."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "automation_allowed": true,
+    "tested_live": "2026-10-28",
+    "gate": "none",
+    "rate_limit": {
+      "requests": 600,
+      "per_seconds": 300,
+      "scope": "unknown",
+      "notes": "Combined Download and View services; also 20,000 Download and 10,000 View requests per day. Described as user specific; how a user is identified is not stated.",
+      "source_url": "https://en.ilmatieteenlaitos.fi/open-data-manual-fmi-wfs-services"
+    }
+  },
+  "sources": [
+    {
+      "claim": "Open data offered free in machine-readable form; WFS address; observation themes",
+      "url": "https://en.ilmatieteenlaitos.fi/open-data"
+    },
+    {
+      "claim": "Open data manual: download services via WFS, machine-accessible",
+      "url": "https://en.ilmatieteenlaitos.fi/open-data-manual"
+    },
+    {
+      "claim": "Licence CC BY 4.0 applying to FMI, Radiation and Nuclear Safety Authority and air-quality data",
+      "url": "https://en.ilmatieteenlaitos.fi/open-data-licence"
+    },
+    {
+      "claim": "WFS stored queries, terms (accept CC licence), request limits",
+      "url": "https://en.ilmatieteenlaitos.fi/open-data-manual-fmi-wfs-services"
+    },
+    {
+      "claim": "Stored query list (observations queries) and live getFeature call",
+      "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=listStoredQueries"
+    },
+    {
+      "claim": "Stored query fmi::observations::weather::simple parameters: starttime, endtime, timestep, parameters, crs, bbox, place, fmisid, maxlocations, geoid, wmo",
+      "url": "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=describeStoredQueries&storedquery_id=fmi::observations::weather::simple"
+    }
+  ],
+  "status": "unclaimed",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  },
+  "adapter": "fmi-open-data"
+}

@@ -1,0 +1,243 @@
+{
+  "id": "usgs-earthquakes",
+  "name": "USGS earthquake feed",
+  "status": "unclaimed",
+  "provider_url": "https://earthquake.usgs.gov/earthquakes/feed/",
+  "tags": [
+    "earthquake",
+    "earthquakes",
+    "quake",
+    "seismic",
+    "tremor",
+    "magnitude",
+    "aftershock",
+    "tsunami",
+    "shakemap",
+    "pager",
+    "geojson",
+    "fdsn",
+    "comcat",
+    "government",
+    "public domain",
+    "free",
+    "real-time",
+    "sensor",
+    "global"
+  ],
+  "summary": "The U.S. Geological Survey's real-time earthquake feeds list new seismic events worldwide (magnitude, location, depth, time, automatic or reviewed status, tsunami flag, PAGER alert) as GeoJSON updated every minute, free and with no key. Events come from the ANSS Comprehensive Earthquake Catalog (ComCat), which merges solutions from seismic networks around the world. The FDSN event web service filters by time, place, radius, magnitude, alert level and review status.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "earthquakes in the past hour, day, week or 30 days, by magnitude threshold (significant, 4.5+, 2.5+, 1.0+, all)",
+      "query earthquake events near a point (latitude, longitude, maxradiuskm) or in a box since a given time, above a magnitude",
+      "filter by PAGER alert level (green, yellow, orange, red), review status (automatic or reviewed), significance, felt reports or depth",
+      "event detail: magnitude, depth, place, time, status automatic/reviewed, felt reports, tsunami flag, PAGER alert level, and associated products such as ShakeMap, DYFI and moment tensors",
+      "watch for new or revised earthquakes by polling a feed, or the query service with updatedafter"
+    ]
+  },
+  "pricing": {
+    "model": "free public government service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "No fee and no key."
+  },
+  "latency": {
+    "typical": "USGS FAQ: about 2.5 minutes on average after an earthquake in California, typically within 8 minutes elsewhere in the US, about 20 minutes on average outside the US",
+    "notes": "The GeoJSON summary feeds are labelled 'Updated every minute'. Per the same FAQ, GeoJSON feeds of 7 days or less are cached for 1 minute, other 7-day-or-less feeds for 5 minutes, and 30-day feeds and searches for 15 minutes, which adds to the delay. A query response on 2026-10-26 carried Cache-Control: public, max-age=60."
+  },
+  "coverage": {
+    "regions": [
+      "Global"
+    ],
+    "notes": "Worldwide. ComCat merges solutions from seismic networks around the world (contributors include US regional networks and agencies in many other countries). USGS says the network is densest in California and sparse in some areas outside the US, so small events abroad are less complete and slower to post.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "USGS says USGS-authored or produced data and information are in the U.S. Public Domain and asks for credit (e.g. 'Credit: U.S. Geological Survey'); not everything on USGS sites is public domain, and copyrighted third-party material needs the holder's permission. USGS gives no warranty of accuracy, completeness or usefulness. Events and products contributed to ComCat by non-USGS networks were not checked separately. The terms do not mention AI training or resale."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Minutes after an event for the real-time feeds; the query service also reaches back through the catalog",
+    "notes": "Early values are automatic and are revised as networks and analysts refine them; the 'updated' field changes when they do. Events can also be deleted (the query service returns HTTP 409 for a deleted event unless includedeleted is set)."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://earthquake.usgs.gov/fdsnws/event/1/",
+    "base_url": "https://earthquake.usgs.gov",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/earthquakes/feed/v1.0/summary/{level}_{period}.geojson",
+        "params": "level: significant, 4.5, 2.5, 1.0, all; period: hour, day, week, month",
+        "notes": "GeoJSON FeatureCollection, 'Updated every minute'; properties include mag, place, time, updated, status, tsunami, alert, felt, sig, net, ids, sources, nst, dmin, rms, gap, magType, url, detail. USGS recommends these feeds for automated applications."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/earthquakes/feed/v1.0/detail/{eventid}.geojson",
+        "params": "eventid, e.g. aka2026vgpxtq (the 'detail' URL in each summary feature)",
+        "notes": "One event with its associated products (origin, phase-data, and where available shakemap, losspager, dyfi, moment-tensor)."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/fdsnws/event/1/query",
+        "params": "format=geojson (default quakeml; also csv, kml, text, xml); starttime (default now - 30 days), endtime, updatedafter; minlatitude/maxlatitude/minlongitude/maxlongitude or latitude, longitude, maxradiuskm; minmagnitude, maxmagnitude; mindepth, maxdepth; alertlevel, minalertlevel; reviewstatus (automatic, reviewed); eventtype; orderby (time, time-asc, magnitude, magnitude-asc); limit (1-20000); offset; eventid",
+        "notes": "FDSN Event Web Service. Queries over 20,000 events return HTTP 400. Keyless radius query near Ridgecrest, CA returned automatic 'ci' events on 2026-10-26."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/fdsnws/event/1/count",
+        "params": "same parameters as query; format=geojson or text or xml",
+        "notes": "Counts matching events; returned {\"count\":459,\"maxAllowed\":20000} for starttime=2026-10-25 on 2026-10-26."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/fdsnws/event/1/contributors",
+        "params": "none",
+        "notes": "Contributing networks; /fdsnws/event/1/catalogs lists catalogs, /fdsnws/event/1/application.json lists enumerated parameter values."
+      }
+    ],
+    "rate_limits": "None published. The query service caps a request at 20,000 events. USGS asks automated applications to use the real-time GeoJSON feeds rather than the query service whenever possible.",
+    "self_serve": true,
+    "sdk": "USGS lists libcomcat (Python), matcomcat (Matlab) and an R comcat package on its ANSS Developer's Corner.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "No USGS-run MCP server in the official MCP Registry. Third-party earthquake servers are listed, e.g. io.github.cyanheads/earthquake-mcp-server, io.github.mrfentmen/usgs-earthquakes-mcp, com.olyport/earthquake, com.daedalmap/earthquakes."
+    }
+  },
+  "adapter": "usgs_earthquakes",
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Events are located automatically from seismic networks; analyst review shows only as status 'reviewed', with no named reviewer"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing of feed contents; integrity rests on USGS and contributing-network operations"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No imagery"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each event has an origin time and an 'updated' time in milliseconds",
+      "unknown": "Origin time is an estimate that can be revised; per-event timing uncertainty is not in the summary feed"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each event carries an estimated epicentre and depth, with solution-quality fields (nst stations used, gap azimuthal gap, dmin distance to nearest station, rms residual)",
+      "unknown": "Location uncertainty varies by region and network density, and is largest where networks are sparse"
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Each event has a status field (automatic or reviewed), filterable with reviewstatus, so you can tell which values an analyst has checked",
+      "unknown": "Automatic magnitudes and locations can change substantially after review, and events can be deleted"
+    },
+    "corroboration": {
+      "level": "claimed",
+      "method": "The 'ids' and 'sources' fields list every contributing network whose solution was associated with the event. Where networks disagree, ComCat picks a preferred product by weight, favouring the network authoritative for the region; the other solutions stay available in the detail feed.",
+      "unknown": "Many small events have a single contributing network, so nothing independent confirms them"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "USGS: feeds 'Updated every minute'; an earthquake is posted in about 2.5 minutes in California, within about 8 minutes elsewhere in the US and about 20 minutes outside the US."
+  },
+  "sources": [
+    {
+      "claim": "GeoJSON summary feeds by level (significant, 4.5, 2.5, 1.0, all) and period (hour, day, week, month), 'Updated every minute', output schema including status, tsunami, alert, sig, ids, sources, nst, dmin, rms, gap",
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php"
+    },
+    {
+      "claim": "Live keyless fetch on 2026-10-26 returned a FeatureCollection (count 3) for the past hour, including M 2.2 57 km ENE of Pedro Bay, Alaska, status 'automatic', sources ',ak,'",
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
+    },
+    {
+      "claim": "Live keyless detail feed on 2026-10-26 returned the same event with its origin and phase-data products",
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/aka2026vgpxtq.geojson"
+    },
+    {
+      "claim": "FDSN event service: formats, starttime default now - 30 days, updatedafter, rectangle and circle (maxradiuskm) search, magnitude, depth, alertlevel, reviewstatus, orderby, limit 1-20000 (400 above), count/catalogs/contributors methods, deleted events return 409; automated applications should use the real-time GeoJSON feeds whenever possible",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/"
+    },
+    {
+      "claim": "Live keyless query on 2026-10-26 returned the newest event (format=geojson, limit=1, orderby=time)",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&limit=1&orderby=time"
+    },
+    {
+      "claim": "Live keyless radius query on 2026-10-26 returned automatic 'ci' events near Ridgecrest, CA; response header Cache-Control: public, max-age=60",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=35.7&longitude=-117.5&maxradiuskm=200&minmagnitude=1&starttime=2026-10-19&limit=3"
+    },
+    {
+      "claim": "Count method returned {\"count\":459,\"maxAllowed\":20000} on 2026-10-26",
+      "url": "https://earthquake.usgs.gov/fdsnws/event/1/count?format=geojson&starttime=2026-10-25"
+    },
+    {
+      "claim": "Posting time: about 2.5 minutes on average in California, typically within 8 minutes elsewhere in the US, about 20 minutes on average outside the US; GeoJSON 7-day-and-less feeds cached 1 minute, other 7-day feeds 5 minutes, 30-day feeds and searches 15 minutes",
+      "url": "https://www.usgs.gov/faqs/how-quickly-earthquake-information-posted-usgs-website-and-sent-out-earthquake-notification"
+    },
+    {
+      "claim": "ComCat contains earthquake source parameters and products contributed by seismic networks around the world",
+      "url": "https://earthquake.usgs.gov/data/comcat/"
+    },
+    {
+      "claim": "List of contributing seismic networks and agencies, in the US and many other countries",
+      "url": "https://earthquake.usgs.gov/data/comcat/contributor/"
+    },
+    {
+      "claim": "Products from several contributors are associated with one event; the preferred product is chosen by weight, with a large weight for the author's authoritative region; other versions remain available",
+      "url": "https://earthquake.usgs.gov/data/comcat/products.php"
+    },
+    {
+      "claim": "ANSS Developer's Corner lists libcomcat (Python), matcomcat (Matlab) and R comcat",
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/developers.php"
+    },
+    {
+      "claim": "USGS-authored information considered U.S. Public Domain; not all site content is; credit requested",
+      "url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits"
+    },
+    {
+      "claim": "USGS makes no warranty and assumes no liability for the accuracy, completeness or usefulness of its information",
+      "url": "https://www.usgs.gov/information-policies-and-instructions/liability"
+    },
+    {
+      "claim": "No first-party USGS earthquake MCP server in the official registry; third-party earthquake servers listed",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=earthquake"
+    }
+  ],
+  "updated": "2026-10-27",
+  "spec_version": "2026-10-26",
+  "short": "New earthquakes worldwide from the USGS, as a free GeoJSON feed updated every minute.",
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  }
+}

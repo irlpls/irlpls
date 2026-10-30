@@ -1,0 +1,225 @@
+{
+  "id": "open-cosmos-datacosmos",
+  "name": "Open Cosmos DataCosmos",
+  "provider_url": "https://www.open-cosmos.com/datacosmos",
+  "short": "Task Open Cosmos satellites or buy catalogue imagery by API.",
+  "summary": "Open Cosmos (UK, Harwell) offers DataCosmos: a STAC catalogue of imagery from its own and partner satellites, an Ordering API that prices and buys catalogue items against contract credits, and a tasking tool where users create scene, coverage, recurrent or systematic tasking requests that Open Cosmos operations review before scheduling. APIs use OAuth 2.0 (Auth0) with client credentials issued by the DataCosmos team.",
+  "tags": [
+    "satellite",
+    "optical",
+    "multispectral",
+    "hyperspectral",
+    "tasking",
+    "STAC",
+    "catalogue",
+    "oauth",
+    "uk",
+    "open cosmos",
+    "datacosmos",
+    "api"
+  ],
+  "capabilities": {
+    "modalities": [
+      "aerial"
+    ],
+    "tasks": [
+      "search the STAC catalogue by area, time and cloud cover",
+      "price and purchase catalogue items under a contract (Ordering API)",
+      "search future satellite passes ('opportunities') up to 3 months ahead",
+      "create scene tasking (pick passes and roll angle, up to one week ahead) or coverage tasking (set area, window and constraints) requests",
+      "recurrent and systematic tasking; track request and activity status"
+    ]
+  },
+  "pricing": {
+    "model": "contract-specific rate per km2, paid from prepaid credits",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "Pricing docs: 'Prices are contract-specific - the rate per km2, currency, and any applicable discounts are all determined by your contract terms.' Credits are denominated in USD and held per organisation, expire at month end. Scene tasking is 'priced on total swath area, satellite, product and priority' and shown on submit."
+  },
+  "latency": {
+    "typical": "Scene tasking up to one week ahead; opportunities searched up to 3 months ahead",
+    "notes": "Each scene activity is reviewed by the Open Cosmos flight team before scheduling (PENDING, APPROVED, CONFIRMED, SCHEDULED, ACQUIRED). Coverage requests are approved by operations and optimised. Typical time from request to delivery is not stated."
+  },
+  "coverage": {
+    "regions": [
+      "Wherever Open Cosmos and partner satellites can image (not stated per country)"
+    ],
+    "notes": "No country list found. The licence bars use in or for comprehensively sanctioned countries and restricted parties, and bars military offensive use of the Multi-150 product."
+  },
+  "licensing": {
+    "summary": "Data Product License Agreement (DataCosmos - OpenConstellation): worldwide, non-exclusive, non-transferable, non-sublicensable licence by licence type (0 Evaluation, 1 Research and non-commercial, 2 Commercial internal, 3 Commercial group, 4 Government/Enterprise distribution, 5 Insight partner). The licensee must not 'redistribute, sublicense, lease, or otherwise make available the Product in any form' except as the type and a written Licence Confirmation allow; value-added products and derivative works the licensee creates stay the licensee's, subject to the provider's rights. The Evaluation type (type 0) bars using the Product to 'train or validate commercial models'; no other type's AI clause was found, so AI training is left unstated."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Captured by satellites; no person is identity-checked."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No attestation of delivered files is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). Catalogue items are STAC records naming collection and satellite (for example Sentinel-2A in the price docs)."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "No independent time-stamp is documented.",
+      "method": "STAC items carry an acquisition time; tasking activities report status changes."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Accuracy figures were not read, and nothing is signed.",
+      "method": "STAC items carry geometry."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No integrity or anti-manipulation method is documented in the pages read."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-checking is documented."
+    }
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Catalogue: existing scenes; tasking: acquired after approval inside your window",
+    "notes": "Catalogue and tasking share one platform."
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://app.open-cosmos.com/help/developer-center/datacosmos/home",
+    "base_url": "https://app.open-cosmos.com/api/data",
+    "auth": [
+      {
+        "type": "oauth2",
+        "scopes": [
+          "openid",
+          "profile",
+          "email"
+        ],
+        "dynamic_registration": false,
+        "transport": "rest",
+        "how_to_get": "OAuth 2.0 via Auth0 at login.open-cosmos.com, audience https://beeapp.open-cosmos.com. Client credentials (client_id and client_secret) for server use, or authorization code with PKCE for apps; both are issued by the DataCosmos team ('Contact the DataCosmos team to get your credentials').",
+        "env_var": "OPEN_COSMOS_CLIENT_ID"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/v1/dpap/policies/{policy_id}/catalog/price",
+        "notes": "Replaces deprecated /v0/order/price; batch at POST .../catalog/price/batch"
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/v0/order/orders",
+        "notes": "Pay with organisation credit balance"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/v0/order/orders"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/v0/order/orders/{order_id}"
+      }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "The developer-centre 'Tasking API' page lists a 'Satellite Tasking API' for querying scheduled tasking requests and future opportunities; its page body rendered empty, so whether tasking requests can be created by API (rather than the web tool) was not verified. The OpenAPI JSON at app.open-cosmos.com/api/data/v0/openapi.json returns 401. login.open-cosmos.com serves OAuth and OpenID metadata; app.open-cosmos.com /.well-known paths returned the SPA shell, not metadata. No MCP server found (Registry search 0)."
+  },
+  "adapter": "open_cosmos_datacosmos",
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "days",
+    "basis": "Scene tasking 'requests can be placed up to one week ahead'; opportunities up to '3 months into the future'; delivery time after capture is not stated."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "payment": {
+    "methods": [
+      "prepaid_balance"
+    ],
+    "agent_can_pay": false,
+    "notes": "Organisation credits (USD), topped up by Open Cosmos or permitted org admins; 'Not all organisations have credits configured'. A tasking request can sit PENDING until a payment method is chosen, so other methods exist but were not itemised."
+  },
+  "requester": {
+    "checks": "A contract with Open Cosmos (rates, licence type and territory are set in a Licence Confirmation or order form); sanctions and export compliance is a licence condition.",
+    "unknown": "How Open Cosmos vets customers before issuing credentials is not published."
+  },
+  "providers": [
+    {
+      "name": "Open Cosmos Ltd",
+      "roles": [
+        "producer",
+        "licensor",
+        "host"
+      ],
+      "url": "https://www.open-cosmos.com"
+    }
+  ],
+  "sources": [
+    {
+      "claim": "Developer centre: catalogue (STAC), ordering, tasking API, applications",
+      "url": "https://app.open-cosmos.com/help/developer-center/datacosmos/home"
+    },
+    {
+      "claim": "OAuth 2.0 via Auth0, client credentials and authorization code flows, credentials from DataCosmos team",
+      "url": "https://app.open-cosmos.com/help/developer-center/authentication"
+    },
+    {
+      "claim": "Contract-specific pricing; DPAP price endpoints; deprecated order price",
+      "url": "https://app.open-cosmos.com/help/developer-center/datacosmos/api/ordering/pricing"
+    },
+    {
+      "claim": "Orders endpoints under /api/data/v0/order/orders",
+      "url": "https://app.open-cosmos.com/help/developer-center/datacosmos/api/ordering/purchasing"
+    },
+    {
+      "claim": "Tasking service: scene, coverage, opportunities up to 3 months, one week ahead, ops review, pricing basis",
+      "url": "https://app.open-cosmos.com/help/user-manual/datacosmos/tasking/home"
+    },
+    {
+      "claim": "Request and activity lifecycles, ops approval",
+      "url": "https://app.open-cosmos.com/help/user-manual/datacosmos/tasking/tasking-service-description"
+    },
+    {
+      "claim": "Credits are prepaid USD per organisation, monthly expiry",
+      "url": "https://app.open-cosmos.com/help/user-manual/datacosmos/billing/credits"
+    },
+    {
+      "claim": "Data Product License Agreement: licence types, restrictions, VAP and derivative rights, evaluation bars commercial model training",
+      "url": "https://app.open-cosmos.com/help/legal/data-product-license-agreement"
+    },
+    {
+      "claim": "Terms of Service page exists (not read in full)",
+      "url": "https://app.open-cosmos.com/help/legal/terms-of-service"
+    },
+    {
+      "claim": "login.open-cosmos.com OAuth and OpenID metadata",
+      "url": "https://login.open-cosmos.com/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Not in MCP Registry (0 results)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=open-cosmos"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "status": "unclaimed",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27"
+}

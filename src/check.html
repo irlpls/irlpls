@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Check your card · irlpls</title>
+<meta name="description" content="Paste your Capture Card or enter your domain. See what a broker would flag. Runs in your browser.">
+<meta name="theme-color" content="#f6f8fb"><meta name="color-scheme" content="light">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="fonts.css"><link rel="stylesheet" href="style.css">
+<style>
+/* page-specific; tokens, header and footer come from style.css */
+:root{--com:#c45a00}
+.ck{max-width:720px;margin:0 auto;padding:8px 16px 0}
+.ck a{text-underline-offset:3px}
+.back{display:inline-flex;align-items:center;min-height:44px;color:var(--fg2);font-size:14px}
+.ck h1{font:700 clamp(28px,7vw,40px)/1.08 var(--head);margin:4px 0 6px;letter-spacing:-.03em}
+.ck .lede{color:var(--fg2);margin:0 0 16px;font-size:15px}
+#drop{display:block;border:1px solid var(--edge);border-radius:var(--r-md);background:var(--code);box-shadow:inset 0 1px 3px rgba(20,30,50,.06);padding:10px}
+#drop.over,#drop:focus-within{box-shadow:0 0 0 2px var(--pol)}
+textarea{width:100%;min-height:150px;resize:vertical;background:transparent;border:0;font:13px/1.45 var(--mono);color:var(--fg);padding:4px}
+textarea::placeholder,.dom input::placeholder{color:#6b7480}
+textarea:focus-visible{outline:none}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--edge);background:var(--glass);box-shadow:0 2px 10px rgba(20,30,50,.06),inset 0 1px 0 #fff;color:var(--fg);cursor:pointer;font-weight:600}
+.btn:hover{background:#fff}
+.btn.main{background:var(--fg);color:#fff;border-color:var(--fg);box-shadow:none}
+.or{color:var(--fg3);font-size:13px;margin:16px 0 6px}
+.dom{display:flex;gap:8px}
+.dom input{flex:1;min-width:0;min-height:44px;border-radius:999px;border:1px solid var(--edge);background:var(--glass);box-shadow:var(--shadow),inset 0 1px 0 #fff;color:var(--fg);padding:0 16px;font:inherit}
+.dom input:focus{outline:none;box-shadow:var(--shadow),0 0 0 2px var(--pol)}
+.hint{color:var(--fg3);font-size:13px;margin:6px 0 0}
+#out{margin-top:24px}
+section.g{margin:0 0 20px}
+section.g h2{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);margin:0 0 8px;display:flex;align-items:center;gap:8px}
+section.g h2 i{width:9px;height:9px;border-radius:50%;display:inline-block}
+#out ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+#out li{background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;font-size:15px;overflow-wrap:anywhere}
+#out li code{font:12px var(--mono);color:var(--fg3);display:block;margin-bottom:2px}
+#out li small{display:block;color:var(--fg3);margin-top:4px;font-size:13px}
+.note{color:var(--fg2);font-size:14px;margin:8px 0 0}
+/* Check the proof */
+#proof{margin:28px 0 20px}
+#proof h2.pvh{font:700 22px/1.2 var(--head);letter-spacing:-.02em;margin:0 0 4px;color:var(--fg)}
+#proof .note{margin:0 0 12px}#proof .def{margin-top:-6px}#proof .def a{color:var(--pol);text-decoration:underline}
+#proof li.pv{background:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow),inset 0 1px 0 #fff;border-radius:var(--r-md);padding:12px 14px;display:grid;gap:6px}
+.pv .pvt{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#proof ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.pv .pvt code{font:12px var(--mono);color:var(--fg3);overflow-wrap:anywhere}
+.vd{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 12px;border-radius:999px;font:600 13px var(--sans);white-space:nowrap;border:1px solid var(--line2);color:var(--fg2);background:#fff}
+.vd i{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;display:inline-block}
+.vd.ok{color:var(--live);border-color:currentColor}.vd.ok i{background:currentColor}
+.vd.bad{color:var(--bad);border-color:currentColor}.vd.bad i{background:currentColor}
+.vd.run{color:var(--fg3)}
+.pv .says{color:var(--fg2);font-size:14px;margin:0}
+.pv .why{margin:0;font-size:15px;color:var(--fg)}
+.pv .parts{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0}
+.pv .parts a{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line2);background:#fff;font-size:13px;color:var(--fg2);text-decoration:none}
+.pv .parts a b{font-weight:600;color:var(--fg);margin-right:6px}
+.pv .parts a:hover{color:var(--fg)}
+/* an evidence link that is not a sample pack: listed in one quiet line, never fetched */
+#proof li.np{font-size:13px;line-height:1.45;color:var(--fg3);overflow-wrap:anywhere;padding:0 2px}
+#out>*,#live{scroll-margin-top:calc(64px + env(safe-area-inset-top))}
+#proof li.np code{font:12px var(--mono)}#proof li.np a{color:var(--fg2);text-decoration:underline}
+@media(forced-colors:active){.vd,.vd i{border:1px solid ButtonText}}
+/* after Fetch: going live (docs/research/strategy/PROVIDER-EXPERIENCE.md, screen 1) */
+#live{margin-top:18px}
+.golive{background:var(--glass);border:1px solid var(--edge);box-shadow:var(--shadow),inset 0 1px 0 #fff;border-radius:var(--r-lg);padding:18px 16px}
+.cap{display:inline-flex;align-items:center;gap:6px;max-width:100%;min-height:28px;padding:0 12px;border-radius:999px;border:1px solid var(--line2);background:#fff;font:600 13px var(--sans);color:var(--fg);overflow-wrap:anywhere}
+.cap svg{flex:none}.cap.bad{color:var(--bad);border-color:currentColor}
+.golive h2{font:700 24px/1.15 var(--head);letter-spacing:-.02em;margin:12px 0 4px}
+.golive p.s{margin:0;color:var(--fg2);font-size:15px;overflow-wrap:anywhere}
+.steps{list-style:none;margin:16px 0 0;padding:0;display:grid}
+.steps li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:40px;font-size:15px}
+.steps li i{width:12px;height:12px;border-radius:50%;justify-self:center;box-shadow:inset 0 0 0 1.5px var(--dot)}
+.steps li.done i{background:var(--fg);box-shadow:none}.steps li.now i{box-shadow:inset 0 0 0 2px var(--fg)}
+.steps li small{color:var(--fg3);font-size:13px;white-space:nowrap}.steps li.next{color:var(--fg3)}
+.golive .acts a.btn{display:inline-flex;align-items:center;text-decoration:none}
+h3.k{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);margin:22px 0 8px}
+.traffic{color:var(--fg3);font-size:13px;margin:14px 0 0}
+details.notes>summary{display:inline-flex;align-items:center;min-height:44px;color:var(--fg2);font-size:14px;cursor:pointer;margin-bottom:6px}
+#pvw{margin-top:18px;border:1px dashed var(--line2);border-radius:var(--r-lg);padding:4px 16px 16px;background:#fbfcfe}
+#pvw .pvk{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);margin:14px 0 0}
+#pvw h2.ttl{font:700 clamp(26px,6vw,34px)/1.1 var(--head);letter-spacing:-.03em;margin:6px 0 4px}
+#pvw .lede{margin:0 0 4px}
+#pvw .stg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--fg2);margin:0}
+</style></head><body><a class="skip" href="#main">Skip to content</a><header class="top ctr"><nav aria-label="Main"><a class="nl" href="find.html">Find data</a><a class="brand" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><a class="nr" href="agents.html">For agents</a></nav></header><main id="main" class="ck">
+<a class="back" href="providers.html">&larr; For providers</a>
+<h1>Check your card</h1>
+<p class="lede">Paste your Capture Card or enter your domain. The reference checks run in your browser; nothing goes to irlpls.</p>
+
+<label id="drop"><span class="sr" style="position:absolute;left:-9999px">Capture Card JSON</span>
+<textarea id="json" spellcheck="false" placeholder="Paste card JSON here, or drop a .json file" aria-label="Capture Card JSON"></textarea></label>
+<div class="acts"><button class="btn main" id="go">Check card</button><button class="btn" id="clear">Clear</button></div>
+
+<p class="or">or fetch it from your domain</p>
+<form class="dom" id="domf"><input id="dom" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="provider.example" aria-label="Your domain"><button class="btn" type="submit">Fetch</button></form>
+<p class="hint">Reads https://&lt;domain&gt;/.well-known/irlpls once. A browser can only do this if your server allows it (CORS).</p>
+
+<div id="live" aria-live="polite" hidden></div>
+<section id="pvw" hidden aria-label="Preview of your page"></section>
+<div id="out" aria-live="polite"></div>
+<section id="proof" hidden aria-labelledby="proof-h"><h2 class="pvh" id="proof-h">Check a sample pack</h2>
+<p class="note">Your browser checks the pack's signature against its stated key. Nothing else.</p>
+<p class="note def">A sample pack is a provider's public sample file, proof and key. <a href="providers.html#sample-packs">How to publish one</a></p>
+<p class="note" id="nopack" hidden>No sample packs linked.</p>
+<ul id="proofs"></ul></section>
+</main>
+<script src="match.js"></script>
+<footer class="site-foot"><span>No data sold, no cut. Buy from providers directly.</span><span class="fl"><a href="standard.html">standard</a><a href="changelog.html">changelog</a><a href="providers.html">for providers</a><a href="governance.html">governance</a><a href="privacy.html">privacy</a><a href="chain.html">the chain</a><a href="glossary.html">glossary</a><a href="cards.json">cards.json</a><a href="llms.txt">llms.txt</a></span></footer>
+<script>
+"use strict";
+const VERSION="2026-10-26",SCHEMA_URL="2026-10-26/schemas/capture-card.json";
+const GUARANTEES=["human","application","camera","time","location","content","corroboration"];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function privateHost(url){let h;try{h=new URL(url).hostname.toLowerCase().replace(/\.$/,"")}catch(e){return false}
+ h=h.replace(/^\[|\]$/g,"");
+ if(h==="localhost"||/\.(localhost|local|internal|localdomain)$/.test(h))return true;
+ let m=h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+ if(m){const[a,b]=[+m[1],+m[2]];return a===0||a===10||a===127||(a===169&&b===254)||(a===172&&b>=16&&b<=31)||(a===192&&b===168)||(a===100&&b>=64&&b<=127)||a>=224}
+ if(h.includes(":"))return h==="::1"||h==="::"||/^f[cd]/.test(h)||/^fe[89ab]/.test(h)||/^::ffff:/.test(h);
+ return false}
+
+/* a small JSON Schema validator: only the keywords capture-card.schema.json uses */
+function typeOk(t,v){return t==="object"?v&&typeof v==="object"&&!Array.isArray(v):t==="array"?Array.isArray(v):t==="integer"?Number.isInteger(v):t==="number"?typeof v==="number":t==="null"?v===null:typeof v===t}
+function same(a,b){return JSON.stringify(a)===JSON.stringify(b)}
+function validate(s,v,path,errs){
+ if(!s||typeof s!=="object")return;
+ if(s.type){const ts=[].concat(s.type);if(!ts.some(t=>typeOk(t,v))){errs.push([path,`should be ${ts.map(t=>t==="array"?"a list":"a "+t).join(" or ")}`]);return}}
+ if("const" in s&&!same(s.const,v))errs.push([path,`must be ${JSON.stringify(s.const)}`]);
+ if(s.enum&&!s.enum.some(e=>same(e,v)))errs.push([path,`must be one of ${s.enum.map(e=>JSON.stringify(e)).join(", ")}`]);
+ if(typeof v==="string"){
+  if(s.pattern&&!new RegExp(s.pattern).test(v))errs.push([path,`"${v.slice(0,40)}" is not in the expected form`]);
+  if(s.format==="date"&&!(/^\d{4}-\d{2}-\d{2}$/.test(v)&&!isNaN(Date.parse(v))))errs.push([path,"should be a date written YYYY-MM-DD"])}
+ if(typeof v==="number"&&s.minimum!=null&&v<s.minimum)errs.push([path,`must be at least ${s.minimum}`]);
+ if(Array.isArray(v)){
+  if(s.minItems!=null&&v.length<s.minItems)errs.push([path,`needs at least ${s.minItems} item${s.minItems>1?"s":""}`]);
+  if(s.items)v.forEach((x,i)=>validate(s.items,x,path+"."+i,errs))}
+ if(v&&typeof v==="object"&&!Array.isArray(v)){
+  (s.required||[]).forEach(k=>{if(!(k in v))errs.push([path?path+"."+k:k,"is missing"])});
+  const p=s.properties||{};
+  for(const k in v){const q=path?path+"."+k:k;
+   if(p[k])validate(p[k],v[k],q,errs);
+   else if(s.additionalProperties&&typeof s.additionalProperties==="object")validate(s.additionalProperties,v[k],q,errs)}}
+ (s.allOf||[]).forEach(x=>validate(x,v,path,errs));
+ if(s.if){const t=[];validate(s.if,v,path,t);if(!t.length&&s.then)validate(s.then,v,path,errs)}}
+
+/* card ownership, as irlpls/psl.py same_owner: the serving host is the declared host itself, or its "www." twin on one
+   registrable domain under the Public Suffix List (ICANN and PRIVATE sections, so bob.github.io is not alice.github.io).
+   The list (public_suffix_list.dat, MPL-2.0, served beside this page) is fetched only for a www twin; failing to load it
+   refuses the twin. */
+let PSL=null;
+const ascii=n=>{try{return new URL("http://"+n).hostname}catch(e){return n.toLowerCase()}};
+async function pslLists(){if(PSL)return PSL;
+ const r=await fetch("public_suffix_list.dat");if(!r.ok)throw new Error("no public suffix list");
+ const rules=new Set,wild=new Set,exc=new Set;
+ for(let l of(await r.text()).split("\n")){l=l.trim().split(/\s/)[0];if(!l||l.startsWith("//"))continue;
+  if(l.startsWith("!"))exc.add(ascii(l.slice(1)));else if(l.startsWith("*."))wild.add(ascii(l.slice(2)));else rules.add(ascii(l))}
+ return PSL={rules,wild,exc}}
+function registrable(host,{rules,wild,exc}){
+ if(!host||/^[\d.]+$/.test(host)||host.includes(":")||host.startsWith("["))return null;
+ const L=host.split(".");if(L.some(x=>!x))return null;let n=1;
+ for(let i=0;i<L.length;i++){const name=L.slice(i).join("."),k=L.length-i;
+  if(exc.has(name)){n=k-1;break}
+  if(rules.has(name))n=Math.max(n,k);
+  if(i>0&&wild.has(name))n=Math.max(n,k+1)}
+ return L.length>n?L.slice(-(n+1)).join("."):null}
+async function sameOwner(h,d){
+ h=ascii(String(h||"").replace(/\.$/,""));d=ascii(String(d||"").replace(/\.$/,""));
+ if(!h||!d)return false;if(h===d)return true;
+ if(h!=="www."+d&&d!=="www."+h)return false;
+ try{const p=await pslLists(),r=registrable(h,p);return r!==null&&r===registrable(d,p)}catch(e){return false}}
+
+/* findings: {lvl:"fix"|"weak"|"ok"|"na", where, text, tip} */
+async function ruleChecks(card,fetchedFrom){
+ const out=[],F=(w,t,tip)=>out.push({lvl:"fix",where:w,text:t,tip}),W=(w,t,tip)=>out.push({lvl:"weak",where:w,text:t,tip});
+ if(card.spec_version!==VERSION)F("spec_version",`Must be "${VERSION}", not ${JSON.stringify(card.spec_version)}.`);
+ if(card.capability!=="com.irlpls.capture.card")F("capability",'Must be "com.irlpls.capture.card".');
+ const v=card.verification||{};
+ for(const k of GUARANTEES){const g=v[k],w="verification."+k;
+  if(!g)F(w,"Missing. All seven verification keys are required.","If you do not offer it, say level \"none\" and what is unknown. Unstated counts as no.");
+  else if(g.level==="evidenced"){
+   if(!(g.method&&g.evidence_url))F(w,"Says evidenced but gives no method or public evidence_url.","Either add both, or lower the level to \"claimed\". Evidence nobody can check counts as claimed.");
+   else{let u;try{u=new URL(String(g.evidence_url))}catch(e){}
+    if(!u||u.protocol!=="https:")F(w,"evidence_url must be an https URL.");
+    else if(privateHost(g.evidence_url))F(w,"evidence_url points at a private, loopback or local host. Evidence must be public.");
+    else if(g.standard==="c2pa"&&!g.conforming_product)W(w,"Names the c2pa standard but no conforming_product.")}}}
+ if(card.status==="unclaimed"&&!(card.sources&&card.sources.length))F("sources","An unclaimed card must cite a source for its claims.");
+ const upd=Date.parse(card.updated),exp=Date.parse(card.expires),today=Date.now();
+ if(isNaN(upd)||isNaN(exp))W("expires","updated and expires should both be dates, so brokers can tell when the card is stale.","A broker must skip a card past its expires date, and cannot tell without one.");
+ else{if(exp>upd+366*864e5)F("expires","Must be at most a year after updated.");
+  if(exp<today)F("expires","This card has expired. Brokers must skip it.","Update the card and set a new expires date.")}
+ const lic=card.licensing||{};
+ for(const k of["ai_training","resale"])if(!(k in lic))W("licensing."+k,"Not stated.","Brokers and policies treat an unstated right as not granted. If your terms allow it, say so.");
+ if((card.coverage||{}).areas==null)W("coverage.areas","No ISO country codes.","Brokers must guess your coverage from the text, and unstated counts as no match.");
+ if(fetchedFrom){
+  const host=new URL(fetchedFrom).hostname;let own="";try{own=new URL(card.provider_url||"").hostname}catch(e){}
+  const ok=await sameOwner(host,own);
+  if(card.status==="provider-maintained"&&!ok)F("status",`A provider-maintained card must be served from the provider's own domain (${own||"no provider_url"}), not ${host}.`);
+  else if(!ok)W("provider_url",`${own||"Missing"} does not match ${host}, so the card stays unclaimed.`,"Set provider_url to your own domain to be treated as provider-maintained.");
+  else out.push({lvl:"ok",where:"provider_url",text:`${own} matches the serving host${card.status==="provider-maintained"?"; counts as provider-maintained":""}.`})}
+ return out}
+
+async function schemaChecks(card){
+ let s;
+ try{const r=await fetch(SCHEMA_URL);if(!r.ok)throw 0;s=await r.json()}
+ catch(e){return[{lvl:"na",where:"schema",text:"The schema could not be loaded here, so field shapes were not checked.",tip:"This happens when the page is opened from a file instead of the website. The rules below still ran."}]}
+ const errs=[];validate(s,card,"",errs);
+ return errs.map(([w,m])=>({lvl:"fix",where:w||"card",text:m[0].toUpperCase()+m.slice(1)+"."}))}
+
+async function fetchChecks(input){
+ const out=[],O=(lvl,where,text,tip)=>out.push({lvl,where,text,tip});
+ let d=input.trim().replace(/^https?:\/\//i,"").replace(/\/.*$/,"");
+ if(/^http:\/\//i.test(input.trim()))O("fix","https","Cards are served over HTTPS only.");
+ if(!d)return{out:[{lvl:"fix",where:"domain",text:"Enter a domain, such as provider.example."}]};
+ const url=`https://${d}/.well-known/irlpls`;let r;
+ try{r=await fetch(url,{redirect:"manual",headers:{Accept:"application/json"}})}
+ catch(e){return{out:[{lvl:"na",where:"fetch",text:"Your server blocked the browser read. irlpls will still read it. Paste the JSON to preview.",
+  tip:`Or ${url} is unreachable. Browsers need Access-Control-Allow-Origin to let a page read it; irlpls reads it from its own server, where that does not matter. Open the URL in a tab, copy the JSON and paste it above.`}]}}
+ if(r.type==="opaqueredirect"||(r.status>=300&&r.status<400)){
+  O("fix","no redirects",`${url} redirected. The card must be served directly, with no redirect.`);
+  O("na","headers","The browser hides where it redirected to, so the card itself was not read. Fix the redirect, then check again.");return{out}}
+ if(r.status!==200){O("fix","fetch",`${url} answered ${r.status}.`);return{out}}
+ O("ok","fetch","Answered 200 with no redirect.");
+ const ct=(r.headers.get("content-type")||"").split(";")[0].trim().toLowerCase();
+ O(ct==="application/json"?"ok":"fix","content type",ct==="application/json"?"application/json.":(ct?`${ct}. It must be application/json.`:"Missing. It must be application/json."));
+ const cc=r.headers.get("cache-control"),m=/max-age\s*=\s*"?(\d+)/i.exec(cc||"");
+ if(!cc)O("fix","cache-control","Missing, or not readable from a browser. It needs \"public, max-age=60\" or more.","If it is set, make sure it is also sent on the response to cross-origin requests.");
+ else if(!/\bpublic\b/i.test(cc))O("fix","cache-control",`"${cc}" lacks "public".`);
+ else if(!m)O("fix","cache-control",`"${cc}" has no max-age.`);
+ else if(+m[1]<60)O("fix","cache-control",`max-age=${m[1]} is below the 60 second minimum.`);
+ else O("ok","cache-control",cc+".");
+ O("na","etag","Not checked. Browsers cannot read the ETag header unless your server exposes it.");
+ O("na","/.well-known/ucp","Not checked here. If you list the capability in your UCP profile, run the command-line conformance check.");
+ let text;try{text=await r.text()}catch(e){O("na","body","The body could not be read.");return{out}}
+ return{out,text,url}}
+
+const GROUPS=[["fix","Fix these","var(--bad)","A broker would reject or distrust the card."],
+ ["weak","Weak spots","var(--com)","Valid, but a broker will read the gap as no."],
+ ["na","Could not check here","var(--pol)",""],["ok","Fine","var(--live)",""]];
+function render(items,head,parsed,fold){
+ proofRun++;$("proof").hidden=true;$("proofs").innerHTML="";
+ let h=head||"",g="";
+ for(const[l,t,c,n]of GROUPS){const xs=items.filter(i=>i.lvl===l);if(!xs.length)continue;
+  g+=`<section class="g"><h2><i style="background:${c}"></i>${t}</h2>${n?`<p class="note" style="margin:0 0 8px">${n}</p>`:""}<ul>${xs.map(i=>`<li><code>${esc(i.where)}</code>${esc(i.text)}${i.tip?`<small>${esc(i.tip)}</small>`:""}</li>`).join("")}</ul></section>`}
+ const nn=items.filter(i=>i.lvl==="weak"||i.lvl==="na").length;
+ h+=fold&&nn?`<details class="notes"><summary>${nn} note${nn>1?"s":""} a broker would see&nbsp;›</summary>${g}</details>`:g;
+ if(!items.some(i=>i.lvl==="fix"||i.lvl==="weak"))h=`<p class="note" id="sum" style="margin:0 0 16px">${items.some(i=>i.lvl==="na")?"Some checks could not run.":"Nothing to fix in what could be checked."}</p>`+h;
+ if(parsed)h+=`<p class="note">Each guarantee stands on its own; there is no overall score. Unstated counts as no.</p>`;
+ $("out").innerHTML=h;reveal()}
+/* the results sit below the domain form: bring the first one into view (on a short phone it is below the fold) */
+function reveal(){const f=!$("live").hidden&&$("live").firstElementChild?$("live"):$("out").firstElementChild;if(!f)return;const r=f.getBoundingClientRect();
+ if(r.top<56||r.top>innerHeight-96)f.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
+
+/* Check the proof: every evidence_url, checked in the browser where it can be (docs/STANDARD.md 3.1 note, 14.7).
+   Mirrors irlpls/evidence.py for jws-receipt packs; everything else says it is not checkable here. Never changes a level. */
+const PROVENANCE=["custody","receipt"],RECEIPT_TYP="irlpls-receipt+jws",ALGS=["ES256","EdDSA"];
+const REQUIRED=["iss","order_id","item_id","nonce","request_sha256","media","phenomenon_time","issued_at"];
+const OK="verified",BAD="failed",NA="not checkable";
+class Verdict{constructor(v,why){this.v=v;this.why=why}}
+const fail=why=>{throw new Verdict(BAD,why)},cant=why=>{throw new Verdict(NA,why)};
+function proofEntries(card){const out=[];
+ for(const[g,keys]of[["verification",GUARANTEES],["provenance",PROVENANCE]])for(const k of keys){
+  const e=(card[g]||{})[k];if(e&&typeof e==="object"&&typeof e.evidence_url==="string"&&e.evidence_url)out.push([g+"."+k,e])}
+ return out}
+function jcs(v){
+ if(v===null||typeof v==="boolean")return JSON.stringify(v);
+ if(typeof v==="number"){if(!isFinite(v))throw new Error("not a finite number");return JSON.stringify(v)}
+ if(typeof v==="string")return JSON.stringify(v);
+ if(Array.isArray(v))return"["+v.map(jcs).join(",")+"]";
+ if(typeof v==="object")return"{"+Object.keys(v).sort().map(k=>JSON.stringify(k)+":"+jcs(v[k])).join(",")+"}";
+ throw new Error("not JSON")}
+const utf8=s=>new TextEncoder().encode(s);
+function b64u(bytes){let s="";bytes.forEach(b=>s+=String.fromCharCode(b));return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
+function unb64u(s){if(typeof s!=="string"||!/^[A-Za-z0-9_-]*$/.test(s))throw new Error("not base64url");
+ const t=atob(s.replace(/-/g,"+").replace(/_/g,"/")+"===".slice((s.length+3)%4));return Uint8Array.from(t,c=>c.charCodeAt(0))}
+const hex=buf=>[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+function origin(u){try{const x=new URL(u);return x.protocol+"//"+x.host}catch(e){return null}}
+async function grab(url,what){
+ let u;try{u=new URL(url)}catch(e){fail(`The ${what} link is not a valid URL.`)}
+ if(u.protocol!=="https:")fail(`The ${what} link is not https.`);
+ if(privateHost(url))fail(`The ${what} link points at a private host.`);
+ let r;try{r=await fetch(url,{credentials:"omit",cache:"no-store"})}
+ catch(e){cant("Not checked: its host blocks browser reads.")}
+ if(!r.ok)cant(`Not checked: the ${what} answered ${r.status}.`);
+ return new Uint8Array(await r.arrayBuffer())}
+function asJson(bytes,what){try{return JSON.parse(new TextDecoder().decode(bytes).replace(/^﻿/,""))}catch(e){fail(`The ${what} is not JSON.`)}}
+
+async function verifyReceipt(card,receipt,jwks,artefact){
+ if(!crypto.subtle)cant("This browser cannot check signatures here.");
+ if(!receipt||typeof receipt!=="object"||typeof receipt.jws!=="string")fail("The receipt has no jws.");
+ const parts=receipt.jws.split(".");if(parts.length!==3)fail("The receipt's jws is malformed.");
+ const[h,mid,s]=parts,payload=receipt.payload;let header,sig;
+ try{header=JSON.parse(new TextDecoder().decode(unb64u(h)));sig=unb64u(s)}catch(e){fail("The receipt's jws is malformed.")}
+ if(!header||typeof header!=="object"||Array.isArray(header))fail("The receipt's header is not an object.");
+ if(!payload||typeof payload!=="object"||Array.isArray(payload))fail("The receipt's payload is not an object.");
+ if(mid!=="")fail("Not a detached JWS: its middle part must be empty.");
+ if("crit" in header)fail("The receipt uses crit headers, which are refused.");
+ const alg=header.alg;if(!ALGS.includes(alg))fail(`Algorithm ${String(alg).slice(0,12)} is not allowed.`);
+ if(header.typ!==RECEIPT_TYP)fail(`The receipt's typ must be ${RECEIPT_TYP}.`);
+ if(typeof header.kid!=="string"||!header.kid)fail("The receipt names no key (kid).");
+ const keys=(jwks&&Array.isArray(jwks.keys)?jwks.keys:[]).filter(k=>k&&typeof k==="object"&&k.kid===header.kid);
+ if(!keys.length)fail("The published keys do not include the receipt's key.");
+ if(keys.length>1)fail("The receipt's key id appears twice in the key set.");
+ const k=keys[0];
+ if(k.irlpls_use!=="receipt")fail("That key is not marked for receipts.");
+ if(k.alg!==alg)fail("The receipt's algorithm differs from its key's.");
+ const missing=REQUIRED.filter(x=>!(x in payload));const m=payload.media;
+ if(!m||typeof m!=="object"||!["sha256","media_type","bytes"].every(x=>x in m))missing.push("media details");
+ if(missing.length)fail("The receipt lacks "+missing.join(", ")+".");
+ let input;try{input=utf8(h+"."+b64u(utf8(jcs(payload))))}catch(e){fail("The receipt's payload cannot be canonicalised.")}
+ let key,good;
+ if(alg==="ES256"){
+  if(k.kty!=="EC"||k.crv!=="P-256")fail("The key is not a P-256 key.");
+  try{key=await crypto.subtle.importKey("jwk",{kty:"EC",crv:"P-256",x:k.x,y:k.y,ext:true},{name:"ECDSA",namedCurve:"P-256"},false,["verify"])}catch(e){fail("The published key is malformed.")}
+  if(sig.length!==64)fail("The signature is the wrong length for ES256.");
+  good=await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},key,sig,input)}
+ else{
+  if(k.kty!=="OKP"||k.crv!=="Ed25519")fail("The key is not an Ed25519 key.");
+  try{key=await crypto.subtle.importKey("jwk",{kty:"OKP",crv:"Ed25519",x:k.x,ext:true},{name:"Ed25519"},false,["verify"])}
+  catch(e){if(e&&e.name==="NotSupportedError")cant("Ed25519 is not checkable in this browser.");fail("The published key is malformed.")}
+  try{good=await crypto.subtle.verify({name:"Ed25519"},key,sig,input)}catch(e){cant("Ed25519 is not checkable in this browser.")}}
+ if(!good)fail("The signature does not match the published key.");
+ if("not_after" in k){const na=Date.parse(k.not_after),at=Date.parse(payload.issued_at);
+  if(isNaN(na))fail("The key's not_after is not a date-time.");if(isNaN(at)||at>na)fail("Signed after the key was retired.")}
+ const iss=origin(card.provider_url);
+ if(iss&&payload.iss!==iss)fail(`Signed by ${String(payload.iss).slice(0,60)}, not the provider's site.`);
+ if(artefact){const d=hex(await crypto.subtle.digest("SHA-256",artefact));
+  if(m.sha256!==d)fail("The sample file's hash differs from the receipt's.");
+  if(m.bytes!==artefact.length)fail("The sample file's size differs from the receipt's.");
+  return"Signature matches the published key and the sample file."}
+ return"Signature matches the published key. No sample file to hash."}
+
+async function checkProof(card,where,entry){
+ const url=entry.evidence_url,res={parts:[]};
+ try{
+  const body=await grab(url,"proof");let j=null;
+  const t=new TextDecoder().decode(body.slice(0,64)).replace(/^﻿/,"").trimStart();
+  if(t[0]==="{")try{j=JSON.parse(new TextDecoder().decode(body).replace(/^﻿/,""))}catch(e){}
+  if(j&&typeof j==="object"&&"irlpls_sample_pack" in j){
+   const rel=n=>{const v=j[n];if(typeof v!=="string"||!v)return null;try{return new URL(v,url).href}catch(e){return null}};
+   res.pack=j.type;res.parts=[["File","artefact"],["Proof","proof"],["Key","trust_anchor"],["How to","readme"]].map(([l,n])=>[l,rel(n)]).filter(x=>x[1]);
+   if(j.type!=="jws-receipt"&&!(j.type==="jwks"&&rel("proof")))
+    cant(`A ${String(j.type||"untyped").slice(0,24)} proof is not checkable in a browser.`);
+   const cardJwks=(card.protocol||{}).jwks_uri,anchor=rel("trust_anchor");
+   if(cardJwks&&anchor&&anchor!==cardJwks)fail("The pack's key set is not the card's jwks_uri.");
+   const jw=cardJwks||anchor;if(!jw)cant("The pack names no key set to check against.");
+   if(!rel("proof"))cant("The pack has no sample receipt.");
+   const receipt=asJson(await grab(rel("proof"),"receipt"),"receipt");
+   const jwks=asJson(await grab(jw,"key set"),"key set");
+   const art=rel("artefact")?await grab(rel("artefact"),"sample file"):null;
+   return Object.assign(res,{v:OK,why:await verifyReceipt(card,receipt,jwks,art)})}
+  if(j&&typeof j==="object"&&"jws" in j&&"payload" in j){
+   const jw=(card.protocol||{}).jwks_uri;if(!jw)cant("A receipt, but the card names no jwks_uri.");
+   const why=await verifyReceipt(card,j,asJson(await grab(jw,"key set"),"key set"),null);
+   return Object.assign(res,{v:OK,why})}
+  const np=new Verdict(NA,j?"JSON, but not a sample pack.":"A web page, not a sample pack.");np.nopack=true;throw np}
+ catch(e){if(e instanceof Verdict)return Object.assign(res,{v:e.v,why:e.why,nopack:!!e.nopack});
+  return Object.assign(res,{v:BAD,why:"The evidence is malformed."})}}
+
+let proofRun=0;
+const short=u=>{try{const x=new URL(u);return x.pathname.split("/").filter(Boolean).pop()||x.hostname}catch(e){return"link"}};
+/* a sample pack is named by its path (irlpls/validate.py is_sample_pack_url); any other evidence link is listed, not fetched */
+const isPack=u=>{try{return new URL(u).pathname.endsWith("irlpls-sample.json")}catch(e){return false}};
+const host=u=>{try{return new URL(u).hostname}catch(e){return"link"}};
+function otherItem(where,entry){const u=entry.evidence_url,safe=/^https:\/\//i.test(u);
+ const w=`<code title="${esc(where)}">${esc(where.split(".").pop())}</code>`;  /* the key links to its evidence: one line on a phone */
+ return`<li class="np" data-where="${esc(where)}">${safe?`<a href="${esc(u)}" aria-label="${esc(where)} evidence, at ${esc(host(u))}" rel="noopener nofollow" target="_blank">${w}</a>`:w} · Not a sample pack · not checked here</li>`}
+function proofItem(where,entry,r){
+ const cls=!r?"run":r.v===OK?"ok":r.v===BAD?"bad":"na",label=!r?"checking…":r.v;
+ let h=`<div class="pvt"><code>${esc(where)} · ${esc(entry.level||"no level")}</code><span class="vd ${cls}"><i></i>${esc(label)}</span></div>`;
+ if(entry.method)h+=`<p class="says">${esc(entry.method)}</p>`;
+ if(r){h+=`<p class="why">${esc(r.why)}</p>`;
+  if(r.parts.length)h+=`<div class="parts">${r.parts.map(([l,u])=>`<a href="${esc(u)}" rel="noopener nofollow" target="_blank"><b>${l}</b>${esc(short(u))}</a>`).join("")}</div>`}
+ return`<li class="pv" data-where="${esc(where)}" data-verdict="${r?esc(r.v):""}">${h}</li>`}
+/* shown for every card checked: sample packs are checked; other evidence links follow, one quiet line each; with no
+   sample pack it says so */
+async function proofPanel(card){
+ const n=++proofRun,all=proofEntries(card),list=all.filter(([w,e])=>isPack(e.evidence_url)),box=$("proof");
+ box.hidden=false;$("nopack").hidden=!!list.length;
+ $("proofs").innerHTML=list.map(([w,e])=>proofItem(w,e)).join("")+all.filter(([w,e])=>!isPack(e.evidence_url)).map(([w,e])=>otherItem(w,e)).join("");
+ const rs=await Promise.all(list.map(async([w,e],i)=>{const r=await checkProof(card,w,e);
+  if(n!==proofRun)return r;$("proofs").children[i].outerHTML=proofItem(w,e,r);return r}));
+ if(n!==proofRun)return;
+ if(rs.every(r=>r.nopack))$("nopack").hidden=false;
+ /* a proof that could not be fetched or checked: the summary above must not read as a pass */
+ const sm=$("sum");if(sm)sm.textContent=rs.some(r=>r.v===BAD)?"A sample pack failed its check.":rs.some(r=>r.v!==OK)?"Some checks could not run.":sm.textContent}
+
+async function run(text,fetchedFrom,pre){
+ let card;liveRun++;$("live").hidden=true;$("live").innerHTML="";$("pvw").hidden=true;$("pvw").innerHTML="";
+ if(!String(text||"").trim()){if(pre&&pre.length)render(pre);else{$("out").innerHTML='<p class="note" id="empty">Paste a card first, or enter your domain.</p>';reveal()}return}
+ try{card=JSON.parse(text.replace(/^﻿/,""));if(!card||typeof card!=="object"||Array.isArray(card))throw new Error("the top level must be an object, in braces")}
+ catch(e){render([...(pre||[]),{lvl:"fix",where:"json",text:"This is not valid JSON: "+e.message+"."}]);return}
+ const items=[...(pre||[]),{lvl:"ok",where:"json",text:"Parses."},...await schemaChecks(card),...await ruleChecks(card,fetchedFrom)];
+ if(!items.some(i=>i.lvl==="fix"&&i.where!=="expires"))items.push({lvl:"ok",where:"card",text:"Passes the schema and the standard's own rules."});
+ if(!fetchedFrom)items.push({lvl:"na",where:"serving",text:"A pasted card cannot show redirects, content type, cache headers or whether it comes from your own domain.",tip:"Enter your domain above to check those."});
+ const fixes=items.filter(i=>i.lvl==="fix");
+ render(items,null,true,!fixes.length);proofPanel(card);goLive(card,fetchedFrom,fixes)}
+
+/* ---- going live: what happens after a valid card is found, and how the provider's page will look ----
+   irlpls reads every provider's /.well-known/irlpls once a day (tools/fetch_published.py, from the daily check) and the
+   next build, within 30 minutes, shows it: so "within a day". The times come from published.json (next_read). */
+let liveRun=0,DATA=null,PUBS=undefined;
+const ICK='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>';
+const hostOf=u=>{try{return new URL(u).hostname.toLowerCase().replace(/\.$/,"")}catch(e){return""}};
+const dayOf=t=>{const d=new Date(t);return isNaN(d)?"":d.toLocaleDateString("en-GB",{day:"numeric",month:"short"})};
+const clock=t=>{const d=new Date(t);return isNaN(d)?"":d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})};
+async function siteData(){if(DATA)return DATA;
+ const[c,b]=await Promise.all([fetch("cards.json").then(r=>{if(!r.ok)throw 0;return r.json()}),fetch("bench_asks.json").then(r=>{if(!r.ok)throw 0;return r.json()})]);
+ return DATA={cards:c.cards||[],bench:b}}
+async function pubs(){if(PUBS!==undefined)return PUBS;
+ try{const r=await fetch("published.json",{cache:"no-store"});PUBS=r.ok?await r.json():null}catch(e){PUBS=null}return PUBS}
+function pubFor(p,host,id){const cs=(p&&p.cards)||{};
+ if(id&&cs[id]&&(!host||cs[id].domain===host))return[id,cs[id]];
+ for(const k in cs)if(host&&(cs[k].domain===host||cs[k].domain==="www."+host||"www."+cs[k].domain===host))return[k,cs[k]];return[null,null]}
+/* where the card would rank on its own families' asks (tools/bench_asks.json), with it swapped in: irlpls.match in the browser,
+   through the broker's plan filter (IRLMatch.plannable), so it is the number the card page and the agent sentence give */
+function ranksFor(card,D){const M=window.IRLMatch;if(!M)return[];
+ const me=Object.assign({},card,{status:"provider-maintained"});
+ const C=D.cards.filter(c=>c.id!==card.id).concat([me]).filter(c=>M.inScope(c)&&c.status!=="sample");
+ const asks=[],seen=new Set,fam=(D.bench&&D.bench.families)||{};
+ for(const f in fam)if((fam[f].providers||[]).includes(card.id))for(const a of fam[f].asks||[])if(!seen.has(a.ask)){seen.add(a.ask);asks.push(a)}
+ return asks.slice(0,(D.bench&&D.bench.max_rows)||4).map(a=>{let req;try{req=M.parse(a.ask,C)}catch(e){return{label:a.label,pos:null,of:0,covered:true}}
+  const l=C.map(c=>({c:c,s:M.score(c,req)})).filter(x=>(x.s.total==null||x.s.total>0)&&M.plannable(x.c,req)).sort(M.compare);
+  const i=l.findIndex(x=>x.c.id===card.id),sc=M.score(me,req);
+  return{label:a.label,pos:i<0?null:i+1,of:l.length,covered:!(sc.parts&&(sc.parts.outside||sc.parts.outside_coverage))}})}
+function ranksHtml(rows){return`<ul class="ranks">${rows.map(r=>r.pos?`<li><span>${esc(r.label)}</span><b>#${r.pos} <small>of ${r.of}</small></b></li>`:`<li class="no"><span>${esc(r.label)}</span><b>${r.covered?"Not a match":"Not covered"}</b></li>`).join("")}</ul>`}
+/* "Changed from the compiled card", as build.py shows it (irlpls/published.py changed()): plain words, at most 5 rows */
+const RW={allowed:"allowed",forbidden:"not allowed"},LW={evidenced:"evidenced",claimed:"claimed"};
+const GW={human:"Person",application:"App",camera:"Camera",time:"Time",location:"Place",content:"Content",corroboration:"Cross-check"};
+function priceW(c){const p=(c.pricing||{}).from_usd,u=String((c.pricing||{}).unit||"").replace(/^per /,"").split(/\s*\(|;|,\s/)[0].trim();
+ if((c.access||{}).cost==="free")return"free";return typeof p==="number"&&p>0?("$"+p+(u?" / "+u:"")).slice(0,40):"not stated"}
+function changedRows(a,b){const out=[],add=(f,x,y)=>{if(x!==y)out.push([f,y,x])},g=(c,k)=>(c.licensing||{})[k];
+ add("Price",priceW(a),priceW(b));add("AI training",RW[g(a,"ai_training")]||"not stated",RW[g(b,"ai_training")]||"not stated");
+ add("Resale",RW[g(a,"resale")]||"not stated",RW[g(b,"resale")]||"not stated");
+ const ar=((a.coverage||{}).areas||[]).map(String).sort().join(", ")||"not stated",br=((b.coverage||{}).areas||[]).map(String).sort().join(", ")||"not stated";add("Coverage",ar,br);
+ add("Speed",String((a.delivery||{}).speed||"not stated"),String((b.delivery||{}).speed||"not stated"));
+ for(const k of GUARANTEES)add(GW[k],LW[((a.verification||{})[k]||{}).level]||"not stated",LW[((b.verification||{})[k]||{}).level]||"not stated");
+ return out.slice(0,5)}
+function stagesHtml(c){const M=window.IRLMatch;if(!M||!M.stageLevels)return"";const ls=M.stageLevels(c);
+ return`<p class="stg"><span class="dots" aria-hidden="true">${ls.map(l=>`<i class="${M.stageMark(l)}"></i>`).join("")}</span><span>${esc(M.stageTally(c,true))}</span></p>`}
+function previewHtml(card,host,rows,comp){const name=String(card.name||card.id||"").replace(/\s*\(.*\)/,"");
+ let h=`<p class="pvk">Preview · your page on irlpls</p><p class="pubb">${ICK}<span><b>Published by ${esc(name)}</b> from ${esc(host||hostOf(card.provider_url)||"your domain")} · checked ${esc(dayOf(Date.now()))}</span></p>`;
+ h+=`<h2 class="ttl">${esc(card.name||card.id||"")}</h2><p class="lede">${esc(card.short||card.summary||"")}</p>`;
+ if(rows.length)h+=`<h3 class="k">Where it ranks</h3>${ranksHtml(rows)}`;
+ h+=`<h3 class="k">Eight links</h3>${stagesHtml(card)}`;
+ const ch=comp?changedRows(card,comp):[];
+ if(ch.length)h+=`<h3 class="k">Changed from the compiled card</h3><ul class="chg">${ch.map(([f,b,a])=>`<li><b>${esc(f)}</b> · ${esc(b)} → ${esc(a)}</li>`).join("")}</ul>`;
+ const id=esc(card.id||"your-id");
+ h+=`<h3 class="k">Badge for your site</h3><div class="bdg"><code>&lt;a href="https://irlpls.com/c/${id}.html"&gt;&lt;img src="https://irlpls.com/badge/${id}.svg" alt="${esc(name)} on irlpls"&gt;&lt;/a&gt;</code></div>`;
+ return h+`<p class="note">What an agent says and what would move you up are added from irlpls's own plan once it reads your card.</p>`}
+const MAIL="mailto:hello@irlpls.com?subject="+encodeURIComponent("New provider for irlpls");
+async function goLive(card,fetchedFrom,fixes){const n=++liveRun,box=$("live");
+ const host=fetchedFrom?hostOf(fetchedFrom):"",own=hostOf(card.provider_url);
+ let D=null;try{D=await siteData()}catch(e){}
+ const P=await pubs();if(n!==liveRun)return;
+ const comp=D?D.cards.find(c=>c.id===card.id&&c.status!=="provider-maintained")||D.cards.find(c=>c.id===card.id):null;
+ const compHost=comp?hostOf(comp.provider_url):"",at=host||own;
+ const owns=comp&&at&&await sameOwner(at,compHost)&&(!own||await sameOwner(at,own));
+ let h;
+ if(fixes.length){h=`<div class="golive"><span class="cap bad">Not valid${at?" · "+esc(at):""}</span><h2>Fix ${fixes.length} thing${fixes.length>1?"s":""} first</h2><p class="s">They are listed below. irlpls shows your card only when it validates.</p></div>`}
+ else if(D&&!comp){h=`<div class="golive"><span class="cap">${ICK}Valid${at?" · "+esc(at):""}</span><h2>New to irlpls</h2><p class="s">irlpls lists a new provider after one review. Write to <a href="${MAIL}">hello@irlpls.com</a> with your domain.</p><div class="acts"><a class="btn main" href="${MAIL}">Add your domain&nbsp;›</a></div></div>`}
+ else if(D&&comp&&!owns){h=`<div class="golive"><span class="cap bad">Not yours to publish${at?" · "+esc(at):""}</span><h2>Fix 1 thing first</h2><p class="s">The id <b>${esc(card.id)}</b> belongs to ${esc(compHost||"another domain")}. Only that host, or its www twin, can publish it.</p></div>`}
+ else{const[pid,pe]=pubFor(P,at,card.id),live=pe&&pe.state==="live"&&pid===card.id;
+  const nx=P&&P.next_read&&Date.parse(P.next_read)>Date.now()?P.next_read:null;
+  const found=fetchedFrom?`<li class="done"><i></i><span>Found at /.well-known/irlpls</span><small>${esc(clock(Date.now()))}</small></li>`:`<li class="now"><i></i><span>Serve it at /.well-known/irlpls</span><small>${esc(own||"")}</small></li>`;
+  const next=`<li class="${live?"done":fetchedFrom?"now":"next"}"><i></i><span>Next read by irlpls</span><small>${nx?"by "+esc(new Date(nx).toLocaleString([],{weekday:"short",hour:"2-digit",minute:"2-digit"})):"within a day"}</small></li>`;
+  const last=`<li class="${live?"done":"next"}"><i></i><span>Live on your page</span><small>${live?"since "+esc(dayOf(pe.first_seen)):""}</small></li>`;
+  const btn=(live?`<a class="btn main" href="c/${encodeURIComponent(card.id)}.html">Open your page</a>`:"")+`<button class="btn${live?"":" main"}" type="button" id="pvb" aria-expanded="false" aria-controls="pvw">Preview your page</button>`;
+  h=`<div class="golive"><span class="cap">${ICK}Valid${at?" · "+esc(at):""}</span><h2>${live?"Live on irlpls":fetchedFrom?"Live on irlpls within a day":"Ready to publish"}</h2><p class="s">${live?`Checked ${esc(dayOf(pe.last_read))}. Nothing else to do.`:fetchedFrom?"Nothing else to do.":`Serve it at https://${esc(own||"your-domain")}/.well-known/irlpls.`}</p><ol class="steps">${found}${next}${last}</ol><div class="acts">${btn}</div>`
+   +`<p class="traffic">We log nothing per request, so we can't count your readers. Brokers fetch /.well-known/irlpls with an irlpls User-Agent; your own logs show them.</p></div>`;
+  const rows=D?ranksFor(card,D):[];
+  if(rows.length)h+=`<h3 class="k">Where you'll rank</h3>${ranksHtml(rows)}`;
+  box.innerHTML=h;box.hidden=false;reveal();
+  const b=$("pvb");if(b)b.onclick=()=>{const p=$("pvw"),open=p.hidden;if(open)p.innerHTML=previewHtml(card,at,rows,comp&&comp.status!=="provider-maintained"?comp:null);p.hidden=!open;b.setAttribute("aria-expanded",String(open));b.textContent=open?"Hide the preview":"Preview your page";if(open)p.scrollIntoView({block:"start",behavior:"auto"})};
+  return}
+ box.innerHTML=h;box.hidden=false;reveal()}
+
+/* ?d=<domain>: a bookmarkable status, read from published.json; ?id=<id>: start from the compiled card */
+async function fromUrl(){const q=new URLSearchParams(location.search),d=(q.get("d")||"").trim().toLowerCase().replace(/^https?:\/\//,"").replace(/\/.*$/,""),id=(q.get("id")||"").trim();
+ if(d){$("dom").value=d;const P=await pubs(),[pid,pe]=pubFor(P,d,null);
+  const st=pe?{live:`Live since ${dayOf(pe.first_seen)} · checked ${dayOf(pe.last_read)}`,stale:`Couldn't be read lately · showing the copy from ${dayOf(pe.last_ok)}`}[pe.state]||`${pe.reason||pe.state} · showing the compiled card`:"";
+  $("live").innerHTML=pe?`<div class="golive"><span class="cap${pe.state==="live"?"":" bad"}">${pe.state==="live"?ICK:""}${esc(pe.domain)}</span><h2>${esc(st)}</h2><div class="acts"><a class="btn main" href="c/${encodeURIComponent(pid)}.html">Open your page</a></div></div>`
+   :`<div class="golive"><span class="cap">${esc(d)}</span><h2>Not read yet</h2><p class="s">Press Fetch to check your card. irlpls reads it within a day.</p></div>`;
+  $("live").hidden=false;return}
+ if(/^[a-z0-9][a-z0-9-]{0,63}$/.test(id)){try{const r=await fetch(`cards/${id}.json`);if(!r.ok)throw 0;const t=await r.text(),c=JSON.parse(t);
+  $("json").value=t;const h=hostOf(c.provider_url);if(h)$("dom").value=h;await run(t)}catch(e){}}}
+fromUrl();
+
+$("go").onclick=()=>run($("json").value);
+$("clear").onclick=()=>{$("json").value="";$("out").innerHTML="";proofRun++;$("proof").hidden=true;$("proofs").innerHTML="";$("nopack").hidden=true};
+$("domf").onsubmit=async e=>{e.preventDefault();const v=$("dom").value;
+ $("out").innerHTML='<p class="note">Fetching…</p>';
+ const r=await fetchChecks(v);
+ if(r.text!=null){$("json").value=r.text;await run(r.text,r.url,r.out)}else render(r.out)};
+const dz=$("drop");
+["dragenter","dragover"].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.add("over")}));
+["dragleave","drop"].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.remove("over")}));
+dz.addEventListener("drop",async e=>{const f=e.dataTransfer.files[0];if(f){const t=await f.text();$("json").value=t;run(t)}});
+</script></body></html>

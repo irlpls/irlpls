@@ -1,0 +1,1118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "irlpls Capture Card 2026-10-26 (com.irlpls.capture.card)",
+  "description": "A provider's self-maintained, standardized description of what real-world data it can collect. Claims are the provider's; IRLpls standardizes how they are expressed and evidenced. There is deliberately no overall quality score.",
+  "type": "object",
+  "required": [
+    "capabilities",
+    "capability",
+    "coverage",
+    "delivery",
+    "id",
+    "latency",
+    "licensing",
+    "name",
+    "pricing",
+    "spec_version",
+    "status",
+    "summary",
+    "updated",
+    "verification"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "provider_url": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "sample",
+        "unclaimed",
+        "provider-maintained",
+        "defunct"
+      ],
+      "description": "sample = fictional; unclaimed = compiled from public sources, not confirmed by the provider; provider-maintained = claimed and kept current by the provider; defunct = no longer operating"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "required": [
+        "modalities",
+        "tasks"
+      ],
+      "properties": {
+        "modalities": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "photo",
+              "video",
+              "audio",
+              "aerial",
+              "sensor",
+              "text-report"
+            ]
+          }
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "capture_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Finer kinds of capture, e.g. egocentric, depth, mocap, teleoperation, tactile, multispectral, sar, thermal"
+        }
+      }
+    },
+    "pricing": {
+      "type": "object",
+      "required": [
+        "model",
+        "from_usd",
+        "unit"
+      ],
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "from_usd": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Starting price in USD. 0 means the price is not published (not free; see access.cost)"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "latency": {
+      "type": "object",
+      "required": [
+        "typical",
+        "notes"
+      ],
+      "properties": {
+        "typical": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "regions",
+        "notes"
+      ],
+      "properties": {
+        "regions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        },
+        "areas": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(\\*|[A-Z]{2}(-[A-Z0-9]{1,3})?)$"
+          },
+          "description": "ISO 3166-1 alpha-2 countries or ISO 3166-2 subdivisions covered; [\"*\"] = no country limit stated. Text in regions/notes says how dense."
+        }
+      }
+    },
+    "licensing": {
+      "type": "object",
+      "required": [
+        "summary"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string"
+        },
+        "resale": {
+          "enum": [
+            "allowed",
+            "forbidden"
+          ],
+          "description": "Stated by the provider's terms. Absent = not stated, which a policy treats as not granted."
+        },
+        "ai_training": {
+          "enum": [
+            "allowed",
+            "forbidden"
+          ],
+          "description": "Stated by the provider's terms. Absent = not stated, which a policy treats as not granted."
+        },
+        "buyer_owns_output": {
+          "type": "boolean",
+          "description": "The buyer owns what is delivered (stated in the terms)"
+        },
+        "vendor_trains_on_data": {
+          "enum": [
+            "yes",
+            "no",
+            "unless_opted_out"
+          ],
+          "description": "Whether the provider may train its own models on your data and deliverables"
+        },
+        "terms": {
+          "type": "object",
+          "description": "Plain licence facts (as OpenAQ publishes them); absent = not stated",
+          "properties": {
+            "commercial_use": {
+              "type": "boolean"
+            },
+            "redistribution": {
+              "type": "boolean"
+            },
+            "attribution_required": {
+              "type": "boolean"
+            },
+            "share_alike": {
+              "type": "boolean"
+            },
+            "modification": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "description": "Exactly seven guarantees, one entry each. level: none | claimed | evidenced. Every entry must say what remains uncertain.",
+      "required": [
+        "human",
+        "application",
+        "camera",
+        "time",
+        "location",
+        "content",
+        "corroboration"
+      ],
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "level",
+          "unknown"
+        ],
+        "properties": {
+          "level": {
+            "enum": [
+              "none",
+              "claimed",
+              "evidenced"
+            ]
+          },
+          "method": {
+            "type": "string"
+          },
+          "evidence_url": {
+            "type": "string",
+            "description": "Public proof anyone can check: https, public host (not an RFC 6890 special-purpose address), no login. Reachability and host class are not schema-checkable (Section 3)."
+          },
+          "unknown": {
+            "type": "string"
+          },
+          "standard": {
+            "enum": [
+              "c2pa"
+            ],
+            "description": "The provenance standard that makes this guarantee checkable"
+          },
+          "assurance_level": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "C2PA conformance assurance level of the signing product"
+          },
+          "attestation_methods": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "C2PA attestation strings, e.g. Android_KeyAttestation, Apple_AppAttest"
+          },
+          "conforming_product": {
+            "type": "string",
+            "description": "Entry on the C2PA Conforming Products List"
+          }
+        },
+        "if": {
+          "properties": {
+            "level": {
+              "const": "evidenced"
+            }
+          },
+          "required": [
+            "level"
+          ]
+        },
+        "then": {
+          "required": [
+            "method",
+            "evidence_url"
+          ],
+          "properties": {
+            "evidence_url": {
+              "pattern": "^https://"
+            }
+          }
+        }
+      },
+      "propertyNames": {
+        "enum": [
+          "human",
+          "application",
+          "camera",
+          "time",
+          "location",
+          "content",
+          "corroboration"
+        ]
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Optional (Section 2.2, 3): how the result is tracked after capture. custody: a record of who held it, with which hash, when (stage 'Tracked in transit'); receipt: a signed statement over what was delivered (stage 'Delivered to you'). An absent entry counts as not stated.",
+      "additionalProperties": false,
+      "properties": {
+        "custody": {
+          "type": "object",
+          "required": [
+            "level",
+            "method",
+            "unknown"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "level": {
+              "enum": [
+                "claimed",
+                "evidenced"
+              ],
+              "description": "claimed: the provider states the mechanism; evidenced: anyone can check it at evidence_url. Absent means not stated (no)."
+            },
+            "method": {
+              "type": "string",
+              "description": "What the mechanism records and who signs or keeps it"
+            },
+            "evidence_url": {
+              "type": "string",
+              "description": "Public proof anyone can check: https, public host, no login. Required when level is evidenced (Section 3)."
+            },
+            "unknown": {
+              "type": "string",
+              "description": "What the mechanism does not show, in plain words"
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "claim",
+                  "url"
+                ],
+                "properties": {
+                  "claim": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "if": {
+            "properties": {
+              "level": {
+                "const": "evidenced"
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "required": [
+              "evidence_url"
+            ],
+            "properties": {
+              "evidence_url": {
+                "pattern": "^https://"
+              }
+            }
+          }
+        },
+        "receipt": {
+          "type": "object",
+          "required": [
+            "level",
+            "method",
+            "unknown"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "level": {
+              "enum": [
+                "claimed",
+                "evidenced"
+              ],
+              "description": "claimed: the provider states the mechanism; evidenced: anyone can check it at evidence_url. Absent means not stated (no)."
+            },
+            "method": {
+              "type": "string",
+              "description": "What the mechanism records and who signs or keeps it"
+            },
+            "evidence_url": {
+              "type": "string",
+              "description": "Public proof anyone can check: https, public host, no login. Required when level is evidenced (Section 3)."
+            },
+            "unknown": {
+              "type": "string",
+              "description": "What the mechanism does not show, in plain words"
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "claim",
+                  "url"
+                ],
+                "properties": {
+                  "claim": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "if": {
+            "properties": {
+              "level": {
+                "const": "evidenced"
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "required": [
+              "evidence_url"
+            ],
+            "properties": {
+              "evidence_url": {
+                "pattern": "^https://"
+              }
+            }
+          }
+        }
+      }
+    },
+    "updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "freshness": {
+      "type": "object",
+      "description": "How old delivered observations can be. on_demand = captured after you ask; live = continuously reported; archive = already collected.",
+      "properties": {
+        "mode": {
+          "enum": [
+            "on_demand",
+            "live",
+            "archive",
+            "mixed"
+          ]
+        },
+        "typical_age": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "api": {
+      "type": "object",
+      "description": "How an agent calls the provider. Facts only from the provider's public docs.",
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "docs_url": {
+          "type": "string"
+        },
+        "base_url": {
+          "type": "string"
+        },
+        "auth": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "enum": [
+                  "none",
+                  "api_key_header",
+                  "api_key_query",
+                  "bearer",
+                  "oauth2",
+                  "basic",
+                  "other"
+                ]
+              },
+              "header": {
+                "type": "string"
+              },
+              "env_var": {
+                "type": "string",
+                "description": "Env var the irlpls adapter reads, e.g. PURPLEAIR_API_KEY"
+              },
+              "how_to_get": {
+                "type": "string"
+              },
+              "resource_metadata": {
+                "type": "string",
+                "description": "oauth2: RFC 9728 protected-resource metadata URL"
+              },
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "dynamic_registration": {
+                "type": "boolean",
+                "description": "oauth2: the provider offers RFC 7591 dynamic client registration. Deprecated for MCP clients by the MCP specification 2026-07-28 (basic/authorization/client-registration) in favour of Client ID Metadata Documents (cimd); kept so cards can state it"
+              },
+              "cimd": {
+                "type": "boolean",
+                "description": "oauth2: the provider accepts MCP Client ID Metadata Documents (client_id_metadata_document_supported), so an agent identifies itself by a URL with no registration step and the person signs in once. The way the MCP specification 2026-07-28 recommends"
+              },
+              "pkce": {
+                "enum": [
+                  "S256",
+                  "plain"
+                ],
+                "description": "oauth2: PKCE code_challenge_method the provider supports (a string, not a boolean)"
+              },
+              "transport": {
+                "enum": [
+                  "rest",
+                  "mcp"
+                ]
+              }
+            }
+          },
+          "description": "Every way to authenticate, best for agents first"
+        },
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "action",
+              "method",
+              "path"
+            ],
+            "properties": {
+              "action": {
+                "enum": [
+                  "search",
+                  "order",
+                  "quote",
+                  "status",
+                  "fetch",
+                  "list"
+                ]
+              },
+              "method": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "params": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "sdk": {
+          "type": "string"
+        },
+        "rate_limits": {
+          "type": "string"
+        },
+        "self_serve": {
+          "type": "boolean",
+          "description": "Can a developer sign up and call it without talking to sales"
+        },
+        "mcp": {
+          "type": "object",
+          "description": "The provider's MCP server, if any",
+          "properties": {
+            "remote": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "registry_name": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Name in the official MCP Registry"
+            },
+            "auth": {
+              "type": "string"
+            },
+            "first_party": {
+              "type": "boolean"
+            },
+            "community": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "notes": {
+          "type": "string"
+        },
+        "openapi_url": {
+          "type": "string",
+          "description": "The provider's OpenAPI document, if published"
+        }
+      }
+    },
+    "adapter": {
+      "type": "string",
+      "description": "Name of the irlpls SDK adapter, if one exists"
+    },
+    "delivery": {
+      "type": "object",
+      "description": "IRLpls only lists NEW data. live = observations reporting now that you can pull within minutes; commission = you specify a capture and the provider goes and makes it. Archive-only providers have no modes and are not matched.",
+      "required": [
+        "modes",
+        "speed",
+        "basis"
+      ],
+      "properties": {
+        "modes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "live",
+              "commission"
+            ]
+          }
+        },
+        "speed": {
+          "enum": [
+            "minutes",
+            "hours",
+            "days",
+            "weeks",
+            "unknown"
+          ],
+          "description": "Coarse time from request to delivered data, only as stated by the provider"
+        },
+        "basis": {
+          "type": "string",
+          "description": "The provider statement the speed is based on"
+        },
+        "formats": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Delivery formats, e.g. jpeg, mp4, geotiff, cog, stac-item, lerobot, rlds, csv, json"
+        }
+      }
+    },
+    "attestations": {
+      "type": "array",
+      "description": "Independent third parties who have checked this provider's claims. IRLpls lists them; it does not verify anything itself.",
+      "items": {
+        "type": "object",
+        "required": [
+          "verifier",
+          "scope",
+          "url"
+        ],
+        "properties": {
+          "verifier": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string",
+            "description": "Which guarantee(s) or claim was checked"
+          },
+          "result": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "spec_version": {
+      "const": "2026-10-26",
+      "description": "Date version of the standard this card follows"
+    },
+    "short": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "One plain sentence for lists and the top of the card"
+    },
+    "access": {
+      "type": "object",
+      "description": "How a developer gets in. cost: free (no key) | free with key | freemium | paid | quote. tested_live: the date an irlpls health check last got real data back from it, if ever.",
+      "properties": {
+        "cost": {
+          "enum": [
+            "free",
+            "free with key",
+            "freemium",
+            "paid",
+            "quote"
+          ]
+        },
+        "key_required": {
+          "type": "boolean"
+        },
+        "tested_live": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "automation_allowed": {
+          "type": "boolean",
+          "description": "The provider's terms allow agents/automation to use the API. false rules the provider out for agents."
+        },
+        "gate": {
+          "enum": [
+            "none",
+            "approval",
+            "contract",
+            "enterprise"
+          ],
+          "description": "What stands between sign-up and the first call"
+        },
+        "rate_limit": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "requests": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Requests allowed per window (with per_seconds)"
+            },
+            "per_seconds": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Window length in seconds (60 = per minute, 3600 = per hour, 86400 = per day)"
+            },
+            "scope": {
+              "enum": [
+                "per-key",
+                "per-ip",
+                "per-account",
+                "global",
+                "unknown"
+              ],
+              "description": "What the provider counts against"
+            },
+            "burst": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Requests allowed back to back, if the provider states it"
+            },
+            "batch_max": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Most items (sites, stations, ids) one request may ask for, if stated"
+            },
+            "cache_seconds": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "How long one reading stays current: the provider's stated update interval. Identical asks inside it should reuse the reading"
+            },
+            "notes": {
+              "type": "string",
+              "maxLength": 400
+            },
+            "source_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "Where the provider states this limit (required in spirit: never invent a number)"
+            },
+            "with_key": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "requests": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Requests allowed per window (with per_seconds)"
+                },
+                "per_seconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Window length in seconds (60 = per minute, 3600 = per hour, 86400 = per day)"
+                },
+                "scope": {
+                  "enum": [
+                    "per-key",
+                    "per-ip",
+                    "per-account",
+                    "global",
+                    "unknown"
+                  ],
+                  "description": "What the provider counts against"
+                },
+                "burst": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Requests allowed back to back, if the provider states it"
+                },
+                "batch_max": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Most items (sites, stations, ids) one request may ask for, if stated"
+                },
+                "cache_seconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "How long one reading stays current: the provider's stated update interval. Identical asks inside it should reuse the reading"
+                },
+                "notes": {
+                  "type": "string",
+                  "maxLength": 400
+                },
+                "source_url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Where the provider states this limit (required in spirit: never invent a number)"
+                }
+              },
+              "dependentRequired": {
+                "requests": [
+                  "per_seconds"
+                ],
+                "per_seconds": [
+                  "requests"
+                ]
+              },
+              "description": "The limit when the caller sends its own key, if different"
+            }
+          },
+          "dependentRequired": {
+            "requests": [
+              "per_seconds"
+            ],
+            "per_seconds": [
+              "requests"
+            ]
+          },
+          "description": "Optional. The provider's published rate limit and fair-use terms for the tier a keyless or default caller gets. Only stated numbers, each with source_url; leave it out (or omit a field) when the provider publishes none. Brokers pace calls to stay under it (Section 2.5)."
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "description": "Public sources for the card's claims; required in spirit for unclaimed cards (every claim cited)",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim",
+          "url"
+        ],
+        "properties": {
+          "claim": {
+            "type": "string",
+            "description": "What the source supports"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "capability": {
+      "const": "com.irlpls.capture.card",
+      "description": "The capability name this document implements. A provider that runs UCP lists it in /.well-known/ucp with config.card pointing here."
+    },
+    "expires": {
+      "type": "string",
+      "format": "date",
+      "description": "After this date a card is stale and matchers skip it. At most a year after updated."
+    },
+    "payment": {
+      "type": "object",
+      "description": "How a buyer pays the provider directly. irlpls never handles money.",
+      "properties": {
+        "methods": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "card",
+              "hosted_checkout",
+              "prepaid_balance",
+              "invoice",
+              "x402",
+              "mpp",
+              "ucp_checkout",
+              "acp_checkout",
+              "crypto"
+            ]
+          }
+        },
+        "agent_rails": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "x402",
+              "mpp",
+              "spt",
+              "link_card",
+              "card_on_file_api"
+            ]
+          },
+          "description": "Agent payment rails the provider accepts, from its public docs: x402 (HTTP 402 stablecoin), mpp (Machine Payments Protocol), spt (Stripe shared payment token), link_card (a one-time card from Stripe Link), card_on_file_api (the API charges the person's stored card or balance method). Absent means not stated"
+        },
+        "agent_can_pay": {
+          "type": "boolean",
+          "description": "An agent can pay on its own within limits (e.g. x402, MPP, a prepaid balance it can top up)"
+        },
+        "prepaid": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "account": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Opening an account with the provider, from its public docs and terms. Every member is optional; absent means not stated",
+      "properties": {
+        "headless_signup": {
+          "type": "boolean",
+          "description": "An agent can create the account through the API, with no web form"
+        },
+        "kyc": {
+          "enum": [
+            "none",
+            "email",
+            "id",
+            "business"
+          ],
+          "description": "The strongest check on the buyer before a first order: none, an email, a government ID, or a business verification"
+        },
+        "agent_may_act": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "allowed",
+            "source_url"
+          ],
+          "description": "Whether the provider's terms or docs let an AI agent act or post for the person, with where they say so",
+          "properties": {
+            "allowed": {
+              "type": "boolean"
+            },
+            "source_url": {
+              "type": "string",
+              "pattern": "^https://"
+            },
+            "quote": {
+              "type": "string",
+              "maxLength": 300,
+              "description": "The provider's words, short"
+            }
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "capture": {
+      "type": "object",
+      "description": "Who or what makes the capture",
+      "properties": {
+        "by": {
+          "enum": [
+            "people",
+            "contributors",
+            "devices",
+            "subject"
+          ],
+          "description": "people = the provider's own workers or pilots; contributors = a crowd that captures on its own initiative; devices = sensors, cameras, satellites, dashcams; subject = the person at the place takes it from a link"
+        },
+        "consent": {
+          "type": "object",
+          "description": "For people-based capture: how the people captured (and bystanders) consent",
+          "properties": {
+            "documented": {
+              "type": "boolean",
+              "description": "The provider publishes how consent is obtained"
+            },
+            "method": {
+              "type": "string"
+            },
+            "evidence_url": {
+              "type": "string",
+              "pattern": "^https://"
+            },
+            "unknown": {
+              "type": "string"
+            }
+          }
+        },
+        "worker_pay": {
+          "type": "object",
+          "description": "For people-based capture: how the people doing the work are paid",
+          "properties": {
+            "model": {
+              "type": "string",
+              "description": "e.g. per task set by the buyer, hourly minimum, fixed rate card"
+            },
+            "disclosed": {
+              "type": "boolean",
+              "description": "Pay rates are published"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "requester": {
+      "type": "object",
+      "description": "What the provider checks about who is commissioning (matters when a person is sent to a place)",
+      "properties": {
+        "checks": {
+          "type": "string"
+        },
+        "unknown": {
+          "type": "string"
+        }
+      }
+    },
+    "providers": {
+      "type": "array",
+      "description": "Who does what, in STAC's terms: the producer captures, a licensor sets terms, a reseller sells another's data, a host serves it",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "roles"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "producer",
+                "licensor",
+                "processor",
+                "host",
+                "reseller"
+              ]
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$id": "https://irlpls.com/2026-10-26/schemas/capture-card.json",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unclaimed"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "sources"
+        ],
+        "properties": {
+          "sources": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

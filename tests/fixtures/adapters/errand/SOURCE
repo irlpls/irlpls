@@ -1,0 +1,2 @@
+public_coverage.json: live GET https://errand.be/api/public/coverage?lat=37.4979&lng=127.0276&radius_m=3000 on 2026-10-28 (keyless, recorded once).
+quote.json, dispatch_created.json, dispatch_completed.json, result.json: fixture: documented-shape, copied from the examples on https://errand.be/docs (QUOTE, DISPATCH, RESULT sections); never called.

@@ -1,0 +1,52 @@
+{
+  "_fixture": "documented-shape",
+  "_source": "https://platform.toloka.ai/api/v2-beta/doc GET /api/v2-beta/runs/{runId}/items",
+  "response": {
+    "items": [
+      {
+        "id": "ri-0",
+        "runId": "run-42",
+        "datasetItemId": "di-0",
+        "index": 0,
+        "createdAt": "2026-10-28T10:00:00Z",
+        "updatedAt": "2026-10-28T12:00:00Z",
+        "state": {
+          "status": "completed",
+          "startedAt": "2026-10-28T10:05:00Z",
+          "finishedAt": "2026-10-28T11:40:00Z",
+          "error": null,
+          "input": {
+            "revisionId": "in-0"
+          },
+          "output": {
+            "revisionId": "out-0"
+          }
+        }
+      },
+      {
+        "id": "ri-1",
+        "runId": "run-42",
+        "datasetItemId": "di-1",
+        "index": 1,
+        "createdAt": "2026-10-28T10:00:00Z",
+        "updatedAt": "2026-10-28T12:00:00Z",
+        "state": {
+          "status": "failed",
+          "startedAt": "2026-10-28T10:05:00Z",
+          "finishedAt": null,
+          "error": null,
+          "input": {
+            "revisionId": "in-1"
+          },
+          "output": null
+        }
+      }
+    ],
+    "pagination": {
+      "total": 2,
+      "limit": 100,
+      "offset": 0,
+      "hasMore": false
+    }
+  }
+}

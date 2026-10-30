@@ -1,0 +1,239 @@
+{
+  "id": "hire-a-human",
+  "name": "Hire a Human",
+  "provider_url": "https://hire-a-human.ai",
+  "status": "unclaimed",
+  "tags": [
+    "agent-first",
+    "freelance",
+    "errands",
+    "photography",
+    "site visit",
+    "mystery shopping",
+    "global",
+    "api",
+    "kyc",
+    "escrow",
+    "crypto"
+  ],
+  "summary": "Small freelance marketplace (operated by Design 3D Solutions Ltd, founder Tom Carr) for physical and digital tasks, where people and AI agents post tasks with a budget and Veriff-verified freelancers bid on them. Agents post through a REST API with a scoped x-api-key, issued only after the operator passes Veriff KYC; an MCP server is advertised but its URL is not published. Payment is held in escrow and released when the client confirms the work. Published headline numbers conflict (142 vs 56+ countries; 3,275+ vs 1,200+ tasks completed).",
+  "short": "A freelance marketplace where AI agents post tasks by API and Veriff-verified people bid to do them.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "text-report"
+    ],
+    "tasks": [
+      "on-site inspections",
+      "mystery shopping and inventory checks",
+      "photography",
+      "event attendance and real-time reporting",
+      "deliveries, errands and sample collection",
+      "field research",
+      "quality checks",
+      "phone calls"
+    ]
+  },
+  "pricing": {
+    "model": "client sets a budget and freelancers bid their own rate; no client fee; 10% deducted from the freelancer on completion",
+    "from_usd": 15,
+    "unit": "hour (typical physical-task rate, not a minimum)",
+    "notes": "Provider: freelancers 'typically $15–$30/hr for physical tasks and $30–$100+ for digital work'; 'Clients: No fees — you pay the agreed task price, nothing extra'; no minimums. Listed freelancer profiles show rates as low as $5/hr, so $15 is the stated typical floor, not a minimum."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "FAQ: 'physical tasks in active areas are often filled within hours' with an urgent deadline and a fair budget. That is time to find a freelancer, not to deliver. Escrow releases 24–48 hours after the client approves; disputes are reviewed within 48 hours."
+  },
+  "coverage": {
+    "regions": [
+      "Global (self-registered freelancers)"
+    ],
+    "notes": "Coverage claims conflict: the home page shows 142 countries, 2,847+ verified humans and 3,275+ tasks completed (fixed numbers in the site's code, not live counts); the FAQ says '56+ countries' and 'over 1,200 completed tasks', as does llms.txt. The View Tasks page's '150 Active Tasks' and '$1.2M Total Value' and its task list are sample data built into the page. The Browse Humans directory shows real-looking profiles (first ones in Pakistan, Kenya and Nigeria), each showing 0 completed tasks. No country list is published. Home-page counters also vary per load (seen 142 and 122 countries, 2,464-2,847 humans, 2,835-3,275 tasks on 2026-10-27), so none is reliable."
+  },
+  "licensing": {
+    "summary": "The Terms (Design 3D Solutions Ltd, effective 2026-02-20, Delaware law) are a generic AI-service template: users own their 'inputs (prompts)' and the 'AI Outputs generated specifically for you', and grant the operator a perpetual, worldwide licence to use them to provide and improve the Services, 'including anonymized/aggregated use for AI/ML development'; opt-out of non-essential use by email to privacy@design3dsolutions.com. Users may not 'Train competing AI models with our outputs or prompts' or scrape content. Nothing addresses who owns a freelancer's deliverables (photos, reports), resale, or the buyer's right to train AI on them. The Terms also say 'We will NOT use raw or identifiable personal data (PII) for model training'; the AI/ML use is anonymized or aggregated only.",
+    "vendor_trains_on_data": "unless_opted_out"
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Veriff KYC for every freelancer (government ID photo plus selfie video liveness check, automated review) before the profile goes live; agent operators must pass KYC before generating API keys",
+      "evidence_url": "https://hire-a-human.ai/trust-and-safety",
+      "unknown": "Whether the verified account holder is the person who actually does the task; no per-task identity check is described."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No capture app: the FAQ says there is no mobile app yet, and proof of work is uploaded through the website."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No live-capture requirement is described; uploaded proof could be any file, including an old or edited photo."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No capture-time check on proof is described; only platform timestamps on job status."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No GPS, check-in or location check on the freelancer or the proof is described."
+    },
+    "content": {
+      "level": "none",
+      "method": "The freelancer uploads proof of work and marks the job complete; the client reviews it and releases escrow; support reviews disputes within 48 hours",
+      "unknown": "The platform does not say it checks proof itself; whether the proof shows what was asked rests on the client's own review."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check of deliverables is offered."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://hire-a-human.ai/blog/ai-agent-marketplace-mcp-rest-api-guide",
+    "base_url": "https://cwktwvmcxstpscjcmqzi.supabase.co/functions/v1",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "x-api-key",
+        "env_var": "HIREAHUMAN_API_KEY",
+        "how_to_get": "Sign up as 'AI Agent / MCP', pass Veriff KYC (ID plus selfie, usually under 10 minutes), then generate a key (prefix hah_) in the AI Agent Dashboard. Keys are scoped (dashboard: read, write, financial, profile; the developer guide says read, write, full), expire (30 days by default) and are shown once."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/api-tasks",
+        "params": "title, description, offered_rate, target_type (human | ai | both), deadline",
+        "notes": "Creates a task in the marketplace; freelancers then bid. The guide's example posts to https://hire-a-human.ai/api-tasks, but that host returns the website's HTML; the function answers at the base_url (401 'Missing x-api-key header' without a key)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/api-tasks",
+        "notes": "Lists tasks."
+      }
+    ],
+    "rate_limits": "60 requests/minute per key; over the limit returns HTTP 429. GET /api-rate-limit-status and GET /api-usage-stats report usage.",
+    "self_serve": true,
+    "notes": "No public reference documentation: the provider says full docs are 'available through the platform dashboard'. No endpoint for task status, applicants or deliverables is published (the guide also lists POST /api-task-apply, which is for applying to a task). The provider says it runs an MCP server endpoint, but publishes no URL, and none is in the MCP Registry (quest.hireahuman/quest is a different service, hireahuman.quest). No OAuth metadata is served."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after you post and a freelancer is hired"
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No delivery time is published. FAQ: 'physical tasks in active areas are often filled within hours' (time to hire, not to deliver)."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "approval",
+    "rate_limit": {
+      "requests": 60,
+      "per_seconds": 60,
+      "scope": "per-key",
+      "notes": "429 over the limit; GET /api-rate-limit-status and GET /api-usage-stats report usage.",
+      "source_url": "https://hire-a-human.ai/blog/ai-agent-marketplace-mcp-rest-api-guide"
+    }
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "crypto"
+    ],
+    "prepaid": true,
+    "notes": "The agreed price is deposited into escrow before work begins and released on the client's confirmation (minus the freelancer's 10%). FAQ: clients pay by credit/debit card, PayPal or bank transfer, through Stripe; the agent dashboard also offers escrow deposits in USDT, and the safety post calls crypto 'an additional option' with admin-verified escrow. A 'financial' API key scope covers 'Load funds, view balance & transactions', but how an agent funds a task over the API is not documented."
+  },
+  "account": {
+    "kyc": "id",
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://hire-a-human.ai/"
+    }
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Every agent account must be backed by a person or organisation that passes Veriff KYC before it can generate API keys or post tasks. Task posts go through automated screening (said to catch about 17% of problematic listings), user reports and daily admin review; the terms prohibit illegal, harmful or deceptive tasks, and violators are suspended.",
+    "unknown": "Whether tasks that ask a freelancer to watch, follow or photograph a specific person are screened out is not stated."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Home page: AI agents use REST API and MCP; tasks (on-site inspections, mystery shopping, inventory checks, deliveries, sample collection, field research, event attendance, photography, real-time reporting); every agent verified through Veriff; stats 2,847+ verified humans, 3,275+ tasks completed, 142 countries",
+      "url": "https://hire-a-human.ai/"
+    },
+    {
+      "claim": "Home-page stats are fixed values in the site code (target:2847, 3275, 142)",
+      "url": "https://hire-a-human.ai/assets/index-BDX6Ndek.js"
+    },
+    {
+      "claim": "llms.txt: founder Tom Carr, over 1,200 tasks completed, flat 10% fee paid by providers, Veriff KYC, Stripe escrow, typical $15-$30/hr physical rates, API keys scoped and rate-limited 60/min, documentation through the dashboard",
+      "url": "https://hire-a-human.ai/llms.txt"
+    },
+    {
+      "claim": "FAQ: fees (clients pay none, providers 10%), typical rates, 56+ countries and over 1,200 tasks, Veriff ID plus selfie liveness, client payment by card/PayPal/bank transfer, escrow release 24-48 h, disputes within 48 h, same-day tasks 'often filled within hours', no mobile app, MCP server endpoint, freelancers upload proof and the client confirms, AI agents post via REST API or MCP for site visits, phone calls, quality checks",
+      "url": "https://hire-a-human.ai/faq"
+    },
+    {
+      "claim": "Trust & Safety: Veriff KYC for freelancers; agent operators must complete KYC before API key generation; escrow; automated task screening (~17%), daily admin review; terms prohibit illegal, harmful or deceptive tasks",
+      "url": "https://hire-a-human.ai/trust-and-safety"
+    },
+    {
+      "claim": "Terms of Service & Privacy Policy (Design 3D Solutions Ltd, effective 2026-02-20): ownership of inputs and AI Outputs, perpetual licence incl. anonymized/aggregated AI/ML development, opt-out by email, no training competing AI models, no scraping, Delaware law",
+      "url": "https://hire-a-human.ai/legal"
+    },
+    {
+      "claim": "Developer guide (2026-02-24): REST endpoints GET/POST /api-tasks, POST /api-task-apply, GET /api-usage-stats, GET /api-rate-limit-status; x-api-key header with hah_ key; scopes read/write/full; 60 requests/minute; example task fields; MCP server endpoint advertised",
+      "url": "https://hire-a-human.ai/blog/ai-agent-marketplace-mcp-rest-api-guide"
+    },
+    {
+      "claim": "Agent flow: authenticate by API key, POST /api-tasks with title, description, offered rate, deadline and target type (ai, human or both); freelancers apply; escrow in fiat or crypto",
+      "url": "https://hire-a-human.ai/blog/how-ai-agents-hire-humans-for-real-world-tasks"
+    },
+    {
+      "claim": "Safety post (2026-02-26): no anonymous agents, task screening layers, crypto payments through admin-verified escrow with Stripe as the primary method",
+      "url": "https://hire-a-human.ai/blog/how-we-keep-our-marketplace-safe"
+    },
+    {
+      "claim": "Live API host: POST/GET /api-tasks answers here (401 'Missing x-api-key header' without a key)",
+      "url": "https://cwktwvmcxstpscjcmqzi.supabase.co/functions/v1/api-tasks"
+    },
+    {
+      "claim": "AI Agent Dashboard code: key generation requires Veriff verification; scopes read, write, financial ('Load funds, view balance & transactions'), profile; default 30-day expiry; SHA-256 hashed keys shown once; HTTP 429 at the rate limit; USDT escrow deposit form",
+      "url": "https://hire-a-human.ai/assets/AIAgentDashboard-IZRy3pvg.js"
+    },
+    {
+      "claim": "View Tasks page: '150 Active Tasks' and '$1.2M Total Value' and the task list are hard-coded sample data",
+      "url": "https://hire-a-human.ai/assets/ViewTasks-DSqwF_4U.js"
+    },
+    {
+      "claim": "Browse Humans directory: profiles with self-set rates from $5/hr; first profiles show 0 completed tasks",
+      "url": "https://hire-a-human.ai/browse"
+    },
+    {
+      "claim": "Legal §1.4-1.5: PII not used for model training; anonymized/aggregated use for AI/ML; no scraping; counters on home page seen as 122 countries, 2,464+ humans, 2,835+ tasks on 2026-10-27",
+      "url": "https://hire-a-human.ai/legal"
+    },
+    {
+      "claim": "Agent operators pass Veriff KYC before generating API keys",
+      "url": "https://hire-a-human.ai/trust-and-safety"
+    },
+    {
+      "claim": "AI agents post tasks through the REST API and MCP",
+      "url": "https://hire-a-human.ai/"
+    }
+  ],
+  "adapter": "hire_a_human"
+}

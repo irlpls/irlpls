@@ -1,0 +1,5 @@
+{"status": "completed", "share_url": "https://errand.be/r/abc", "verdict": {"passed": true, "score": 0.95, "feedback": "ok"},
+ "answers": {"wait_count": 12},
+ "evidence": {"photo_urls": ["https://storage.errand.be/signed/p1.jpg?token=x"], "gps": {"lat": 37.4980, "lng": 127.0275, "accuracy_m": 8},
+              "distance_from_task_m": 14, "captured_at": "2026-09-08T14:12:33+09:00",
+              "checks": {"distance_m": 14, "capture_age_min": 1.2, "exif_gps_present": true, "failures": []}}}

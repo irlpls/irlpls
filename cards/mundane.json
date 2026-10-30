@@ -1,0 +1,371 @@
+{
+  "id": "mundane",
+  "name": "Mundane",
+  "provider_url": "https://mundane.market",
+  "status": "unclaimed",
+  "adapter": "mundane",
+  "tags": [
+    "agent-native",
+    "api",
+    "check-in",
+    "errand",
+    "escrow",
+    "human task",
+    "id-verified workers",
+    "interactive",
+    "local inspection",
+    "mcp",
+    "oauth",
+    "photo evidence",
+    "proof of presence",
+    "queue",
+    "typed proof"
+  ],
+  "summary": "Agent-to-human marketplace (\"v0.1 prototype\", terms v0.2, early access) run by Mundane, Inc. An AI agent searches for nearby workers who passed a Stripe Identity ID and selfie check, posts a task that is screened against an Acceptable Use Policy, offers it to one worker, and holds the pay plus fee in escrow from a prepaid USD wallet until it accepts the proof. Each capability has typed proof requirements (photo, geo check-in, confirmation code, signature). Callable through a REST API, a hosted MCP server with 38 tools (bearer key) or the mundane-mcp stdio package; an agent gets a key by self-serve API signup. Interactive tasks let the agent see still frames from the worker's phone camera and guide them live.",
+  "short": "Agent-to-human marketplace: ID-verified people do photo checks, errands and queues; escrow.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "text-report"
+    ],
+    "tasks": [
+      "photo documentation: visit a location and take photos meeting stated criteria (photo, geo check-in by default)",
+      "in-person errand: pickup, drop-off, brief in-person interaction (photo, confirmation code, geo check-in)",
+      "delivery pickup: pick up an item and deliver it to a named recipient (photo, geo check-in, signature)",
+      "wait in line and obtain a stamped or signed token (photo, confirmation code)",
+      "check something in person: is it open, is it in stock, what does the notice say",
+      "interactive task: still frames from the worker's phone camera while the agent guides them live",
+      "chained jobs: 2-5 workers in turn with an item handed on at each step",
+      "skilled trade work listed by workers"
+    ]
+  },
+  "pricing": {
+    "model": "worker's own ask rate per task, plus a platform fee of the lesser of 5% of the worker amount or $5.00",
+    "from_usd": 0,
+    "unit": "task (price set by the worker's ask rate and the agent's offer)",
+    "notes": "from_usd 0 because there is no published price: each worker sets a per-task ask rate and an offer must be at or above it (interactive tasks: at least the worker's interactive rate). The platform fee is added on top and disclosed in the offer response. A cancellation after a worker accepts can owe the worker a fee, disclosed on cancelling. Searching for workers is free (needs a key, no funded wallet). In disputes Mundane keeps the platform fee. USD only."
+  },
+  "latency": {
+    "typical": "Not stated; set by the task deadline and whether a nearby worker accepts the offer",
+    "notes": "The provider says of offers to workers: \"Not yet, in most places. Mundane is new\", and the Terms guarantee no minimum number of offers. Offers expire after 24 hours by default (minimum 5 minutes). The only published run is a founder demo (Austin, 9 August 2026) in which the founder was both requester and worker: posted to completed in about 55 minutes. After submission the agent reviews proof; a rejection goes to Mundane's human review queue. Proof photo images are deleted 30 days after upload once the task is settled, so fetch them before then."
+  },
+  "coverage": {
+    "regions": [
+      "United States",
+      "United Kingdom",
+      "Canada",
+      "Switzerland",
+      "European Economic Area"
+    ],
+    "notes": "Workers can sign up in the US, UK, Canada, Switzerland and the EEA (\"the places where Stripe can both verify ID and pay out\"). No worker counts are published, and the provider says offers are rare \"in most places\"; an empty search is a normal result. The EEA is expanded in areas to its 30 member countries.",
+    "areas": [
+      "US",
+      "GB",
+      "CA",
+      "CH",
+      "AT",
+      "BE",
+      "BG",
+      "HR",
+      "CY",
+      "CZ",
+      "DK",
+      "EE",
+      "FI",
+      "FR",
+      "DE",
+      "GR",
+      "HU",
+      "IE",
+      "IT",
+      "LV",
+      "LT",
+      "LU",
+      "MT",
+      "NL",
+      "PL",
+      "PT",
+      "RO",
+      "SK",
+      "SI",
+      "ES",
+      "SE",
+      "IS",
+      "LI",
+      "NO"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms (v0.2; the page header says last updated 20 October 2026 but its footer says 10 July 2026): users keep any ownership they have in submitted content, including worker proof, and grant Mundane a nonexclusive, worldwide, royalty-free licence to host, copy, process and display it \"only as reasonably needed to provide, secure, support, and improve the service and comply with law\". The Terms do not say whether the requester gets ownership, resale or AI-training rights in a worker's proof photos, and do not mention AI or ML training. On a task posted as shareable, the worker licenses Mundane and the requester to publish up to six proof photos in a public Conclave page, without the worker's name or exact location. For interactive tasks the agent and principal \"may keep copies\" of frames but must not use them to identify, track or profile anyone. The AUP limits photography to public or permission-granted spaces with no specific identifiable individuals as subjects."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Every worker passes Stripe Identity (government-ID document check plus liveness-matched selfie) and an 18+ age check before accepting a paid task; a keyed one-way value from verified name and date of birth flags duplicate or ban-evasion accounts for human review",
+      "evidence_url": "https://mundane.market/policies/terms",
+      "unknown": "The check binds an account to a verified person, not a task: nothing documented shows the verified person is the one who did the work. The provider says verification \"is not a guarantee of a person's qualifications, reliability, or conduct\". No public proof per worker or task."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Workers use a web app; no app or device attestation is documented, and whether proof photos must be taken in-app rather than uploaded from the gallery is not stated"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Interactive tasks only: the agent receives still frames from the worker's phone camera while the worker is live (never video), on a cadence it sets or on demand. Opt-in per task and per worker. Ordinary proof photos are uploads; no live-capture requirement is documented for them. Frames and proof photos are re-encoded without camera metadata. Whether a virtual camera or a photographed screen would be detected is not addressed."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "The server records task events (worker accepted, chat message, completion submitted) in an event feed, and the task record shows when proof was submitted; interactive frames arrive while the worker is live",
+      "evidence_url": "https://raw.githubusercontent.com/sttruji/mundane-mcp/main/README.md",
+      "unknown": "Capture time of uploaded proof photos is not documented, and their camera metadata is stripped on upload; timestamps are not signed"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Typed proof: geo_checkin is an unwaivable floor for in-person errands and delivery pickups and a default (waivable) for photo documentation; optional request_live_location shares the worker's live position during the task's active window only",
+      "evidence_url": "https://raw.githubusercontent.com/sttruji/mundane-mcp/main/src/mcp_server/server.py",
+      "unknown": "How a geo check-in is taken, what radius passes, and resistance to GPS spoofing are not documented. Proof photos are re-encoded without location metadata, so the photo itself carries no location. Live location stops before proof submission."
+    },
+    "content": {
+      "level": "none",
+      "method": "The requesting agent (and its person) reviews the typed proof (photos, confirmation codes, signatures) and can accept, request changes or reject; a rejection goes to Mundane's human review, which decides release, refund or split",
+      "unknown": "Mundane screens the task, not the proof; nothing documented checks that a photo shows what it claims before the requester reviews it. In the published demo the agent, not the platform, caught a count mismatch."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check is offered; a requester could post the same task to several workers, but that is buyer-side"
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.mundane.market/docs",
+    "openapi_url": "https://api.mundane.market/openapi.json",
+    "base_url": "https://api.mundane.market/v1",
+    "auth": [
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "env_var": "MUNDANE_API_KEY",
+        "transport": "rest",
+        "how_to_get": "Headless: POST https://api.mundane.market/v1/agents/signup with principal_display_name, principal_email, agent_name, accept_aup_version (aup-v0.2) and accept_tos_version (tos-v0.2) returns a mundane_agent_ key once, with conservative spend caps. The same key works as Authorization: Bearer on the REST API and the hosted MCP endpoint."
+      },
+      {
+        "type": "oauth2",
+        "resource_metadata": "https://api.mundane.market/.well-known/oauth-protected-resource/chatgpt/mcp",
+        "scopes": [
+          "tasks:read",
+          "tasks:write"
+        ],
+        "dynamic_registration": false,
+        "cimd": true,
+        "pkce": "S256",
+        "transport": "mcp",
+        "how_to_get": "MCP at https://api.mundane.market/chatgpt/mcp for directory connections (ChatGPT, Codex, Claude, Claude Code): authorization code with PKCE S256, public clients (token auth none), clients identified by a Client ID Metadata Document (client_id_metadata_document_supported: true); no RFC 7591 registration endpoint is advertised. The principal signs in to Mundane and approves the connection. This connection leaves out interactive tasks, chained jobs and Conclaves."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/workers",
+        "params": "lat, lng, radius_km, capability, skill, min_rating, min_rating_count, max_rate_minor, available_at, live_now, chain_ok, interactive_ok, limit",
+        "notes": "Verified workers near a point, with handle, capabilities, ask rate, rating, completed-task count and a distance from a ~2 km grid cell. Needs a key, no funded wallet; [] is a normal result. POST /workers/skill-search finds workers by skill anywhere (areas only)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/signup/capabilities",
+        "notes": "Public, no key: each capability slug with required and default proof types and minimum worker age. GET /capabilities (key) lists what this agent may dispatch."
+      },
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/offer-check",
+        "params": "total_minor, new_task",
+        "notes": "Read-only: whether an offer of total_minor would be refused right now (balance, caps) and every reason why. The platform fee is disclosed in the offer response; GET /spend-status returns balance and remaining caps."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/tasks",
+        "params": "title, instructions, location {address, lat, lng}, required_capabilities, budget_max_minor, currency, deadline, proof_requirements, proof_requirement_opt_outs, constraints, request_live_location, interactive, conclave_shareable, idempotency_key",
+        "notes": "Runs the screening cascade; returns open, screening (human review) or rejected (final). Then POST /offers {task_id, worker_id, amount_minor, currency, expires_in_seconds, message, idempotency_key} holds worker amount plus fee in escrow."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/tasks/{task_id}",
+        "params": "wait_for_change",
+        "notes": "Lifecycle state, active offer, assigned worker and completion proof. GET /task-events?since_id returns events across all tasks."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/tasks/{task_id}/proof-media",
+        "notes": "Signed, short-lived links to the task's proof photos (owner only). POST /tasks/{task_id}/review {decision: accept|reject|request_changes} releases or disputes the escrow."
+      }
+    ],
+    "sdk": "mundane-mcp 0.1.21 (PyPI, Apache-2.0; also ghcr.io/sttruji/mundane-mcp); Claude Code and Codex plugin from github.com/sttruji/mundane-mcp; OpenAPI \"Mundane API 0.1.0\"",
+    "rate_limits": "Default caps assigned at signup: $100 per task, $200 per day, $750 per week, $2,000 per month, 5 open tasks, 10 offers per hour; no self-serve increase over the API (console increases need email confirmation). Hosted agent: $25 per task, $100 per day.",
+    "mcp": {
+      "remote": "https://api.mundane.market/mcp",
+      "registry_name": "market.mundane/mundane",
+      "auth": "bearer",
+      "first_party": true,
+      "notes": "Streamable HTTP with the agent API key as a bearer token; 38 tools (post_task, search_workers, make_offer, await_task_update, get_task_proof, interactive and chain tools). The MCP Registry entry (v0.1.21, active) lists the remote plus PyPI and OCI stdio packages. A separate OAuth endpoint, /chatgpt/mcp, serves directory connections."
+    },
+    "notes": "The OpenAPI document still exposes /v1/mock/... endpoints (identity, Connect onboarding, checkout). Mundane's agent skill says money moves only with the user's approval and releasing payment always needs the user. The Terms treat an agent's requests as its principal's."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [
+      "hosted_checkout",
+      "prepaid_balance"
+    ],
+    "agent_can_pay": true,
+    "prepaid": true,
+    "notes": "Tasks are paid from a prepaid USD wallet: making an offer holds the worker amount plus fee. The agent can create a top-up (POST /v1/wallet/topup, up to $100,000 per call) that returns a Stripe Checkout link a person opens and pays; the agent then spends the balance within its caps. Wallet credit is not cashable and refunds go back to the wallet, not the card."
+  },
+  "account": {
+    "headless_signup": true,
+    "kyc": "email",
+    "agent_may_act": {
+      "allowed": true,
+      "source_url": "https://mundane.market/policies/terms"
+    }
+  },
+  "capture": {
+    "by": "people",
+    "worker_pay": {
+      "model": "worker sets a per-task ask rate (and an interactive rate); the agent's offer must be at or above it; the fee is added on top, not taken from pay",
+      "disclosed": false,
+      "notes": "Rates are visible to agents in search results, not published publicly. Pay is held before the worker starts and paid out through Stripe Connect when the proof is approved."
+    },
+    "consent": {
+      "documented": true,
+      "method": "AUP: photography only in public or permission-granted spaces, no specific identifiable individuals as subjects, no interiors of private property; tasks at a private residence need the occupant's consent; workers agree before accepting to shareable or interactive tasks",
+      "evidence_url": "https://mundane.market/policies/aup",
+      "unknown": "Bystanders in proof photos or interactive frames are not asked; the provider notes frames \"can show other people\""
+    }
+  },
+  "requester": {
+    "checks": "Principals give a name and email at API signup and accept the current AUP and Terms versions (recorded in an audit trail); each agent key carries spend caps set by Mundane. Every task passes a screening cascade (policy regex, task-shape match, an LLM classifier, human review when needed) before any worker sees it. The AUP bans following, tracking, monitoring, photographing or locating a specific individual, and rejections are final.",
+    "unknown": "No identity verification of principals is documented beyond email, and the Terms say automated screening is \"not a guarantee that an approved task is lawful or safe\""
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured after a worker accepts the offer, by the deadline you set",
+    "notes": "No archive. Proof photo images are deleted 30 days after upload once the task is settled."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Provider, on whether workers get offers: \"Not yet, in most places. Mundane is new\"; the Terms: \"Mundane does not guarantee any minimum number of offers or hours\""
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Agent-to-human marketplace; ID- and age-verified workers; every task screened against the AUP; escrow released on approved proof; search needs a key but no funded wallet; hosted MCP endpoint (Streamable HTTP, bearer key), pip install mundane-mcp; hosted agent",
+      "url": "https://mundane.market/llms.txt"
+    },
+    {
+      "claim": "Terms v0.2 (last updated October 20, 2026): principals and agents; agent actions treated as the principal's; agent signup via POST /v1/agents/signup; connected apps (ChatGPT, Codex, Claude, Claude Code); no minimum offers; chained and interactive tasks; USD-only wallet via Stripe Checkout; escrow hold; platform fee lesser of 5% or $5; cancellation fee; disputes to human review with fee retained; Stripe Identity ID and liveness check; content licence; Conclave shareable photos; screening not a guarantee; Mundane, Inc., Delaware",
+      "url": "https://mundane.market/policies/terms"
+    },
+    {
+      "claim": "AUP v0.2: ban on following, tracking, monitoring, photographing or locating a specific individual; photography only in public or permission-granted spaces with no identifiable individuals as subjects; residence tasks need occupant consent; interactive-task rules; screening cascade; principal must give accurate identity",
+      "url": "https://mundane.market/policies/aup"
+    },
+    {
+      "claim": "Privacy Notice (last updated October 22, 2026): proof photos and interactive frames re-encoded without camera metadata including location; frames are still photos from the phone camera, never video; worker search uses a ~2 km grid cell; proof photos deleted 30 days after upload once settled; directory connection leaves out interactive tasks, chains and Conclaves; LLM screening via Anthropic",
+      "url": "https://mundane.market/policies/privacy"
+    },
+    {
+      "claim": "Worker coverage: US, UK, Canada, Switzerland and the EEA; Stripe ID and selfie check, 18+; workers set their own rate; fee added on top; 'Will I get a lot of offers? Not yet, in most places'",
+      "url": "https://mundane.market/work"
+    },
+    {
+      "claim": "Coverage is where Stripe can both verify ID and pay out; fee 5% capped at $5; searching free; workers pass Stripe Identity",
+      "url": "https://mundane.market/what-is-this"
+    },
+    {
+      "claim": "Capabilities and typed proof: photo_documentation (photo; geo_checkin default), in_person_errand (photo, confirmation_code, geo_checkin), delivery_pickup (photo, geo_checkin, signature), wait_in_line (photo, confirmation_code); min worker age 18",
+      "url": "https://api.mundane.market/v1/signup/capabilities"
+    },
+    {
+      "claim": "OpenAPI 'Mundane API 0.1.0': /v1/workers, /v1/tasks, /v1/offers, /v1/offer-check, /v1/spend-status, /v1/task-events, /v1/tasks/{id}/proof-media, /v1/tasks/{id}/review, /v1/wallet/topup (max 10,000,000 minor units), live-location, interactive and chain endpoints, /v1/mock/... endpoints",
+      "url": "https://api.mundane.market/openapi.json"
+    },
+    {
+      "claim": "REST API docs (Swagger UI over /openapi.json)",
+      "url": "https://api.mundane.market/docs"
+    },
+    {
+      "claim": "Connect your agent: self-serve signup command (aup-v0.2, tos-v0.2), key shown once, conservative caps, hosted MCP URL, MCP Registry name market.mundane/mundane, free search, top-up via Stripe Checkout, cap increases need email confirmation",
+      "url": "https://mundane.market/for-agents"
+    },
+    {
+      "claim": "Hosted agent starts capped at $25 per task and $100 per day",
+      "url": "https://mundane.market/get-an-agent"
+    },
+    {
+      "claim": "Founder demo, 9 August 2026, Austin: founder as requester and worker, $1.00 offer plus $0.05 fee, photo plus location check-in, agent flagged a count mismatch, completed about 55 minutes after posting",
+      "url": "https://mundane.market/stories/pond-proof-review"
+    },
+    {
+      "claim": "MCP adapter README: 38 tools; default caps per_task_max $100, daily $200, weekly $750, monthly $2,000, 5 open tasks, 10 offers per hour; no self-serve cap increase; task event feed; get_task_proof; Apache-2.0",
+      "url": "https://raw.githubusercontent.com/sttruji/mundane-mcp/main/README.md"
+    },
+    {
+      "claim": "post_task screening cascade (policy_gate regex, shape match, Claude LLM classifier, human review); proof requirements are capability floor plus defaults plus extras; geo_checkin floor not waivable on errands; live location only during the active window",
+      "url": "https://raw.githubusercontent.com/sttruji/mundane-mcp/main/src/mcp_server/server.py"
+    },
+    {
+      "claim": "Agent skill: money moves only with the user's approval; releasing payment always needs the user; the user pays the Checkout link",
+      "url": "https://raw.githubusercontent.com/sttruji/mundane-mcp/main/plugin/skills/mundane/SKILL.md"
+    },
+    {
+      "claim": "MCP Registry: market.mundane/mundane v0.1.21 (active, latest, published 2026-10-14), remote streamable-http https://api.mundane.market/mcp with Authorization header, PyPI and OCI stdio packages",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=mundane"
+    },
+    {
+      "claim": "mundane-mcp 0.1.21 on PyPI, Apache-2.0",
+      "url": "https://pypi.org/pypi/mundane-mcp/json"
+    },
+    {
+      "claim": "OAuth authorization server: issuer https://api.mundane.market, authorization code, PKCE S256, token auth none, client_id_metadata_document_supported, scopes tasks:read and tasks:write; no registration endpoint",
+      "url": "https://api.mundane.market/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Protected resource https://api.mundane.market/chatgpt/mcp, scopes tasks:read and tasks:write, bearer in header",
+      "url": "https://api.mundane.market/.well-known/oauth-protected-resource/chatgpt/mcp"
+    },
+    {
+      "claim": "OAuth metadata: PKCE S256, token auth none, client_id_metadata_document_supported true, no registration_endpoint; llms.txt lists a separate bearer-key MCP at https://api.mundane.market/mcp",
+      "url": "https://api.mundane.market/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "MCP server: capability floors such as geo check-in are never waivable; request_live_location needs worker consent",
+      "url": "https://raw.githubusercontent.com/sttruji/mundane-mcp/main/src/mcp_server/server.py"
+    },
+    {
+      "claim": "Account: headless agent signup (POST /v1/agents/signup) with a principal name and email; agent actions count as the principal's",
+      "url": "https://mundane.market/policies/terms"
+    },
+    {
+      "claim": "MCP OAuth identifies clients by Client ID Metadata Document (client_id_metadata_document_supported true)",
+      "url": "https://api.mundane.market/.well-known/oauth-authorization-server"
+    }
+  ]
+}

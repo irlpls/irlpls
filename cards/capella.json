@@ -1,0 +1,290 @@
+{
+  "id": "capella",
+  "name": "Capella Space",
+  "status": "unclaimed",
+  "provider_url": "https://www.capellaspace.com/",
+  "tags": [
+    "satellite",
+    "satellite imagery",
+    "SAR",
+    "synthetic aperture radar",
+    "radar",
+    "X-band",
+    "night",
+    "through clouds",
+    "all-weather",
+    "tasking",
+    "repeat tasking",
+    "monitoring",
+    "earth observation",
+    "remote sensing",
+    "aerial",
+    "spotlight",
+    "stripmap",
+    "api",
+    "global"
+  ],
+  "summary": "Operator of a synthetic aperture radar (SAR) satellite constellation that images through cloud and at night. Its Console and REST API let you task a new point or area capture in a UTC window, choose a collection tier (urgent, priority, standard, flexible), set up repeat tasking down to a 24-hour cycle, review a cost estimate before approving, track status, and download the delivered collect. Capella advertises 0.25 m resolution and 93% of collects delivered in under 3 hours. Access is by signed order form, invoiced in USD.",
+  "capabilities": {
+    "modalities": [
+      "aerial"
+    ],
+    "tasks": [
+      "task a new SAR capture of a point (e.g. Spotlight) or an area (stripmap_100 only) within a UTC window",
+      "collection tiers urgent, priority, standard and flexible (repeat requests: routine or flexible)",
+      "repeat tasking of a point every N days (minimum cycle 24 hours), until a count, an end date, or cancelled",
+      "retask an earlier request, an existing archive collect, or a repeat series",
+      "imaging geometry constraints: look direction, ascending/descending, orbital plane (45, 53, 97), off-nadir, azimuth, grazing angle, squint, day/night or custom local time",
+      "cost estimate and approve/reject before scheduling (or pre-approve)",
+      "status tracking (received, review, submitted, active, accepted, completed, rejected, expired, and others) and signed-URL download of the delivered product"
+    ]
+  },
+  "pricing": {
+    "model": "cost estimate per tasking request, approved before scheduling; fees invoiced",
+    "from_usd": 0,
+    "unit": "per tasking request (price not published)",
+    "notes": "from_usd 0 means unknown, not free. No public price list was found. Each tasking request returns a cost estimate (order.summary.total; repeat requests: costPerImageEstimate) for approval. Fees are payable in US dollars, invoiced monthly in arrears and due net 30; payments are non-cancelable and non-refundable; cancelling an accepted order incurs the cancellation fees in Capella's Product Guide."
+  },
+  "latency": {
+    "typical": "93% of collects delivered in under 3 hours (provider claim)",
+    "notes": "Homepage: '93% Data Collects Delivered in Under 3 Hours', '15-minute scheduling cycles', '2-15 Revisit Opportunities Per Day'. Capture happens inside the window you set (windowOpen/windowClose); the docs give no minimum lead time, and the standard tier has a minimum window duration whose value isn't stated. The Standard Terms say any delivery date is an estimate only."
+  },
+  "coverage": {
+    "regions": [
+      "Global (subject to orbit passes and scheduling)"
+    ],
+    "notes": "Homepage: '24/7 global coverage'. SAR works through cloud and at night. Acceptance depends on the scheduler: requests can be rejected (e.g. conflicting tasks), expire, or stay 'active' without a guarantee of full collection until 'accepted'. Accounts are not available to persons barred from receiving services under US law.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Tasked data is licensed, not sold, under Capella's License Agreement (EULA v2.1, May 2026): a non-exclusive, non-transferable, non-sublicensable licence for the customer's Internal Use, including derivatives for Internal Use, plus an express right to 'use Data to train Models that Customer uses to provide services or deliverables to Third Parties' (Models must not contain or enable reconstruction of the raw Data). Selling, distributing, sublicensing or making Data or Derivatives publicly available is prohibited unless authorised; Capella keeps title to the Data and to Derivatives made by or for Capella; the customer owns its Models and its own contributions (Sec. 11). Bulk download or scraping is barred (EULA 9(m); website ToS Sec. 3 and 12). Use across more than one organisation needs Capella Legal. Console/API evaluation accounts are internal, non-commercial only. U.S. Government licences come via the NRO. Separate open-data collections are CC BY 4.0 / CC BY 2.0 (context only).",
+    "ai_training": "allowed",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Captured inside the window you set, usually delivered within hours",
+    "notes": "Capella also sells an archive; irlpls lists it for new tasked captures."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://docs.capellaspace.com/",
+    "base_url": "https://api.capellaspace.com",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "Authorization",
+        "env_var": "CAPELLA_API_KEY",
+        "how_to_get": "Needs an active Capella Console account, which follows a signed order form (no public self-serve sign-up was found). In Console, Account Profile > API Keys > Create, or POST /keys; send as 'Authorization: ApiKey <key>'. Keys are shown once and are valid for 90 days from creation or last use; unused keys are deleted."
+      },
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "how_to_get": "The docs show 'Authorization: Bearer <token>' as an alternative to ApiKey (e.g. on POST /keys) but do not say how to obtain a token."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/collectiontypes",
+        "notes": "Available collection types."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/task",
+        "params": "GeoJSON Feature (Point, or Polygon for stripmap_100) with properties windowOpen, windowClose, collectionTier, collectionType, collectConstraints, preApproval",
+        "notes": "Creates a tasking request; unless pre-approved it waits in 'review' with a cost estimate and is not scheduled until approved."
+      },
+      {
+        "action": "quote",
+        "method": "GET",
+        "path": "/task/{taskingRequestId}",
+        "notes": "When transactionStatus is 'pending-customer-approval', order.summary.total holds the cost estimate."
+      },
+      {
+        "action": "order",
+        "method": "PATCH",
+        "path": "/task/{taskingRequestId}/status",
+        "params": "{\"status\": \"approved\"} or {\"status\": \"rejected\"}",
+        "notes": "Approve or reject at review."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/repeat-requests",
+        "params": "Point geometry; repeatStart, repetitionInterval (days), repetitionCount / repetitionEnd / untilCanceled, collectionTier (routine/flexible), collectionType",
+        "notes": "Repeat tasking for points; estimate in costPerImageEstimate at 'review'; approve with PATCH /repeat-requests/{id}/status {\"code\": \"submitted\"}."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/task/{taskingRequestId}",
+        "notes": "statusHistory, newest first: received, review, submitted, active, accepted, rejected, expired, completed, canceled, error, anomaly, retrying. Repeat requests: GET /repeat-requests/{repeatRequestId}."
+      },
+      {
+        "action": "list",
+        "method": "POST",
+        "path": "/tasks/paged",
+        "params": "limit, page, organizationId (query)",
+        "notes": "Bulk listing of tasking requests, recommended over per-task polling."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/orders/task/{taskingRequestId}",
+        "notes": "Orders the products of a completed tasking request."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/orders/{orderId}/download",
+        "notes": "Returns STAC-like items whose asset hrefs are signed cloud-storage URLs (cloud optimized GeoTIFF)."
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/catalog/search",
+        "notes": "STAC search (collections capella-geo, capella-slc); use only to fetch metadata of a commissioned collect, e.g. by capella:collect_id."
+      }
+    ],
+    "rate_limits": "No numeric limits published; the docs recommend bulk endpoints such as tasks/paged to reduce call volume.",
+    "self_serve": false,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No Capella server in the official MCP Registry (search 'capella' returned 0 on 2026-10-26)."
+    },
+    "notes": "No OAuth discovery: /.well-known/oauth-protected-resource and oauth-authorization-server are 404 on www.capellaspace.com and 403 'Missing Authentication Token' on api.capellaspace.com. No webhooks are documented; poll status. automation_allowed is true for the documented API; the website ToS (Sec. 12) bans data-mining robots on the site, and the EULA bars bulk scraping outside the Documentation."
+  },
+  "adapter": "capella",
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Captured by Capella's satellites, not individual people"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No public signing or checksum scheme for delivered files was found; downloads are signed (time-limited) storage URLs, which authenticate access, not content. Capella is not on the C2PA conforming products list."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Collects come from Capella's own SAR satellites; requests can constrain orbital plane and geometry. Sensor identity and parameters are operator-asserted"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Captures fall inside the requested UTC window",
+      "unknown": "Collect times appear in product metadata, but how they are validated is not documented"
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Requests target a GeoJSON point or polygon; products are geolocated",
+      "unknown": "Geolocation accuracy was not found in the pages read"
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No public method for detecting manipulated SAR imagery"
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No documented cross-check against other sensors"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Capella homepage: '93% Data Collects Delivered in Under 3 Hours'; total time also depends on the tasking window and scheduler acceptance, and the Standard Terms call any delivery date an estimate."
+  },
+  "sources": [
+    {
+      "claim": "POST /task, /repeat-requests, retask endpoints, /collectiontypes; windowOpen/windowClose; tiers urgent/priority/standard/flexible (repeat: routine/flexible); repeat minimum 24 hours; area tasks stripmap_100 only; collectConstraints incl. orbitalPlanes, squint, grazing angle, localTime",
+      "url": "https://docs.capellaspace.com/constellation-tasking/tasking-requests"
+    },
+    {
+      "claim": "Cost estimate in order.summary.total when transactionStatus is pending-customer-approval; repeat costPerImageEstimate; approve/reject via PATCH; preapproval skips review",
+      "url": "https://docs.capellaspace.com/constellation-tasking/cost-review-and-approval"
+    },
+    {
+      "claim": "Status endpoints and status codes; statusHistory; tasks/paged; no webhooks",
+      "url": "https://docs.capellaspace.com/constellation-tasking/tasking-request-status/"
+    },
+    {
+      "claim": "POST /orders, /orders/task/{id}, GET /orders/{id}/download with signed URLs; cloud optimized GeoTIFF; bulk endpoints recommended",
+      "url": "https://docs.capellaspace.com/accessing-data/ordering-and-downloading/"
+    },
+    {
+      "claim": "Active Console account required; 'Authorization: ApiKey'; Bearer alternative shown; key shown once; valid 90 days from creation or last use",
+      "url": "https://docs.capellaspace.com/authentication/requesting-api-key"
+    },
+    {
+      "claim": "0.25 m SAR resolution; 93% of collects delivered in under 3 hours; 15-minute scheduling cycles; self-service Console and API; 2-15 revisit opportunities per day; 24/7 global coverage",
+      "url": "https://www.capellaspace.com/"
+    },
+    {
+      "claim": "Licence documents: Standard Terms, Single Organization EULA (multi-org via Capella Legal), Evaluation Agreement, NRO-issued USG licences, CC BY open-data collections",
+      "url": "https://www.capellaspace.com/legal/data-licensing"
+    },
+    {
+      "claim": "EULA v2.1 (May 2026): Internal Use licence; s4(c) right to train Models used for third-party services; s9(a) no selling, distributing or publishing Data/Derivatives; s11 licensed not sold, Capella owns Data and Derivatives, customer owns Models; fees in USD, invoiced net 30, non-refundable",
+      "url": "https://cdn.prod.website-files.com/6970b8a0eb7e9ae5e1a148f0/6a2367ddd1ca422d18b6afba_Capella%20Consolidated%20License%20Agreement%20v2.1%2005292026.pdf"
+    },
+    {
+      "claim": "Standard Terms: orders bind when signed by both parties; Capella may reject orders; Capella API 'allows for the development of automated workflows'; monthly invoicing net 30 in USD; delivery dates are estimates; cancellation fees",
+      "url": "https://cdn.prod.website-files.com/6970b8a0eb7e9ae5e1a148f0/69cae81cb0532a5019516691_Capella-CPQ-Order-Terms-and-Conditions.pdf"
+    },
+    {
+      "claim": "Evaluation Agreement: Console/API via signed order form; internal, non-commercial evaluation; accounts unavailable to persons barred under US law",
+      "url": "https://cdn.prod.website-files.com/66b32de523b6c4b17bad83f2/67855e662735c4d2288a9154_Capella%20Space%20Evaluation%20Agreement%20v1.2.pdf"
+    },
+    {
+      "claim": "Console/API Terms of Service (prohibited conduct, robots clause, redistribution unless authorised)",
+      "url": "https://www.capellaspace.com/legal/terms-of-service"
+    },
+    {
+      "claim": "STAC catalog search",
+      "url": "https://docs.capellaspace.com/accessing-data/searching-for-data"
+    },
+    {
+      "claim": "No Capella server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=capella"
+    },
+    {
+      "claim": "Website ToS: bans robots and data mining on the Site (Sec. 12) and bulk downloads (Sec. 3)",
+      "url": "https://www.capellaspace.com/legal/terms-of-service"
+    }
+  ],
+  "updated": "2026-10-28",
+  "spec_version": "2026-10-26",
+  "short": "Radar satellites tasked by API, through cloud and at night, with repeat tasking and cost review.",
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "contract"
+  },
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  },
+  "payment": {
+    "methods": [
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Fees in US dollars, invoiced (monthly for delivered products unless the order says otherwise), due net 30; 1.5%/month interest on late amounts. Orders bind only once both parties sign."
+  },
+  "requester": {
+    "checks": "Orders are subject to Capella's review and acceptance and must be signed by both parties; accounts are unavailable to persons barred from US services; the customer must comply with export, sanctions and regulatory limits on each order.",
+    "unknown": "Capella's actual screening process for customers (KYC depth, use-case review) is not published."
+  }
+}

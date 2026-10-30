@@ -1,0 +1,28 @@
+10/28/26|10/27/26||CDT|-1|Y|Y|Aberdeen|SD|45.4680|-98.4940|PM2.5|11|Good|No||South Dakota Department of Agriculture and Natural Resources
+10/28/26|10/27/26||CDT|-1|Y|N|Aberdeen|SD|45.4680|-98.4940|PM10|5|Good|No||South Dakota Department of Agriculture and Natural Resources
+10/28/26|10/28/26|17:00|CDT|0|O|Y|Aberdeen|SD|45.4680|-98.4940|PM10|6|Good|No||South Dakota Department of Agriculture and Natural Resources
+10/28/26|10/28/26|17:00|CDT|0|O|N|Aberdeen|SD|45.4680|-98.4940|PM2.5|1|Good|No||South Dakota Department of Agriculture and Natural Resources
+10/28/26|10/27/26||ADT|-1|Y|Y|Anchorage|AK|61.2167|-149.9000|PM2.5|51|Moderate|No||State of Alaska DEC
+10/28/26|10/27/26||ADT|-1|Y|N|Anchorage|AK|61.2167|-149.9000|PM10|49|Good|No||State of Alaska DEC
+10/28/26|10/28/26|14:00|ADT|0|O|Y|Anchorage|AK|61.2167|-149.9000|PM2.5|33|Good|No||State of Alaska DEC
+10/28/26|10/28/26|14:00|ADT|0|O|N|Anchorage|AK|61.2167|-149.9000|PM10|19|Good|No||State of Alaska DEC
+10/29/26|10/28/26||AZT|-1|Y|Y|Baku|  |40.3870|49.8430|PM2.5|60|Moderate|No||U.S. Department of State Azerbaijan - Baku
+10/29/26|10/29/26|2:00|AZT|0|O|Y|Baku|  |40.3870|49.8430|PM2.5|76|Moderate|No||U.S. Department of State Azerbaijan - Baku
+10/28/26|10/27/26||PDT|-1|Y|Y|Portland|OR|45.5380|-122.6560|PM2.5|32|Good|No||Oregon Dept. of Environmental Quality
+10/28/26|10/27/26||PDT|-1|Y|N|Portland|OR|45.5380|-122.6560|OZONE|25|Good|No||Oregon Dept. of Environmental Quality
+10/28/26|10/28/26|15:00|PDT|0|O|Y|Portland|OR|45.5380|-122.6560|OZONE|28|Good|No||Oregon Dept. of Environmental Quality
+10/28/26|10/28/26|15:00|PDT|0|O|N|Portland|OR|45.5380|-122.6560|PM2.5|26|Good|No||Oregon Dept. of Environmental Quality
+10/28/26|10/28/26||PDT|0|F|Y|Portland|OR|45.5380|-122.6560|PM2.5|50|Good|No||Oregon Dept. of Environmental Quality
+10/28/26|10/28/26||PDT|0|F|N|Portland|OR|45.5380|-122.6560|OZONE|31|Good|No||Oregon Dept. of Environmental Quality
+10/28/26|10/29/26||PDT|1|F|Y|Portland|OR|45.5380|-122.6560|PM2.5|50|Good|No||Oregon Dept. of Environmental Quality
+10/28/26|10/29/26||PDT|1|F|N|Portland|OR|45.5380|-122.6560|OZONE|30|Good|No||Oregon Dept. of Environmental Quality
+10/28/26|10/27/26||PDT|-1|Y|Y|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|OZONE|27|Good|No||Puget Sound Clean Air Agency
+10/28/26|10/27/26||PDT|-1|Y|N|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|PM2.5|24|Good|No||Puget Sound Clean Air Agency
+10/28/26|10/27/26||PDT|-1|Y|N|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|PM10|13|Good|No||Puget Sound Clean Air Agency
+10/28/26|10/28/26|15:00|PDT|0|O|Y|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|OZONE|31|Good|No||Puget Sound Clean Air Agency
+10/28/26|10/28/26|15:00|PDT|0|O|N|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|PM2.5|21|Good|No||Puget Sound Clean Air Agency
+10/28/26|10/28/26|15:00|PDT|0|O|N|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|PM10|14|Good|No||Puget Sound Clean Air Agency
+10/26/26|10/28/26||PDT|2|F|Y|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|PM2.5|33|Good|No|For Oct 26-2 (Mon-Mon): Expect GOOD air quality during the week with rainy weather and MODERATE air quality on the weekend with cold temps and clear skies.|Puget Sound Clean Air Agency
+10/26/26|10/29/26||PDT|3|F|Y|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|PM2.5|33|Good|No|For Oct 26-2 (Mon-Mon): Expect GOOD air quality during the week with rainy weather and MODERATE air quality on the weekend with cold temps and clear skies.|Puget Sound Clean Air Agency
+10/26/26|10/30/26||PDT|4|F|Y|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|PM2.5|33|Good|No|For Oct 26-2 (Mon-Mon): Expect GOOD air quality during the week with rainy weather and MODERATE air quality on the weekend with cold temps and clear skies.|Puget Sound Clean Air Agency
+10/26/26|10/31/26||PDT|5|F|Y|Seattle-Bellevue-Kent Valley|WA|47.5620|-122.3405|PM2.5|69|Moderate|No|For Oct 26-2 (Mon-Mon): Expect GOOD air quality during the week with rainy weather and MODERATE air quality on the weekend with cold temps and clear skies.|Puget Sound Clean Air Agency

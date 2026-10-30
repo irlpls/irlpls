@@ -1,0 +1,1 @@
+fixture: documented-shape. Hand-made from the response example in https://developer.getnexar.com/specs/virtualcamera.yaml (POST /api/virtualcam/v5/frames, 200 example), with a second frame added and times moved; never fetched live (contract only).

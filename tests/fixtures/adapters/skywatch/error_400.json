@@ -1,0 +1,7 @@
+{
+ "errors": [
+  {
+   "message": "max_cost is lower than the calculated price"
+  }
+ ]
+}

@@ -1,0 +1,328 @@
+{
+  "id": "usgs-water",
+  "name": "USGS stream gauges",
+  "adapter": "usgs_water",
+  "status": "unclaimed",
+  "provider_url": "https://waterdata.usgs.gov/",
+  "tags": [
+    "api",
+    "camera",
+    "discharge",
+    "flood",
+    "free",
+    "gage height",
+    "government",
+    "hydrology",
+    "image",
+    "kayak",
+    "ogc api",
+    "paddling",
+    "photo",
+    "public domain",
+    "real-time",
+    "river",
+    "river camera",
+    "sensor",
+    "stage",
+    "stream",
+    "streamflow",
+    "tubing",
+    "united states",
+    "usa",
+    "water",
+    "webcam"
+  ],
+  "summary": "U.S. Geological Survey network of automated stream gauges reporting gage height, discharge and other water parameters, served free through the modernized Water Data OGC API (api.waterdata.usgs.gov). It supersedes the legacy WaterServices APIs, which USGS will retire during its final decommission campaign (November 2026 to February 2027, completing in Q1 2027). About 1,400 USGS river cameras at gauge sites also publish still images every few minutes to every hour through the public NIMS API.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "photo"
+    ],
+    "tasks": [
+      "gage height / stage (parameter 00065)",
+      "streamflow discharge (parameter 00060)",
+      "water temperature (parameter 00010)",
+      "latest observation per time series",
+      "historical continuous and daily values",
+      "field and channel measurements used to check the sensors",
+      "find gauges near a point or in a bounding box",
+      "river camera stills (USGS NIMS / HIVIS; capture interval set per camera, from 2 to 60 minutes, some daylight only)"
+    ]
+  },
+  "pricing": {
+    "model": "free public government service",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "No fee is charged. The API key is free (managed by api.data.gov, emailed on sign-up) and only raises rate limits. USGS says anyone making more than a few queries per hour needs a key. Keyless requests returned data on 2026-10-26."
+  },
+  "latency": {
+    "typical": "About 15-60 minutes behind real time for typical gauges (15-minute recording, roughly hourly transmission)",
+    "notes": "USGS FAQ: real-time streamflow is typically recorded at 15-minute intervals, stored on site and transmitted to USGS once an hour, depending on the relay technique. Live checks on 2026-10-26 at 04:55 UTC (27 Oct): USGS-01646500 (Potomac) had its newest discharge value at 03:50 UTC, last modified 03:57 UTC, about 65 minutes old. USGS-01650800 had a value at 04:45 UTC, about 10 minutes old."
+  },
+  "coverage": {
+    "regions": [
+      "United States, including Puerto Rico, the U.S. Virgin Islands, Guam and the Northern Mariana Islands"
+    ],
+    "notes": "Only existing fixed gauges; you cannot request a new gauge. The monitoring-locations collection also includes non-USGS agency sites (e.g. a USEPA site in a Washington DC bbox query), not all of which have continuous data. Some sites are discontinued and return null values with a DISCONTINUED qualifier. Live checks on 2026-10-26 found same-day readings in Puerto Rico, the U.S. Virgin Islands, Guam and the Northern Mariana Islands; American Samoa's newest continuous reading was from 2008. River cameras: 1,394 listed in the NIMS API (1,152 not hidden) across most states plus Puerto Rico and Guam. Total gauge count not verified.",
+    "areas": [
+      "US",
+      "PR",
+      "VI",
+      "GU",
+      "MP"
+    ]
+  },
+  "licensing": {
+    "summary": "The API's OpenAPI description gives its licence as 'US Government work in the public domain', linking to CC0 1.0. It also links CC0 as the terms of service. USGS says USGS-authored data are U.S. Public Domain and asks for credit (e.g. 'Credit: U.S. Geological Survey'). Not every item on USGS sites is public domain: some third-party images are copyrighted and need the holder's permission. Recent data are provisional and provided on the condition that neither USGS nor the U.S. Government is liable for damages. The terms do not mention AI training or resale. Licensing of non-USGS agency data in the API was not checked."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Typically under ~1-2 hours for active real-time gauges; history back to the period of record",
+    "notes": "latest-continuous returns the most recent value per time series; continuous returns full sensor history. Each value carries approval_status: recent values are 'Provisional' and may be substantially revised after field inspections and measurements."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://api.waterdata.usgs.gov/docs/ogcapi/",
+    "base_url": "https://api.waterdata.usgs.gov/ogcapi/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key needed for light use. USGS says you need a key for more than a few queries per hour."
+      },
+      {
+        "type": "api_key_header",
+        "header": "X-Api-Key",
+        "env_var": "USGS_WATER_API_KEY",
+        "how_to_get": "Optional and free: sign up at https://api.waterdata.usgs.gov/signup (an api.data.gov key, sent by email) for higher rate limits."
+      },
+      {
+        "type": "api_key_query",
+        "env_var": "USGS_WATER_API_KEY",
+        "how_to_get": "The same free key, passed as the api_key query parameter."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/collections/monitoring-locations/items",
+        "params": "bbox=minLon,minLat,maxLon,maxLat; site_type_code (e.g. ST = stream); state_code; limit; f=json",
+        "notes": "Find gauge sites in a box (no radius parameter seen; derive a bbox from a point). Returns GeoJSON with id like USGS-01646500, name, agency, site type, HUC, drainage area and horizontal positional accuracy/method."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/latest-continuous/items",
+        "params": "bbox; monitoring_location_id (e.g. USGS-01646500); parameter_code (00060 discharge, 00065 gage height); limit; f=json",
+        "notes": "Most recent observation per time series. Properties: time_series_id, monitoring_location_id, parameter_code, statistic_id, time, value (string), unit_of_measure, approval_status, qualifier, last_modified. Any response property is queryable (see /queryables). Paginate via the 'next' link."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/continuous/items",
+        "params": "monitoring_location_id; parameter_code; datetime (instant, start/end interval, '..' open range, or ISO 8601 duration like P7D); limit",
+        "notes": "Full-resolution history from automated sensors."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/latest-daily/items",
+        "params": "monitoring_location_id; parameter_code; statistic_id",
+        "notes": "Most recent daily value per time series; 'daily' collection holds full daily history."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://api.waterdata.usgs.gov/statistics/v0/observationNormals",
+        "params": "monitoring_location_id (repeat the parameter for several; a comma list matches nothing); parameter_code (repeatable); computation_type=percentile|median|arithmetic_mean|minimum|maximum; normal_type=DOY (day of year) or MOY; start_date / end_date as MM-DD; page_size (default 1000, max 10000); next_token",
+        "notes": "Replaces the legacy daily statistics (nwis/stat). GeoJSON; per site and parameter, values per time_of_year with percentiles 5/10/25/50/75/90/95 and sample_count (years), computed on approved data. Use parent_statistic_id 00003 (percentiles of the daily mean). Beta: USGS says it is subject to change. Served through the same api.data.gov gateway; the signup page's key is for 'USGS water data APIs' and no statistics-specific limit is published."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/field-measurements/items",
+        "params": "monitoring_location_id; parameter_code; datetime",
+        "notes": "Manual discharge and gage-height measurements USGS uses to check and correct automated records; latest-field-measurements and channel-measurements also exist."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "https://api.waterdata.usgs.gov/nims/v0/cameras",
+        "params": "siteId=<NWIS site number, e.g. 15239900> (optional)",
+        "notes": "River cameras with camId, nwisId, coordinates, newestImageDT, ingest schedule (interval in minutes, 24/7 or daylight) and image directories (smallDir 720 px, thumbDir, overlayDir, tlDir) on public S3."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://api.waterdata.usgs.gov/nims/v0/listFiles",
+        "params": "camId (from /cameras), limit, before, after",
+        "notes": "Newest image filenames for a camera, newest first; image URL = camera.smallDir + filename."
+      }
+    ],
+    "rate_limits": "No numbers published for keyless use. USGS says more than a few queries per hour needs a key. Keys are optional, free api.data.gov keys (X-Api-Key header or api_key query parameter) and give more requests per hour; going over returns HTTP 429. The X-RateLimit-Limit and X-RateLimit-Remaining response headers report the limit (the docs example shows 1000), but keyless responses on 2026-10-26 and 2026-10-28 carried no such headers. USGS asks anyone needing custom limits to write to wdfn@usgs.gov.",
+    "self_serve": true,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "community": "No USGS-run MCP server in the official MCP Registry. Third-party servers are listed, e.g. io.github.cyanheads/usgs-water-mcp-server, io.github.mansurjisan/usgs-mcp, io.github.mrfentmen/usgs-water-mcp, com.olyport/water."
+    },
+    "notes": "2026-10-28: USGS is retiring the legacy WaterServices (Instantaneous Values, Daily Values, Statistics, Site). Per USGS: a 2 s delay on every request from 2026-11-16, 10 s from 2027-01-11, 30 s from 2027-01-25, 60 s from 2027-02-01, redirect outages on 2027-01-27 (about 24 h) and 2027-02-15 (about 48 h), shut down on 2027-02-22. irlpls (adapter, landing page, browser 'Get it now') uses only api.waterdata.usgs.gov: latest-continuous for readings, monitoring-locations for names, statistics/v0/observationNormals for the usual range for a date, NIMS for cameras."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable in the usual sense: readings come from automated government-operated instruments, not from individual contributors"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No public attestation or signing of data from gauge to API; integrity rests on USGS operating the network"
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "River camera stills come from fixed USGS-installed cameras at gauge sites; no capture signing or tamper evidence is documented, so whether a frame is unaltered rests on trust in USGS operations."
+    },
+    "time": {
+      "level": "none",
+      "method": "Each value carries an observation time and a last_modified timestamp, as USGS reports them.",
+      "unknown": "How logger clocks are set or checked was not found in the docs read; nothing is signed or time-stamped by a third party."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed sites with published coordinates plus horizontal positional accuracy and method fields in monitoring-locations (e.g. 'Interpolated from map', 'Mapping grade GPS unit')",
+      "unknown": "Accuracy varies by site and many coordinates are interpolated from maps; the fields are agency-entered, not independently attested"
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Improbable values relayed by telemetry are automatically screened until verified. Values carry approval_status (Provisional or Approved) and qualifiers. USGS states provisional data may be inaccurate due to instrument malfunctions or site changes and may be substantially revised after field inspections and measurements.",
+      "unknown": "Provisional values (the freshest ones) can be substantially wrong; the screening rules and review procedure were not read in detail"
+    },
+    "corroboration": {
+      "level": "claimed",
+      "method": "Field measurements and channel measurements collections expose the manual readings USGS uses to check and correct automated records",
+      "unknown": "How often a given gauge is field-checked, and how far provisional values drift before correction, was not established"
+    }
+  },
+  "sources": [
+    {
+      "claim": "Modernized Water Data APIs supersede WaterServices; legacy WaterServices will be decommissioned in the first quarter of 2027; decommissioning may include intentional degradation and blackouts, not before August 2026",
+      "url": "https://www.usgs.gov/tools/usgs-water-data-apis"
+    },
+    {
+      "claim": "New APIs at api.waterdata.usgs.gov with replacements for all WaterServices endpoints; Decommission Campaign 3 retires remaining NWISWeb pages and WaterServices, expected November 2026 through February 2027",
+      "url": "https://waterdata.usgs.gov/blog/wdfn-updates-2025/"
+    },
+    {
+      "claim": "OGC API landing page (title, description: automated sensors and manual data collection), OpenAPI and collections links",
+      "url": "https://api.waterdata.usgs.gov/ogcapi/v1/"
+    },
+    {
+      "claim": "Collections list: latest-continuous, continuous, latest-daily, daily, latest-field-measurements, field-measurements, channel-measurements, monitoring-locations, time-series-metadata, peaks and lookup tables",
+      "url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections?f=json"
+    },
+    {
+      "claim": "OpenAPI: apiKey security schemes in header and query, key from the signup page gives higher rate limits; licence 'US Government work in the public domain' linking CC0 1.0; termsOfService links CC0 1.0",
+      "url": "https://api.waterdata.usgs.gov/ogcapi/v1/openapi?f=json"
+    },
+    {
+      "claim": "Docs base URL ogcapi/v1, datetime syntax (interval, '..', ISO duration P7D), parameter_code/statistic_id filters, any response property queryable, next-link pagination, f=json, approval status field",
+      "url": "https://api.waterdata.usgs.gov/docs/ogcapi/"
+    },
+    {
+      "claim": "Keys managed by api.data.gov, sent by email from the signup page; passed as api_key query parameter or X-Api-Key header; more requests per hour before 429; X-RateLimit-Limit/Remaining headers (example 1000)",
+      "url": "https://api.waterdata.usgs.gov/docs/ogcapi/keys/"
+    },
+    {
+      "claim": "More than a few queries per hour needs an API key; legacy /iv maps to latest-continuous and continuous, /site to monitoring-locations, /measurements to field-measurements and channel-measurements",
+      "url": "https://api.waterdata.usgs.gov/docs/ogcapi/migration/"
+    },
+    {
+      "claim": "Queryable properties of latest-continuous (monitoring_location_id, parameter_code, approval_status, qualifier, state_code, site_type_code, etc.)",
+      "url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/queryables?f=json"
+    },
+    {
+      "claim": "Live keyless test 2026-10-26: USGS-01646500 discharge 2960 ft^3/s at 03:50 UTC, Provisional, last_modified 03:57 UTC; no X-RateLimit headers on the keyless response",
+      "url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/items?monitoring_location_id=USGS-01646500&parameter_code=00060&f=json"
+    },
+    {
+      "claim": "Live keyless test 2026-10-26: bbox + parameter_code=00060 returned features with time, value, unit ft^3/s, approval_status Provisional, last_modified (USGS-01650800 at 04:45 UTC)",
+      "url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/items?bbox=-77.2,38.8,-76.9,39.0&parameter_code=00060&limit=3&f=json"
+    },
+    {
+      "claim": "Live keyless test 2026-10-26: monitoring-locations accepts bbox and site_type_code=ST; results include a USEPA site and horizontal positional accuracy/method fields",
+      "url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items?bbox=-77.2,38.8,-76.9,39.0&site_type_code=ST&limit=5&f=json"
+    },
+    {
+      "claim": "Live checks 2026-10-26 by territory bbox: same-day readings in Puerto Rico, U.S. Virgin Islands, Guam, Northern Mariana Islands; American Samoa newest reading 2008 (example: Guam)",
+      "url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/items?f=json&limit=100&bbox=144.6,13.2,145.0,13.7"
+    },
+    {
+      "claim": "Real-time streamflow typically recorded at 15-minute intervals, stored onsite, and transmitted to USGS offices once every hour depending on the relay technique",
+      "url": "https://www.usgs.gov/faqs/where-can-i-get-real-time-and-historical-streamflow-information"
+    },
+    {
+      "claim": "Provisional data statement: subject to revision; improbable telemetry values automatically screened until verified; may be inaccurate due to instrument malfunctions or site changes; substantial revisions possible after field inspections; no USGS/US Government liability",
+      "url": "https://waterdata.usgs.gov/provisional-data-statement/"
+    },
+    {
+      "claim": "USGS-authored data considered U.S. Public Domain; credit requested ('Credit: U.S. Geological Survey'); not all site content is public domain; copyrighted items need the holder's permission",
+      "url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits"
+    },
+    {
+      "claim": "NIMS cameras endpoint (live 2026-10-26): 1,394 cameras (1,152 not hidden) with camId, nwisId, ingest schedule (interval 2-60 min, mostly 60 or 15; 24/7 or daylight) and public S3 image directories",
+      "url": "https://api.waterdata.usgs.gov/nims/v0/cameras"
+    },
+    {
+      "claim": "NIMS listFiles (live 2026-10-26) returned newest image filenames for IL_Lick_Creek_near_Woodside (04:45 UTC); the 720 px JPEG downloaded from public S3",
+      "url": "https://api.waterdata.usgs.gov/nims/v0/listFiles?camId=IL_Lick_Creek_near_Woodside&limit=3"
+    },
+    {
+      "claim": "No first-party USGS MCP server in the official registry; third-party USGS water servers listed",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=usgs"
+    },
+    {
+      "claim": "WaterServices degradation schedule: 2 s delay on all requests from 2026-11-16, 10 s from 2027-01-11, 30 s from 2027-01-25, redirect to the blog about 24 h on 2027-01-27, 60 s from 2027-02-01, redirect about 48 h on 2027-02-15, decommissioned 2027-02-22; users must migrate to api.waterdata.usgs.gov (checked 2026-10-28)",
+      "url": "https://waterdata.usgs.gov/blog/wdfn-waterservices-degradation/"
+    },
+    {
+      "claim": "USGS Water Data Statistics API (beta): observationNormals and observationIntervals; computation_type percentile/median/mean/min/max, normal_type DOY/MOY, start_date/end_date MM-DD, repeatable monitoring_location_id and parameter_code, page_size default 1000 max 10000, next_token paging",
+      "url": "https://api.waterdata.usgs.gov/statistics/v0/docs"
+    },
+    {
+      "claim": "Live keyless test 2026-10-28: USGS-08167000 discharge day-of-year 10-28 percentiles of the daily mean p25 57.7, p50 104.0, p75 185.0 ft^3/s over 87 years (legacy nwis/stat the same day: 59 / 107 / 185 over 86 years, 1940-2025); browser CORS allowed",
+      "url": "https://api.waterdata.usgs.gov/statistics/v0/observationNormals?monitoring_location_id=USGS-08167000&parameter_code=00060&computation_type=percentile&normal_type=DOY&start_date=10-28&end_date=10-28"
+    },
+    {
+      "claim": "Live keyless test 2026-10-28: latest-continuous accepts parameter_code=00060,00065 and properties= in one bbox request (CORS *); it also returns series whose last value is years old (e.g. a 2001 reading), so 'now' readings must be filtered by time",
+      "url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/latest-continuous/items?f=json&bbox=-98.1561,29.9096,-97.3239,30.6304&parameter_code=00060,00065&properties=monitoring_location_id,parameter_code,value,time&limit=1000"
+    }
+  ],
+  "updated": "2026-10-28",
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "USGS: real-time streamflow is typically recorded every 15 minutes and transmitted to USGS once every hour."
+  },
+  "short": "USGS stream gauges and river cameras, free and near real time.",
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-28",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "cache_seconds": 900,
+      "scope": "unknown",
+      "notes": "No request number published, keyless or keyed. The migration page says more than a few queries per hour needs an API key; keys are api.data.gov keys sent as X-Api-Key (or api_key) and raise the per-hour limit, and an exhausted limit answers 429 (keys page). Gauges typically record every 15 minutes (USGS FAQ).",
+      "source_url": "https://api.waterdata.usgs.gov/docs/ogcapi/keys/"
+    }
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "capture": {
+    "by": "devices"
+  }
+}

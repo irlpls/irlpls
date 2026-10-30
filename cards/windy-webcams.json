@@ -1,0 +1,238 @@
+{
+  "id": "windy-webcams",
+  "name": "Windy Webcams",
+  "status": "unclaimed",
+  "provider_url": "https://api.windy.com/webcams",
+  "short": "A directory of public webcams worldwide, with current images through an API.",
+  "summary": "Large global directory of public webcams run by third-party operators, with a REST API (v3) to find webcams near a point or in a bounding box and get current image URLs, live/timelapse player embeds and location metadata.",
+  "tags": [
+    "webcam",
+    "live camera",
+    "photo",
+    "timelapse",
+    "weather",
+    "traffic",
+    "beach",
+    "mountain",
+    "ski",
+    "city",
+    "airport",
+    "port",
+    "nearby",
+    "bounding box",
+    "global",
+    "api"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video"
+    ],
+    "tasks": [
+      "current still image of a place from a fixed public webcam",
+      "find webcams within a radius (up to 250 km) or bounding box",
+      "live stream / daily, monthly, yearly timelapse player embeds",
+      "visual check of weather, snow, sea state, crowds or traffic at a camera's view"
+    ]
+  },
+  "pricing": {
+    "model": "freemium (free tier plus annual professional subscription)",
+    "from_usd": 0,
+    "unit": "free tier; Professional 9,990 EUR per year",
+    "notes": "Free tier: limited image size, image URLs valid for a short time (15 minutes on the pricing page, 10 minutes in the docs), pagination offset capped at 1000; images must be linked to windy.com or shown via the embeddable timelapse player, which may carry Windy ads. Professional: 9,990 EUR per year, paid annually in advance and auto-renewing; full-size images, image URLs valid 24 hours, offset up to 10,000, no ads in the timelapse player, and an all-webcams export in one call. No USD price published. The free tier may not be offered only inside the paid part of a user's app."
+  },
+  "latency": {
+    "typical": "Returned on request; the image is the camera's most recent upload, its age shown by lastUpdatedOn",
+    "notes": "No per-camera refresh interval is published. Windy defines an Active Webcam as one updated within the last 24 hours, so an active camera's image can still be hours old. Docs recommend calling the webcams endpoint on every page load because image URL tokens expire (10 minutes free per the docs, 15 minutes per the pricing page; 24 hours professional). Windy does not guarantee the number of active webcams, the availability of any webcam, or image quality."
+  },
+  "coverage": {
+    "regions": [
+      "Global (wherever webcams are registered; dense in Europe and tourist/ski/coastal areas, uneven elsewhere)"
+    ],
+    "notes": "Only existing webcams with fixed views; you cannot point or add a camera on request. Windy calls it 'the largest collection of webcams worldwide'; Windy staff: '70 000+' webcams (2026-05-28). Filters by country, region, city, continent and 18 categories (airport, beach, building, city, coast, forest, indoor, lake, landscape, meteo, mountain, observatory, port, river, sportArea, square, traffic, village). Terms describe webcams as mounted outdoors to monitor the general natural environment.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Specific Terms of Use of the Windy Webcams API (effective 1 Sept 2023) govern and prevail over the general terms. They forbid redistributing any part of the API or its data to third parties, further redistributing the Content, giving third parties access to the API or your key, letting third parties build services on it, publishing any graphics displaying webcam images, stretching images, using image URLs other than those the API returns, continuous scanning of many webcams or downloading significant parts of image history, intensive automated use of any endpoint, and trying to identify people in the images. Users must visibly credit 'Webcams provided by windy.com - add new webcam' with links. Copyright stays with Windy and its suppliers (the webcam operators). General Windy terms add: no selling, renting or sublicensing Content, use for your own internal purposes only, and webcam images are excluded from the general permission to reuse Windy visuals. So an agent should not hand an image to a different person or publish a graphic showing it (Art. 10.1, 11.2); show it only through the player or the API URL to the key holder. AI or ML training and caching are not mentioned.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Who operates each camera. Terms define webcams as owned or operated by third-party Webcam Operators; no operator identity check is documented."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Whether images come straight from the camera or are re-uploaded or edited; terms say images 'may be further processed' by Windy. No signing or capture attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Whether the feed is a real camera view or a looped or replaced image; no checks documented, and Windy says it has 'absolutely no control over the images'."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "API returns lastUpdatedOn (ISO 8601) per webcam",
+      "unknown": "How the timestamp is set (camera clock or upload time) and whether stale or frozen images are detected. 'Active' only means updated within 24 hours."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "API returns WGS84 latitude/longitude plus city, region and country for each webcam",
+      "unknown": "Whether coordinates are operator-entered or checked, and where the camera actually points."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Whether images are staged, overlaid or heavily compressed. Windy gives no guarantee and takes no responsibility for webcam content. Status values (unapproved, rejected, duplicate) suggest listings are reviewed, but no review process is documented."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-checking between cameras or against other sources documented; each webcam has an edit URL for public feedback."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://api.windy.com/webcams/docs",
+    "base_url": "https://api.windy.com/webcams/api/v3",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "x-windy-api-key",
+        "env_var": "WINDY_WEBCAMS_API_KEY",
+        "how_to_get": "Register a Windy account and create a Webcams API key at https://api.windy.com/keys (sign-in required); a new key may take a few minutes to become active worldwide. The key must not be published or shared with third parties."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/webcams",
+        "params": "nearby={lat},{lon},{radius_km} (max 250 km); bbox={north_lat},{east_lon},{south_lat},{west_lon}; categories (max 10), categoryOperation (and|or), continents (max 2), countries, regions, cities, webcamIds (max 50, overrides other filters); include=categories,images,location,player,urls; limit (0-50, default 10); offset (max 1000 free, 10000 professional); sortKey (popularity|createdOn), sortDirection; lang",
+        "notes": "Use include=images to get current/daylight image URLs and sizes; include=player for live and timelapse embed URLs. Image URLs carry expiring tokens and return HTTP 401 once expired."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/webcams/{webcamId}",
+        "params": "include=categories,images,location,player,urls; lang",
+        "notes": "Single webcam with fresh image URLs; response has status (active, inactive, ...), lastUpdatedOn, viewCount, location, player URLs and provider URL."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/map/clusters",
+        "params": "northLat, southLat, eastLon, westLon, zoom (4-18), include, lang",
+        "notes": "Webcams spread for map display in a bounding box; maximum box size depends on zoom level."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/categories",
+        "params": "lang",
+        "notes": "Also /continents, /countries, /regions, /cities return geo codes usable as filters."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "https://api.windy.com/webcams/export/all-webcams.json",
+        "notes": "Basic info for all webcams in one file; professional tier only."
+      }
+    ],
+    "rate_limits": "No numeric rate limit published. Terms forbid intensive use of any endpoint by automated software, continuous scanning of a significant number of webcams, downloading significant portions of image history, and placing inappropriate load on the API. Tier limits: pagination offset 1000 (free) vs 10000 (professional), limit max 50 per call.",
+    "self_serve": true,
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No Windy or Windy webcams server in the official MCP Registry (searches 'windy', 'windyty', 'webcam' on 2026-10-26)."
+    },
+    "notes": "No OAuth: /.well-known/oauth-protected-resource and oauth-authorization-server return 404 on api.windy.com and windy.com. The all-webcams export returns 403 without a key."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Most recent image uploaded by each camera; varies per camera (see lastUpdatedOn)",
+    "notes": "Current and daylight images plus a live player for streaming cameras. Timelapse players (day/month/year/lifetime) show past imagery but irlpls uses only the current image. An Active Webcam is one updated within the last 24 hours. No on-demand capture."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Docs: call /webcams/api/v3/webcams or /webcams/api/v3/webcams/{webcamId} every time the page is loaded to get current image URLs, whose tokens expire after 10 minutes (free) or 24 hours (professional)."
+  },
+  "access": {
+    "cost": "freemium",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none",
+    "notes": "Light use only: the API terms (Art. 8.2.2) ban intensive automated use of any endpoint and (Art. 8.2.1) continuous scanning of many webcams."
+  },
+  "payment": {
+    "methods": [
+      "hosted_checkout"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "Free tier needs no payment. Professional is an annual subscription paid in advance through a third party when upgrading on api.windy.com, renewing automatically until cancelled. No agent payment rail is documented; the payment processor and accepted methods are not named."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "A Windy account is needed to create an API key; requests are identified by key and Windy may log API use.",
+    "unknown": "No identity or use-case check beyond account registration is documented."
+  },
+  "adapter": "windy_webcams",
+  "sources": [
+    {
+      "claim": "Auth header x-windy-api-key; keys at api.windy.com/keys, may take minutes to activate; image URL tokens expire after 10 minutes (free) or 24 hours (professional) and then return HTTP 401; call /webcams or /webcams/{webcamId} on every page load",
+      "url": "https://api.windy.com/webcams/docs"
+    },
+    {
+      "claim": "OpenAPI 3.0 spec (decoded from the docs page's SvelteKit data file): endpoints /webcams/api/v3/webcams, /webcams/{webcamId}, /map/clusters (zoom 4-18), /categories, /continents, /countries, /regions, /cities, /webcams/export/all-webcams.json (professional only); nearby max radius 250 km, bbox format, limit 0-50, offset max 1000 free / 10000 professional, categories max 10 of 18, continents max 2, webcamIds max 50; include values; response fields status (active, inactive, unapproved, disabled, rejected, duplicate, merged), lastUpdatedOn, WGS84 location, player live/day/month/year/lifetime URLs, urls detail/edit/provider; securityScheme apiKey header x-windy-api-key",
+      "url": "https://api.windy.com/webcams/docs/__data.json"
+    },
+    {
+      "claim": "Unauthenticated GET returned HTTP 403 {\"message\":\"Missing Header 'x-windy-api-key' with API key\"} on 2026-10-26",
+      "url": "https://api.windy.com/webcams/api/v3/webcams"
+    },
+    {
+      "claim": "Pricing (api.windy.com/webcams redirects here): 'largest repository of webcams worldwide'; Free: link images to windy.com or embed timelapse player, image size limited, image URL valid 15 minutes, offset 1000; Professional 9 990 EUR/year: ad-free player, full-size images, URL valid 24 hours, offset 10 000, list all webcams via a single call",
+      "url": "https://api.windy.com/webcams/pricing"
+    },
+    {
+      "claim": "Webcams API terms summary: use images only at original or smaller size and only via API URLs; link every image to the webcam page or player; credit 'Webcams provided by windy.com - add a webcam'; no inappropriate bandwidth load; data used 'as is'; links to the full specific terms",
+      "url": "https://api.windy.com/webcams/terms"
+    },
+    {
+      "claim": "Specific Terms of Use of the Windy Webcams API (effective 1 Sept 2023): webcams owned/operated by third-party Webcam Operators, may be further processed by Windy; Active Webcam = updated within 24 hours; no guarantee of active webcam count, availability or image quality, no control over content; key created at registration; access logged; Professional fees paid as in-advance annual subscription through a third party, auto-renewing; free tier not only in paid part of an app; misuse includes continuous scanning, intensive automated use, identifying individuals, stretching images, non-API image URLs; no API access or key sharing with third parties; no publishing graphics displaying webcam images; redistribution of API data and Content forbidden; mandatory attribution; ads may run in free version; IP stays with Windy and suppliers",
+      "url": "https://account.windy.com/agreements/windy-webcams-api-terms-of-use"
+    },
+    {
+      "claim": "General Windy terms (effective 1 Sept 2023): own internal use only, no redistribution; no selling, renting, sublicensing Content; no crawling or automated collection; Windy and suppliers retain ownership of Content; webcam images excluded from the Visualizations permission and governed by the webcam specific terms; Content may be removed without notice. No AI-training clause",
+      "url": "https://account.windy.com/agreements/windy-terms-of-use"
+    },
+    {
+      "claim": "Windy staff (forum, 2024-04-19): free webcam API has only low-resolution images; use is fine if Windy is credited as image provider",
+      "url": "https://community.windy.com/topic/32556/webcams-api-free-tier-usage-in-an-app"
+    },
+    {
+      "claim": "Windy staff (forum, 2026-05-28): '70 000+' webcams; paid API offers the fullest size received from the source",
+      "url": "https://community.windy.com/api/topic/44535"
+    },
+    {
+      "claim": "No Windy or Windy webcams MCP server in the official registry (only unrelated 'windy-word-mcp')",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=windy"
+    },
+    {
+      "claim": "No OAuth metadata or discovery files: /.well-known/oauth-protected-resource, oauth-authorization-server, ucp, agent-card.json and irlpls all return 404 on api.windy.com (and www.windy.com, webcams.windy.com, account.windy.com)",
+      "url": "https://api.windy.com/.well-known/oauth-protected-resource"
+    }
+  ],
+  "updated": "2026-10-27",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

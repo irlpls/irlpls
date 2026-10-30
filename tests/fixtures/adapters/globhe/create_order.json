@@ -1,0 +1,25 @@
+{
+ "id": "adipisicing123456789",
+ "areaSize": 85301.3,
+ "deliveryDeadline": "2026-11-20",
+ "description": "Drone photos of the roof",
+ "orderName": "Roof 45 Oak Ave",
+ "orderStatus": "reviewing",
+ "locationMap": [
+  {
+   "lat": 30.268649,
+   "lng": -97.741565
+  },
+  {
+   "lat": 30.268649,
+   "lng": -97.738435
+  },
+  {
+   "lat": 30.271351,
+   "lng": -97.738435
+  }
+ ],
+ "mapTypes": [
+  "originalPhotos"
+ ]
+}

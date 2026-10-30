@@ -1,0 +1,236 @@
+{
+  "id": "human-archive",
+  "name": "Human Archive",
+  "provider_url": "https://humanarchive.ai",
+  "status": "unclaimed",
+  "short": "First-person video, depth, motion and touch data of real work for robot labs, from head-worn rigs and a phone app.",
+  "tags": [
+    "robotics",
+    "physical AI",
+    "egocentric video",
+    "first-person video",
+    "head-mounted camera",
+    "stereo depth",
+    "tactile gloves",
+    "motion capture",
+    "hand pose",
+    "training data",
+    "dataset catalog",
+    "India"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor",
+      "audio"
+    ],
+    "capture_types": [
+      "egocentric",
+      "stereo",
+      "depth",
+      "imu",
+      "tactile",
+      "mocap",
+      "hand-pose",
+      "slam-pose"
+    ],
+    "tasks": [
+      "egocentric video of people doing their jobs in real workplaces (factories, restaurants, laundries, salons, warehouses, construction sites, hotels) and homes, recorded on Human Archive's head-worn multi-camera rigs",
+      "rigs with a global-shutter stereo pair and hardware-synchronised IMU; tactile gloves, full-body motion-capture suits and wrist cameras synchronised with RGB-D",
+      "first-person video tasks recorded by paid contributors in the Human Archive iOS app (video plus IMU and, where the phone has it, LiDAR depth; no audio)",
+      "Voice Exchange: solo and two-party voice recordings (audio only), licensed as separate datasets",
+      "post-processing into 3D hand pose, world-frame SLAM camera poses and dense step-level action labels, with bystander faces blurred",
+      "off-the-shelf (OTS) catalogue datasets and robot deployments (not new captures)"
+    ]
+  },
+  "pricing": {
+    "model": "Quote",
+    "from_usd": 0,
+    "unit": "dataset",
+    "notes": "No prices are published. Buyers use a contact form ('we'll send over our researcher dashboard and samples'), book a call, or email raj@humanarchive.ai."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "No turnaround is stated for new collection. In the app, contributors pick posted tasks and payouts follow approval."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Ongoing collection; catalogue data is existing footage",
+    "notes": "Human Archive sells from an 'OTS catalog' (its HARD-2 benchmark used 100 hours from it) and says it works 'alongside leading AI labs to scale human video/sensor data'. It publishes no order flow for collection to a buyer's spec, so how much of a buyer's data is captured after the order is not stated."
+  },
+  "coverage": {
+    "regions": [
+      "India",
+      "United States",
+      "Southeast Asia"
+    ],
+    "notes": "Press reports put most collection in India, through 120+ partner businesses (hotels, restaurants, home services, quick commerce), with expansion to Southeast Asia and early US pilots (TechCrunch, Inc42, May 2026). Wing VC describes a network across homes, factories and warehouses in 'the U.S., India, and beyond'. The contributor app is on the US App Store; its terms exclude residents of Illinois, Texas, Washington and Oregon. Human Archive's own site lists no countries."
+  },
+  "licensing": {
+    "summary": "App contributors keep ownership of their clips and grant Human Archive a worldwide, perpetual, irrevocable, non-exclusive, sublicensable licence to use them 'to develop, train, evaluate, and improve machine-learning and robotics models' and to include them 'in datasets Human Archive licenses to its customers for those purposes'. Customers receive data 'under a written agreement' that restricts use to the agreed purposes, prohibits re-identifying contributors and requires confidentiality (privacy policy). The buyer licence is not public; resale, buyer ownership and Human Archive's reuse of a buyer's data are not stated. Terms for footage collected through partner businesses' workers are not published. The Ego500 release is described as open-source, but no licence is shown on its page. No buyer licence is public, so whether a customer may train AI is not stated by the provider; training is the evident purpose but is set by each contract."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "App contributors hold accounts, confirm they are 18 or over, and pass identity checks run by the payout providers (Stripe, Circle) where required; Human Archive receives only the verification status. Workplace footage comes from workers at partner businesses.",
+      "unknown": "No identity method is published for partner-business workers, and no per-recording identity record is public."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Workplace capture uses Human Archive's own head-worn rig and app tasks are recorded in its app (nothing uploads until Submit), but no device or app attestation is documented. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Global-shutter stereo cameras with a hardware-synchronised IMU on the rig; phone camera, IMU and LiDAR in the app. Contributors confirm each recording is genuine and not altered with generative-AI or post-production tools. No signed capture; Human Archive is not on the C2PA conforming products list. Screen or generated footage is excluded only by contributor confirmation and review."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Session metadata records when a recording was collected; rig video and IMU share a hardware clock.",
+      "unknown": "The hardware clock aligns streams to each other; no signed or independently time-stamped capture time is documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Collection metadata includes the environment and location; the app uses device location only if the contributor grants permission.",
+      "unknown": "No location proof is documented, and app location is optional."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "App clips: on-device hand-visibility check, about one frame a minute sent to Google's Gemini API to confirm the assigned task, human review of flagged clips and random audits. Workplace footage: a QA model cuts and filters sessions, then annotators verify clips and labels and an independent reviewer approves them (100+ annotators; 0.763 inter-annotator agreement on boundaries).",
+      "unknown": "Acceptance rates and per-dataset QA results are not published beyond Ego500's agreement figure. Frames sent to Gemini may be reused by Google to improve its own products (privacy policy §4.3)."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent confirms individual captures. HARD-1 and HARD-2 are Human Archive's own robot benchmarks of data usefulness, not checks of provenance."
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Human Archive says it is 'working alongside leading AI labs to scale human video/sensor data' and offers an 'OTS catalog'; it publishes no turnaround for new collection."
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Fill in the contact form at humanarchive.ai/contact.html (name, email, notes), book a call through the cal.com link on the home page, or email team@humanarchive.ai or raj@humanarchive.ai."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No Human Archive server in the official MCP Registry (searched 'human-archive' and 'humanarchive', 2026-10-26)."
+    },
+    "notes": "No public API or API docs. Buyers are offered a 'researcher dashboard and samples' after contact. humanarchive.ai returns 404 for /.well-known/oauth-protected-resource and /.well-known/oauth-authorization-server."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "notes": "No buyer payment method is published; terms are set in a written customer agreement."
+  },
+  "capture": {
+    "by": "people",
+    "consent": {
+      "documented": true,
+      "method": "Published for the contributor app only: contributors accept a consent confirmation before each recording session, which is logged with the task and session metadata; Voice Exchange adds a one-time voice consent and a per-call consent from both parties. Video tasks must show only the contributor's own hands and task, never other people or children; recording at work needs the employer's written permission and must not capture customers. Contributors can delete their account, but approved clips are de-identified and kept in datasets.",
+      "evidence_url": "https://humanarchive.ai/rules.html",
+      "unknown": "Human Archive publishes nothing on how workers at partner businesses, who wear its head-mounted rigs at work, are told about or consent to recording. Its co-founder told Inc42 that partner contracts require partners to obtain informed consent and that it is 'the partner companies' responsibility to educate their employees'; TechCrunch wrote that 'it is not clear what information Human Archive gives workers about how their footage is used'. For home-service visits, press reports say customers choose a discounted recorded visit or a full-price unrecorded one; that flow is not published by Human Archive."
+    },
+    "worker_pay": {
+      "model": "App: a payout per approved submission, shown on each task. Partner workers: an hourly rate, per press reports.",
+      "disclosed": false,
+      "notes": "App payouts are shown in the app only, and unapproved or later-revoked submissions earn nothing. TechCrunch reports a $1/hour base rate, against ₹250–400 (about $2.63–4.20) an hour reported for other firms; the co-founder told Inc42 the average is '$1-10 per hour', which Inc42 could not verify. Voice contributors who join through a distributor network are paid by that network."
+    }
+  },
+  "requester": {
+    "checks": "The buyer contact form asks only for a name, email and notes.",
+    "unknown": "Human Archive publishes no check of who a buyer is or what the data is for, beyond the written customer agreement described in its privacy policy."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "Human Archive (Human Archive, Inc., San Francisco; $8.2M seed, May 2026) collects first-person data of real work for robot learning. Workers at partner businesses, mostly in India, wear Human Archive's head-mounted rigs (stereo cameras, IMU, plus tactile gloves, mocap suits and wrist cameras), and paid contributors record tasks in its iOS app. It processes the footage into 3D hand pose, SLAM poses and dense action labels, and licenses datasets, from an off-the-shelf catalogue or collected with labs, to AI and robotics companies under written agreements. Prices, turnaround and the buyer licence are not published. Consent is published for app contributors but not for workers recorded through partner businesses.",
+  "sources": [
+    {
+      "claim": "Data and deployments infrastructure for physical AI; works with AI labs to scale human video/sensor data; OTS catalog; contact form and cal.com booking; team@humanarchive.ai",
+      "url": "https://humanarchive.ai/"
+    },
+    {
+      "claim": "Buyer contact form fields (name, email, notes); 'researcher dashboard and samples'",
+      "url": "https://humanarchive.ai/contact.html"
+    },
+    {
+      "claim": "Contributor licence (perpetual, irrevocable, non-exclusive, sublicensable; for ML and robotics training; included in datasets licensed to customers); contributors keep ownership; payout only on approval; 18+; not offered in IL, TX, WA, OR; approved clips de-identified and kept on deletion; video tasks have no audio",
+      "url": "https://humanarchive.ai/terms.html"
+    },
+    {
+      "claim": "Per-session consent confirmation logged; metadata on how, when and where recorded; depth, IMU and calibration data; Gemini frame checks; Stripe and Circle payout and KYC status; customers licensed under written agreements restricting use, banning re-identification, requiring confidentiality; optional location permission",
+      "url": "https://humanarchive.ai/privacy.html"
+    },
+    {
+      "claim": "Recording rules: only own hands and task, no other people or children; employer written permission at work; genuine, unaltered recordings; on-device, AI-frame, human and random-audit review",
+      "url": "https://humanarchive.ai/rules.html"
+    },
+    {
+      "claim": "Voice Exchange: audio-only, one-time and per-call consent, separate voice datasets, distributor-network contributors paid by the network",
+      "url": "https://humanarchive.ai/voice-rules.html"
+    },
+    {
+      "claim": "App recording flow (double-press volume button; nothing leaves the device until Submit); payouts after approval",
+      "url": "https://humanarchive.ai/help.html"
+    },
+    {
+      "claim": "iOS app by Human Archive, Inc.: pays for approved contributions; payout shown on each task; version 1.2.0",
+      "url": "https://apps.apple.com/us/app/human-archive/id6779010544"
+    },
+    {
+      "claim": "Ego500: 500 hours across 60+ work environments; custom multi-camera hardware deployed in workplaces; metadata including location; QA model, annotator verification, EgoBlur face blurring, independent reviewer; 100+ annotators; 0.763 inter-annotator agreement",
+      "url": "https://ego500.humanarchive.ai/"
+    },
+    {
+      "claim": "Head-worn rig: global-shutter stereo pair with hardware-synchronised IMU and shared hardware clock",
+      "url": "https://ha-slam.humanarchive.ai/"
+    },
+    {
+      "claim": "HARD-2: 100 hours from the OTS catalog; self-run robot benchmark; collection rigs multi-camera, 60 fps, global shutter",
+      "url": "https://humanarchive.ai/hard2.html"
+    },
+    {
+      "claim": "HARD-1: egocentric stereo video with 3D hand pose and world-frame SLAM; self-run benchmark",
+      "url": "https://humanarchive.ai/hard1.html"
+    },
+    {
+      "claim": "$8.2M seed; 1,000+ active headsets; 50+ devices; tactile gloves, mocap suit, wrist cameras with RGB-D; $1/hour base pay; customers choose a discounted recorded visit or a full-price unrecorded one; unclear what workers are told; India first, expanding to Southeast Asia and US pilots",
+      "url": "https://techcrunch.com/2026/05/26/human-archive-taps-into-indias-services-startups-to-collect-data-for-physical-ai/"
+    },
+    {
+      "claim": "120+ partnerships, mostly India; partners contractually responsible for informed consent; '$1-10 per hour' average (unverified by Inc42); tens of thousands of hours collected; Snabbit controlled-environment test and NDA",
+      "url": "https://inc42.com/startups/inside-human-archive-the-startup-recording-indian-workers-to-train-the-worlds-robots/"
+    },
+    {
+      "claim": "Wing VC led the $8.2M seed; rigs capture RGB, audio, stereo depth, tactile, mocap, wrist cameras; network in the U.S., India and beyond; data ships to robotics labs",
+      "url": "https://www.wing.vc/content/human-archive-the-common-crawl-for-embodied-intelligence"
+    },
+    {
+      "claim": "No Human Archive server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=human-archive"
+    },
+    {
+      "claim": "Human Archive not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "Privacy §4.3: frames sent to Gemini API covered by terms permitting the provider to use submitted data to improve its products; §6.1 customer agreements restrict use to agreed purposes",
+      "url": "https://humanarchive.ai/privacy.html"
+    }
+  ]
+}

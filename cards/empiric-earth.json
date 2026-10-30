@@ -1,0 +1,321 @@
+{
+  "id": "empiric-earth",
+  "name": "Empiric Earth (Nexar)",
+  "provider_url": "https://empiricearth.com",
+  "status": "unclaimed",
+  "adapter": "empiric_earth",
+  "tags": [
+    "dashcam",
+    "driving video",
+    "road",
+    "street",
+    "street-level imagery",
+    "edge cases",
+    "near-miss",
+    "autonomous vehicles",
+    "AV training",
+    "robotics",
+    "targeted collection",
+    "work zones",
+    "road signs",
+    "road inventory",
+    "virtual cam",
+    "potholes",
+    "nexar",
+    "nauto"
+  ],
+  "summary": "Dashcam data company formed when Nexar and Nauto merged; it has operated as Empiric Earth since 15 September 2026. About 350,000 dashcams on vehicles making ordinary journeys feed Atlas, a searchable library of curated driving video (6M+ videos) for AV, robotics and research teams, and CityStream, a continuously refreshed feed of road detections (signs, work zones, defects, surface) plus anonymized road frames for an area (VirtualCam). When a scenario is not in the archive, customers can commission targeted collection, which points the live network at that condition. Atlas and targeted collection are sold through sales. CityStream has REST APIs that need an approved account. Nothing can be ordered by API.",
+  "capabilities": {
+    "modalities": [
+      "video",
+      "photo"
+    ],
+    "tasks": [
+      "targeted collection of driving video for a scenario not yet in the archive (by geography, weather or driving behaviour)",
+      "edge-case and near-miss driving video for AV and robotics training and validation",
+      "fresh road detections for a bounding box: traffic signs, work zones, road defects (potholes, manholes, road plates), surface condition (CityStream Live Feed)",
+      "anonymized road frames for a bounding box or H3 cells, filtered by date, time of day, minimum quality, road type and heading (CityStream VirtualCam)",
+      "check imagery coverage for an area before requesting frames (VirtualCam coverage endpoint)",
+      "curated road-sign inventory and work-zone feed by bounding box or H3 cells (CityStream Road Inventory, Work Zones)"
+    ]
+  },
+  "pricing": {
+    "model": "Not published; contact sales",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "from_usd 0 means unknown, not free. The Atlas, CityStream and AV pages list no prices and route to an enquiry form. Data-licence agreements are separate contracts that are not published."
+  },
+  "latency": {
+    "typical": "Unknown for targeted collection; CityStream refreshes as vehicles pass",
+    "notes": "No delivery time is published for targeted collection. CityStream says the road state 'updates continuously instead of on a survey cycle', and 'a dense urban corridor refreshes constantly; a rural road refreshes when someone drives it'. No latency figure is given. The Live Feed API returns 'real-time detections' since a caller-given epoch time. Enquiry replies: '1–2 business days' on the Atlas and CityStream pages, and 'within one business day' on the AV and contact pages. Those are reply times, not delivery times."
+  },
+  "coverage": {
+    "regions": [
+      "US",
+      "50+ countries (not listed)"
+    ],
+    "notes": "Company figures: 350,000 active sensors, 300M+ new miles a month across 50+ countries, 10B+ miles of history, 98% of US roads reached, 80M+ objects detected daily. Before the merger, Nexar alone cited 100M+ miles a month across 94% of US roads. 'Coverage follows where vehicles actually drive', and no route is driven to produce data, so rural or low-traffic roads refresh rarely. CityStream describes a 'nationwide' (US) network and MUTCD-coded US signs. Countries outside the US are not listed. Atlas notes that 'coverage varies by geography'. Non-US countries are unnamed, so the card lists only the US.",
+    "areas": [
+      "US"
+    ]
+  },
+  "licensing": {
+    "summary": "Customer licence terms are not public. The website terms say 'product, device and data-licence agreements are separate contracts', and the CityStream OpenAPI files state 'License: Proprietary'. The company says it holds and licenses the record, will not sell personal data, and does not build plate recognition, face recognition or person-level search. It says data is 'de-identified at capture', and VirtualCam returns 'anonymized frames'. The developers page lists 'training or fine-tuning on real-world driving' as a use case, but no published term grants or forbids AI training or resale. On the capture side, Nexar's consumer site says road data is blurred on the device. The same page says Nexar uses footage, including non-anonymized footage, to train its own safety AI. The website terms (s.6(e)) ban robots and automatic access to the website; the API's own terms are unpublished, so automation is not stated."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Footage comes from dashcams on vehicles making ordinary journeys. No driver identity check is documented, and none would be relevant to the data."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Captured on the provider's own dashcams, which run detection models on the device. No device or firmware attestation is published."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No hardware attestation, signing or anti-injection method is documented. The provider is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each VirtualCam frame carries a capture timestamp (captured_at, with timezone offset), and each Live Feed detection carries the evidence-frame timestamp plus first- and last-recorded times (CityStream OpenAPI). Atlas attaches the date to every result.",
+      "unknown": "How capture time is set (device clock, GPS time or server receipt) is not documented, and the timestamps are not signed."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each frame and detection carries the camera's GPS position and heading, an H3 cell and an OpenStreetMap road segment (CityStream OpenAPI). Atlas attaches the location to every result.",
+      "unknown": "No GNSS quality metrics, spoofing checks or signing are documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Atlas: 'Every video is classified before it enters the index, and in-cabin, stationary, and low-quality footage is filtered out.' Atlas ranks results with the BADAS collision-risk model. Live Feed detections carry model confidence scores, and VirtualCam frames carry a frame-quality score.",
+      "unknown": "Classification error rates for delivered data are not published. BADAS benchmarks are internal, and the provider labels them that way. It is not stated whether people review targeted-collection results."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "CityStream reports repeated observations of a place from Empiric's own dashcam fleet ('Every vehicle that passes a location adds an observation'). One operator and one pipeline count as one source (STANDARD §3), so this is re-observation, not independent confirmation. Empiric's /verify page covers model benchmarks only."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://developer.getnexar.com/documentation",
+    "base_url": "https://external.getnexar.com",
+    "auth": [
+      {
+        "type": "oauth2",
+        "transport": "rest",
+        "pkce": "S256",
+        "scopes": [
+          "detection:find",
+          "detection:get",
+          "image:get",
+          "frame:get"
+        ],
+        "how_to_get": "Log in to the Nexar Developers Portal (developer.getnexar.com), which runs an OAuth 2.0 authorization-code flow with PKCE against Nexar's Okta server (issuer https://nexar.okta.com/oauth2/aus3qkg89t55hJZsT4x7). Each CityStream product (Live Feed, Work Zones, Road Inventory, VirtualCam) is shown only to accounts in that product's Okta group, so an approved commercial account is needed. Send the token as 'Authorization: Bearer {token}'."
+      },
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "how_to_get": "The portal issues a refresh token. Exchange it for an access token with POST https://external.getnexar.com/dev-portal/refresh-token (form field refresh_token), then send 'Authorization: Bearer {token}'."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/api/livefeed/v4/detections",
+        "params": "bounding_box, filter, detections_from_millis, max_detections_per_h3, h3_index_format",
+        "notes": "Live Feed: real-time detections from the camera network. Each detection has an evidence frame, camera GPS and timestamps. Scopes: detection:find, detection:get, image:get."
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/api/virtualcam/v5/frames",
+        "params": "bounding_box or h3_location (H3 res 10–15, up to 1000 cells), filters (date range, time of day, min_frame_quality, road_types, heading), sort_by",
+        "notes": "VirtualCam: anonymized road frames for an area, each with captured_at, GPS, heading, frame quality and road type. Scopes: frame:get, image:get. The v4 frames endpoint was deprecated on 31 March 2025."
+      },
+      {
+        "action": "list",
+        "method": "POST",
+        "path": "/api/virtualcam/v4/coverage",
+        "params": "h3_coverage_bounding_box or h3_indices",
+        "notes": "VirtualCam coverage: whether imagery exists for an area, before requesting frames."
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/api/workzones/v3/detections",
+        "params": "detection_filter, bounding_box or h3_indices, heading, time_range, time_of_day_range, time_sort_direction, limit, start",
+        "notes": "Curated work-zone detections (cones, signs, barriers, message boards)."
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/api/workzones/v3/detections/single",
+        "notes": "One work zone in detail."
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/api/roadinventory/v3/detections",
+        "params": "detection_filter, bounding_box or h3_indices, heading, time_range, time_of_day_range, time_sort_direction, limit, start",
+        "notes": "Curated road-sign detections."
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/api/roadinventory/v3/detections/single",
+        "notes": "One road sign in detail."
+      }
+    ],
+    "rate_limits": "Not published. The VirtualCam spec documents an HTTP 429 'API rate limit exceeded' response.",
+    "sdk": "None published for the data APIs. Atlas lists access as 'Web, and API [Coming soon]'. The open BADAS model is on Hugging Face (Apache 2.0), but it is a model, not a data client.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No MCP server for data. getnexar.com is a Shopify dashcam store: its /.well-known/ucp lists a UCP shopping MCP endpoint (nexar-dashcam.myshopify.com/api/ucp/mcp) for buying cameras, not data. The MCP Registry has no entry for 'nexar' or 'empiric'."
+    },
+    "notes": "The four CityStream OpenAPI 3.0.1 files are public at developer.getnexar.com/specs/{livefeed,virtualcamera,workzones,roadinventory}.yaml, but the portal shows them only to members of the product's group. There is no endpoint for ordering, quoting or tracking targeted collection, which goes through sales. external.getnexar.com answers 403 'RBAC: access denied' to unauthenticated requests, including /.well-known/oauth-protected-resource."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Archive plus continuous CityStream refresh and targeted new collection. The age of targeted captures is not published.",
+    "notes": "Atlas is mostly an archive (6M+ curated videos from 10B+ miles since 2015). CityStream detections and VirtualCam frames refresh as vehicles pass, so dense urban corridors are fresh and rural roads are not. Targeted collection produces new captures to order."
+  },
+  "delivery": {
+    "modes": [
+      "commission",
+      "live"
+    ],
+    "speed": "unknown",
+    "basis": "Atlas: 'Targeted collection points the live network at the condition you asked for.' No delivery time is stated. CityStream Live Feed: 'real-time detections performed by Nexar's network of cameras on the road', refreshed as vehicles pass, with no latency figure."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No payment method is published. Data is sold by quote under separate data-licence contracts."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "None documented. The company says it will not build licence-plate recognition, face recognition or person-level search, and it publishes a standard for law-enforcement requests.",
+    "unknown": "Whether targeted-collection requests are screened, and what is checked about the buyer, is not published."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "short": "A dashcam network you can point at a driving scenario, plus live road-detection APIs for approved accounts.",
+  "sources": [
+    {
+      "claim": "Atlas: targeted collection points the live network at the requested condition, and a coverage gap becomes a collection campaign; 6M+ curated driving videos; every video classified, with in-cabin, stationary and low-quality footage filtered out; ranked by BADAS peak collision-risk score; location, date and outcome on every result; filters by location, metro and date; access 'Web, and API [Coming soon]'; coverage varies by geography; replies in 1–2 business days; no pricing",
+      "url": "https://empiricearth.com/products/atlas"
+    },
+    {
+      "claim": "AV and robotics page: 'Commissioning targeted collection when a condition you need is not in the archive yet'; Atlas 'points targeted collection at whatever your set is still missing'; replies within one business day; no pricing or licensing",
+      "url": "https://empiricearth.com/industries/av-robotics"
+    },
+    {
+      "claim": "CityStream: four categories (MUTCD-coded signs, work zones, defects, surface); every passing vehicle adds an observation; continuous update rather than a survey cycle; coverage follows where vehicles drive and rural roads refresh when driven; Live Feed, Road Inventory (bbox or H3 cells), Work Zones and Virtual Cam features; 'nationwide sensor network'; no pricing",
+      "url": "https://empiricearth.com/products/citystream"
+    },
+    {
+      "claim": "Developers page: training or fine-tuning on real-world driving listed as a use case; Atlas has 'targeted collection when the thing you need is not in there yet'",
+      "url": "https://empiricearth.com/industries/developers"
+    },
+    {
+      "claim": "Company description: Nexar and Nauto are former brand names of Empiric Earth; World Intelligence product line; scale figures (10B+ miles, 300M+ miles a month across 50+ countries, 98% of US roads, 350,000 active sensors, 80M+ objects a day)",
+      "url": "https://empiricearth.com/llms.txt"
+    },
+    {
+      "claim": "Methodology: 350,000 sensors on vehicles making journeys their drivers were making anyway; no route driven to produce data; detection runs on the device and what leaves is the detection plus the clip around it; CityStream refreshes as vehicles pass",
+      "url": "https://empiricearth.com/methodology"
+    },
+    {
+      "claim": "Verification Center: BADAS benchmarks are internal and labelled as not independent; VTTI testing covers in-cab alerting only and was funded by the company; scale figures",
+      "url": "https://empiricearth.com/verify"
+    },
+    {
+      "claim": "Merger agreement announced 1 July 2026; Nexar alone: 100M+ miles a month across 94% of US roads and 50+ countries",
+      "url": "https://empiricearth.com/nexar-and-nauto-to-merge"
+    },
+    {
+      "claim": "Operating as Empiric Earth from 15 September 2026; 98% of US roads, 50+ countries, 350,000+ connected sensors; data de-identified at capture",
+      "url": "https://empiricearth.com/empiric-earth-launches"
+    },
+    {
+      "claim": "About: the company holds and licenses the record; will not build licence-plate recognition, face recognition or person-level search, and will not sell personal data; live record and 'go and get whatever a customer is missing'",
+      "url": "https://empiricearth.com/about-us"
+    },
+    {
+      "claim": "Privacy centre: published standard for law-enforcement requests ('what we refuse, when we notify'), de-identification and capability disclosure pages",
+      "url": "https://empiricearth.com/privacy"
+    },
+    {
+      "claim": "Website terms: 'Product, device and data-licence agreements are separate contracts' (last modified 15 September 2026)",
+      "url": "https://empiricearth.com/legal/terms"
+    },
+    {
+      "claim": "Legal hub: published product agreements cover only the Nauto (Fleet Intelligence) solution; no World Intelligence data licence is published",
+      "url": "https://empiricearth.com/legal"
+    },
+    {
+      "claim": "Nexar developer portal: OAuth authorization code with PKCE against nexar.okta.com (auth server aus3qkg89t55hJZsT4x7); per-product scopes (frame:get, image:get, detection:find, detection:get); per-product Okta group gating; refresh-token exchange at external.getnexar.com/dev-portal/refresh-token",
+      "url": "https://developer.getnexar.com/static/js/main.821ebbae.js"
+    },
+    {
+      "claim": "Live Feed API v4: POST /api/livefeed/v4/detections on https://external.getnexar.com; Bearer token; real-time detections with camera GPS, evidence-frame timestamp, first and last recorded times and confidence scores; 'License: Proprietary'",
+      "url": "https://developer.getnexar.com/specs/livefeed.yaml"
+    },
+    {
+      "claim": "VirtualCam API: anonymized frames by bbox or H3 with date, quality, road type, time of day and heading filters; captured_at, gps_info and camera_heading per frame; coverage endpoint; 429 rate-limit response; v4 frames deprecated 31 March 2025",
+      "url": "https://developer.getnexar.com/specs/virtualcamera.yaml"
+    },
+    {
+      "claim": "Work Zones API v3: curated work-zone detections and single work zone",
+      "url": "https://developer.getnexar.com/specs/workzones.yaml"
+    },
+    {
+      "claim": "Road Inventory API v3: curated road-sign detections and single road sign",
+      "url": "https://developer.getnexar.com/specs/roadinventory.yaml"
+    },
+    {
+      "claim": "Okta authorization-server metadata: authorization-code grant, PKCE S256; only standard OIDC scopes advertised",
+      "url": "https://nexar.okta.com/oauth2/aus3qkg89t55hJZsT4x7/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "getnexar.com UCP profile is a Shopify dashcam store (shopping MCP at nexar-dashcam.myshopify.com), not a data service",
+      "url": "https://www.getnexar.com/.well-known/ucp"
+    },
+    {
+      "claim": "MCP Registry: no server for 'nexar' (search for 'empiric' also returned 0)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=nexar"
+    },
+    {
+      "claim": "Earlier Nexar enterprise page, still live: Collection On-Demand by geography, weather or behaviour; edge devices send only critical events; crowdsourced sensors",
+      "url": "https://www.nexar-ai.com/"
+    },
+    {
+      "claim": "Consumer site: faces, plates and pedestrians blurred on-device before road data leaves the camera; footage, including non-anonymized footage, used to train Nexar's safety AI; some sharing may be a 'sale' under US state privacy laws",
+      "url": "https://www.getnexar.com"
+    },
+    {
+      "claim": "Earlier Nexar real-time mapping page (2022): CityStream Live API for maps, images and alert streams; WorkZones, RoadInventory and VirtualCam; MTBV as a freshness metric",
+      "url": "https://mapping.getnexar.com/"
+    },
+    {
+      "claim": "Website terms s.6(e): no robots or automatic access to the website; data-licence agreements are separate contracts",
+      "url": "https://empiricearth.com/legal/terms"
+    },
+    {
+      "claim": "/verify covers model benchmarks (BADAS), not capture provenance",
+      "url": "https://empiricearth.com/verify"
+    }
+  ]
+}

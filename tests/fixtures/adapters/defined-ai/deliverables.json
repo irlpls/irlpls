@@ -1,0 +1,14 @@
+{
+ "deliverables": [
+  {
+   "projectId": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+   "deliverableId": "9b2d1c3e-1111-4222-8333-444455556666",
+   "type": "Partial",
+   "fileName": "batch-001.zip",
+   "createdTimestamp": "2026-10-20T08:00:00Z",
+   "isPartial": true,
+   "downloadCount": 0
+  }
+ ],
+ "totalCount": 1
+}

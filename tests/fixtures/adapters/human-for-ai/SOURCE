@@ -1,0 +1,2 @@
+services.json: live GET https://humanforai.dev/api/v1/services?limit=50 on 2026-10-28 (keyless, recorded once).
+task_delivered.json, task_submitted.json: fixture: documented-shape, from the Task schema in https://humanforai.dev/openapi.json (never called: GET /tasks/{id} needs a real task, and POST /tasks reaches a real operator).

@@ -1,0 +1,2 @@
+SOURCE: https://developers.hover.to/reference/create-capture-request.md, .../reference/show-capture-request-details.md,
+.../reference/show-job-details.md (read 2026-10-28). fixture: documented-shape (trimmed from the docs' sample responses).

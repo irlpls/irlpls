@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.irlpls/irlpls",
+  "title": "irlpls",
+  "description": "Read-only: find real-world data providers, read their Capture Cards, plan a request. Cannot order.",
+  "version": "0.1.0",
+  "websiteUrl": "https://irlpls.com",
+  "remotes": [
+    {"type": "streamable-http", "url": "https://irlpls.com/mcp"}
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "readOnly": true,
+      "logging": "none: no access log, no request bodies, no outbound calls (deploy/RUNBOOK.md)",
+      "tools": [
+        "irlpls_find_providers",
+        "irlpls_get_card",
+        "irlpls_list_capabilities",
+        "irlpls_request",
+        "irlpls_answer",
+        "irlpls_choose_provider",
+        "irlpls_get_job"
+      ],
+      "notHosted": [
+        "irlpls_submit",
+        "irlpls_discover",
+        "irlpls_quote",
+        "irlpls_order",
+        "irlpls_status",
+        "irlpls_deliver",
+        "irlpls_cancel"
+      ]
+    }
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "id": "natix",
+  "name": "NATIX Network",
+  "provider_url": "https://www.natix.network/",
+  "status": "unclaimed",
+  "tags": [
+    "dashcam",
+    "tesla",
+    "multi-camera",
+    "video",
+    "street",
+    "autonomous vehicles",
+    "world models",
+    "edge cases",
+    "simulation",
+    "map-features",
+    "depin"
+  ],
+  "summary": "Crowdsourced multi-camera (4-6 camera) driving video from Tesla owners who plug in NATIX's VX360 device, sold to Physical AI and autonomous-driving teams as raw footage with GPS, IMU and vehicle telemetry, VLM- and telemetry-mined edge cases, OpenSCENARIO/OpenDRIVE scenarios and map features. NATIX says it can run targeted collection for any region or location. Sales-led: data is requested through a form or hello@natix.io. The Drive& phone app was shut down on 1 July 2026, so phone dashcam data is no longer collected.",
+  "short": "Tesla multi-camera driving video from a contributor network, with targeted collection by request.",
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "targeted data collection for a region, location or use case",
+      "synchronized multi-camera (4-6 camera) driving video with GPS, IMU and vehicle telemetry",
+      "edge-case and long-tail clip extraction (telemetry events and VLM search)",
+      "safety-critical driving events from telemetry (harsh braking, acceleration, sharp turns)",
+      "OpenSCENARIO/OpenDRIVE 4D simulation scenarios",
+      "map features: road signs, lane markings, road geometry, infrastructure assets, POIs",
+      "custom AI detection models for an event of interest",
+      "historic data access"
+    ]
+  },
+  "pricing": {
+    "model": "Not published; contact sales",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "0 means not published. NATIX announced a 'six-figure' agreement for 3,000 hours of driving data (7 Oct 2026); that is one deal, not a price list. The $379 figure is the VX360 contributor device, not data."
+  },
+  "latency": {
+    "typical": "Unknown",
+    "notes": "No turnaround is published for targeted collection. The data page says 'You will the data in real-time fed to your system' and the home page mentions 'continuous data streams', with no figures and no public API."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Not published",
+    "notes": "Historic data access plus targeted collection. Contributor clips upload over Wi-Fi; the VX360 terms cut contributor points for uploads more than 24 hours after collection."
+  },
+  "coverage": {
+    "regions": [
+      "33 countries (self-reported, not listed)",
+      "Europe, North America and Japan (regions named for a 5.5K-hour, 28-country dataset)"
+    ],
+    "notes": "Tesla vehicles with a VX360 device only. Self-reported: 2,890,321 registered drivers, 1,932,230 km mapped, '165,000+' multi-camera hours (labelled 'monthly' on the home page, but NATIX's own blog gives about 198K-200K hours collected in total by Sept/Oct 2026, so read it as a total). Clips are not collected inside drivers' privacy zones, in sensitive locations (e.g. military sites, hospitals) or outside the time windows NATIX sets."
+  },
+  "licensing": {
+    "summary": "No commercial licence terms for buyers are published; deals are by agreement, and NATIX describes the business as data licensing for training and validating Physical AI. Contributors keep ownership of their uploads and grant NATIX a non-exclusive, worldwide licence to make commercial products from them. NATIX's privacy notice says it does not sell, publish or share identifiable footage with third parties; faces and plates are blurred where technically feasible. Free sample datasets on Hugging Face are under the 'NATIX Data RAIL-NC' licence: gated, non-commercial, 12-month term, no redistribution. None of this states AI-training or resale rights for purchased or commissioned data."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Contributors register with an email or SMS double opt-in and must be 18+; NATIX 'may require' more documents but documents no identity check. A support-led identity check existed for Drive& token withdrawals (app sunset April 2026); it is not applied to VX360 data."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Data comes only through a VX360 device onboarded to the NATIX companion app, and the terms say NATIX 'may check the phone for exploits or unauthorized software', but no check that is run, and no device or app attestation, is documented; nothing in the delivered data proves which device made it. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: VX360 copies footage from the Tesla's built-in exterior cameras (dashcam, Sentry Mode and VX360 clips); a Health Check flags non-unique clips. No signed capture or anti-injection method; NATIX is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "UTC timestamps in clip metadata; a 'GPS & Timestamp Evaluation' scores each kilometre for accurate, coherent metadata.",
+      "unknown": "The time source is not documented, and the terms say checks are not guaranteed for every epoch or user and may be disabled."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "GPS from the phone and vehicle in metadata; GPS spoofing is banned and scored by the same per-kilometre GPS & Timestamp Evaluation.",
+      "unknown": "Scoring thresholds are published but the method is not, and checks may be skipped. The whitepaper uses blockchain for incentives and governance, not to verify data."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "'multiple data validation techniques to confirm the accuracy and authenticity of the data'; a Health Check removes non-unique or obstructed clips; VLMs index scenes.",
+      "unknown": "The validation techniques are not named, and no per-delivery proof is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "None documented."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "rate_limits": "Not published",
+    "sdk": "Site mentions 'our robust API' and 'Historic Data Access' but publishes no API docs. Request data via the form on the data page or hello@natix.io.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No NATIX server in the official MCP Registry (searched 'natix' and 'vx360', 2026-10-26)."
+    },
+    "notes": "docs.natix.network covers only the whitepaper, the VX360 user manual and policies; no buyer API. No OAuth metadata at /.well-known on natix.network."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "'We can target any region or location. If you have data gaps and blindspots in a certain region, NATIX can help you with targeted data collection for the desired use-case.' No turnaround is stated."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": false,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "NATIX says customers pay for data 'in stable or fiat currencies' (stablecoins or fiat); the rail and terms are set per agreement. No online checkout."
+  },
+  "capture": {
+    "by": "contributors"
+  },
+  "requester": {
+    "checks": "The data request form asks for name, email, company and product category, and 'our representative will contact you upon review'. Free sample datasets need manual approval on Hugging Face and a pledge not to re-identify people or use the data for surveillance or law enforcement.",
+    "unknown": "What NATIX checks before a paid or targeted-collection deal, and whether it screens requests aimed at a specific place or person."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "sources": [
+    {
+      "claim": "Products (multi-camera 4-6 cameras, GPS/IMU/telemetry, anonymization), targeted data collection quote, 'robust API' and historic data access claims, request form and hello@natix.io, 'three continents', no price or licence",
+      "url": "https://www.natix.network/autonomous-driving-data"
+    },
+    {
+      "claim": "Network stats (registered drivers, km mapped, 165,000+ hours labelled monthly, 33 countries), VX360 $379, 'multiple data validation techniques', edge cases/OpenSCENARIO products",
+      "url": "https://www.natix.network/"
+    },
+    {
+      "claim": "Timeline: '+165K hours of multi-cam driving data collected', H1 2026 Drive& sunset, 33 countries",
+      "url": "https://www.natix.network/about"
+    },
+    {
+      "claim": "Drive& phone app earnings ended 1 May 2026 and operations ended 1 July 2026; focus moved to VX360",
+      "url": "https://www.natix.network/blog/closing-a-chapter-in-the-evolution-of-natix-network"
+    },
+    {
+      "claim": "Six-figure agreement for 3,000 hours; 200,000+ hours collected; customers pay in stable or fiat currencies",
+      "url": "https://www.natix.network/blog/natix-data-sale-world-model-lab"
+    },
+    {
+      "claim": "198K+ hours collected; Valeo dataset of 5.5K hours spanning 28 countries in Europe, North America and Japan; telemetry events dataset",
+      "url": "https://www.natix.network/blog/progress-update-natix-network-september-2026"
+    },
+    {
+      "claim": "Raw data contents (multi-camera video, GPS, IMU, telemetry), edge-case mining, 4D scenarios, map features",
+      "url": "https://docs.natix.network/whitepaper/natix-data-products/raw-data"
+    },
+    {
+      "claim": "Data sold in stable or fiat currencies; revenue from data licensing",
+      "url": "https://docs.natix.network/whitepaper/natix-economy/natix-economy-break-down/data-monetization-and-value-accrual"
+    },
+    {
+      "claim": "Blockchain used for governance, incentives and transparency",
+      "url": "https://docs.natix.network/whitepaper/natix-network-ecosystem/network-infrastructure"
+    },
+    {
+      "claim": "VX360 privacy zones, exterior cameras only, face and plate blurring, contributor incentives",
+      "url": "https://docs.natix.network/whitepaper/market-entry-products/natix-vx360"
+    },
+    {
+      "claim": "Contributor terms: footage types, collection exclusions (privacy zones, sensitive locations, time windows), registration and 18+, Health Check, GPS & Timestamp Evaluation, late-upload penalties, GPS-spoofing ban, device exploit checks, contributor licence grant",
+      "url": "https://docs.natix.network/policies/terms-vx360"
+    },
+    {
+      "claim": "Metadata includes GPS and timestamps; no sale or sharing of identifiable footage; blurring where technically feasible",
+      "url": "https://docs.natix.network/policies/privacy-notice"
+    },
+    {
+      "claim": "Sample dataset gating (manual approval, no re-identification or surveillance) and NATIX Data RAIL-NC licence (non-commercial, 12 months, no redistribution)",
+      "url": "https://huggingface.co/datasets/natix-network-org/natix-multi-camera-driving-dataset"
+    },
+    {
+      "claim": "No NATIX server in the MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=natix"
+    },
+    {
+      "claim": "NATIX is not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "Drive& withdrawals: support-guided identity verification; Drive& being shut down",
+      "url": "https://www.natix.network/blog/closing-a-chapter-in-the-evolution-of-natix-network"
+    }
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "id": "field-nation",
+  "name": "Field Nation",
+  "provider_url": "https://fieldnation.com",
+  "status": "unclaimed",
+  "short": "Dispatch an independent technician to a US or Canadian site, with GPS check-in, photos and sign-off.",
+  "summary": "Marketplace of independent field technicians (IT, networking, AV, POS, cabling, security, IoT) serving sites in the US and Canada. A buyer posts a work order with location, schedule and pay; a provider checks in on site, completes photo and signature tasks and logs time. REST v2 API (contract required) with work orders, GPS check-in, time logs, attachments, signatures and HMAC-signed webhooks.",
+  "tags": [
+    "field service",
+    "technician",
+    "on-site",
+    "work order",
+    "check-in",
+    "site visit",
+    "signature",
+    "inspection"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "text-report"
+    ],
+    "tasks": [
+      "site visit with completion photos",
+      "photo task (e.g. serial number photo)",
+      "site-contact signature capture",
+      "installation",
+      "break/fix",
+      "preventive maintenance and inspections",
+      "site survey",
+      "check-in at a location"
+    ]
+  },
+  "pricing": {
+    "model": "subscription (Plus, Premier, Enterprise) plus per-work-order pay set by the buyer (fixed or hourly)",
+    "from_usd": 0,
+    "unit": "work order",
+    "notes": "No figures published. Client API is an add-on on Plus and included on Premier; API use is billed per the signed Sales Order, with a set-up fee. Providers pay Field Nation a percentage of the work-order charges. All amounts in USD. Cancelling after a provider is assigned and dispatched may incur a fee."
+  },
+  "latency": {
+    "typical": "not published; 'Fill jobs in minutes with local, experienced techs' (coverage page) and 'same-day field service nationwide' (customer quote)",
+    "notes": "The buyer sets the service window per work order (exact time, between a window, or within N hours). No delivery SLA. Unreviewed completed work is deemed accepted after 15 days."
+  },
+  "coverage": {
+    "regions": [
+      "US",
+      "Canada"
+    ],
+    "areas": [
+      "US",
+      "CA"
+    ],
+    "notes": "About page: '425K+ sites serviced throughout the U.S. and Canada'. The coverage map is by US state and claims 'every ZIP code'. Density in Canada is not published. Payments in USD only; California buyers must meet credit requirements instead of prefunding."
+  },
+  "licensing": {
+    "summary": "Under the Standard Work Order Terms each Provider assigns to the Buyer all rights in the Work Product made in performing a work order, and Buyer Terms say work-order information is the Buyer's property; a buyer can vary these terms per work order. Field Nation does not own Buyer Data but takes a worldwide licence to use it for operating the Platform and 'related business purposes', and may use de-identified data for any purpose. The terms do not mention AI or ML training, or resale of deliverables (the resale ban in the User Agreement covers the Platform itself).",
+    "buyer_owns_output": true
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Providers are registered platform accounts with ratings and job history; Field Nation reserves the right to validate identity information; buyers can require certification, background-check or drug-test qualifications that providers must upload and have verified before requesting the work.",
+      "evidence_url": "https://developer.fieldnation.com/docs/rest-api/work-orders/execution/compliance/",
+      "unknown": "Buyer Terms say Field Nation 'does not and will not investigate Providers' and does not verify their skills, background or profile information. Who runs the screenings, and how identity is checked, is not published."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No app or device attestation. Providers 'typically upload completion photos via the mobile app', but the API also accepts uploads, check-ins, task completion and signatures, so nothing shows a photo came from the app. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No live-capture, EXIF or signed-capture handling documented; attachments carry only an upload time. Field Nation is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Check-in/check-out creates time logs with start.utc/end.utc, status pending/verified/disputed ('verified' = confirmed by buyer); on completion the system checks signature timestamps fall within the service window.",
+      "evidence_url": "https://developer.fieldnation.com/docs/rest-api/work-orders/execution/time-logs/",
+      "unknown": "Time logs can be created, edited and deleted via the API; attachments carry only an upload time, not a capture time."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "check_in carries location {lat,lng}, which 'is compared against the work order location to verify the provider is on-site'; a buyer can set require_gps to require GPS check-in.",
+      "evidence_url": "https://developer.fieldnation.com/docs/rest-api/work-orders/execution/time-logs/",
+      "unknown": "No distance threshold; check-out has no location; photos carry no coordinates; spoofing controls not described."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Required tasks (e.g. 'Take photo of serial number') and signatures must be completed before the provider marks work done; the buyer then approves, marks incomplete or disputes (workorder.status.approved).",
+      "evidence_url": "https://developer.fieldnation.com/docs/rest-api/work-orders/workflow/lifecycle/",
+      "unknown": "Review is by the buyer (or SmartAudit rules the buyer configures), not Field Nation; unreviewed work is deemed accepted after 15 days."
+    },
+    "corroboration": {
+      "level": "claimed",
+      "method": "A site contact can sign off on completion (name, title, signature image); on completion the system checks the required number of signatures and that names match the expected contacts.",
+      "evidence_url": "https://developer.fieldnation.com/docs/rest-api/work-orders/execution/signatures/",
+      "unknown": "Signatures are captured on the provider's device and can also be created via the API; nothing ties the signer's identity or presence to the site."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://developer.fieldnation.com/",
+    "base_url": "https://api.fieldnation.com/api/rest/v2",
+    "auth": [
+      {
+        "type": "oauth2",
+        "transport": "rest",
+        "dynamic_registration": false,
+        "env_var": "FIELDNATION_CLIENT_ID / FIELDNATION_CLIENT_SECRET",
+        "how_to_get": "Active buyer account plus an executed Integration Contract (Contact Sales). client_id/client_secret from Integration > Field Services > REST API v3 card; Company ID for the x-fn-company-id header. Token from POST https://api.fieldnation.com/authentication/api/oauth/token: the auth page shows a password grant (client_id, client_secret, username, password), while the prerequisites page says Client Credentials. Tokens last about 1 hour, with a refresh_token, and are passed as the access_token query parameter. Sandbox: https://api-sandbox.fndev.net/api/rest/v2 (separate credentials)."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/workorders",
+        "params": "title, types_of_work, location, pay, schedule, description, template, project",
+        "notes": "Creates a Draft. Then POST /workorders/{id}/publish (marketplace), /route or /mass-route (chosen providers), or /assignee (direct). Approve with POST /workorders/{id}/approve. No idempotency key documented."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/workorders",
+        "params": "list, f_state, f_project, f_created_date, sort, order, page, per_page, sticky=false"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/workorders/{id}",
+        "notes": "Status: Draft, Published, Routed, Assigned (sub-statuses On My Way, Checked In, Checked Out...), Work Done, Approved, Paid, Cancelled. Webhooks push the same changes."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/workorders/{id}/time_logs",
+        "notes": "Check-in/check-out times and verified status."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/workorders/{id}/attachments",
+        "notes": "Folders such as 'Completion Photos', with file link and created.utc."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/workorders/{id}/signatures"
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No MCP server found; the official MCP Registry has no entry for Field Nation (searched 2026-10-26)."
+    },
+    "rate_limits": "10 requests per second per token, with short bursts; 429 with Retry-After when exceeded.",
+    "notes": "200+ endpoints. API is available only to Buyers. 33 webhook events (e.g. workorder.status.checked_in, workorder.status.work_done, workorder.provider_upload), signed with HMAC-SHA256 in the x-fn-signature header, retried up to 7 times. No OAuth discovery documents are published.",
+    "self_serve": false
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "'Fill jobs in minutes with local, experienced techs' (coverage page) and a customer quote of 'same-day field service nationwide' (home page); the buyer sets the service window and no SLA is published."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "contract",
+    "rate_limit": {
+      "requests": 10,
+      "per_seconds": 1,
+      "scope": "per-key",
+      "notes": "Per token, with short bursts; 429 with Retry-After when exceeded.",
+      "source_url": "https://developer.fieldnation.com/docs/resources/faq/"
+    }
+  },
+  "payment": {
+    "methods": [
+      "prepaid_balance",
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "To post work a buyer must deposit funds with Field Nation or meet its credit requirements (California buyers must use credit). Field Nation pays providers on the buyer's behalf after approval, typically weekly on Friday. API fees are invoiced per the Sales Order, due in 30 days unless stated. USD only. No agent-native payment rail."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "checks": "Buyers register an account with accurate, verifiable information; Field Nation may validate identity, email and financial information, and requires sanctions/export-control representations, a W-9 or W-8BEN before marketplace access, and funds on deposit or credit approval. API use also needs a signed Integration Contract.",
+    "unknown": "Whether Field Nation reviews what a work order asks the provider to do or photograph is not published; Buyer Terms say the buyer exclusively controls work-order content."
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Base URLs, OAuth 2.0 (Client Credentials or User based), full work-order lifecycle automation",
+      "url": "https://developer.fieldnation.com/docs/rest-api/introduction/"
+    },
+    {
+      "claim": "Password grant, token URL, 1-hour tokens, access_token query parameter",
+      "url": "https://developer.fieldnation.com/docs/rest-api/getting-started/authentication/"
+    },
+    {
+      "claim": "Buyer account and Integration Contract required; credentials location; x-fn-company-id; Client Credentials grant",
+      "url": "https://developer.fieldnation.com/docs/getting-started/prerequisites/"
+    },
+    {
+      "claim": "200+ endpoints, 30+ webhook events",
+      "url": "https://developer.fieldnation.com/"
+    },
+    {
+      "claim": "Rate limit 10 requests/second per token; API only for Buyers; sandbox",
+      "url": "https://developer.fieldnation.com/docs/resources/faq/"
+    },
+    {
+      "claim": "429 with Retry-After",
+      "url": "https://developer.fieldnation.com/error-codes/rate-limit-exceeded/"
+    },
+    {
+      "claim": "List/filter endpoint parameters",
+      "url": "https://developer.fieldnation.com/docs/rest-api/getting-started/basics/"
+    },
+    {
+      "claim": "Create work order payload; schedule modes",
+      "url": "https://developer.fieldnation.com/docs/rest-api/work-orders/basics/create/"
+    },
+    {
+      "claim": "GET /workorders/{id}; require_gps; cancellation fee",
+      "url": "https://developer.fieldnation.com/docs/rest-api/work-orders/basics/operations/"
+    },
+    {
+      "claim": "Statuses, publish/route/assign/approve/incomplete",
+      "url": "https://developer.fieldnation.com/docs/rest-api/work-orders/workflow/lifecycle/"
+    },
+    {
+      "claim": "Check-in lat/lng compared with site, time logs, verified status",
+      "url": "https://developer.fieldnation.com/docs/rest-api/work-orders/execution/time-logs/"
+    },
+    {
+      "claim": "Completion photos via mobile app; attachment fields",
+      "url": "https://developer.fieldnation.com/docs/rest-api/work-orders/communication/attachments/"
+    },
+    {
+      "claim": "Photo tasks required for closing",
+      "url": "https://developer.fieldnation.com/docs/rest-api/work-orders/execution/tasks/"
+    },
+    {
+      "claim": "Site-contact signatures; completion checks on count, names and timestamp",
+      "url": "https://developer.fieldnation.com/docs/rest-api/work-orders/execution/signatures/"
+    },
+    {
+      "claim": "Qualification and screening requirements; providers must have verified qualifications",
+      "url": "https://developer.fieldnation.com/docs/rest-api/work-orders/execution/compliance/"
+    },
+    {
+      "claim": "Weekly Friday payment after approval; buyer reviews deliverables",
+      "url": "https://developer.fieldnation.com/docs/getting-started/platform-overview/"
+    },
+    {
+      "claim": "Webhooks, 33 events, HMAC-SHA256, retries",
+      "url": "https://developer.fieldnation.com/docs/webhooks/introduction/"
+    },
+    {
+      "claim": "x-fn-signature header",
+      "url": "https://developer.fieldnation.com/docs/webhooks/guides/security/"
+    },
+    {
+      "claim": "Subscription tiers, no prices; Client API add-on on Plus; prefunding; W-9/W-8BEN",
+      "url": "https://fieldnation.com/pricing"
+    },
+    {
+      "claim": "Work types; 'same-day field service nationwide' customer quote",
+      "url": "https://fieldnation.com/"
+    },
+    {
+      "claim": "425K+ sites serviced throughout the U.S. and Canada",
+      "url": "https://fieldnation.com/about"
+    },
+    {
+      "claim": "Coverage by US state, every ZIP code; 'Fill jobs in minutes'",
+      "url": "https://fieldnation.com/coverage-map"
+    },
+    {
+      "claim": "User Agreement, Buyer Terms, Standard Work Order Terms (Work Product assigned to Buyer), Integration and API Agreement (Sales Order, set-up fee, 30-day invoices)",
+      "url": "https://app.fieldnation.com/legal/"
+    },
+    {
+      "claim": "No MCP Registry entry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=fieldnation"
+    },
+    {
+      "claim": "Not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "adapter": "field_nation"
+}

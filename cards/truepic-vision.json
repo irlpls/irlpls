@@ -1,0 +1,275 @@
+{
+  "id": "truepic-vision",
+  "name": "Truepic Vision",
+  "provider_url": "https://truepic.com",
+  "status": "unclaimed",
+  "adapter": "truepic-vision",
+  "short": "Texts or emails a person at the place a capture link; photos are checked for time, GPS spoofing and device integrity.",
+  "summary": "Truepic Vision sends the person at a property, vehicle or piece of equipment a capture link by text or email. They take photos and videos in the Truepic Vision app or a mobile browser. Each photo comes back with pass/warn/fail results: device time against server time, GPS spoofing, distance from the address, signed capture details, upload integrity, rooted or jailbroken phones (app only), and photos of a screen. Results arrive by API or webhook, with an optional PDF report and AI analysis. Access is sold to businesses with a $1,000/month minimum, and API credentials come only after Truepic sets up the organisation. The service has US and UK/Europe regions.",
+  "tags": [
+    "inspection",
+    "insurance",
+    "lending",
+    "occupant capture",
+    "fraud detection",
+    "content credentials"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "text-report"
+    ],
+    "tasks": [
+      "virtual property/vehicle/equipment inspection",
+      "photo and video capture from a guided list",
+      "short-answer and multiple-choice questions",
+      "capture limited to a set distance from an address (geofencing)",
+      "request more photos on an inspection",
+      "reminders to start or finish",
+      "PDF report",
+      "optional AI analysis (object, odometer, VIN, text detection)"
+    ]
+  },
+  "capture": {
+    "by": "subject"
+  },
+  "pricing": {
+    "model": "monthly minimum or annual subscription + per inspection",
+    "from_usd": 5,
+    "unit": "inspection (Flex plan, product recall & warranty; the $1,000/month minimum includes an allotment)",
+    "notes": "Flex: month-to-month. The $1,000/mo minimum is one invoice that includes a use-case allotment (e.g. 200 recall inspections at $5); inspections above it bill at the plan rate. Per-inspection rate by use case: product recall $5, insurance underwriting $16–$48, home lending $29, auto warranty $36, construction lending $39, insurance claims $48, equipment financing and business credentialing $51. Standard (annual): headline $1,450/mo at $58/inspection for 300/yr; use-case tiers run down to $2/inspection for product recall at 50,000+/yr; overage $28–$65 by tier. Enterprise above 10,000/yr is custom. One Virtual Inspection covers up to 100 images from one person for one event; every further 100 images counts as another. AI Analysis is billed separately per subject."
+  },
+  "coverage": {
+    "regions": [
+      "US (vision-api.truepic.com)",
+      "Europe (UK region, vision-api.truepic.uk)"
+    ],
+    "notes": "The regions are where the data is hosted, not where capture can happen. Capture happens wherever the recipient is. Links go out by email or SMS. SMS defaults to US numbers, and GB, IT, DE, NL and FR need a sender number set up by Truepic. Native-app languages: English, British English, Spanish, French (CA, FR), German, Portuguese (PT), Italian, Greek. The web app is English only."
+  },
+  "licensing": {
+    "summary": "Terms of Service §3.2: \"As between Truepic and Customer, Customer owns all right, title, and interest in and to the Customer Content\" (photos, data and other content from Customer or its End Users). Truepic gets a licence during the term to use the content \"to provide and improve the Services and to create the Aggregated Anonymous Data\", which it may use \"for any lawful purpose\". Reports (\"analytics, data, and output generated from an inspection\", including AI Output) are part of the Services, which Truepic owns. §4.4 bars selling, sublicensing or providing the Services to third parties and bars modifying any Report. Content from AI Analysis is 'not used to train or improve generalized AI models' (Additional Product Terms). The terms do not mention resale of the captured photos, or AI training by the buyer.",
+    "buyer_owns_output": true,
+    "vendor_trains_on_data": "yes"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Whoever opens the link does the capture. The buyer supplies their name and phone or email, and Truepic does not document any identity check on them."
+    },
+    "application": {
+      "level": "claimed",
+      "method": "Truepic Lens capture in the Vision app or web app. capture_integrity_result checks the signed details, data_result checks the upload. jailbreak_result and device attestation (AppAttest/SafetyNet) run in the native apps only.",
+      "unknown": "These are Truepic's own results. Its signing certificates chain to Truepic's own CA, which is not on the C2PA Trust List, and Truepic is not on the C2PA Conforming Products List. The web app signs on the server and has no root detection or attestation. SafetyNet is deprecated by Google in favour of Play Integrity."
+    },
+    "camera": {
+      "level": "claimed",
+      "method": "Lens signs each capture with content credentials (C2PA manifest): on-device with a device key in the native Vision apps, server-side in the web app, Lens Web SDK and Embedded Vision. capture_integrity_result checks the signed details ('Securely signed; tamper-proof').",
+      "unknown": "Truepic is not on the C2PA Conforming Products List and its CA is not on the C2PA Trust List (checked 2026-10-28), so a validator will not report the manifest as Trusted. Web captures are signed on Truepic's server, not on the device. No revocation policy for signing keys is documented. Signing does not detect a re-photographed screen; pop_result (under content) is a model's verdict.",
+      "standard": "c2pa"
+    },
+    "time": {
+      "level": "claimed",
+      "method": "time_result: device time within 5 minutes of server time and not modified. The time is signed into the capture's content credentials.",
+      "unknown": "The signature chains to Truepic's own CA, not the C2PA Trust List, and no RFC 3161 time-stamp is documented. The buyer has to trust Truepic's check."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "geolocation_result (GPS spoofing check); distance_from_customer_address_exceeds_threshold; optional geofencing; Risk Network falsified_location insight",
+      "unknown": "Location comes from the phone and can still be spoofed. Truepic's spoof detection is its own, and the web app has no sensor data."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Integrity: content credentials and capture_integrity_result (signed details verified; the upload checked by data_result). Depiction: pop_result flags photos of a screen or a print; optional object_detection_result and content_analysis_result (odometer, VIN, text); optional AI Analysis.",
+      "unknown": "Truepic calls AI Output probabilistic and \"not a definitive determination\". The default checks cover tampering, not whether the photo shows the right thing. Integrity rests on Truepic's own CA; depiction checks (pop_result, object and content analysis) are detector verdicts and cannot raise content above claimed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent confirms the capture. The Risk Network flags devices that other customers have flagged, which is a fraud signal, not confirmation."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://vision.truepic.dev/docs/",
+    "base_url": "https://vision-api.truepic.com/v3",
+    "auth": [
+      {
+        "type": "oauth2",
+        "how_to_get": "Truepic sets up the organisation after a demo (no self-serve sign-up, no sandbox). An admin then generates client_id and client_secret under Dashboard > Settings > API Integration. Swap them at https://vision-auth.truepic.com/oauth/token (client_credentials, audience https://vision-api.truepic.com) for a Bearer JWT that lasts 72 hours. The UK region uses vision-auth.truepic.uk.",
+        "header": "Authorization",
+        "scopes": [],
+        "dynamic_registration": false,
+        "transport": "rest"
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/inspections",
+        "params": "team_id, inspection_type_id, customer_first_name, customer_last_name, custom_field_values, send_methods {text,email}, customer_phone_number, customer_email_address",
+        "notes": "The response includes inspection_link. Texts and emails go to real recipients, even in testing."
+      },
+      {
+        "action": "order",
+        "method": "PUT",
+        "path": "/text/request",
+        "notes": "Request more photos or videos on an existing inspection"
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/inspections/{inspectionId}",
+        "notes": "Status, result.verification_result, and per-photo test results and media URLs (signed and time-limited)"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/inspections"
+      },
+      {
+        "action": "fetch",
+        "method": "POST",
+        "path": "/inspections/{inspectionId}/export",
+        "notes": "PDF report (a GET form also exists)"
+      }
+    ],
+    "rate_limits": "20 requests / 10 s across all endpoints",
+    "self_serve": false,
+    "notes": "Public OpenAPI 3.0 at https://vision-api.truepic.com/v3/open-api (version 3.91.0). Webhooks report status changes and test results. A no-key embeddable website form can also create inspections. No MCP server."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Truepic home page: \"21 hour Average turnaround time\"; capture happens when the recipient opens the link."
+  },
+  "latency": {
+    "typical": "Average turnaround 21 hours (Truepic's figure)",
+    "notes": "The person at the place does the capture, from a link, so timing depends on them. An inspection that isn't finished in time expires: it goes to Ready for Review if any capture was made, otherwise it is Canceled."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract",
+    "automation_allowed": true,
+    "notes": "Truepic's Acceptable Use Policy bars bots, scripts and automated tools 'without Truepic's express prior written authorization'; the documented API is a customer feature, so an API customer gets that authorization through its Order Form (medium confidence)."
+  },
+  "payment": {
+    "methods": [
+      "invoice",
+      "card"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Fees are set by an Order Form and invoiced, or charged to a card on file (a \"Recurring Payment Method\"). Flex is billed monthly in arrears."
+  },
+  "requester": {
+    "checks": "Only business customers with an Order Form. The AUP bans impersonation, uploading personal information without consent, and falsifying results.",
+    "unknown": "No documented check of who a customer sends links to, or why."
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Per-photo verification tests (time, geolocation, distance, capture integrity, data transfer, device integrity, picture of screen, optional content tests)",
+      "url": "https://vision.truepic.dev/docs/verification-tests.md"
+    },
+    {
+      "claim": "No self-serve sign-up or sandbox; native app, web app and WebView options; Lens attaches content credentials; app languages",
+      "url": "https://vision.truepic.dev/docs/getting-started.md"
+    },
+    {
+      "claim": "Device attestation, root detection and on-device signing only in native apps; web signs server-side; photos and videos",
+      "url": "https://vision.truepic.dev/docs/compare-integration-approaches.md"
+    },
+    {
+      "claim": "Rate limit 20 requests / 10 s; OAuth 2.0 client credentials per organisation; no self-serve sandbox; real SMS/email in testing",
+      "url": "https://vision.truepic.dev/docs/api-overview.md"
+    },
+    {
+      "claim": "Credentials generated by an admin in the Dashboard; token endpoint; 72-hour tokens",
+      "url": "https://vision.truepic.dev/docs/get-api-access.md"
+    },
+    {
+      "claim": "US and Europe (UK) regions, base and auth URLs",
+      "url": "https://vision.truepic.dev/docs/regions.md"
+    },
+    {
+      "claim": "POST /inspections fields; SMS countries US, GB, IT, DE, NL, FR",
+      "url": "https://vision.truepic.dev/docs/create-inspections.md"
+    },
+    {
+      "claim": "Endpoint list, servers and security schemes (OpenAPI 3.91.0)",
+      "url": "https://vision-api.truepic.com/v3/open-api"
+    },
+    {
+      "claim": "OAuth authorization server metadata: no registration_endpoint",
+      "url": "https://vision-auth.truepic.com/.well-known/oauth-authorization-server"
+    },
+    {
+      "claim": "Inspection expiry behaviour",
+      "url": "https://vision.truepic.dev/docs/inspection-statuses.md"
+    },
+    {
+      "claim": "Geofencing near the address",
+      "url": "https://vision.truepic.dev/docs/inspection-types.md"
+    },
+    {
+      "claim": "Truepic signs with its own CA (Lens API, C2PA JUMBF manifest)",
+      "url": "https://vision.truepic.dev/docs/lens-api.md"
+    },
+    {
+      "claim": "Risk Network insights (falsified_location, flagged devices)",
+      "url": "https://vision.truepic.dev/docs/risk-network.md"
+    },
+    {
+      "claim": "Flex, Standard and Enterprise prices and per-use-case rates",
+      "url": "https://www.truepic.com/pricing"
+    },
+    {
+      "claim": "21-hour average turnaround; capture via email or text link in browser or app",
+      "url": "https://www.truepic.com/"
+    },
+    {
+      "claim": "Customer owns Customer Content; Truepic licence to improve Services; resale and Report-modification restrictions; invoicing and card payment",
+      "url": "https://www.truepic.com/terms-of-service"
+    },
+    {
+      "claim": "Virtual Inspection billing unit; AI Analysis content not used to train generalized models",
+      "url": "https://www.truepic.com/additional-product-terms"
+    },
+    {
+      "claim": "May use anonymized, de-identified content to train internal AI models",
+      "url": "https://www.truepic.com/privacy-policy"
+    },
+    {
+      "claim": "AUP: no automated tools without express prior written authorization; no impersonation or falsified results",
+      "url": "https://www.truepic.com/acceptable-use-policy"
+    },
+    {
+      "claim": "Truepic absent from the C2PA Conforming Products List",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "Truepic absent from the C2PA Trust List",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/trust-list/C2PA-TRUST-LIST.pem"
+    },
+    {
+      "claim": "Lens: content credentials on every capture; on-device signing in native apps, server-side signing on web; AppAttest/SafetyNet in native apps",
+      "url": "https://vision.truepic.dev/docs/compare-integration-approaches.md"
+    },
+    {
+      "claim": "Capture Integrity test: 'Securely signed; tamper-proof'",
+      "url": "https://vision.truepic.dev/docs/verification-tests.md"
+    },
+    {
+      "claim": "C2PA Conforming Products List (Truepic not listed, checked 2026-10-28)",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+  ]
+}

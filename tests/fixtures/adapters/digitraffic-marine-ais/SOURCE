@@ -1,0 +1,2 @@
+locations.json: live GET https://meri.digitraffic.fi/api/ais/v1/locations?latitude=60.15000&longitude=24.95000&radius=10&from=<now-30min ms> (Digitraffic-User: irlpls/0.1) on 2026-10-28, trimmed to the 12 of 45 features nearest the point.
+vessels.json: live GET https://meri.digitraffic.fi/api/ais/v1/vessels/{mmsi} for the 5 nearest vessels on 2026-10-28, stored as {mmsi: response}.

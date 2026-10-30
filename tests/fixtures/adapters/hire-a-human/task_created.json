@@ -1,0 +1,10 @@
+{
+  "_fixture": "documented-shape",
+  "_source": "https://hire-a-human.ai/blog/ai-agent-marketplace-mcp-rest-api-guide POST /api-tasks",
+  "_note": "No response body is published; this shape is a placeholder and is not parsed beyond being returned as is.",
+  "response": {
+    "id": "task-1",
+    "title": "Photograph storefront at 123 Main St",
+    "status": "open"
+  }
+}

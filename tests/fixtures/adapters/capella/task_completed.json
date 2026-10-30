@@ -1,0 +1,37 @@
+{
+ "properties": {
+  "taskingrequestId": "45b0e94b-6107-4671-ab13-d526e45d88c2",
+  "statusHistory": [
+   {
+    "time": "2022-12-05T15:12:00.811Z",
+    "code": "completed",
+    "message": "Tasking request has been completed."
+   },
+   {
+    "time": "2022-12-05T15:06:00.321Z",
+    "code": "accepted",
+    "message": "Request can be completely satisfied during validity window."
+   },
+   {
+    "time": "2022-12-05T15:05:00.264Z",
+    "code": "active",
+    "message": "Collections will begin but full coverage cannot be guaranteed at this time."
+   },
+   {
+    "time": "2022-12-05T15:04:31.558Z",
+    "code": "submitted",
+    "message": "Customer has approved the tasking request."
+   },
+   {
+    "time": "2022-12-05T14:33:25.394Z",
+    "code": "review",
+    "message": "Tasking request ready for review."
+   },
+   {
+    "time": "2022-12-05T14:32:05.847Z",
+    "code": "received",
+    "message": "Request created"
+   }
+  ]
+ }
+}

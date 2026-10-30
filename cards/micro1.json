@@ -1,0 +1,192 @@
+{
+  "id": "micro1",
+  "name": "micro1",
+  "provider_url": "https://www.micro1.ai",
+  "status": "unclaimed",
+  "short": "Robotics training data to order: first-person video of everyday and trade tasks, recorded by vetted paid contractors.",
+  "tags": [
+    "robotics",
+    "physical AI",
+    "egocentric video",
+    "POV",
+    "human demonstrations",
+    "manipulation",
+    "skilled trades",
+    "household tasks",
+    "managed service",
+    "training data",
+    "custom collection"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "first-person (POV) and third-person video of domain experts performing real-world tasks",
+      "household task demonstrations recorded at home with a head-mounted smartphone (cooking, laundry, organising, packing, using basic tools)",
+      "skilled-trade demonstrations on real job sites (electrical, plumbing, carpentry, vehicle maintenance, valve and fixture replacement)",
+      "expert environment datasets: repair, assembly, industrial workflows, logistics, field operations",
+      "synchronised stereo video, IMU and multi-camera capture",
+      "robot interaction data captured in micro1's controlled robotics deployment lab",
+      "post-capture structuring: action-level annotation, temporal segmentation, hand/object interactions, 2D/3D annotation, tracking, QC and evaluation"
+    ]
+  },
+  "pricing": {
+    "model": "Quote after contact",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "No buyer pricing is published; the robotics page has only a 'Get in touch' form. For scale only: contributors are paid per approved hour of recorded video (at-home recorder postings list $13-15/hour; a plumber posting lists $20-30/hour). That is labour cost, not a price."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "No turnaround is stated. Contributors submit recordings on their own schedule and are paid biweekly for approved work; postings say start dates depend on shipping head-strap equipment."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Recorded after a project is set up and contributors are onboarded",
+    "notes": "MIT Technology Review reports micro1 says it holds tens of thousands of hours of footage; whether existing footage is also sold is not stated by micro1."
+  },
+  "coverage": {
+    "regions": [
+      "global contributor network (50+ countries reported)",
+      "US (specific at-home recording projects)",
+      "real job sites and contributors' homes"
+    ],
+    "notes": "The everyday-tasks page says 'Open to everyone, globally'. MIT Technology Review (Apr 2026) reports thousands of contract workers in more than 50 countries, including India, Nigeria and Argentina. Some current at-home postings are limited to listed US states and US work eligibility. micro1 publishes no list of countries where it will collect for a buyer."
+  },
+  "licensing": {
+    "summary": "No buyer-facing terms for robotics data are published; the Legal Center lists website, cookie, candidate and referral terms, and a 'Contractor Terms' heading with no document. The Data License Master Terms (undated on the page; binding only on an executed Order Form) govern data licensed TO micro1 by partner companies: they grant micro1 a perpetual, multi-tier sublicensable licence including AI training, and bar reselling that data as a standalone product. They do not cover data micro1 collects for a buyer. Contributor consent: per MIT Technology Review, workers know their footage trains robots but are not told which clients receive it."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Contributors pass an AI interview (Zara) and a device compatibility check, then a third-party identity check (scan of the physical ID plus a selfie matched to it; vendor not named) before a contract is issued.",
+      "unknown": "How identity checks are done and whether each recording is tied to a verified person is not published; consent terms for recorded footage are not published.",
+      "evidence_url": "https://library.micro1.ai/getting-started/next-steps-after-certification"
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Recording is limited to listed phones (iPhone 12 or later, Pixel 6-9, Galaxy S21 or later) on a head strap; a phone allowlist is not attestation, and no capture app or device attestation is documented. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Head-mounted smartphone camera for POV video; synchronised stereo video, IMU and multi-camera pipelines for some projects. No C2PA or signed capture; micro1 is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No signed or independently time-stamped capture times are documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is documented; recordings are made in contributors' homes or job sites."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Contributors follow written instructions (hands visible, natural speed); each video is reviewed by AI and a human and accepted or rejected; only approved recordings are paid; unsafe task performance is rejected.",
+      "unknown": "Acceptance criteria and QC results are not published."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of collected data is documented."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Submit the 'Get in touch' form on micro1.ai/robotics describing the project; work is agreed with sales."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No MCP server found; no micro1 entry in the official MCP Registry (searched 'micro1', 2026-10-26)."
+    },
+    "notes": "No public buyer API for ordering or quoting data collection is documented."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No turnaround is published. The robotics page offers only 'Get in touch'; contributor pages say recordings are made 'on your own schedule'."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No buyer payment terms or methods are published; there is no self-serve purchase."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "requester": {
+    "unknown": "micro1 publishes no check of who commissions robotics data or for what. Its data-partnership pages say partner company data is licensed only to labs and enterprises in the US and allied countries; no such statement is made for robotics collection."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "micro1 collects robotics training data to order: first-person and third-person video of people doing household chores and skilled trade work, recorded on head-mounted phones by paid, AI-interviewed contractors, plus multi-camera and IMU capture and a robotics deployment lab. It also annotates and QCs the footage. Sales only: no prices, turnaround or buyer licence terms are published.",
+  "sources": [
+    {
+      "claim": "Expert-demonstrated POV and third-person capture; dataset structuring (labeling, tracking, 2D/3D annotation, QC); full-stack deployment lab; human demonstration pipelines; expert environment datasets (repair, assembly, industrial, logistics, field operations); synchronised stereo video, IMU, multi-camera; 'Get in touch' form",
+      "url": "https://www.micro1.ai/robotics"
+    },
+    {
+      "claim": "Household tasks recorded from point of view at home; 'Open to everyone, globally'; paid for approved recordings; AI interview, onboarding, instructions, biweekly pay",
+      "url": "https://www.micro1.ai/experts/everyday-tasks"
+    },
+    {
+      "claim": "Trade tasks recorded on real job sites with wearable camera or phone (electrical, plumbing, carpentry, vehicle maintenance, valve and fixture replacement); plumbers $20-30/hour",
+      "url": "https://www.micro1.ai/get-paid-to-record-tasks"
+    },
+    {
+      "claim": "At-home recorder posting: listed US states, US work eligibility, compatible phones (iPhone 12+, Pixel 6-9, Galaxy S21+), head strap, paid per hour of recorded video in line with guidelines, device check, AI interview, identity verification within 48 hours before contract; rate $13-15/hour",
+      "url": "https://jobs.micro1.ai/post/0f435bd2-e7f0-4d24-9e32-de34b71c2a97"
+    },
+    {
+      "claim": "Data-Video Generalist (US) posting: same recording setup and requirements",
+      "url": "https://jobs.micro1.ai/post/204600bf-1abe-4ab0-a474-cd2264999149"
+    },
+    {
+      "claim": "Thousands of contract workers in 50+ countries incl. India, Nigeria, Argentina; iPhones on heads; vetted by Zara; weekly video submissions reviewed by AI and a human, accepted or rejected; faces and personal info removed; unsafe task videos rejected; clients not disclosed to workers; tens of thousands of hours of footage; $15/hour",
+      "url": "https://www.technologyreview.com/2026/04/01/1134863/humanoid-data-training-gig-economy-2026-breakthrough-technology/"
+    },
+    {
+      "claim": "Legal Center lists website, cookie, candidate and referral terms and a 'Contractor Terms' heading without a document; no buyer terms",
+      "url": "https://www.micro1.ai/legal"
+    },
+    {
+      "claim": "Data License Master Terms govern data licensed to micro1 by a Licensor (AI-training and sublicensing grant, standalone-resale ban)",
+      "url": "https://www.micro1.ai/legal/data-license-master-terms"
+    },
+    {
+      "claim": "Company data partnerships: data licensed only to US and allied-country labs and enterprises",
+      "url": "https://www.micro1.ai/data-partnerships"
+    },
+    {
+      "claim": "Product index; robotics data collection listed under Data Engine",
+      "url": "https://www.micro1.ai/llms.txt"
+    },
+    {
+      "claim": "No micro1 server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=micro1"
+    },
+    {
+      "claim": "micro1 not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    },
+    {
+      "claim": "Third-party identity check: scan of the physical ID plus a selfie; micro1 never sees the documents",
+      "url": "https://library.micro1.ai/getting-started/next-steps-after-certification"
+    }
+  ]
+}

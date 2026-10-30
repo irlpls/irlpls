@@ -1,0 +1,327 @@
+{
+  "id": "hivemapper",
+  "name": "Bee Maps (Hivemapper)",
+  "status": "unclaimed",
+  "tags": [
+    "street",
+    "dashcam",
+    "video",
+    "imagery",
+    "road",
+    "signs",
+    "map-features",
+    "ai-events",
+    "burst"
+  ],
+  "summary": "Dashcam street-level imagery network run by Hivemapper, Inc. (dba Bee Maps). Contributors drive with Bee cameras and, since August 2026, are paid by default in USDC funded by Bee Maps. Data is sold through the Bee Maps Data API: imagery, ML-detected road features, AI event videos, and on-demand collection (Burst and video requests) for a chosen location.",
+  "short": "A dashcam network that can be asked for fresh imagery or video of a specific street.",
+  "provider_url": "https://beemaps.com",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "street-level imagery by polygon (latest, or a specific week)",
+      "road feature detections (speed limit and stop signs, fire hydrants, traffic lights, parking and turn restrictions, crosswalks)",
+      "AI event videos (harsh braking, aggressive acceleration, swerving, high speed, high g-force, stop sign violation) with GPS traces and IMU data",
+      "on-demand imagery collection (Burst) for a point and radius",
+      "on-demand video request for a polygon or a driven line within a time window"
+    ]
+  },
+  "pricing": {
+    "model": "consumption-based, prepaid balance, no upfront commitment",
+    "from_usd": 0.005,
+    "unit": "street-level image",
+    "notes": "Public rate card: imagery $0.005 per image; AI event videos $6 per video; road detections $3 per 1,000 detections; Burst $1 per location, paid only when the location is mapped. The price of a /requestVideo order is not published. Bee Edge AI is priced separately ($15/device/month own devices; $0.02/km network devices). Prepaid API balance; add funds $5 to $1,000 through Stripe checkout; new accounts get $20 free credits with no card required. Price increases take effect 14 days after posting."
+  },
+  "latency": {
+    "typical": "Archive imagery days to weeks old; Burst results within hours in urban areas, days in rural areas",
+    "notes": "Per the Data API guide. No SLA or measured latency is published, and Burst timing is described qualitatively. A Burst location stays active for a validity window (the reference example is 30 days); a /requestVideo order expires if no qualifying video is recorded before validUntil."
+  },
+  "coverage": {
+    "regions": [
+      "Global imagery (100+ countries)",
+      "Road detections: US, EU, UK",
+      "Burst: global, depends on local driver density"
+    ],
+    "notes": "Provider states 754M total km mapped, 22M unique km and 37% of world roads (beemaps.com counters, self-reported; the API reference says 36%). Density per region is not published in the pages read. Max query area 5 sq km per request. 'Global' (areas *) means no country limit is applied, but the provider claims '100+ countries', not every country.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "The Data Products Terms of Service (Q4 2025) grant a non-exclusive, non-sublicensable, non-transferable right to use the Bee Maps Data Products only in connection with the customer's own Implementations (products that interoperate with the APIs). The customer may not transfer, distribute, resell, lease or (sub)license the Services or Data Products, use them to build a competing product or for benchmarking, and must protect them from scraping. Bee Maps and its licensors exclusively own all rights in the Data Products. The terms do not mention AI or ML training; the docs market AI event videos and imagery for model training; neither is licence text. The terms also bar creating derivative works of the Data Products, so do not read marketing talk of derived datasets as a right.",
+    "resale": "forbidden",
+    "buyer_owns_output": false
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Capture is passive dashcam recording. Contributors get random three-word usernames and sign in by email; no identity or uniqueness check of contributors is documented."
+    },
+    "application": {
+      "level": "claimed",
+      "method": "Only approved Open Camera devices contribute; the network assigns each new device low trust that rises as it passes visual challenges and agrees with other devices (server-side reputation, not cryptographic attestation).",
+      "unknown": "No hardware or firmware attestation is published. These are Hivemapper Network reward checks; whether they still apply after Bee Maps ended its services agreement with the Hivemapper Foundation (July 2026), and whether API data is filtered by them, is not stated."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Imagery comes from Bee Maps' own dashcam hardware; the network's vision-based consensus is described as defending against AI-generated imagery and replay attacks. No hardware-level signing or attestation is published, and Bee Maps is not on the C2PA conforming products list. Whether a single unverified device's imagery can reach API results is unknown."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each frame and video carries a device timestamp; network consensus treats observations as valid when independent devices agree at the same location and time window.",
+      "unknown": "The clock source and any trusted time-stamping are not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Dual-band (L1/L5) GNSS module with embedded security; frames return GNSS quality metrics (gdop, hdop, pdop, eph, cno) and IMU data; contributions are checked at the H3 hex level against other devices.",
+      "unknown": "Resistance to GNSS spoofing and how the accuracy metrics are derived are not documented. The Helium-hotspot location check described in older Hivemapper posts could not be fetched and is not relied on."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Road features are ML detections returned with confidence scores, detection counts and first/last-seen dates; faces, bodies, vehicles and licence plates are blurred on the device.",
+      "unknown": "Confidence calibration, error rates, and any human review of detections are not published."
+    },
+    "corroboration": {
+      "level": "claimed",
+      "method": "Vision-based consensus: observations from multiple independent devices at the same hex and time window are cross-referenced, with device-diversity weighting and de-duplication of devices in the same vehicle.",
+      "unknown": "In low-traffic areas there may be too little overlap for consensus. Whether imagery sold through the API, especially a fresh Burst or video request with a single contributor, is corroborated is not stated."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://beemaps.com/docs/api-reference",
+    "base_url": "https://beemaps.com/api/developer",
+    "auth": [
+      {
+        "type": "basic",
+        "header": "Authorization",
+        "env_var": "BEEMAPS_API_KEY",
+        "transport": "rest",
+        "how_to_get": "Sign in at beemaps.com, then Developers > API Key > Get API Key. Sent as 'Authorization: Basic <API_KEY>' (the key itself; the docs do not mention base64 encoding)."
+      },
+      {
+        "type": "api_key_query",
+        "env_var": "BEEMAPS_API_KEY",
+        "transport": "rest",
+        "how_to_get": "Same key as ?apiKey=<API_KEY>. Works on all authenticated endpoints; the OpenAPI spec lists it as the scheme for /burst/create. The MCP server also takes it (https://beemaps.com/api/mcp?apiKey=...)."
+      },
+      {
+        "type": "api_key_header",
+        "header": "X-API-Key",
+        "env_var": "BEEMAPS_API_KEY",
+        "transport": "mcp",
+        "how_to_get": "Accepted by the MCP endpoint per its 401 response. No OAuth: no protected-resource or authorization-server metadata is served."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/latest/poly",
+        "params": "body: GeoJSON Polygon or MultiPolygon ([lon, lat]); query: min_week (YYYY-mm-dd cutoff), headings, catalog (true = metadata only, no signed image URLs), crossjoin",
+        "notes": "Freshest imagery in the polygon. Max 5 sq km per request. Frames include timestamp, GNSS quality metrics and IMU data. Image URLs are signed, metered per unique view, and expire. The api-products page shows /imagery/latest/poly; the reference and OpenAPI spec use /latest/poly."
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/imagery/poly",
+        "params": "body: GeoJSON polygon; query: week (YYYY-mm-dd of a day in the target week), headings, catalog",
+        "notes": "Imagery for one specific week."
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/map-data",
+        "params": "body: type (e.g. [\"mapFeatures\"], imagery) and geometry (Point with radius, or Polygon)",
+        "notes": "Road detections and/or imagery in one call. Detections in US, EU, UK only."
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/mapFeatures/poly",
+        "params": "body: GeoJSON Polygon",
+        "notes": "Detected road features within a polygon."
+      },
+      {
+        "action": "search",
+        "method": "POST",
+        "path": "/aievents/search",
+        "params": "body: startDate, endDate (ISO 8601, max 31 days), types, polygon, limit, offset",
+        "notes": "AI event videos."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/aievents/{id}",
+        "params": "query: includeGnssData (~1 Hz GPS), includeImuData (~100 Hz IMU)",
+        "notes": "One AI event with signed video URL and optional sensor traces."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/burst/create",
+        "params": "query: apiKey; body: array of {geojson: Point [lon, lat] with radius in metres, credits}",
+        "notes": "On-demand imagery collection. Goes live in the Bee App at once and drivers in range get a push notification. $1 per location, paid only when mapped. Returns id, status, validFrom, validUntil. Rate limit 10 creations per minute."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/bursts",
+        "notes": "Lists bursts with status (active, expired, refunded, completed), hit and hitTimestamp. When hit is true, re-query /latest/poly for the new imagery. The api-products page also mentions webhooks, with no details published."
+      },
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/requestVideo",
+        "params": "body: geojson (Polygon 10 to 50,000 m2, or LineString up to ~950 m driven in drawn direction), validFrom, validUntil (required), eligibleLocalTimeStart/End (ms since local midnight); query: idempotencyKey",
+        "notes": "Requests fresh video of an area; qualifying video must be at least 1080p and 15 fps, recorded inside the area during the window. Retrying with the same idempotencyKey returns the original id; reuse for a different request is rejected with 409. Price not published."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/requestVideo/{id}",
+        "notes": "status pending, fulfilled, expired or cancelled; videos (signed URLs expiring after 24 hours) appear when fulfilled. DELETE /requestVideo/{id} cancels."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/requestVideo",
+        "params": "query: limit, skip, fulfilled, since",
+        "notes": "Your video requests, newest first; since returns requests fulfilled at or after a time."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/balance",
+        "notes": "USD balance. GET /history returns query history with credits consumed. A 402 response means insufficient credits."
+      }
+    ],
+    "rate_limits": "Default 100 requests per minute per API key; Burst creation 10 per minute; contact sales for more. Max query area 5 sq km per request.",
+    "mcp": {
+      "remote": "https://beemaps.com/api/mcp",
+      "registry_name": null,
+      "auth": "API key (?apiKey= or X-API-Key header); no OAuth",
+      "first_party": true
+    },
+    "notes": "OpenAPI 3.0 spec at https://beemaps.com/openapi.json (covers the core endpoints but not /imagery/poly, /mapFeatures/poly or /requestVideo). LLM reference at https://beemaps.com/llms-full.txt. GET /devices (camera calibration) needs no key."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 100,
+      "per_seconds": 60,
+      "scope": "per-key",
+      "notes": "Default; burst creation 10 per minute; contact sales for more. Max query area 5 km² per request. 429 on excess.",
+      "source_url": "https://beemaps.com/openapi.json"
+    }
+  },
+  "payment": {
+    "methods": [
+      "card",
+      "hosted_checkout",
+      "prepaid_balance"
+    ],
+    "agent_can_pay": false,
+    "prepaid": true,
+    "notes": "A person tops up the API balance by card through Stripe checkout ($5 to $1,000); funds are available immediately with no approval. API calls then draw down the balance automatically, so an agent can spend a funded balance but cannot top it up. Larger customers can prepay under a written contract. Prepaid balances are non-refundable."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "hours",
+    "basis": "Data API guide: Burst 'coverage timing depends on local driver density — urban areas often see results within hours, while rural areas may take days.'"
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Archive imagery days to weeks old; Burst and video requests fulfilled within hours in urban areas, days in rural areas",
+    "notes": "Per the Data API guide: data is 'days to weeks old, not months/years'. Burst timing is qualitative, with no SLA."
+  },
+  "adapter": "beemaps",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "API v1.3.0: base URL; Basic and apiKey query auth; endpoints /latest/poly (min_week, headings, catalog, crossjoin), /imagery/poly (week), /map-data, /mapFeatures/poly, /aievents/search, /aievents/{id}, /requestVideo POST/GET/DELETE with constraints, idempotencyKey and statuses, /history, /devices (no auth), POST /mcp; frame GNSS metrics (gdop, hdop, pdop, eph, cno); max 5 sq km; 36% of world roads; per-view billing",
+      "url": "https://beemaps.com/docs/api-reference"
+    },
+    {
+      "claim": "OpenAPI spec: BasicAuth and ApiKeyQuery schemes (query key for burst endpoints); /burst/create body (Point with radius, credits); 429 default 100 req/min",
+      "url": "https://beemaps.com/openapi.json"
+    },
+    {
+      "claim": "Burst request and response schema, statuses active/expired/refunded/completed; AI event types; detection classes; rate limits 100/min default and 10/min burst creation; 402 insufficient credits",
+      "url": "https://beemaps.com/llms-full.txt"
+    },
+    {
+      "claim": "Data API guide: freshness 'days to weeks old', 'flexible licensing: build derived datasets from imagery', detections US/EU/UK, Burst goes live in the Bee App with push notifications, timing hours urban / days rural, key from Developers > API Key, MCP server URL with apiKey, agent constraints (5 sq km, check balance, URLs expire), Burst workflow",
+      "url": "https://beemaps.com/docs/platform/road-intelligence-api"
+    },
+    {
+      "claim": "Data API prices: $0.005 per image, $6 per AI event video, $3 per 1,000 detections, $1 per burst location; no upfront commitments; Edge AI prices",
+      "url": "https://beemaps.com/pricing"
+    },
+    {
+      "claim": "Same price list; imagery global, road detections US/EU/UK, Burst global (network-dependent) and pay-on-success with polling or webhooks; 100+ countries; 37% of roads; 750M km; example path /imagery/latest/poly",
+      "url": "https://beemaps.com/api-products"
+    },
+    {
+      "claim": "Headline counters (754M total km, 37% global road coverage, 22M unique km); transition to USDC rewards",
+      "url": "https://beemaps.com"
+    },
+    {
+      "claim": "From August 2026 USDC (funded by Bee Maps, via Circle Wallet) is the default reward and HONEY rewards are removed from the Bee App; Bee Maps terminated its services agreement with the Hivemapper Foundation; email sign-in default",
+      "url": "https://beemaps.com/blog/get-paid-in-usdc-to-map-your-city"
+    },
+    {
+      "claim": "Data Products Terms of Service: right to use Data Products only with the customer's Implementations; no transfer, distribution, resale, lease or (sub)licensing; no competing products or benchmarking; anti-scraping duty; Bee Maps exclusively owns the Data Products; prepaid balance by credit card or written contract; price changes after 14 days",
+      "url": "https://beemaps.com/tos/map-products"
+    },
+    {
+      "claim": "Bee Terms of Service: Hivemapper, Inc. (dba Bee Maps) owns data collected from Bee devices with the right to use, license, distribute or sell it; prohibition on robots and scraping of the Service",
+      "url": "https://beemaps.com/tos"
+    },
+    {
+      "claim": "Prepaid API balance, Add Funds $5 to $1,000 through Stripe, funds available immediately with no approval, $20 free credits with no card required",
+      "url": "https://beemaps.com/blog/api-billing-and-free-credits"
+    },
+    {
+      "claim": "Billing docs: 'Checkout with Stripe' to add funds; API calls deducted from the balance automatically",
+      "url": "https://beemaps.com/docs/platform/billing-and-payment"
+    },
+    {
+      "claim": "Privacy by design: random three-word usernames, trip trimming, privacy zones, on-device blurring of faces, bodies, vehicles and licence plates",
+      "url": "https://beemaps.com/docs/help-and-support/data-protection-and-privacy"
+    },
+    {
+      "claim": "Bee has a dual-band (L1/L5) GNSS module with embedded security; IMU data in imagery metadata; Bursts defined by area and reward",
+      "url": "https://beemaps.com/docs/help-and-support/glossary"
+    },
+    {
+      "claim": "Network verification: approved Open Camera devices, vision-based consensus at the H3 hex level against AI-generated imagery and replay, device-diversity weighting, new devices start with low trust, low-traffic areas may lack consensus",
+      "url": "https://docs.hivemapper.com/honey-token/map-data-structure-and-verification/"
+    },
+    {
+      "claim": "MCP endpoint is live and asks for an API key via ?apiKey= or X-API-Key header (401 to an unauthenticated POST, no WWW-Authenticate)",
+      "url": "https://beemaps.com/api/mcp"
+    },
+    {
+      "claim": "Approved Open Camera devices; new devices start with low trust; vision-based consensus",
+      "url": "https://docs.hivemapper.com/honey-token/map-data-structure-and-verification/"
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "id": "sensor-community",
+  "name": "Sensor.Community",
+  "status": "unclaimed",
+  "provider_url": "https://sensor.community",
+  "adapter": "sensor_community",
+  "tags": [
+    "air quality",
+    "particulate matter",
+    "pm2.5",
+    "pm10",
+    "temperature",
+    "humidity",
+    "air pressure",
+    "noise",
+    "citizen science",
+    "low-cost sensor",
+    "open data",
+    "luftdaten",
+    "near me",
+    "europe",
+    "free",
+    "no key"
+  ],
+  "summary": "Sensor.Community (formerly Luftdaten.info) is a contributor-driven global network of DIY, low-cost sensors that publishes open environmental data: particulate matter (PM10, PM2.5), temperature, humidity, air pressure and, from some stations, noise. About 17,000 sensors in 72 countries reported in the last 5 minutes on 2026-10-26, most of them in Europe. A keyless API returns every measurement of the last 5 minutes, filterable by radius, box, country or sensor type, plus 1-hour and 24-hour averages. It reports what volunteers' sensors already measure; it cannot place new sensors.",
+  "short": "Citizen PM2.5/PM10, temperature, humidity and noise sensors in 70+ countries, last 5 minutes, no key.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "particulate (PM10, PM2.5) readings near a point, in a box or by country",
+      "temperature, humidity and air pressure near a point",
+      "noise level (LAeq, min, max) where a DNMS noise sensor reports",
+      "latest readings from one sensor by its API ID",
+      "5-minute, 1-hour and 24-hour averages for every sensor",
+      "filter by sensor type (e.g. SDS011, BME280)"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Free: the API serves data by GET request with no credentials. No paid tier is offered; the project asks for donations."
+  },
+  "latency": {
+    "typical": "Last 5 minutes",
+    "notes": "The filter and per-sensor endpoints return measurements from the last 5 minutes. The docs say data are not immediately available: an endpoint covering the last minute is updated every minute, and one covering the last 24 hours every 5 minutes. A probe returned readings 1 to 6 minutes old."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 5 minutes",
+    "notes": "Continuously reported by volunteers' sensors. A daily CSV archive also exists (archive.sensor.community), but it is history, not in scope."
+  },
+  "coverage": {
+    "regions": [
+      "Global (dense in Europe)"
+    ],
+    "notes": "Wherever volunteers have installed sensors. The all-sensors feed on 2026-10-26 held 17,291 sensors in 72 countries; Germany (6,792), the Netherlands (2,636), Poland, Bulgaria and Belgium had the most, and the US had 80. Outside Europe coverage is sparse."
+  },
+  "licensing": {
+    "summary": "The site footer licenses the database contents under the Open Data Commons Database Contents License (DbCL) 1.0, the firmware under GPL-3.0 and photos under CC0 1.0. DbCL grants a worldwide, royalty-free, perpetual copyright licence that 'explicitly include[s] commercial use' and sublicensing, on condition that you comply with the ODbL, which covers the database itself; the footer does not link the ODbL separately. Contents come 'as is' without warranty. No terms of use beyond these licences and a privacy notice were found, and nothing mentions AI training, resale or ownership."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "The server sets the timestamp when it receives the data; the docs tell senders not to send a timestamp.",
+      "unknown": "The timestamp is the server's receive time, not the sensor's measurement time, and nothing is signed. The feed gives no time zone; the probe values matched UTC."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each sensor's owner sets its location in the devices.sensor.community configuration site.",
+      "unknown": "Self-reported by the volunteer and not checked. Records carry an exact_location flag: in a probe, flagged stations gave full-precision coordinates and the rest 3 decimals (about 100 m), but the flag's meaning is not documented. An indoor flag is also self-reported."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Readings come from named low-cost sensor models (e.g. Nova Fitness SDS011, BME280, DHT22), reported as raw values.",
+      "unknown": "Low-cost sensors with no calibration or quality control documented for the API, and no correction (e.g. for humidity) is stated."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Volunteers register sensors with an account; no identity check is documented, and owners are not named in the data."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "The firmware is open source (GPL-3.0), but nothing attests that a device runs unmodified firmware, and data are pushed with only a sensor ID header."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent confirms individual readings; neighbouring sensors can be compared by the user, but the provider documents no cross-check."
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "API docs: '/airrohr/v1/filter/{query} - all measurements of the last 5 minutes filtered by query'; 'An endpoint covering data in the last minute is updated every minute.'"
+  },
+  "capture": {
+    "by": "contributors"
+  },
+  "requester": {
+    "checks": "None. The data endpoints need no account or key; the docs ask only for a User-Agent header that lets the operators contact the source of excessive requests.",
+    "unknown": "Nothing is commissioned; nobody is sent to a place."
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://github.com/opendata-stuttgart/meta/wiki/EN-APIs",
+    "base_url": "https://data.sensor.community",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No credentials. Send a User-Agent header that identifies you and lets the operators contact you (required since 2022-11-04)."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/airrohr/v1/filter/area={lat},{lon},{km}",
+        "notes": "All measurements of the last 5 minutes within a radius in km."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/airrohr/v1/filter/box={lat1},{lon1},{lat2},{lon2}",
+        "notes": "All measurements of the last 5 minutes inside a bounding box."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/airrohr/v1/filter/country={CC,CC}",
+        "notes": "Comma-separated country codes. Filters can also be type={SDS011,BME280,...}."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/airrohr/v1/sensor/{apiID}/",
+        "notes": "Last 5 minutes for one sensor. Use the API ID shown on maps.sensor.community, not the chip ID."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/static/v1/data.json",
+        "notes": "All measurements of the last 5 minutes for all sensors (about 18 MB)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/static/v2/data.1h.json",
+        "notes": "Per-sensor averages over the last hour. Also data.json (5 min), data.24h.json, data.dust.min.json and data.temp.min.json."
+      }
+    ],
+    "rate_limits": "No numeric limit published. The User-Agent is required so operators can contact the source of excessive requests.",
+    "notes": "Use data.sensor.community for reading; api.sensor.community is optimised for receiving data and the docs say not to request data from it. The root of data.sensor.community returns 403, but the documented paths work.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No server in the official MCP Registry for sensor.community, luftdaten or airrohr (searched 2026-10-26)."
+    }
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-10-26",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [],
+    "notes": "Free; no payment."
+  },
+  "sources": [
+    {
+      "claim": "Keyless GET API; endpoints for last 5 minutes (area, box, country, type, sensor), v2 5-min/1h/24h averages; User-Agent required since 2022-11-04; update frequency; data.sensor.community for reading, not api.sensor.community; server sets timestamp; daily CSV archive",
+      "url": "https://github.com/opendata-stuttgart/meta/wiki/EN-APIs"
+    },
+    {
+      "claim": "Live check: 71 records within 3 km of Berlin, 1 to 6 minutes old; SDS011, DHT22, BME280, BMP180 and DNMS noise sensors; exact_location 0 records with 3-decimal coordinates and exact_location 1 with full precision (2026-10-26)",
+      "url": "https://data.sensor.community/airrohr/v1/filter/area=52.52,13.405,3"
+    },
+    {
+      "claim": "17,291 sensors in 72 countries reported in the last 5 minutes; per-country counts (2026-10-26)",
+      "url": "https://data.sensor.community/static/v1/data.json"
+    },
+    {
+      "claim": "Contributor-driven global sensor network creating open environmental data; footer licences: firmware GPL-3.0, DB contents DbCL 1.0, photos CC0; donations",
+      "url": "https://sensor.community/en/"
+    },
+    {
+      "claim": "DbCL 1.0 terms: worldwide royalty-free copyright licence including commercial use and sublicensing, conditional on ODbL compliance, as-is",
+      "url": "https://opendatacommons.org/licenses/dbcl/1-0/"
+    },
+    {
+      "claim": "Only an imprint and privacy notice (last modified 2020-02-20); no terms of use",
+      "url": "https://sensor.community/en/privacy-terms/"
+    },
+    {
+      "claim": "Sensor owners configure their sensor's location themselves after logging in",
+      "url": "https://devices.sensor.community/"
+    },
+    {
+      "claim": "api.sensor.community serves only push-sensor-data and now endpoints",
+      "url": "https://api.sensor.community/"
+    },
+    {
+      "claim": "No Sensor.Community MCP server in the official registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=sensor.community"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-27",
+  "expires": "2027-10-27"
+}

@@ -1,0 +1,176 @@
+{
+  "id": "truelabel",
+  "name": "Truelabel",
+  "provider_url": "https://truelabel.ai",
+  "status": "unclaimed",
+  "short": "Introduces robotics labs to firms that capture physical-AI data to their spec, then checks and processes the delivery.",
+  "tags": [
+    "physical AI",
+    "robotics",
+    "egocentric video",
+    "head-worn video",
+    "teleoperation",
+    "motion capture",
+    "training data",
+    "data processing",
+    "introductions",
+    "consent records"
+  ],
+  "summary": "A Brazilian company (Ensoft Informática LTDA, trading as TrueLabel) that connects organizations needing physical-AI training data with organizations that capture it, and runs the processing pipeline between them. A buyer describes the task, setting, data type (head-worn video, teleoperation, motion capture, fixed cameras) and hours; Truelabel looks for suppliers who can capture it and checks each recording against the buyer's spec (camera sync, hands in view, faces and screens blurred) before delivery, splitting takes into episodes, syncing streams and labelling actions. Truelabel is not a party to the buyer-supplier deal unless a signed agreement says so; that deal sets price, ownership and licence. Its revenue is processing fees under a signed agreement per engagement. Its own collector marketplace closed on 8 October 2026; no prices, timelines or API are published.",
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor",
+      "audio"
+    ],
+    "tasks": [
+      "introduction to suppliers who capture to a buyer's spec: head-worn (first-person) video, teleoperation, motion capture, fixed cameras",
+      "capture with Truelabel's capture app or phones it supplies: first-person video, device-motion data and capture metadata; sound only when a project needs it",
+      "checking each recording against the buyer's spec line by line, with incomplete or ambiguous items flagged for review",
+      "processing into training examples: episode splitting with idle time trimmed, streams synced to one clock, actions, hands and outcomes labelled to the buyer's guide, faces and screens blurred",
+      "per-example provenance (device, session, labelling guide) in a dataset bundle with a manifest"
+    ]
+  },
+  "pricing": {
+    "model": "Quote",
+    "from_usd": 0,
+    "unit": "engagement",
+    "notes": "Not published. Truelabel's revenue comes from processing fees set in a signed agreement for each engagement. The price of the capture itself is agreed between buyer and supplier, outside Truelabel's terms."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "The FAQ says Truelabel does not publish sample or production timelines; operators schedule the capture they run."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Commissioned capture is recorded after the supplier takes the job",
+    "notes": "Suppliers can offer data they already hold ('Tell us what you have, or what you can capture'); only spec-driven capture is new."
+  },
+  "coverage": {
+    "regions": [
+      "Not stated"
+    ],
+    "notes": "No supplier locations or countries are published. Truelabel is based in São Paulo, Brazil, and its terms are governed by Brazilian law (LGPD). Its closed collector program's archive pages referred to the US, Canada, Mexico, Colombia, Brazil, Chile, Argentina and Peru, but that program takes no new work."
+  },
+  "licensing": {
+    "summary": "Truelabel takes no ownership of or licence to recordings: the arrangements between the organizations involved, and with the people who record, decide who owns recordings and how they may be used. The service customer (whoever hires Truelabel) must hold every right and consent, including image and voice. The terms name model training, derivative works, exclusivity, redistribution and resale as separate terms for the operator's spec, not defaults. Unless the service customer opts out in its agreement, Truelabel may use recordings in de-identified or aggregated form to improve its processing pipeline (quality checks and processing steps); it does not sell or relicense them. A check result is not acceptance, legal clearance or a warranty that data is lawful or consented."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Recorders hold capture-app accounts and must be 18 or older, but no identity check is described for the current service; the ID checks of the closed collector platform no longer run."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Recordings are made with Truelabel's capture app or apparatus it supplies, and each episode is linked to the recorder's Recording Notice acknowledgement (document version, hash and time); that hash is a consent record, not a device or app attestation, and no attestation is documented. The pipeline also processes data a service customer delivers from its own rigs. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: First-person video recorded through the capture app; automated systems score or flag submissions for quality, duplication and integrity. No C2PA signing and no published check against screen recordings or generated video; customer-supplied data may never pass through the app."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Capture timestamps and configuration are collected with each recording, and streams are aligned to one clock.",
+      "unknown": "Timestamps are not signed or published, so no one outside Truelabel can check them."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "The capture app does not collect precise geolocation; where a recording was made rests on the supplier's word and the spec."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Every recording is checked against the lines of the buyer's spec (e.g. two cameras in sync, hands in view, faces and screens blurred) and the buyer sees each result before delivery; incomplete or ambiguous items are flagged for review.",
+      "unknown": "Check criteria and results are not public, and the terms say a check is not acceptance or a warranty of fitness."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing independent confirms individual recordings; Truelabel runs the checks itself."
+    }
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "'Does truelabel publish a sourcing schedule? No. Operators schedule the capture they run. truelabel does not publish sample or production timelines.' (FAQ)"
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Use the 'I need data' form on truelabel.ai (work email, team, task and setting, data type, hours) or email Truelabel; each engagement needs a signed agreement."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "notes": "No Truelabel server in the official MCP Registry (searched 'truelabel', 2026-10-26)."
+    },
+    "notes": "No public API or docs. https://truelabel.ai/api returns HTTP 410 'This application service is no longer available.' The site publishes llms.txt, a research corpus for AI assistants, not an ordering interface."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "notes": "No buyer payment method is published. Processing fees are set in the signed engagement agreement; the buyer pays the supplier under their own agreement. The collector platform's checkout closed on 8 October 2026."
+  },
+  "capture": {
+    "by": "people",
+    "consent": {
+      "documented": true,
+      "method": "The service customer must obtain every right and consent (including image and voice) outside the app. Before recording, each recorder ticks an unchecked Recording Notice box; Truelabel stores the document version, locale, hash, action and time and links it to each recording episode. Recorders must record only themselves: no other identifiable person, no one under 18, no screens, documents or private conversations.",
+      "unknown": "Consent from people other than the recorder and location releases are collected by the supplier, outside Truelabel, and are not shown publicly."
+    },
+    "worker_pay": {
+      "model": "Set by the organization the person records for; Truelabel does not hire, manage or pay recorders",
+      "disclosed": false
+    }
+  },
+  "requester": {
+    "checks": "The service is for organizations (Terms s.3), and each engagement needs a signed agreement with Truelabel. The 'I need data' form asks for a work email and a team type (AI lab, robotics, other).",
+    "unknown": "No published check of who a buyer is or what the data is for, beyond the signed agreement."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Connects people who capture real-world training data with AI labs and robotics teams; buyer form (task and setting, data type, hours); 'We'll find suppliers who can capture it'; spec checks before delivery; episodes, one clock, labels, blurring, per-example provenance and manifest",
+      "url": "https://truelabel.ai/"
+    },
+    {
+      "claim": "Operator: Ensoft Informática LTDA, São Paulo; connects data sellers and buyers and runs the processing pipeline; revenue from processing fees; not a party to buyer-seller agreements; checks are not acceptance or warranty; signed agreement per engagement; capture app and supplied devices; capture rules; Truelabel holds no rights in recordings; pipeline-improvement use unless opted out; service for organizations, 18+; no scraping or probing of the website",
+      "url": "https://truelabel.ai/legal/terms"
+    },
+    {
+      "claim": "Capture app records first-person video, device-motion data and metadata; sound only when required; no precise geolocation; Recording Notice acknowledgement with version, hash and time linked to each episode; service customer collects consent",
+      "url": "https://truelabel.ai/legal/recording-notice"
+    },
+    {
+      "claim": "Capture timestamps collected; automated scoring for quality, safety, duplication and integrity; collector platform closed 8 October 2026 (no collector accounts, payouts or checkout)",
+      "url": "https://truelabel.ai/legal/privacy"
+    },
+    {
+      "claim": "No published sample or production timelines; rights (training, exclusivity, resale) set in the operator's spec, not defaults; formats belong in the spec",
+      "url": "https://truelabel.ai/faq"
+    },
+    {
+      "claim": "Collector program closed; archive pages for US, Canada, Mexico and Latin American countries",
+      "url": "https://truelabel.ai/collector-jobs"
+    },
+    {
+      "claim": "Former API returns HTTP 410 'This application service is no longer available'",
+      "url": "https://truelabel.ai/api"
+    },
+    {
+      "claim": "No Truelabel server in the MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=truelabel"
+    }
+  ]
+}

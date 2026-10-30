@@ -1,0 +1,167 @@
+{
+  "id": "appen",
+  "name": "Appen",
+  "provider_url": "https://www.appen.com",
+  "status": "unclaimed",
+  "tags": [
+    "training data",
+    "custom collection",
+    "image collection",
+    "video collection",
+    "audio collection",
+    "remote collection",
+    "on-site collection",
+    "wearables",
+    "AR/VR glasses",
+    "in-car",
+    "crowd",
+    "contributors",
+    "managed service"
+  ],
+  "summary": "AI training-data vendor that runs custom data collections with its contributor crowd (CrowdGen): remote collections where contributors capture image, video, audio and location data at home or in public on Appen's multi-device platform and the Appen Mobile app, and supervised on-site sessions (facilities, customer sites, studios, rented homes, in-car, AR/VR glasses and wearables). Sales-led; no ordering API for collections.",
+  "short": "A training-data vendor whose crowd records custom image, video and audio collections, remote or on-site.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "audio"
+    ],
+    "tasks": [
+      "custom remote image, video and audio collection by contributors at home or in public, using Appen's multi-device platform and the Appen Mobile app",
+      "supervised on-site collection sessions (Appen facilities, customer sites, studios, rented homes, in-car)",
+      "device collections with AR/VR glasses, wearables and smart-home devices, moderated on-site or remotely",
+      "mobile location and points-of-interest data collection"
+    ]
+  },
+  "pricing": {
+    "model": "Not published; contact sales",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "from_usd 0 means unknown, not free. The data collection page routes to 'Talk to an expert'; no prices are published."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "No project turnaround is stated. A 2022 contributor posting (reposted by a third party) describes survey and data collection tasks of 15 minutes to three hours each, which is task length, not project delivery."
+  },
+  "coverage": {
+    "regions": [
+      "500+ locales (countries not listed)"
+    ],
+    "notes": "Appen cites 500+ global locales, 235+ languages and a crowd of over one million contractors; its contributor site says 500,000+ contributors have been paid. On-site sessions run 'across multiple countries'. Which countries have image/video collectors is not published."
+  },
+  "licensing": {
+    "summary": "Not stated publicly. Appen publishes no customer terms of service on appen.com (its legal-policies page lists only privacy, cookie, ethical-sourcing, whistleblower, anti-corruption and scam pages); terms are set in a sales contract. Ownership, resale and AI-training rights for custom collections, and whether Appen reuses customer data, were not found. Appen cites SOC 2 Type II, ISO 27001, HIPAA and GDPR compliance."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Contributors join through CrowdGen, Appen's contributor platform, where applicants must 'apply & get verified'; most projects add a qualification process.",
+      "unknown": "What 'verified' checks (identity document, residency or only skills) is not described, and nothing ties a delivered capture to a verified person. CrowdGen's page describes the verification step as an experience review ('Tell us about your experience'); no identity document or liveness check is named."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Remote collection runs on Appen's own platform and the Appen Mobile app, but no app or device integrity checks are documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No check against imported, re-captured or generated media is described."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No trusted capture time is documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "Location data is a collection type, but no method for verifying where an image or video was taken is documented. The Appen Mobile app's App Store privacy label lists only photos, videos and audio, not location."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Quality controls described (gold test questions, smart validators, multi-stage review on the annotation platform; 'data abnormality detection' in a 2019 blog) apply to labeling. No review method for collected media is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check is described."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "rate_limits": "Not applicable; collections are ordered through sales.",
+    "notes": "No API orders a data collection. Appen's separate annotation platform (ADAP) has a REST API at https://api.appen.com/ (OpenAPI at https://developer.appen.com/open-api.yaml; header 'Authorization: Token token=<key>', key generated in the client profile) covering projects, uploads, WORK and QA jobs, launch, status and CSV downloads. Its create-job call supports only WORK and QA types, not the DATA_COLLECTION job type, and platform access itself routes to 'Talk to our team'. No MCP server is listed in the official MCP Registry."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": false,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No payment methods are published; collections are priced and contracted through sales."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Collected for your project",
+    "notes": "Appen also sells 360+ off-the-shelf datasets in 80+ languages; only custom collection is described here."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No turnaround published."
+  },
+  "capture": {
+    "by": "people"
+  },
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Remote collections on a proprietary multi-device platform at home or in public (image, video, speech, audio, text, location); supervised on-site sessions at facilities, customer sites, studios, rented homes, in-car across multiple countries; AR/VR glasses, wearables, smart-home devices; location and POI data; 500+ locales; 360+ off-the-shelf datasets in 80+ languages; SOC 2 and ISO 27001; 'Talk to an expert', no pricing",
+      "url": "https://www.appen.com/ai-data/data-collection"
+    },
+    {
+      "claim": "'we can deploy our global crowd of workers to collect image and video data using our mobile recording tools'; 'Data abnormality detection' listed among labeling quality components (post dated April 2019)",
+      "url": "https://www.appen.com/blog/how-to-create-training-data-for-computer-vision-use-cases"
+    },
+    {
+      "claim": "'a global crowd of over 1 million skilled contractors'; 235+ languages; 500+ global locales",
+      "url": "https://www.appen.com/blog/what-is-sensor-fusion"
+    },
+    {
+      "claim": "CrowdGen is Appen's contributor platform; 'Apply & get verified'; qualification process on most projects; 500,000+ contributors paid",
+      "url": "https://crowdgen.com/"
+    },
+    {
+      "claim": "Appen Mobile app (Appen Pty. Ltd.): tasks include 'taking pictures of objects, taking videos or recording audio'; privacy label lists photos, videos and audio only",
+      "url": "https://apps.apple.com/app/1531991952"
+    },
+    {
+      "claim": "Annotation platform (ADAP): access via 'Talk to our team'; gold test questions, smart validators, multi-stage review; API and webhooks",
+      "url": "https://www.appen.com/platform"
+    },
+    {
+      "claim": "ADAP REST API: base https://api.appen.com/, 'Authorization: Token token=<key>'; create-job supports WORK and QA types only; DATA_COLLECTION job type exists",
+      "url": "https://developer.appen.com/open-api.yaml"
+    },
+    {
+      "claim": "Legal policies page lists no customer terms of service",
+      "url": "https://www.appen.com/legal-policies"
+    },
+    {
+      "claim": "SOC 2 Type II, ISO 27001:2013, HIPAA, GDPR; secure facilities; no customer data ownership or training terms",
+      "url": "https://www.appen.com/data-security"
+    },
+    {
+      "claim": "Contributor posting (2022 repost of Appen text): survey and data collection projects last 15 minutes to three hours; qualification exams; some assignments need specific mobile devices",
+      "url": "https://www.concordia.edu.ua/2022/05/contributor/"
+    },
+    {
+      "claim": "CrowdGen sign-up: 'Apply & get verified. Tell us about your experience.'",
+      "url": "https://crowdgen.com/"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

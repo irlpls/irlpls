@@ -1,0 +1,12 @@
+{
+  "_fixture": "documented-shape",
+  "_source": "https://www.clickworker.com/mpapi/cw-mp-api-v2.yaml GET /customer/tasks/{taskId}",
+  "_note": "Envelope assumed from the request body and the notification example ({\"task\": {\"id\": 12345}}); the OpenAPI publishes no response schema for Task.create/Task.show.",
+  "response": {
+    "task": {
+      "id": 12345,
+      "customer_ref": "order-7f3a",
+      "state": "feedback"
+    }
+  }
+}

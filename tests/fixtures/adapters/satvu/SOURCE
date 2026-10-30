@@ -1,0 +1,3 @@
+fixture: documented-shape, from https://api.satellitevu.com/otm/v2/openapi.json (PriceRequest/price response with
+price.currency and minor-unit totals, order Feature with properties.status). price_usd.json is hypothetical: SatVu
+contracts are documented in GBP or EUR; it exists to test the USD-only firm rule. Values are made up.

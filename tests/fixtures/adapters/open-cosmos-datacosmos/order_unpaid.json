@@ -1,0 +1,35 @@
+{
+ "data": {
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "type": "IMAGE",
+  "customer_id": "cus-abc123",
+  "organisation_id": 42,
+  "contract_id": 456,
+  "status": "UNPAID",
+  "payment_method": "NOT_REQUIRED",
+  "payment_reference_number": "",
+  "order_line_items": [
+   {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "collection": "sentinel-2-l2a",
+    "item": "S2A_MSIL2A_20230615T100559_N0509_R022_T33UUP_20230615T135959",
+    "level": "L2A",
+    "price": {
+     "value": "150.00",
+     "discount": "0",
+     "final": "150.00",
+     "currency": "USD"
+    },
+    "is_downloaded": false,
+    "delivered": false,
+    "paid": false,
+    "visualized_count": 0,
+    "downloaded_count": 0
+   }
+  ],
+  "checkout_redirect_url": "",
+  "created_by": "google-apps|user@example.com",
+  "created_at": "2026-01-21T12:00:00Z",
+  "updated_at": "2026-01-21T12:00:00Z"
+ }
+}

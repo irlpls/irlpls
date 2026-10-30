@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use irlpls, please cite it as below."
+title: "irlpls"
+version: "2026-10-26"
+date-released: "2026-10-26"
+type: software
+license: Apache-2.0
+authors:
+  - name: "irlpls maintainers"

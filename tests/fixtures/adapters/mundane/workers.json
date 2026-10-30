@@ -1,0 +1,6 @@
+[{"worker_id": "w_1", "handle": "sam", "rating": 4.9, "rating_count": 12, "completed_tasks": 14, "capabilities": ["photo_documentation"],
+  "ask_rate_minor": 1500, "ask_rate_basis": "per_task", "currency": "USD", "distance_km": 2.0, "match_score": 0.8,
+  "verification_status": "verified", "live_now": false, "live_until": null},
+ {"worker_id": "w_2", "handle": "lee", "rating": 4.7, "rating_count": 3, "completed_tasks": 3, "capabilities": ["photo_documentation"],
+  "ask_rate_minor": 1200, "ask_rate_basis": "per_task", "currency": "USD", "distance_km": 4.0, "match_score": 0.6,
+  "verification_status": "verified", "live_now": true, "live_until": "2026-10-28T18:00:00Z"}]

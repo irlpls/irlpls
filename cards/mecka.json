@@ -1,0 +1,218 @@
+{
+  "id": "mecka",
+  "name": "Mecka",
+  "provider_url": "https://www.mecka.ai",
+  "status": "unclaimed",
+  "short": "Robot-learning data to order: paid people record first-person video, motion and touch with Mecka's own sensor kit.",
+  "tags": [
+    "robotics",
+    "physical AI",
+    "egocentric video",
+    "first-person video",
+    "tactile gloves",
+    "hand pose",
+    "3D reconstruction",
+    "training data",
+    "custom collection",
+    "managed service"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor",
+      "audio"
+    ],
+    "capture_types": [
+      "egocentric",
+      "tactile",
+      "depth",
+      "point-cloud",
+      "motion",
+      "hand-pose"
+    ],
+    "tasks": [
+      "commission task-specific collection of human demonstrations in homes and commercial environments",
+      "egocentric (first-person) video of everyday tasks such as cooking, cleaning, making coffee or fixing cars",
+      "capture with Mecka-made multi-sensor kit: camera caps, a sensor hub and tactile gloves that record grip force",
+      "capture at recruited businesses (e.g. bakeries, a PCB manufacturing line)",
+      "post-processing into motion tracking, hand pose, 3D reconstruction and aligned sensor streams",
+      "dataset access, model evaluations and on-site robot deployments (not captures)"
+    ]
+  },
+  "pricing": {
+    "model": "Quote after scoping",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "No prices are published. Teams 'reach out and we'll scope the right entry point': dataset access, commissioned collection, evaluations or a full data program."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "No turnaround is stated anywhere Mecka publishes. Mecka recruits contributors to fill gaps it tracks on a heat map of jobs, industries and diversity goals."
+  },
+  "freshness": {
+    "mode": "mixed",
+    "typical_age": "Commissioned collection is recorded after scoping; dataset access is existing data",
+    "notes": "Mecka also offers access to existing data, including its contributions to the EgoVerse dataset (4,003 hours of human demonstrations in the current release, per egoverse.ai). Only commissioned collection is new data."
+  },
+  "coverage": {
+    "regions": [
+      "Global (stated; countries not listed)"
+    ],
+    "notes": "Mecka says it runs 'a global production operation, with capture fleets recording human demonstration in homes and commercial environments', and its CEO says anyone can sign up through the app 'from anywhere in the world'. No country list is published. Offices are in New York, Toronto and San Francisco; jobs are listed in the US and Canada only. The EgoVerse globe shows capture sites in the US, Canada, Switzerland, Indonesia, Vietnam, the Philippines, Kosovo, Colombia, Argentina and Kenya, but that map covers the whole multi-lab consortium, not Mecka alone."
+  },
+  "licensing": {
+    "summary": "Mecka publishes no terms of service or data licence; its only legal page is a privacy policy (effective 20 Mar 2026, Carbon Based Technology Corporation, DBA Mecka AI), which covers personal data and 'dataset contributions' but not buyer rights. The CEO says Mecka will 'license a lot of the data' it creates and that its data is licensed to foundation-model companies; exclusivity, buyer ownership, AI-training rights and resale are not stated in any published terms. The open EgoVerse code is MIT-licensed; the dataset licence is not stated on egoverse.ai."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Participants are paid to demonstrate tasks; individuals sign up in the app and register their profession, and Mecka also recruits businesses.",
+      "unknown": "How contributors are identified, vetted or consented is not published. Mecka has reported contributors submitting YouTube videos as their own recordings."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "Mecka builds its own capture hardware and iOS app (which auto-starts recording when hands enter the frame), but no device or app attestation is documented. Capture in the provider's own app or rig is not a server-verified attestation (STANDARD §3)."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Camera caps and external cameras on Mecka's own hardware, plus smartphones. No C2PA or signed capture; Mecka is not on the C2PA conforming products list. Uploaded footage has included screen-sourced fakes (YouTube videos), per the CEO."
+    },
+    "time": {
+      "level": "none",
+      "method": "Sensor streams are synchronised and aligned in post-processing.",
+      "unknown": "Synchronisation aligns streams to each other; no signed or independently time-stamped capture time is documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is documented. Mecka says it must be present where collection happens, but publishes no method for proving where a capture was made."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Processing heuristics flag problems, escalation engines route them, and quality gates plus computer vision run in post-processing.",
+      "unknown": "Acceptance criteria and QC results are not published; Mecka says quality standards still shift as it learns."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of commissioned data is documented. EgoVerse replicated human-to-robot transfer across labs, which tests usefulness, not capture provenance."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Contact Mecka through mecka.ai ('Request access' / 'Talk to us') for enterprise programs, research access and dataset partnerships. A partner console at partners.mecka.ai signs in by emailed link."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No MCP server found; no Mecka server in the official MCP Registry (searched 'mecka' and 'egoverse', 2026-10-26)."
+    },
+    "notes": "Mecka's 'Data Tools' web interface lets teams browse, visualise and query data and 'run inference APIs', but no API documentation is public and no endpoint to order or quote collection is published. No OAuth metadata is served: mecka.ai returns 404 for /.well-known/oauth-protected-resource and /.well-known/oauth-authorization-server, and partners.mecka.ai redirects them to its sign-in page."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Mecka says teams can 'commission task-specific collection' and that it will 'scope the right entry point', but publishes no turnaround."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "enterprise"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No payment method is published. The privacy policy mentions 'payment and billing information when you purchase paid Services' without naming methods. Collection is scoped and priced through sales."
+  },
+  "capture": {
+    "by": "people",
+    "consent": {
+      "documented": false,
+      "unknown": "Mecka publishes no consent terms for contributors or for bystanders and homes filmed; the privacy policy covers 'dataset contributions' only as personal data."
+    },
+    "worker_pay": {
+      "disclosed": false,
+      "notes": "Participants are paid; rates are not published. The CEO says contributor pay is 'not the largest factor' in end-to-end cost."
+    }
+  },
+  "requester": {
+    "unknown": "Mecka publishes no check of who commissions collection or for what; every engagement starts with a conversation."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "Mecka collects human-demonstration data for robot learning. Paid participants and recruited businesses record everyday and workplace tasks in homes and commercial settings, using Mecka's own capture hardware (camera caps, a sensor hub, tactile gloves) and an iOS app. Mecka then processes the recordings into motion tracking, hand pose and 3D reconstruction. Buyers (robotics labs, frontier model teams, enterprises) can get dataset access or commission task-specific collection, both through sales. Prices, turnaround and licence terms are not published.",
+  "sources": [
+    {
+      "claim": "Positioning; who it is for; 'commission task-specific collection'; dataset access, evaluations, data programs; signal primitives (pixel, depth, object tracking, segmentation, tactile force, sound, speed and motion, point cloud, surface contour, localization); iOS app to 'collect data at scale'; Data Tools with inference APIs; Request access / Talk to us; no published prices",
+      "url": "https://www.mecka.ai/"
+    },
+    {
+      "claim": "Series B ($60M, Sequoia); own multi-sensor hardware; 'global production operation, with capture fleets recording human demonstration in homes and commercial environments'; motion tracking, 3D reconstruction, sub-centimetre hand pose; supplies frontier robotics labs and Mag 7 companies; >$100M run rate June 2026",
+      "url": "https://www.mecka.ai/news/series-b"
+    },
+    {
+      "claim": "Privacy policy (effective 20 Mar 2026): legal entity Carbon Based Technology Corporation, DBA Mecka AI; covers dataset contributions and payment information; no terms of service or licence",
+      "url": "https://www.mecka.ai/privacy"
+    },
+    {
+      "claim": "No terms page published (HTTP 404)",
+      "url": "https://www.mecka.ai/terms"
+    },
+    {
+      "claim": "Jobs only in the US and Canada (New York, Toronto GTA, San Francisco)",
+      "url": "https://www.mecka.ai/careers"
+    },
+    {
+      "claim": "iOS app: egocentric recording, auto-start when hands enter the frame, uploads to internal infrastructure, task management; developer Carbon Based Technology Corp.",
+      "url": "https://apps.apple.com/us/app/mecka/id6758835773"
+    },
+    {
+      "claim": "Camera caps, sensor hub and tactile gloves; anyone can sign up through the app worldwide and register a profession; recruited businesses (bakeries, PCB line); heat map of gaps; quality gates, heuristics and escalation; YouTube-video fraud; Mecka licenses data to foundation-model companies; pay 'not the largest factor'",
+      "url": "https://sequoiacap.com/podcast/inside-the-robot-data-factory-how-mecka-sensorizes-humans-to-train-robots"
+    },
+    {
+      "claim": "Paid participants demonstrate everyday activities in real-world settings with body sensors and smartphones; HQ New York and Toronto",
+      "url": "https://dealroom.co/news/160699-mecka-raises-60m-series-b-to-turn-human-motion-into-robot-training-data/"
+    },
+    {
+      "claim": "People record themselves with body sensors and smartphones doing tasks such as making coffee or fixing cars; customers not disclosed",
+      "url": "https://techcrunch.com/2026/09/11/mecka-ai-nears-500m-valuation-in-sequoia-led-deal-amid-rush-for-robot-training-data/"
+    },
+    {
+      "claim": "EgoVerse: living dataset, 4,003 hours, ~80k episodes, 2,087 demonstrators; consortium partners including Mecka; partner console link",
+      "url": "https://egoverse.ai/"
+    },
+    {
+      "claim": "EgoVerse capture sites on the consortium globe (US, Canada, Switzerland, Indonesia, Vietnam, Philippines, Kosovo, Colombia, Argentina, Kenya)",
+      "url": "https://egoverse.ai/assets/data/globe-locations.js"
+    },
+    {
+      "claim": "EgoVerse paper (Mecka AI among authors' institutions)",
+      "url": "https://arxiv.org/abs/2604.07607"
+    },
+    {
+      "claim": "EgoVerse code is MIT-licensed",
+      "url": "https://github.com/GaTech-RL2/EgoVerse"
+    },
+    {
+      "claim": "Partner console signs in by emailed link and redirects .well-known OAuth paths to sign-in",
+      "url": "https://partners.mecka.ai/auth/sign-in"
+    },
+    {
+      "claim": "No Mecka server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=mecka"
+    },
+    {
+      "claim": "Mecka not on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "id": "dojah-scout",
+  "name": "Scout by Dojah",
+  "status": "unclaimed",
+  "provider_url": "https://scout.dojah.io",
+  "short": "Nigerian address checks by field agents: GPS-stamped photos and signed verdict.",
+  "summary": "Address verification by physical visit in Nigeria. A business sends an address (name and address fields) through the API or dashboard; the nearest enrolled field agent is offered the job, photographs the building, street and gate in the app, each photo GPS-stamped and content-hashed at capture, and automated checks (seven, per the site) test distance, device integrity and authenticity. The client gets an HMAC-signed webhook with an outcome such as address_confirmed and links to the evidence. Clients are businesses under a separate service agreement; access starts from a demo request.",
+  "tags": [
+    "people",
+    "address-verification",
+    "field-audit",
+    "photos",
+    "kyc",
+    "nigeria",
+    "africa",
+    "webhook",
+    "api"
+  ],
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "text-report"
+    ],
+    "tasks": [
+      "address verification",
+      "building and street photos at an address",
+      "confirm a person lives or works at an address",
+      "report that an address does not exist"
+    ]
+  },
+  "pricing": {
+    "model": "Not published; agent price is set per job by Dojah",
+    "from_usd": 0,
+    "unit": "verification",
+    "notes": "No client price is published; the site's call to action is 'Book a demo'. Agents see each job's price in Naira before claiming it."
+  },
+  "latency": {
+    "typical": "Not stated",
+    "notes": "No turnaround is published. The terms say each job has a claim window and that a job not completed in time returns to the pool."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No client turnaround is stated on scout.dojah.io; four-step flow only (request, claim, capture, verdict).",
+    "formats": [
+      "json",
+      "jpeg"
+    ]
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "notes": "Each result comes from a new visit to the address."
+  },
+  "coverage": {
+    "regions": [
+      "Nigeria"
+    ],
+    "notes": "Footer: 'Ground-truth address verification · Nigeria'; 'Nigeria-wide coverage'. Agent density by state is not published; the request takes state, LGA and street. Agents must be legally able to work in Nigeria.",
+    "areas": [
+      "NG"
+    ]
+  },
+  "licensing": {
+    "summary": "Clients' rights are in a separate service agreement that is not public. The public agent terms say 'All evidence, results and other content you create through the app belong to Dojah and its clients' and that Dojah may use it for the verification service, quality review, fraud prevention and training its systems. The privacy policy names the client as data controller and Dojah as processor for applicants' data. Resale and AI-training rights for clients are not stated."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "base_url": "https://scout-api.dojah.services",
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "x-intake-key",
+        "how_to_get": "Not published. Keys follow a demo and a client service agreement ('Book a demo' on https://scout.dojah.io)."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "order",
+        "method": "POST",
+        "path": "/v1/intake/verifications",
+        "params": "first_name, last_name, street, lga, state (example body); optional coordinates; idempotency key",
+        "notes": "From the site's curl example. Result comes by HMAC-signed webhook (event address_verification.completed, outcome e.g. address_confirmed) with evidence links."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    },
+    "notes": "Site: 'One typed call to request, one signed webhook to receive. Idempotent, versioned, and documented.' The documentation itself is not public: scout.dojah.io/docs and /developers, scout-api.dojah.services/docs and /openapi.json all returned 404. No /.well-known/agent-card.json, /ucp or oauth-protected-resource on scout.dojah.io. dojah.io/llms.txt exists (marketing site) and forbids large-scale training use of its content."
+  },
+  "capture": {
+    "by": "people",
+    "worker_pay": {
+      "model": "per job price shown before claiming; paid in Naira only when the submission is approved",
+      "disclosed": false,
+      "notes": "Independent contractors enrolled by Dojah operations staff."
+    }
+  },
+  "requester": {
+    "checks": "Business clients sign a separate service agreement; Dojah's agent terms require agents to keep applicants' details private and to photograph people or documents only if the app asks.",
+    "unknown": "The service agreement is not public. Every request names a person at an address (first and last name), so this is a person-linked service; whether Dojah restricts requests to lawful KYC purposes is not published."
+  },
+  "verification": {
+    "human": {
+      "level": "claimed",
+      "method": "Agents must be enrolled by a Dojah operations team member (phone number on a roster), complete training with an assessment, and may be asked to verify identity with BVN or NIN and a selfie. Trust-scored and tiered.",
+      "unknown": "BVN/NIN checks are conditional ('may ask'); no per-result identity proof is shown to the client."
+    },
+    "application": {
+      "level": "claimed",
+      "method": "Server-side automated QA states it checks 'device integrity' (method not named; not stated to be attestation); each account is tied to one handset; fake-location apps and modified handsets are forbidden.",
+      "unknown": "Which attestation (Play Integrity, App Attest or other) is used is not published."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: photos are taken in the app and content-hashed at capture ('content-sealed the instant it's taken'); a hash is not a signature, and no signing key, signer or format is named. The hash is Dojah's own and cannot be checked by a buyer without Dojah; no C2PA or conforming-product claim."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Evidence is stamped at capture; QA checks timing; the result is signed.",
+      "unknown": "Time source and whether any trusted timestamp is used are not published."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Each photo is GPS-stamped; QA checks distance from the address and catches 'spoofed location, mock GPS'; the dashboard compares the address pin with where the agent stood.",
+      "unknown": "Accepted distance threshold and how mock GPS is detected are not published."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Bundles are content-hashed and cannot 'be edited, swapped, or reused across jobs'; results are HMAC-signed. Automated checks catch 'spoofed location, mock GPS, edited photos, and duplicates'; every submission is checked 'automatically and by our review team, for location, timing, image integrity and consistency' (terms).",
+      "unknown": "A shared-secret signature proves origin to the client only; no public evidence URL exists, and what a photo must show is set by the app, not the buyer."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "One agent per visit; no second source is described."
+    }
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-10-28",
+  "expires": "2027-10-27",
+  "sources": [
+    {
+      "claim": "Product page: owned network of trust-scored field agents; request-claim-capture-verdict flow; GPS-stamped, content-hashed photos; seven automated checks; signed webhook; Nigeria; Book a demo; curl example for POST /v1/intake/verifications with x-intake-key",
+      "url": "https://scout.dojah.io/"
+    },
+    {
+      "claim": "Agent terms (v1.0, effective 7 Sep 2026): enrolment by operations, training, BVN/NIN may be requested; no fake location; evidence belongs to Dojah and its clients; independent contractors; paid in Naira on approval; clients covered by a separate service agreement",
+      "url": "https://scout.dojah.io/terms"
+    },
+    {
+      "claim": "Privacy policy: client is controller, Dojah processor for applicants' data; Nigeria Data Protection Act 2023",
+      "url": "https://scout.dojah.io/privacy"
+    },
+    {
+      "claim": "Dojah llms.txt: marketing site content, large-scale training not allowed",
+      "url": "https://dojah.io/llms.txt"
+    },
+    {
+      "claim": "Photos GPS-stamped and 'content-sealed'; automated QA (distance, device integrity, authenticity); HMAC-signed webhook",
+      "url": "https://scout.dojah.io/"
+    },
+    {
+      "claim": "Identity via BVN or NIN and a selfie; account tied to one handset; every submission checked automatically and by a review team",
+      "url": "https://scout.dojah.io/terms"
+    }
+  ]
+}

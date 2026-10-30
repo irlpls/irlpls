@@ -1,0 +1,36 @@
+{
+ "status": "completed",
+ "id": "123456789",
+ "deliveryDeadline": "2022-09-19",
+ "acceptedQuote": {
+  "quoteId": "q1",
+  "currency": "USD",
+  "finalPrice": 1800,
+  "deliveryBy": "20 days"
+ },
+ "deliveryFiles": {
+  "baseFiles": [
+   "https://files.example-globhe.test/base/0001.jpg",
+   "https://files.example-globhe.test/base/0002.jpg"
+  ],
+  "processedData": {
+   "_2dMap": [
+    "https://files.example-globhe.test/proc/ortho.tif"
+   ],
+   "thermalMap": [
+    "https://files.example-globhe.test/proc/thermal.tif"
+   ]
+  }
+ },
+ "orderStatus": "completed",
+ "locationMap": [
+  {
+   "lat": 89.59607725985146,
+   "lng": 131.18019461249787
+  }
+ ],
+ "mapTypes": [
+  "_2dMap",
+  "thermalMap"
+ ]
+}

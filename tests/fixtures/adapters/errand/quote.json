@@ -1,0 +1,3 @@
+{"task_type":"check","reward_krw":5000,"platform_fee_krw":1000,"total_charge_krw":6000,"balance_krw":75900,"balance_sufficient":true,
+ "coverage":{"online_workers":0,"reachable_workers":1,"dispatchable":true},"can_dispatch":true,
+ "note":"Quote is ready. Present the exact total_charge_krw to the user before calling errand_dispatch."}

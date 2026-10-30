@@ -1,0 +1,154 @@
+{
+  "id": "lightwheel",
+  "name": "Lightwheel EgoSuite",
+  "provider_url": "https://www.lightwheel.ai",
+  "status": "unclaimed",
+  "short": "Egocentric human demonstration data for physical AI across seven countries.",
+  "tags": [
+    "egocentric video",
+    "EgoSuite",
+    "exoskeleton",
+    "UMI",
+    "tactile",
+    "hand pose",
+    "physical AI",
+    "humanoid",
+    "managed service"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "egocentric human demonstrations with VR head-mounted multimodal capture",
+      "exoskeleton-based capture for dexterous manipulation",
+      "UMI-aligned gripper interface",
+      "RGB-D, upper-body and hand pose, tactile sensor data",
+      "3D hand pose, 3D full-body pose and frame-accurate semantic annotation",
+      "tasks in homes, commercial and service sites, factories, warehouses, outdoor sites"
+    ]
+  },
+  "pricing": {
+    "model": "Quote after scoping",
+    "from_usd": 0,
+    "unit": "project",
+    "notes": "No price is published; the call to action is 'Book a Demo' or contact for early access."
+  },
+  "latency": {
+    "typical": "Not published",
+    "notes": "The page claims 20,000+ hours of demonstrations every week, which is a capacity claim, not a turnaround."
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Not stated",
+    "notes": "Whether data is captured per order or drawn from the 300,000+ hours already delivered is not stated."
+  },
+  "coverage": {
+    "regions": [
+      "7 countries (not named)"
+    ],
+    "notes": "'10,000+ diverse tasks across 500+ environments run in parallel across 7 countries'. The countries are not listed."
+  },
+  "licensing": {
+    "summary": "No licensing, ownership, AI-training, resale or consent statements are published; no terms or privacy links appear on the site pages read."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "The workforce is not described and no identity or consent process is published."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No capture-app or device attestation is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a signed capture, so none (STANDARD §3). What is stated: Head-mounted multimodal VR unit, exoskeleton system, UMI-aligned gripper; NVIDIA AR/VR stack for real-time pose and hand tracking. No signed capture; Lightwheel is not on the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "No signed or independently time-stamped capture times are documented."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "No location proof is documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Pose tracked 'with millimeter-level accuracy'; frame-accurate semantic labels.",
+      "unknown": "The accuracy claim has no public evidence; acceptance criteria are not published."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent check of collected data is documented."
+    }
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Book a demo or request early access via lightwheel.ai/egosuite."
+      }
+    ],
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No server found in the official MCP Registry (searched the provider name, 2026-10-27)."
+    },
+    "notes": "No API or ordering docs. No /.well-known/ucp, agent-card.json, irlpls or oauth-protected-resource document found (2026-10-27)."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "No turnaround is published; 'globally scalable' and a weekly-hours capacity claim only."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "gate": "contract"
+  },
+  "payment": {
+    "agent_can_pay": false,
+    "notes": "No payment methods published."
+  },
+  "capture": {
+    "by": "people",
+    "consent": {
+      "documented": false,
+      "unknown": "No consent, release or bystander process is published."
+    },
+    "worker_pay": {
+      "model": "not published",
+      "disclosed": false
+    }
+  },
+  "requester": {
+    "unknown": "Lightwheel publishes no check of who commissions collection or for what."
+  },
+  "spec_version": "2026-10-26",
+  "updated": "2026-10-28",
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-10-27",
+  "summary": "Lightwheel Inc. describes itself as a physical AI infrastructure company. Its EgoSuite page offers egocentric human demonstrations captured with a VR head-mounted multimodal unit, a custom exoskeleton system and a UMI-aligned gripper, with RGB-D, hand and body pose and tactile data. It claims 10,000+ tasks in 500+ environments across 7 countries and 300,000+ hours delivered. Access is by demo or early-access request; no price, turnaround, delivery formats, consent process or licence terms are published, and no terms pages are linked from the site.",
+  "sources": [
+    {
+      "claim": "EgoSuite: egocentric human data, hardware, modalities, 7 countries, 500+ environments, 300,000+ hours, early access / demo",
+      "url": "https://www.lightwheel.ai/egosuite"
+    },
+    {
+      "claim": "Company: 'Lightwheel Inc.', physical AI infrastructure company; 'globally scalable egocentric human data solution'",
+      "url": "https://www.lightwheel.ai"
+    },
+    {
+      "claim": "No Lightwheel server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=lightwheel"
+    }
+  ]
+}
