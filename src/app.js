@@ -149,10 +149,10 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
     function planFor(c,text,req){var p=CAT[c.id]||{},r=document.getElementById('brdy'),box=document.getElementById('bcall');if(!box)return;
       if(r&&p.readiness&&p.readiness.line){r.textContent=p.readiness.line;r.hidden=false}
       var rc=p.ready_call;if(!rc){var d=(p.api||{}).docs_url;box.innerHTML='<p class="bq">No ready call for this provider yet.'+(d?' <a href="'+E(d)+'" rel="noopener">Its API docs</a>':'')+'</p>';return}
-      /* the pane (src/callpane.js, shared with the landing's screen 3): provider, readiness pill, price, the call as
-         HTTP / curl / Python with Copy, the key only named and where to get it */
+      /* the pane (src/callpane.js, shared with the landing's screen 3): three steps, the irlpls call, who it matched, and
+         the provider call (curl, folded to one line), the key only named and where to get it */
       var C=window.IRLCall;if(!C){box.innerHTML='<p class="bq">Nothing is sent from this page.</p>';return}
-      box.innerHTML=C.html({provider:plainName(c),readiness:p.readiness,price:priceText(c),rc:rc,text:text,req:req,place:LV?LV.place(text,req):{missing:true},street:STREET.exec(text)});
+      box.innerHTML=C.html({provider:plainName(c),readiness:p.readiness,price:priceText(c),rc:rc,card:c,text:text,req:req,place:LV?LV.place(text,req):{missing:true},street:STREET.exec(text)});
       C.bind(box)}
     /* the live answer, inline: the value in one line, its source with the eight dots and its age, and where it came from */
     function runLive(c,text,req){var box=document.getElementById('blv');if(!box)return;clearTimeout(lt);ranFor=c.id+'|'+text;
@@ -166,12 +166,12 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
         box.innerHTML='<p class="lva">'+seg.map(function(s){return typeof s==='string'?E(s):'<b>'+E(s.b)+'</b>'}).join('')+'</p>'+(x.r.photo?'<img class="lvi" src="'+E(x.r.photo)+'" alt="'+E(x.r.alt||'')+'">':'')+
           '<p class="lvsrc">'+dots(ac).replace('role="img"','aria-hidden="true"')+'<span><b>'+E(x.name)+'</b> · '+E(age)+'</span></p>'+
           '<p class="via">'+(x.why?E(x.name)+' answered, not '+E(x.asked)+': '+E(x.why)+'. ':'')+'Fetched by your browser, straight from '+E(x.name)+'.</p>';
-        /* the two layers, always (the owner, 2026-10-30): the irlpls call and plan, then the provider call with its own status;
-           a reading from this browser's cache keeps its original call, with the cache as a small note, never in its place */
+        /* the pane's three steps, always: the irlpls call, who it matched, the provider call with its own status; a reading
+           from this browser's cache keeps its original call, the cache a muted suffix, never in its place */
         var C=window.IRLCall,cs=x.calls&&x.calls.length?x.calls:(x.cached&&x.orig)||[],m=LV.mainCall(cs);
         if(C&&m){var cp=document.createElement('div');cp.className='bcp';
-          cp.innerHTML=C.html({provider:x.name,readiness:{state:'ready_now'},price:'Free',free:true,text:text,rc:{method:m.method,url:m.url,headers:{},auth:{},safe_to_run_without_approval:true},
-            kicker:'What irlpls sent for you',ran:{status:m.status,ms:m.ms},cache:LV.cacheNote(x),note:''});box.appendChild(cp);C.bind(cp)}})}
+          cp.innerHTML=C.html({provider:x.name,readiness:{state:'ready_now'},price:'Free',text:text,req:req,place:LV.place(text,req),card:ac,rc:{method:m.method,url:m.url,headers:{},auth:{},safe_to_run_without_approval:true},
+            ran:{status:m.status,ms:m.ms},cache:LV.cacheNote(x)});box.appendChild(cp);C.bind(cp)}})}
     /* what irlpls won't do, or can't, said plainly above the matches (the landing said it before; Find data is where asks go now) */
     var notes=document.getElementById('notes');
     function noteFor(text,req,top){if(!notes)return false;var h='';

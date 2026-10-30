@@ -753,35 +753,36 @@ def test_browser_phrase_shows_once_after_an_answer(browser, base):
 
 
 def test_cached_answer_still_shows_both_layers(browser, base):
-    """The same ask twice: the second answer comes from this browser's cache, and the pane still shows the irlpls call and
-    plan (layer 1) and the provider call with its original status (layer 2), the cache only a small note on layer 2."""
+    """The same ask twice: the second answer comes from this browser's cache, and the pane still shows its three steps (the
+    irlpls call, who it matched, the provider call with its original status), the cache only a muted suffix on step 3."""
     p = landing(browser, base, q="?still=1#try")
     seen = fake_usgs(p, [(200, usgs_iv(), {})])
     for i in range(2):
         try_(p, "usgs-water", "river, Austin, Texas")
         p.wait_for_selector("#lv .ans")
-        p.wait_for_function("document.querySelector('#rb .ircp-b')", timeout=5000)
+        p.wait_for_function("document.querySelector('#rb .ircp-x')", timeout=5000)
         rb = p.inner_text("#rb")
-        assert "irlpls_request" in rb and "irlpls plans" in rb, rb
-        assert "WHAT IRLPLS SENT FOR YOU" in rb.upper() and "200 ·" in p.inner_text("#rb .ircp-x"), rb
+        assert 'need="river, Austin, Texas"' in rb and "lat=" in rb and "USGS" in p.inner_text("#rb .ircp-m") and "Ready now" in rb, rb
+        assert "irlpls plans" not in rb and "policy" not in rb and "200 ·" in p.inner_text("#rb .ircp-x"), rb
     assert len(seen) == 1, seen  # the second run made no new call
-    note = p.inner_text("#rb .ircp-b .ircp-c")
-    assert re.match(r"Served from this browser’s cache, \d+ s old; USGS updates every 15 min\.", note), note
-    assert "cached" in p.inner_text("#rl") and "no new call" not in p.inner_text("#rl").lower()
+    suf = p.locator("#rb .ircp-x .ircp-c")
+    assert re.fullmatch(r" · cached \d+ s", suf.inner_text()), suf.inner_text()
+    assert re.match(r"Served from this browser’s cache, \d+ s old; USGS updates every 15 min\.", suf.get_attribute("title"))
+    assert p.locator("#rl, #rb .cls, #rb .rt").count() == 0  # no fold, no request log, no intro sentence
     # Find data: the same, under its inline answer
     f = page(browser)
     seen = fake_usgs(f, [(200, usgs_iv(), {})])
     f.goto(base + "/find.html?q=river%20level%20in%20Austin%2C%20Texas")
     f.wait_for_selector("#brun")
     f.press("#q", "Enter")
-    f.wait_for_selector("#blv .bcp .ircp-b", timeout=8000)
+    f.wait_for_selector("#blv .bcp .ircp-x", timeout=8000)
     assert not f.locator("#blv .ircp-c").count()
     f.wait_for_function("!document.getElementById('brun').disabled")
     f.wait_for_timeout(2100)
     f.click("#brun")
     f.wait_for_selector("#blv .bcp .ircp-c", timeout=8000)
     t = f.inner_text("#blv .bcp")
-    assert "irlpls_request" in t and "200 ·" in t and "Served from this browser’s cache" in t and len(seen) == 1, t
+    assert "irlpls_request" in t and "200 ·" in t and "cached" in f.inner_text("#blv .ircp-c") and len(seen) == 1, t
 
 
 def test_screen_three_ends_on_see_the_docs(browser, base):
@@ -1195,7 +1196,7 @@ def test_screen_three_is_services_a_field_and_one_line(browser, base):
     assert len(ids) == 6 and p.evaluate("ids=>ids.every(i=>IRLLive.route(i)&&IRL3.card(i)&&IRL3.card(i).access.cost==='free')", ids), ids  # each really runs in a browser
     assert p.get_attribute("#svc .sv:first-child", "aria-pressed") == "true" and p.input_value("#q") == p.evaluate("IRLLive.services[0].q")
     # before any pick or typing: three asks that work, one tap each (the owner, 2026-10-30: 'no idea what I can search')
-    assert p.inner_text("#hint").startswith("Try:") and p.locator("#hint .eg").count() == 3
+    assert p.inner_text("#hint").startswith("Try:") and p.locator("#hint .eg").count() == 4
     assert p.get_attribute("#q", "placeholder") == p.evaluate("IRLLive.services[0].q")
     assert p.locator("#lv").count() == 0  # nothing is fetched until Go
     p.click('#svc .sv[data-id="noaa-tides"]')
@@ -1595,15 +1596,17 @@ def test_finder_shows_the_call_an_agent_would_make(browser, base):
     p.route("https://**/*", lambda r: r.abort())
     p.goto(base + "/find.html?q=" + "storefront%20photo%20of%2050%20Elm%20St%2C%20Burlington%2C%20VT")
     p.wait_for_selector("#bcall .call", state="attached", timeout=5000)
-    # first the uniform irlpls call (the product), then, folded, what irlpls sends ProxyPics
+    # three steps: the uniform irlpls call (the product), who it matched, and, folded to one line, what irlpls sends ProxyPics
     assert "irlpls_request(" in p.inner_text("#bcall .ircp-ask") and "storefront photo of 50 Elm St" in p.inner_text("#bcall .ircp-ask")
+    assert "not sent from this page" in p.inner_text("#bcall .ircp-x")
     open_provider_call(p)
     assert p.inner_text("#best .bn") == "ProxyPics"
     call = p.inner_text("#bcall .call")
-    assert call.startswith("POST https://api.proxypics.com/api/v3/photo-requests") and "x-api-key: {PROXYPICS_API_KEY}" in call, call
+    assert call.startswith("curl -X POST 'https://api.proxypics.com/api/v3/photo-requests") and '"x-api-key: ${PROXYPICS_API_KEY}"' in call, call
     assert '"address": "50 Elm St, Burlington, VT"' in call and "storefront photo of 50 Elm St" in call, call
     t = p.inner_text("#bcall")
-    assert "PROXYPICS_API_KEY: get it at app.proxypics.com/profile" in t and "Needs your approval" in t and "Nothing is sent from this page." in t, t
+    assert "needs your key" in t and "Needs your approval" in t, t
+    assert p.get_attribute("#bcall .ircp-gk", "href").startswith("https://app.proxypics.com/")
     assert p.inner_text("#brdy")  # how close to "just say yes"
     assert not [u for u in sent if "proxypics.com" in u], sent
 
@@ -1930,8 +1933,9 @@ def test_no_browser_source_shows_the_ready_call_and_never_orders(browser, base, 
     open_impl(p)
     t = p.inner_text("#duo")
     assert "Here’s the exact call." in p.inner_text("#lv") and (who is None or who in t)
-    # two layers (the owner, 2026-10-30): the uniform irlpls call first, then what irlpls sends the provider, folded
-    assert "your agent → irlpls" in t.lower() and "irlpls_request(" in t and "what irlpls sends for you" in t.lower()
+    # three flat steps (the owner, 2026-10-30): the irlpls call, who it matched, what irlpls sends the provider (folded)
+    assert "your agent → irlpls" in t.lower() and "irlpls_request(" in t and "irlpls → provider" in t.lower()
+    assert p.locator("#duo .ircp-tl > li").count() == 3 and p.locator("#duo [role=tab]").count() == 0
     p.click("#duo .ircp-x")
     assert out == [], out
     for k in p.evaluate("[...document.querySelectorAll('#lv pre.call .t-ph')].map(e=>e.textContent)"):
@@ -1960,14 +1964,12 @@ def test_footer_is_formal_and_the_same_on_every_page(browser, base):
 
 
 def open_impl(p):
-    """Screen 3's right side (what irlpls did): on a phone it is folded to one line; unfold it."""
-    p.wait_for_selector("#duo .ircp", state="attached", timeout=10000)
-    if p.is_hidden("#rb"):
-        p.click("#rl")
+    """Screen 3's right side (what irlpls did): open on every width (it is three short lines); wait for it."""
+    p.wait_for_selector("#duo .ircp", state="visible", timeout=10000)
 
 
 def open_provider_call(p, root="#bcall"):
-    """The call pane's layer 2 (what irlpls sends the provider) is folded to one line; unfold it."""
+    """The call pane's step 3 (what irlpls sends the provider) is folded to one line; unfold it."""
     x = p.locator(f"{root} .ircp-x").first
     if x.count() and x.get_attribute("aria-expanded") != "true":
         x.click()

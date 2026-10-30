@@ -73,9 +73,10 @@ html{scroll-padding-top:68px}
 .best .ba button:disabled{opacity:.5;cursor:default}
 /* the top match's live answer, inline (fetched by this browser: src/live.js) */
 .blv:empty{display:none}
-.blv{margin:10px 0 0;padding:10px 12px;border-radius:14px;background:#fff;border:1px solid var(--line)}
+.blv{margin:12px 0 0;padding:12px 0 0;border-top:1px solid var(--line)}  /* flat: no card inside the best match */
 .blv p{margin:0}
-.blv .bcp{margin-top:10px;padding-top:4px;border-top:1px solid var(--line)}.blv .bcp .ircp-c{margin:-2px 0 6px}.blv .bcp .ircp{margin:0;padding:8px 0 0;border:0;border-radius:0;background:none;box-shadow:none}
+.blv .bcp{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+#bcall{margin-top:12px}
 .blv .lvs{font:500 14px/1.4 var(--sans);color:var(--fg3)}
 .blv .lva,.blv .lvm{font:400 16px/1.45 var(--sans);color:var(--fg)}.blv .lva b,.blv .lvm b{font-weight:600}
 .blv .lvi{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;margin:8px 0 0;border-radius:10px;background:var(--card2)}
