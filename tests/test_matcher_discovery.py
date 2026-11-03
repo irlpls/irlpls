@@ -61,7 +61,7 @@ def test_unknown_place_penalises_explicit_elsewhere_and_prefers_global():
     assert r.country_code is None and r.place
     s = score(BY["fintraffic-weathercams"], r)
     assert any("may not be where" in g for g in s["gaps"])
-    glob = [c for c in CARDS if "*" in (c["coverage"].get("areas") or [])]
+    glob = [c for c in CARDS if "*" in (c["coverage"].get("areas") or []) and "live" in c["delivery"]["modes"]]  # the ask is live (a camera now)
     assert glob and score(glob[0], r)["parts"].get("coverage", 1) >= s["parts"]["coverage"]
     # no place at all: no geography penalty
     assert not any("may not be where" in g for g in score(BY["fintraffic-weathercams"], parse("traffic camera", CARDS))["gaps"])

@@ -23,6 +23,11 @@ jobs:
           grep -qx "version = \"$v\"" pyproject.toml
           grep -qx "version = \"$v\"" packages/irlpls-mcp/pyproject.toml
           grep -q "\"version\": \"$v\"" server.json
+      - name: regenerate packaged data (cards.json must hold every card)
+        run: |
+          IRLPLS_NO_FETCH=1 python3 build.py --public
+          python3 tools/sync_package_data.py
+          uv run --no-project --with pytest --with jsonschema python -m pytest -q tests/test_premortem_launch.py::test_packaged_cards_cover_every_catalog_family
       - name: build sdists and wheels
         run: |
           uv build --out-dir dist .

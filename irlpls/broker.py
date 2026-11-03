@@ -365,8 +365,15 @@ class Job:
                 qs.append({"field": "place", "blocking": False, "ask": "Where should it be captured? Say 'anywhere' if it doesn't matter.",
                            "why": "A dataset needs no single place; a place only narrows the providers. Assuming anywhere."})
             else:
-                qs.append({"field": "place", "blocking": True, "ask": "Where? A place name or lat/lon.",
-                           "why": "Every provider covers specific places; without one nothing can be matched or dispatched."})
+                off = __import__("re").search(r"\b(mars|moon|venus|jupiter|saturn|neptune|uranus|pluto|titan|europa)\b", r.need or "", __import__("re").I)
+                qs.append({"field": "place", "blocking": True,
+                           "ask": "Where on Earth? A place name or lat/lon." if off else "Where? A place name or lat/lon.",
+                           "why": (f"irlpls covers places on Earth only; {off.group(1)!r} is not one it can plan for." if off else
+                                   "Every provider covers specific places; without one nothing can be matched or dispatched.")})
+        if r.mode == "live" and r.place and r.lat is None and not getattr(r, "anywhere", False):
+            qs.append({"field": "lat", "blocking": False, "ask": f"Where exactly is {r.place!r}? Give lat and lon.",
+                       "why": "The place name could not be put on the map (small places are not in the offline gazetteer, or "
+                              "the geocoder was unreachable), so a live read has no coordinates to query yet."})
         if r.mode == "commission" and r.within_minutes is None:
             qs.append({"field": "within_minutes", "blocking": False, "ask": "By when do you need it?",
                        "why": "Changes which providers can deliver in time; assuming 7 days."})
@@ -548,6 +555,7 @@ class Job:
             self.protocol = {"card_id": card_id, "chosen": True} if self.choice["sdk"].get("protocol") else self.protocol
         self._note(f"chose {card_id}")
         self._read_check_warning(self.choice)
+        _save(self)   # the CLI runs choose and submit as separate processes: the choice must survive
         return self
 
     def _check_live_results(self, opt, kw=None):
@@ -655,8 +663,17 @@ class Job:
                 except (OSError, TimeoutError, _http.HTTPError, adapters.base.MissingCredentials) as e:   # said, not raised
                     code = "needs_key" if isinstance(e, adapters.base.MissingCredentials) else "provider_down"
                     status = getattr(e, "status", None) if isinstance(e, _http.HTTPError) else None
-                    msg = (f"{opt['name']} could not be read" + (f" (HTTP {status})" if status else f" ({type(e).__name__})")
-                           + ": pick another option in the plan, or try again later.")
+                    why = (f" (HTTP {status})" if status else " (timed out)" if isinstance(e, TimeoutError) or "timed out" in str(e)
+                           else f" (no network route to the provider: {str(getattr(e, 'reason', '') or e)[:80]})"
+                           if isinstance(e, OSError) and not isinstance(e, _http.HTTPError) else f" ({type(e).__name__})")
+                    if code == "needs_key":
+                        env = (opt.get("sdk") or {}).get("env")
+                        why = (f" ({str(e)[:200]})" if "refused" in str(e) else
+                               f" (needs {env}: set it in the environment, or choose a keyless option)" if env
+                               else f" ({str(e)[:100] or 'needs an API key'})")
+                    msg = (f"{opt['name']} could not be read" + why
+                           + (": " if code == "needs_key" else ": your connection may be offline; ")
+                           + "pick another option in the plan, or try again later.")
                     self.warnings = [{"code": code, "card_id": opt["card_id"], "msg": msg}]
                     self.choice, self.state, self.results = opt, "failed", []
                     self._note(f"live read from {opt['card_id']} failed: {code}")

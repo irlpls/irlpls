@@ -258,9 +258,10 @@ def index_of(cat):
     return idx
 
 
-def build(cards, top=None):
+def build(cards, top=None, strict=True):
     """(catalog, index) from a list of Capture Cards. top: optional {need: [[card_id, score]...]} matcher check.
-    Raises ValueError if a family names an unknown card or a card belongs to no family."""
+    Raises ValueError if a family names an unknown card or a card belongs to no family. strict=False (the runtime path,
+    where the cards come from an installed package that may be older or newer than this table) skips both instead."""
     cards = usable(cards)
     _HEALTH["data"] = _health.load()   # the last daily read check, read once per build
     by = {c["id"]: c for c in cards}
@@ -269,13 +270,18 @@ def build(cards, top=None):
     for fid, typ, title, ex, pids in FAMILIES:
         for pid in pids:
             if pid not in by:
+                if not strict:
+                    continue
                 raise ValueError(f"family {fid} names unknown or out-of-scope card {pid}")
             fam_of.setdefault(pid, []).append(fid)
     orphans = sorted(set(by) - set(fam_of))
-    if orphans:
+    if orphans and strict:
         raise ValueError("cards in no family (add them to FAMILIES): " + ", ".join(orphans))
     fams = []
     for fid, typ, title, ex, pids in FAMILIES:
+        pids = [p for p in pids if p in by]
+        if not pids:
+            continue
         ps = [by[p] for p in pids]
         areas = sorted({x for c in ps for x in (c["coverage"].get("areas") or []) if x != "*"})
         fams.append({
@@ -288,7 +294,7 @@ def build(cards, top=None):
             "coverage": {"global": any("*" in (c["coverage"].get("areas") or []) for c in ps), "areas_listed": areas[:40],
                          "note": "Areas are the union of listed ISO codes; cards with no listed areas are not counted. 'global' means at least one card says no country limit, not that every place has a station or an operator."},
         })
-    provs = {c["id"]: provider(c, ad, fam_of[c["id"]]) for c in sorted(cards, key=lambda c: c["id"])}
+    provs = {c["id"]: provider(c, ad, fam_of.get(c["id"], [])) for c in sorted(cards, key=lambda c: c["id"])}
     cat = {
         "irlpls_catalog": 1, "spec_version": SPEC, "generated": datetime.date.today().isoformat(),
         "what_this_is": "The index of what irlpls can be asked. Read question_types, pick a family, take its providers, then fetch only those cards at /cards/<id>.json. Do not load /cards.json whole (about 1 MB).",
@@ -334,7 +340,7 @@ def load():
             _CACHE["cat"] = json.loads(p.read_text())
         else:
             from .registry import Registry
-            _CACHE["cat"] = build(Registry(include_samples=True).all)[0]
+            _CACHE["cat"] = build(Registry(include_samples=True).all, strict=False)[0]
     return _CACHE["cat"]
 
 

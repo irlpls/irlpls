@@ -71,7 +71,7 @@ CAPTURE = r"\b(photo|picture|image|snap|shot|video|footage|film|clip|recording|p
 TODAY = r"\btoday\b"
 # A question about conditions (a reading, a tide, a quake) with nothing to capture, no dataset and no deadline: what is
 # reporting now answers it ("tide at Santa Monica", "earthquake Alaska", "air quality London").
-CONDITION = r"\b(tides?|earthquakes?|quakes?|waves?|swell|surf|air|ships?|vessels?)\b"
+CONDITION = r"\b(tides?|earthquakes?|quakes?|waves?|swell|surf|air|ships?|vessels?|web ?cams?|cctv|jam ?cams?|cameras?)\b"
 LOOKBACK = r"\b(?:last|past)\s+(?:(?:\d+|few|couple of)\s+)?(?:minute|min|hour|hr|day|week)s?\b|\bago\b|\bthis (?:morning|afternoon|evening)\b|\byesterday\b|\bearlier today\b"  # "in the last hour": recent reports
 # "7 days" on its own, as in "500 clips, 7 days"; not a lookback, a repeat, a lag or a duration of footage
 BARE_DEADLINE = r"(?<![\w.$-])(?<!last )(?<!past )(?<!every )(\d{1,6})[\s-]*(minute|min|hour|hr|day|week)s?\b(?!\s+(?:ago|after|of|old|later|earlier|before|long)\b)"
@@ -96,7 +96,7 @@ italian japanese javanese kannada kazakh khmer kinyarwanda korean kurdish kyrgyz
 luxembourgish macedonian malagasy malay malayalam maltese mandarin maori marathi mongolian nepali norwegian oromo pashto
 persian polish portuguese punjabi quechua romanian russian serbian shona sindhi sinhala slovak slovenian somali spanish
 sundanese swahili swedish tagalog tajik tamil tatar telugu thai tibetan tigrinya turkish turkmen twi ukrainian urdu uyghur
-uzbek vietnamese welsh wolof xhosa yiddish yoruba zulu sign language languages accent accents dialect dialects""".split())
+uzbek vietnamese welsh wolof xhosa yiddish yoruba zulu sign language languages accent accents dialect dialects mars moon venus jupiter saturn neptune uranus pluto titan europa""".split())
 # No place limit: a dataset that can be captured anywhere. Never geocoded.
 ANYWHERE = r"\b(?:anywhere(?: in the world)?|any (?:country|countries|location|locations|place|places|region|city|cities)|" \
            r"world-?wide|all over the world|around the world|globally|no particular (?:place|location)|" \
@@ -116,7 +116,7 @@ SUBDIVISIONS = {"GB-ENG": "england", "GB-SCT": "scotland", "GB-WLS": "wales", "G
                 "FR-IDF": "ile-de-france", "IT-LOM": "lombardy", "JP-13": "tokyo", "IN-DL": "delhi", "IN-MH": "maharashtra",
                 "MX-CMX": "mexico city", "BR-SP": "sao paulo", "CN-BJ": "beijing", "CN-SH": "shanghai"}
 # A street address with its city and state: "123 Main St, Springfield, IL".
-ADDRESS = re.compile(r"\b\d+[A-Za-z]?\s+(?:[A-Z0-9][\w'.-]*\s+){0,3}(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Way|Pl|Place|Ct|Court|Hwy|Highway|Pkwy|Parkway)\b\.?(?:,\s*[A-Z][\w'.-]*(?:\s+[A-Z][\w'.-]*)*)*")
+ADDRESS = re.compile(r"\b\d+[A-Za-z]?\s+(?:[A-Z0-9][\w'.-]*\s+){0,3}(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Way|Pl|Place|Ct|Court|Hwy|Highway|Pkwy|Parkway)\b\.?(?:(?:,\s*|\s+(?=[A-Z]))[A-Z][\w'.-]*(?:\s+[A-Z][\w'.-]*)*)*")
 ADDRESS_LC = re.compile(r"\b\d+[a-z]?\s+(?:[a-z0-9'.-]+\s+){1,3}(?:st|ave|rd|blvd|dr|ln|hwy|pkwy)\b\.?(?:,\s*[A-Z][\w'.-]*(?:\s+[A-Z][\w'.-]*)*)*")  # "123 main st"
 STATES = {"al": "alabama", "ak": "alaska", "az": "arizona", "ar": "arkansas", "ca": "california", "co": "colorado", "ct": "connecticut",
           "dc": "district of columbia", "de": "delaware", "fl": "florida", "ga": "georgia", "hi": "hawaii", "id": "idaho", "il": "illinois",
@@ -434,6 +434,9 @@ def check_hints(hints):
                              + f"; fields: {', '.join(HINTS)}")
 
 
+MAX_NEED_CHARS = 4000
+
+
 def check_request(r):
     """Reject a Request no provider could act on, with a plain message: an empty need, coordinates out of range or half
     given, a quantity below 1 or above MAX_REQUEST_QUANTITY, a deadline that isn't a positive number of minutes, an
@@ -441,6 +444,9 @@ def check_request(r):
     if not isinstance(r.need, str) or not r.need.strip():
         raise ValueError("need is empty: say what to observe or capture, with the place and the time "
                          "('river level at Comfort, TX now')")
+    if len(r.need) > MAX_NEED_CHARS:
+        raise ValueError(f"need is {len(r.need):,} characters: keep it to a sentence or two (at most {MAX_NEED_CHARS:,}); "
+                         "put the place and time in it and details in the spec")
     for k, lo, hi in (("lat", -90, 90), ("lon", -180, 180)):
         v = getattr(r, k)
         if v is not None and (not _number(v) or not lo <= v <= hi):

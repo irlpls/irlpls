@@ -235,7 +235,7 @@ def cmd_approve(a):
 def cmd_show(a):
     c = irlpls.card(a.id)
     if not c:
-        sys.exit(f"no card {a.id!r}")
+        sys.exit(f"irlpls: no card {a.id!r} (list them with: irlpls find <what you need>, or irlpls adapters)")
     print(json.dumps(c, indent=2))
 
 
@@ -335,9 +335,10 @@ def cmd_adapters(a):
 
 def main(argv=None):
     p = argparse.ArgumentParser(prog="irlpls", description="Get new real-world data: live (reporting now) or commissioned (a provider captures what you specify).")
+    p.add_argument("--version", action="version", version=f"irlpls {irlpls.__version__}")
     sub = p.add_subparsers(dest="cmd", required=True)
     f = sub.add_parser("find", help="rank providers for a need")
-    f.add_argument("need")
+    f.add_argument("need", nargs="+", help="what you need, e.g. 'river level in Bristol' (quotes optional)")
     f.add_argument("--limit", type=int, default=10)
     f.add_argument("--json", action="store_true")
     f.add_argument("--no-geo", action="store_true", help="don't geocode the place")
@@ -345,7 +346,7 @@ def main(argv=None):
     f.add_argument("--strict", action="store_true", help="drop providers that violate the policy")
     f.set_defaults(fn=cmd_find)
     q = sub.add_parser("request", help="ask the broker for new real-world data")
-    q.add_argument("need")
+    q.add_argument("need", nargs="+", help="what you need, e.g. 'river level in Bristol' (quotes optional)")
     q.add_argument("--why")
     q.add_argument("--place")
     q.add_argument("--lat", type=float)
@@ -410,7 +411,7 @@ def main(argv=None):
     g.set_defaults(fn=cmd_card_file)
     o = sub.add_parser("live", help="pull what is reporting now near a place")
     o.add_argument("id")
-    o.add_argument("--at", help='place name, e.g. "Austin, TX"')
+    o.add_argument("--at", "--place", dest="at", help='place name, e.g. "Austin, TX"')
     o.add_argument("--lat", type=float)
     o.add_argument("--lon", type=float)
     o.add_argument("--radius", type=float, default=15, help="km")
@@ -427,6 +428,8 @@ def main(argv=None):
     c.set_defaults(fn=cmd_commission)
     sub.add_parser("adapters", help="list adapters").set_defaults(fn=cmd_adapters)
     a = p.parse_args(argv)
+    if isinstance(getattr(a, "need", None), list):
+        a.need = " ".join(a.need)
     try:
         a.fn(a)
     except irlpls.broker.JobError as e:
@@ -437,6 +440,12 @@ def main(argv=None):
                  + "\n  → give them with --spec '{\"field\": ...}' (an address can be the --place)")
     except (irlpls.adapters.MissingCredentials, irlpls.adapters.NotSupported, irlpls.PolicyViolation, ValueError) as e:
         sys.exit(f"irlpls: {e}")
+    except (OSError, TimeoutError) as e:   # offline, DNS, refused, timed out, HTTP error: said, not a traceback
+        sys.exit(f"irlpls: could not reach the provider ({str(getattr(e, 'reason', '') or e)[:120]}): check your connection, or try again later")
+    except BrokenPipeError:
+        pass
+    except KeyboardInterrupt:
+        sys.exit(130)
 
 
 if __name__ == "__main__":
