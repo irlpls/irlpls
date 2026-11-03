@@ -1,0 +1,35 @@
+# Daily public-safe health check. Runs tools/autopilot.py --public (site up and fresh, www redirect, CI, daily rebuild,
+# MCP /healthz if IRLPLS_MCP_URL is a repo variable, PyPI). Opens or updates ONE issue labelled "autopilot" only when a
+# check fails, and closes it when everything passes again (logic and tests: tools/ops_issue.py, tests/test_ops_issue.py).
+# Uses only the automatic GITHUB_TOKEN. No secrets, no personal information.
+name: autopilot
+on:
+  schedule:
+    - cron: "30 9 * * *"   # 09:30 UTC, three hours after the daily rebuild
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+  actions: read
+concurrency: autopilot
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      IRLPLS_PUBLIC_REPO: ${{ github.repository }}
+      IRLPLS_MCP_URL: ${{ vars.IRLPLS_MCP_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run the public checks
+        run: python tools/autopilot.py --public --json status.json --md status.md || true
+      - name: Open, update or close the single issue
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python tools/ops_issue.py status.json
+      - name: Summary
+        run: cat status.md >> "$GITHUB_STEP_SUMMARY"

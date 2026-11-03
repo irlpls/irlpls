@@ -34,4 +34,15 @@ jobs:
       - name: site JS parses
         run: |
           node --check site/match.js && node --check site/app.js
-          sed -n '/<script>/,/<\/script>/p' site/index.html | sed '1d;$d' > /tmp/landing.js && node --check /tmp/landing.js
+          python - <<'PY'
+          import re, subprocess
+          html = re.sub(r"<!--.*?-->", "", open("site/index.html").read(), flags=re.S)
+          n = 0
+          for attrs, body in re.findall(r"<script([^>]*)>(.*?)</script>", html, re.S):
+              if "src=" in attrs or "json" in attrs or not body.strip():
+                  continue
+              open("/tmp/inline.js", "w").write(body)
+              subprocess.run(["node", "--check", "/tmp/inline.js"], check=True)
+              n += 1
+          print("inline scripts parsed:", n)
+          PY
