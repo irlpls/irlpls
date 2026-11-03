@@ -2085,3 +2085,12 @@ def test_a_provider_without_a_call_says_how_to_order(browser, base):
     t = re.sub(r"<[^>]+>", "", h)
     assert "By agreement" in t and "no public API" in t and "Order by hand: unidata.pro" in t and "No ready call" not in t, t
     assert "irlpls_request" in t and "need_ai_training" in t
+
+
+def test_wordmark_takes_the_title_colour_on_the_chain_page(browser, base):
+    # chain.html has a section id="s1" ("Real person"); bar.js must not mistake it for the landing and skip the handoff
+    pg = page(browser)
+    pg.goto(base + "/chain.html")
+    pg.evaluate("scrollTo(0, 1200)")
+    pg.wait_for_timeout(300)
+    assert float(pg.evaluate("getComputedStyle(document.querySelector('.top .brand')).getPropertyValue('--bc')")) == 1.0
