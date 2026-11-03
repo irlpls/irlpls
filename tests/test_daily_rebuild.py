@@ -2,6 +2,8 @@
 checks itself (never breaking the build), and a GitHub Action asks Cloudflare Pages to rebuild every day."""
 import pathlib
 import subprocess
+
+import pytest
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -35,6 +37,8 @@ def test_daily_workflow_asks_cloudflare_and_skips_without_the_secret():
     wf = (ROOT / ".github" / "workflows" / "daily-rebuild.yml").read_text()
     assert 'cron: "30 6 * * *"' in wf and "workflow_dispatch:" in wf
     assert "secrets.CF_DEPLOY_HOOK" in wf and 'if [ -z "$HOOK" ]' in wf and "exit 0" in wf and "curl -fsS -X POST" in wf
+    if not (ROOT / "tools" / "stage_public.py").exists():
+        pytest.skip("stage_public.py is private; not in the public repo")
     stage = (ROOT / "tools" / "stage_public.py").read_text()
     assert ".github" not in stage.split("EXCLUDE_DIRS", 1)[1].split("}", 1)[0]   # kept in the public export
     ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text()
