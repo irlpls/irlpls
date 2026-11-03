@@ -21,7 +21,7 @@
 
 A **guarantee** is the card field behind a link: a Capture Card states seven of them (`human`, `application`, `camera`, `time`, `location`, `content`, `corroboration`, STANDARD Section 3), each with a level, a method and what is still uncertain, plus the optional `provenance.custody` and `provenance.receipt`. The eight links are read from those fields by the rules in the last column. People see the links; the card's JSON holds the guarantees.
 
-Levels: **Evidenced** (a documented method and public evidence anyone can check), **Claimed** (the provider's word), **Reported** (link 5 only: the card states a time, but nothing attests it), **Not stated** (the card says nothing, or offers nothing).
+Levels: **Evidenced** (verified by an independent reviewer irlpls recognises; none yet, so a provider's own `evidenced` shows as Claimed until one has), **Claimed** (the provider's word), **Reported** (link 5 only: the card states a time, but nothing attests it), **Not stated** (the card says nothing, or offers nothing).
 
 ## A to Z
 
@@ -45,7 +45,7 @@ Levels: **Evidenced** (a documented method and public evidence anyone can check)
 
 **Corroboration.** Independent confirmation from sources with different operators, sensors and pipelines. Sources sharing an upstream feed count as one.
 
-**Evidence.** In RFC 9334, claims from an attester that a verifier has yet to appraise. It is unappraised, not proof. On irlpls, "Evidenced" means a documented method with public evidence anyone can check.
+**Evidence.** In RFC 9334, claims from an attester that a verifier has yet to appraise. It is unappraised, not proof. On irlpls, "Evidenced" means an independent reviewer irlpls recognises has checked the link; irlpls recognises none yet.
 
 **Guarantee.** The card field behind a link (see The eight links). Seven per card, each with its own level.
 

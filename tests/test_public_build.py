@@ -1,5 +1,6 @@
 """`build.py --public` (the irlpls.com build): no prototypes or preview-only files, and a refusal on preview hosts or
 local paths. Fast: runs build.public_scrub on a fixture site, plus tools/check_site.py on it."""
+import os
 import pathlib
 import subprocess
 import sys
@@ -67,7 +68,8 @@ def test_real_public_build_references_only_files_it_ships(tmp_path):
         if src.is_file() and not f.startswith(("site/", "qa-", "scratchpad/")):
             (tmp_path / f).parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, tmp_path / f)
-    b = subprocess.run([sys.executable, "build.py", "--public"], cwd=tmp_path, capture_output=True, text=True)
+    b = subprocess.run([sys.executable, "build.py", "--public"], cwd=tmp_path, capture_output=True, text=True,
+                       env={**os.environ, "IRLPLS_NO_FETCH": "1"})
     assert b.returncode == 0, b.stdout + b.stderr
     out = tmp_path / "site"
     assert not (out / "media" / "live").exists() and "media/live" not in (out / "index.html").read_text()

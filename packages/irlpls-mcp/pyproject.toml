@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "irlpls-mcp"
+version = "0.1.0"
+description = "MCP server for irlpls: agents find real-world data providers, read their Capture Cards and plan a request."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{name = "irlpls maintainers", email = "hello@irlpls.com"}]
+keywords = ["mcp", "model context protocol", "agents", "real-world data", "sensors", "capture cards"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+dependencies = ["irlpls==0.1.0", "mcp>=2,<3"]
+
+[project.urls]
+Homepage = "https://irlpls.com"
+Documentation = "https://irlpls.com/agents"
+Repository = "https://github.com/irlpls/irlpls"
+Issues = "https://github.com/irlpls/irlpls/issues"
+
+[project.scripts]
+irlpls-mcp = "irlpls_mcp:main"
+
+[tool.setuptools]
+packages = ["irlpls_mcp"]
+include-package-data = false

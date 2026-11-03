@@ -1,0 +1,79 @@
+# Publish irlpls and irlpls-mcp to PyPI when a GitHub release is published (tag v0.1.0; docs/LAUNCH-AGENTS.md step 2).
+# PyPI Trusted Publishing (OIDC): no API tokens or repository secrets. Each PyPI project must list this repository,
+# this workflow file (release.yml) and its own environment as a trusted publisher: "pypi" for irlpls, "pypi-mcp" for
+# irlpls-mcp (PyPI allows one pending publisher per repo+workflow+environment, so the two projects need different
+# environments; docs/LAUNCH-AGENTS.md, step 2).
+name: release
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: tag matches both package versions
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          grep -qx "version = \"$v\"" pyproject.toml
+          grep -qx "version = \"$v\"" packages/irlpls-mcp/pyproject.toml
+          grep -q "\"version\": \"$v\"" server.json
+      - name: build sdists and wheels
+        run: |
+          uv build --out-dir dist .
+          uv build --out-dir dist packages/irlpls-mcp
+      - name: twine check
+        run: uvx twine check --strict dist/*
+      - name: packaging tests (wheel contents, metadata, server.json)
+        run: uv run --no-project --with pytest --with jsonschema python -m pytest -q tests/test_packaging.py
+      - name: install the wheels in a clean venv and smoke-test
+        run: |
+          uv venv /tmp/v && uv pip install -p /tmp/v/bin/python dist/*.whl
+          /tmp/v/bin/python -c "import irlpls; assert irlpls.request('river level at Comfort, TX now', geocode=False, lat=29.97, lon=-98.9).best()['card_id'] == 'usgs-water'"
+          /tmp/v/bin/irlpls-mcp --help
+          cd /tmp && /tmp/v/bin/python "$GITHUB_WORKSPACE/deploy/mcp_smoke.py" --stdio /tmp/v/bin/irlpls-mcp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish-irlpls:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/irlpls
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: mkdir pkg && mv dist/irlpls-* pkg/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: pkg/
+
+  publish-irlpls-mcp:
+    needs: publish-irlpls   # irlpls-mcp pins irlpls==version, so irlpls goes first
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi-mcp
+      url: https://pypi.org/p/irlpls-mcp
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: mkdir pkg && mv dist/irlpls_mcp-* pkg/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: pkg/

@@ -1,8 +1,16 @@
-# DRAFT, not deployed. app name must be unique on Fly.
+# Fly.io app for the hosted read-only MCP server. Not deployed. Deploy from the repo root:
+#   fly launch --no-deploy --copy-config -c deploy/fly.toml --name irlpls-mcp   (once; the name must be free on Fly)
+#   fly deploy . -c deploy/fly.toml --dockerfile deploy/Dockerfile
+# Cost (docs.fly.io/about/pricing, read 2026-11-02): shared-cpu-1x 256 MB = $2.19 per 30 days if always on, billed per
+# second while running; stopped machines bill rootfs only ($0.15/GB-month); shared IPv4 + IPv6 free; first 10
+# certificates free. With auto-stop below, expect $0.50-2.50/month.
 app = "irlpls-mcp"
 primary_region = "iad"
-[build]
-  dockerfile = "deploy/Dockerfile"
+
+[env]
+  IRLPLS_MCP_READ_ONLY = "1"
+  IRLPLS_CLIENT_IP_HEADER = "fly-client-ip"   # Fly's proxy sets it; the rate limiter keys on it (memory only)
+
 [http_service]
   internal_port = 8765
   force_https = true
@@ -13,14 +21,14 @@ primary_region = "iad"
     type = "requests"
     soft_limit = 25
     hard_limit = 50
+
 [[http_service.checks]]
-  method = "POST"
-  path = "/mcp"
+  method = "GET"
+  path = "/healthz"
   interval = "30s"
   timeout = "5s"
-  grace_period = "10s"
-  headers = {Content-Type = "application/json", Accept = "application/json, text/event-stream"}
-  # an empty POST returns 4xx; a TCP check is the safer choice if this flaps:
+  grace_period = "15s"
+
 [[vm]]
   size = "shared-cpu-1x"
   memory = "256mb"

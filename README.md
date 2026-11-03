@@ -60,7 +60,7 @@ uv run irlpls adapters
 
 ## MCP server
 
-`uv run irlpls-mcp` serves nine broker tools: `irlpls_request`, `irlpls_answer`, `irlpls_choose_provider`, `irlpls_submit`, `irlpls_approve`, `irlpls_get_job`, `irlpls_find_providers`, `irlpls_get_card`, `irlpls_list_capabilities`, plus the six wire-protocol tools. `--read-only` leaves out every tool that orders or calls a provider (`irlpls_submit`, `irlpls_approve`, the protocol tools), so nothing is ever ordered. Needs the `mcp` package (version 2 for the tests).
+`uv run --with "mcp>=2" python -m irlpls.mcp_server` (the `irlpls-mcp` package once published) serves nine broker tools: `irlpls_request`, `irlpls_answer`, `irlpls_choose_provider`, `irlpls_submit`, `irlpls_approve`, `irlpls_get_job`, `irlpls_find_providers`, `irlpls_get_card`, `irlpls_list_capabilities`, plus the six wire-protocol tools. `--read-only` leaves out every tool that orders or calls a provider (`irlpls_submit`, `irlpls_approve`, the protocol tools), so nothing is ever ordered. Needs the `mcp` package (version 2 for the tests).
 
 ## Providers with an adapter
 

@@ -1,0 +1,13 @@
+# sdist contents: the package, its bundled data, licences and the PyPI readme. Nothing else from the repo.
+include README.pypi.md LICENSE NOTICE LICENSE-DATA.md pyproject.toml
+prune tests
+prune docs
+prune tools
+prune feedback
+prune deploy
+prune site
+prune src
+prune packages
+prune irlpls/data/published
+exclude irlpls/data/health.json irlpls/data/published-domains.txt
+global-exclude __pycache__ *.py[cod] .DS_Store

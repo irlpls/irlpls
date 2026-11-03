@@ -80,8 +80,8 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
 
   /* ---------- the finder ---------- */
   function finder(){
-    var q=document.getElementById('q'),grid=document.getElementById('grid'),parsed=document.getElementById('parsed'),meta=document.getElementById('meta'),clr=document.getElementById('clr'),
-        ex=document.getElementById('ex'),more=document.getElementById('more'),tm=null,lastFocus=null,pushed=false,showWeak=false,lastText=null,fb=[].slice.call(document.querySelectorAll('#filters button'));
+    var q=document.getElementById('q'),grid=document.getElementById('grid'),parsed=document.getElementById('parsed'),meta=document.getElementById('meta'),clr=document.getElementById('clr'),rst=document.getElementById('rst'),
+        ex=document.getElementById('ex'),more=document.getElementById('more'),tm=null,lastFocus=null,pushed=false,showWeak=false,lastText=null,fb=[].slice.call(document.querySelectorAll('#filters button[data-f]'));
     var P=new URLSearchParams(location.search),flt={free:P.get('free')==='1',live:P.get('live')==='1',commission:P.get('made')==='1'};
     function syncF(){fb.forEach(function(b){b.setAttribute('aria-pressed',String(!!flt[b.dataset.f]))})}syncF();
     var sheet=document.createElement('div');sheet.id='sheet';sheet.hidden=true;sheet.setAttribute('role','dialog');sheet.setAttribute('aria-modal','true');sheet.setAttribute('aria-labelledby','card-h');document.body.appendChild(sheet);
@@ -114,14 +114,34 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
       var pubs=document.querySelector('section.pubs');if(pubs)pubs.hidden=on||fl;
       if(on&&noteFor(text,req,list)){bestBlock(null);grid.innerHTML='';more.hidden=true;meta.textContent='No providers shown.';parsed.hidden=true;return}
       if(!on&&notes)notes.innerHTML='';
-      bestBlock(on&&list.length?list[0]:null,text,req);
+      /* the best match is the broker's pick (IRLMatch.best = Job.best()) once the catalog says who the SDK can call */
+      last={on:on,list:list,text:text,req:req};bestBlock(on&&list.length?pick(list,req):null,text,req);
       grid.classList.toggle('scored',on);
       meta.textContent=shown.length+(on?(shown.length===1?' provider matches':' providers match'):(shown.length===1?' provider':' providers'));
       grid.innerHTML=shown.map(function(x){return row(x.c,x.s,on)}).join('');var ky=document.querySelector('.lhead .key');if(ky)ky.hidden=!list.length;
       more.hidden=!weak;more.textContent='+'+weak+(weak===1?' weaker match':' weaker matches');
-      if(!list.length){meta.innerHTML=fl&&matched.length?'None with these filters. <button type="button" class="linkish" id="clrf">Clear filters</button>':'No provider covers this. Try a broader ask.';
-        var cf=document.getElementById('clrf');if(cf)cf.onclick=function(){flt={free:false,live:false,commission:false};syncF();render()}}
-      try{var u=new URL(location.href);if(on)u.searchParams.set('q',text);else u.searchParams.delete('q');[['free','free'],['live','live'],['made','commission']].forEach(function(p){if(flt[p[1]])u.searchParams.set(p[0],'1');else u.searchParams.delete(p[0])});history.replaceState(history.state,'',u)}catch(e){}}
+      /* the reset (the owner, 2026-11-02: search as everyone expects it): 'Clear filters' with filters only, 'Clear all' with
+         text too (clears both), hidden when no filter is on (the box's × clears the text alone) */
+      rst.hidden=!fl;rst.textContent=on?'Clear all':'Clear filters';
+      if(!list.length){var fw=fwords();
+        if(fl&&on&&matched.length)meta.innerHTML='No '+E(fw)+' providers match “'+E(text)+'”. <button type="button" class="linkish" id="allf">Show all '+E(fw)+' providers</button> <button type="button" class="linkish" id="allq">Show all matches for “'+E(text)+'”</button>';
+        else if(fl&&!on)meta.innerHTML='No '+E(fw)+' providers. <button type="button" class="linkish" id="allq">Clear filters</button>';
+        else meta.textContent='No provider covers this. Try a broader ask.';
+        var a1=document.getElementById('allf'),a2=document.getElementById('allq');
+        if(a1)a1.onclick=function(){q.value='';url(true);render();q.focus()};
+        if(a2)a2.onclick=function(){flt={free:false,live:false,commission:false};syncF();url(true);render()}}
+      url(false)}
+    /* the filters in words, for the empty state: "free", "free live", "made-to-order" */
+    function fwords(){return [flt.free&&'free',flt.live&&'live',flt.commission&&'made-to-order'].filter(Boolean).join(' ')}
+    /* state in the URL (?q=…&free=1): typing replaces the entry, a filter or a clear adds one, so back and forward step
+       through them and a shared link opens the same view */
+    function url(push){try{var u=new URL(location.href),text=q.value.trim();if(text)u.searchParams.set('q',text);else u.searchParams.delete('q');
+      [['free','free'],['live','live'],['made','commission']].forEach(function(p){if(flt[p[1]])u.searchParams.set(p[0],'1');else u.searchParams.delete(p[0])});
+      if(u.href===location.href)return;if(push)history.pushState(null,'',u);else history.replaceState(history.state,'',u)}catch(e){}}
+    /* back/forward to another search state (closing a sheet goes back too: then nothing changed, and the rows keep focus) */
+    function restore(){var P2=new URLSearchParams(location.search),t=P2.get('q')||'',f={free:P2.get('free')==='1',live:P2.get('live')==='1',commission:P2.get('made')==='1'};
+      if(t===q.value.trim()&&f.free===flt.free&&f.live===flt.live&&f.commission===flt.commission)return;
+      q.value=t;flt=f;syncF();render()}
     /* the top match, run or shown (the owner, 2026-10-30): a free live source this browser can read is asked straight from
        here (src/live.js, with its spacing, budget, cache and Retry-After rules) and its answer shows inline. Anything else
        shows the call an agent would make: the reference library's prepared call for this provider (catalog.json
@@ -143,16 +163,19 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
         return}
       h+='<p class="bp">'+E(modeText(c)+' · '+priceText(c)+' · '+speed(c))+'</p><p class="bp" id="brdy" hidden></p><div id="bcall"></div><div class="ba">'+cardLink(c,'go','See the plan')+'</div>';
       best.innerHTML=h;best.hidden=false;catalog(function(){planFor(c,text,req)})}
+    var last=null;
+    function pick(list,req){return (CAT&&IRLMatch.best(list.filter(function(x){return IRLMatch.plannable(x.c,req)}),req,CAT))||list[0]}
     function catalog(f){if(CAT){f();return}if(catAsked){var w=setInterval(function(){if(CAT){clearInterval(w);f()}},100);setTimeout(function(){clearInterval(w)},8000);return}catAsked=true;
-      fetch(base+'catalog.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){CAT=d.providers||{};f()}).catch(function(){CAT={}})}
+      fetch(base+'catalog.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){CAT=d.providers||{};if(last&&last.on&&last.list.length)bestBlock(pick(last.list,last.req),last.text,last.req);f()}  /* only the best match: the rows (and focus) stay */).catch(function(){CAT={}})}
+    catalog(function(){});  /* early: the best match waits on it (who the SDK can call) */
     /* readiness, then the ready call with this ask filled in */
-    function planFor(c,text,req){var p=CAT[c.id]||{},r=document.getElementById('brdy'),box=document.getElementById('bcall');if(!box)return;
+    function planFor(c,text,req){var p=CAT[c.id]||{},r=document.getElementById('brdy'),box=document.getElementById('bcall');if(!box||lastBest!==c.id+'|'+text)return;  /* a pick replaced since: not its pane */
       if(r&&p.readiness&&p.readiness.line){r.textContent=p.readiness.line;r.hidden=false}
-      var rc=p.ready_call;if(!rc){var d=(p.api||{}).docs_url;box.innerHTML='<p class="bq">No ready call for this provider yet.'+(d?' <a href="'+E(d)+'" rel="noopener">Its API docs</a>':'')+'</p>';return}
+      var rc=p.ready_call||null;
       /* the pane (src/callpane.js, shared with the landing's screen 3): three steps, the irlpls call, who it matched, and
          the provider call (curl, folded to one line), the key only named and where to get it */
-      var C=window.IRLCall;if(!C){box.innerHTML='<p class="bq">Nothing is sent from this page.</p>';return}
-      box.innerHTML=C.html({provider:plainName(c),readiness:p.readiness,price:priceText(c),rc:rc,card:c,text:text,req:req,place:LV?LV.place(text,req):{missing:true},street:STREET.exec(text)});
+      var C=window.IRLCall;if(!C){box.innerHTML='<p class="bq">Nothing is sent from this page.</p>';return}  /* no ready call: still the parsed request, and how to order by hand */
+      box.innerHTML=C.html({provider:plainName(c),readiness:p.readiness,price:priceText(c),rc:rc,card:c,order:(p.api||{}).docs_url||c.provider_url,text:text,req:req,place:LV?LV.place(text,req):{missing:true},street:STREET.exec(text)});
       C.bind(box)}
     /* the live answer, inline: the value in one line, its source with the eight dots and its age, and where it came from */
     function runLive(c,text,req){var box=document.getElementById('blv');if(!box)return;clearTimeout(lt);ranFor=c.id+'|'+text;
@@ -182,12 +205,15 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
       notes.innerHTML=h;return false}
     if(best)best.addEventListener('click',function(e){var a=e.target.closest('a[data-open]');if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();open(a.dataset.open,true,e.detail>0)});
     function later(){if(window.IRLPlaces)IRLPlaces.load();typed=true;clearTimeout(tm);tm=setTimeout(render,90)}
-    q.addEventListener('input',later);clr.onclick=function(){q.value='';render();q.focus()};
+    q.addEventListener('input',later);clr.onclick=function(){q.value='';url(true);render();q.focus()};
+    /* Esc in the box clears the text (the open sheet keeps its own Esc) */
+    q.addEventListener('keydown',function(e){if(e.key==='Escape'&&q.value){e.preventDefault();e.stopPropagation();q.value='';url(true);render()}});
+    rst.onclick=function(){var all=q.value.trim().length>0;flt={free:false,live:false,commission:false};if(all)q.value='';syncF();url(true);render();q.focus()};
     /* Enter asks the top match now (a live source answers; anything else already shows its call) */
     q.addEventListener('keydown',function(e){if(e.key!=='Enter'||e.isComposing)return;e.preventDefault();clearTimeout(tm);render();var b=document.getElementById('brun');if(b&&!b.disabled)b.click();if(matchMedia('(pointer: coarse)').matches)q.blur()});
     more.addEventListener('click',function(){var n=grid.querySelectorAll('.row').length;showWeak=true;render();var a=grid.querySelectorAll('.row')[n];if(a)a.focus()});
-    document.getElementById('filters').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var k=b.dataset.f;flt[k]=!flt[k];
-      if(flt[k]&&k==='live')flt.commission=false;if(flt[k]&&k==='commission')flt.live=false;syncF();render()});
+    document.getElementById('filters').addEventListener('click',function(e){var b=e.target.closest('button[data-f]');if(!b)return;var k=b.dataset.f;flt[k]=!flt[k];
+      if(flt[k]&&k==='live')flt.commission=false;if(flt[k]&&k==='commission')flt.live=false;syncF();url(true);render()});
     ex.addEventListener('click',function(e){var b=e.target.closest('button');if(b){q.value=b.dataset.q||b.textContent;render();q.focus()}});
     /* the sample asks stay on one line: an edge fade while more are off to the right */
     function fade(){ex.classList.toggle('fade',ex.scrollLeft+ex.clientWidth<ex.scrollWidth-2)}ex.addEventListener('scroll',fade,{passive:true});addEventListener('resize',fade);fade();
@@ -218,7 +244,7 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
     sheet.addEventListener('click',function(e){if(e.target.closest('.sheet-x'))close()});
     document.addEventListener('keydown',function(e){if(sheet.hidden)return;var sx=sheet.querySelector('.sheet-x');if(sx&&e.key==='Tab')sx.classList.remove('quiet');if(e.key==='Escape'){e.preventDefault();close()}
       if(e.key==='Tab'){var f=[].slice.call(sheet.querySelectorAll('button,a[href],summary')).filter(function(n){return n.offsetParent});if(!f.length)return;var a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
-    window.addEventListener('popstate',function(){var id=history.state&&history.state.sheet;if(id&&byId(id)){pushed=true;open(id,false)}else close(true)});
+    window.addEventListener('popstate',function(){var id=history.state&&history.state.sheet;if(id&&byId(id)){pushed=true;open(id,false)}else{if(!sheet.hidden)close(true);restore()}});
     var hash=location.hash.slice(1),q0=P.get('q');if(q0)q.value=q0;
     render();if(P.get('go')==='1'){var gb=document.getElementById('brun');if(gb)gb.click()}if(hash&&byId(hash))open(hash,false)}
 

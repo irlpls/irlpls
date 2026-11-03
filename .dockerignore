@@ -1,0 +1,15 @@
+# Docker build context for deploy/Dockerfile: only what the image build copies.
+*
+!pyproject.toml
+!MANIFEST.in
+!README.pypi.md
+!LICENSE
+!NOTICE
+!LICENSE-DATA.md
+!irlpls/
+!packages/irlpls-mcp/
+!deploy/serve.py
+irlpls/data/health.json
+irlpls/data/published/
+**/__pycache__
+**/*.egg-info

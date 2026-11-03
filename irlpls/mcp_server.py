@@ -1,10 +1,9 @@
 """MCP server: the irlpls broker for any MCP-capable agent. Inference-free: your agent's own model writes the need
 and answers questions; irlpls plans against Capture Cards, enforces your policy and calls providers.
 
-    pip install "irlpls[mcp]"
-    irlpls-mcp            # stdio transport
+    uvx irlpls-mcp        # stdio transport (or: pip install irlpls-mcp; in a checkout: python -m irlpls.mcp_server)
     irlpls-mcp --read-only                      # plan only: no irlpls_submit (also IRLPLS_MCP_READ_ONLY=1)
-    irlpls-mcp --transport streamable-http --host 127.0.0.1 --port 8765
+    irlpls-mcp --transport streamable-http --host 127.0.0.1 --port 8765   (--http is short for --transport streamable-http)
     (a non-loopback --host also needs --allow-remote: the HTTP transport has no authentication, so anyone who can reach
     it can use every registered tool; in full mode that includes ordering with this process's provider credentials)
 
@@ -916,6 +915,9 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="irlpls-mcp", description="irlpls MCP server (stdio by default).")
     ap.add_argument("--read-only", action="store_true", help="plan only: do not register irlpls_submit, never execute or refresh")
     ap.add_argument("--transport", choices=("stdio", "streamable-http"), default="stdio")
+    ap.add_argument("--http", action="store_const", const="streamable-http", dest="transport",
+                    help="short for --transport streamable-http")
+    ap.add_argument("--version", action="version", version=f"irlpls-mcp {irlpls.__version__}")
     ap.add_argument("--host", default="127.0.0.1", help="streamable-http bind address (default 127.0.0.1)")
     ap.add_argument("--port", type=int, default=8765, help="streamable-http port (default 8765)")
     ap.add_argument("--allow-remote", action="store_true",

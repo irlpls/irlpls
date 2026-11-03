@@ -40,6 +40,7 @@ from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 
 from . import http as _http
+from . import paths as _paths
 from . import validate
 
 PASS, WARN, FAIL, SKIP = "pass", "warn", "fail", "skip"
@@ -200,7 +201,7 @@ def _check_ucp(fetcher, domain, card_url, add):
 # Wire protocol checks (STANDARD Section 14)
 
 PROTOCOL_VERSION = "2026-10-26"
-SCHEMA_ROOT = pathlib.Path(__file__).resolve().parent.parent / "schema"
+SCHEMA_ROOT = _paths.schema_dir()
 PSCHEMA = f"https://irlpls.com/{PROTOCOL_VERSION}/schemas/protocol/"
 STATES = ("submitted", "in_flight", "delivered", "failed")
 TERMINAL = ("delivered", "failed")

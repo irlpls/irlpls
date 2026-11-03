@@ -76,7 +76,9 @@ Without `--sandbox` it makes no orders: it checks discovery, the `protocol` bloc
 
 ## 7. Make a link evidenced (optional)
 
-Today no listed provider evidences any link: each shows Claimed, Reported (a time only) or Not stated. A link becomes `evidenced` when a stranger can check one public artefact themselves. The cheapest path, about one engineer-week and $0:
+**Evidenced** means verified by an independent reviewer irlpls recognises. irlpls recognises none yet, so no link shows as Evidenced today: a provider's own `evidenced` shows as Claimed, with the note "evidence awaits independent review". The reviewer list is `irlpls/data/reviewers.json`; a reviewer's entry in the card's `attestations` whose `scope` names the link is what makes it Evidenced.
+
+What you can do now is make the link checkable, so a reviewer can attest it when irlpls partners with one. A link is ready when a stranger can check one public artefact themselves. The cheapest path, about one engineer-week and $0:
 
 1. **Delivered to you (`receipt`).** Sign each delivery with a detached JWS (ES256 or EdDSA, [standard](standard.html) Section 14.7) over the file SHA-256s, the request hash and the buyer's nonce. Publish the keys at your `jwks_uri` and never delete an old one; retire it with `not_after`. The `unknown` line says the signer is you.
 2. **Known timestamp (`time`).** Once a day, hash the day's receipts into a Merkle root and get it time-stamped (an RFC 3161 token, for example from FreeTSA) or logged (Sigstore Rekor's public instance). That shows each receipt existed no later than that time, nothing more. Publish your leaf encoding, pair rule and odd-node rule, and proofs that include every step.
@@ -87,7 +89,7 @@ Today no listed provider evidences any link: each shows Claimed, Reported (a tim
 python -m irlpls.conformance <your-domain> --evidence
 ```
 
-It fetches every `evidence_url`, runs the verifier for its type and says verified, failed or not checkable, with reasons. It never changes your card. The common failures it catches: samples signed by a key other than the one you publish, a signing certificate that had expired when you signed, and Merkle proofs that leave out the steps where an odd node is paired with itself.
+It fetches every `evidence_url`, runs the verifier for its type and says verified, failed or not checkable, with reasons. It never changes your card, and its verdict never changes the level irlpls shows: that takes an independent reviewer. The common failures it catches: samples signed by a key other than the one you publish, a signing certificate that had expired when you signed, and Merkle proofs that leave out the steps where an odd node is paired with itself.
 
 ### Sample packs
 
@@ -103,7 +105,7 @@ Sealed capture (`camera`) is the costly one: C2PA signing with `c2patool` is fre
 - **Your badge.** A static image at `/badge/<your-id>.svg`, rebuilt with the site: `irlpls | Capture Card · checked <date>`. It turns grey when your card expires, cannot be read, stops validating or is withdrawn. No score, no rank, no tracking. Snippet: `<a href="https://irlpls.com/c/<your-id>.html"><img src="https://irlpls.com/badge/<your-id>.svg" alt="<Name> on irlpls"></a>`.
 - **When something goes wrong.** Unreachable: your last good copy stays up to 7 days, with a grey badge. Expired or not valid: the compiled card is shown again at once. Not found two days in a row: treated as withdrawn.
 - **Keep it current.** Keep `expires` in the future. Update the file when your terms, price or evidence change.
-- **New to irlpls?** If no card for you is listed yet, write to hello@irlpls.com with your domain. A new provider is listed after one review, never automatically.
+- **New to irlpls?** If no card for you is listed yet, do both: publish your card at `https://<your-domain>/.well-known/irlpls`, and ask to be listed ([Check your card](check.html) shows an **Ask to be listed** button once it validates; it writes to hello@irlpls.com with your domain, card and result). We review a new provider once, never automatically; after that the daily read picks your card up like any other.
 - Want to sign each delivery? The standard defines an optional signed receipt (Sections 6.1 and 14.7). No listed provider issues an irlpls receipt yet; three cards claim to sign deliveries their own way (level `claimed`).
 
 ## 9. Ordering

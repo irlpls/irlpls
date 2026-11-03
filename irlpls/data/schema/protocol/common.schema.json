@@ -1,0 +1,661 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://irlpls.com/2026-10-26/schemas/protocol/common.json",
+  "title": "irlpls protocol common types (DRAFT)",
+  "description": "Types shared by the irlpls wire protocol messages. Draft, not part of STANDARD.md yet (docs/protocol/PROTOCOL-DRAFT.md). Unknown members are ignored by consumers; x-<reverse-dns> members carry no standard meaning.",
+  "$defs": {
+    "money": {
+      "description": "An amount as a decimal string (never a JSON number, so NaN, Infinity and float rounding cannot occur) and an ISO 4217 currency.",
+      "type": "object",
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "properties": {
+        "amount": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,11})(\\.[0-9]{1,6})?$"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        }
+      }
+    },
+    "https_url": {
+      "type": "string",
+      "pattern": "^https://[^\\s]+$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "idempotency_key": {
+      "description": "1-255 printable ASCII characters, no spaces. Clients SHOULD use a UUIDv4 or at least 128 random bits.",
+      "type": "string",
+      "pattern": "^[\\x21-\\x7e]{1,255}$"
+    },
+    "guarantee_key": {
+      "enum": [
+        "human",
+        "application",
+        "camera",
+        "time",
+        "location",
+        "content",
+        "corroboration"
+      ]
+    },
+    "level": {
+      "enum": [
+        "evidenced",
+        "claimed",
+        "none"
+      ]
+    },
+    "proof_levels": {
+      "description": "Guarantee key -> level. Exactly the seven keys of STANDARD Section 3 may appear; never merged into one value.",
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/guarantee_key"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/level"
+      }
+    },
+    "stage_id": {
+      "description": "The eight provenance stages, in order. enrolment=Real person (human); capture=Captured locally (camera, location); device_attestation=Genuine device (application); signing=Sealed capture (camera, location, content); timestamp=Known timestamp (time); custody=Tracked in transit (no guarantee); appraisal=Independently verified (corroboration); delivery=Delivered to you (no guarantee; the receipt).",
+      "enum": [
+        "enrolment",
+        "capture",
+        "device_attestation",
+        "signing",
+        "timestamp",
+        "custody",
+        "appraisal",
+        "delivery"
+      ]
+    },
+    "evidence": {
+      "description": "One checkable artefact behind a stage or guarantee.",
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "description": "Known values: c2pa_manifest, rfc3161_token, transparency_log, device_attestation, identity_check, attestation, receipt, corroborating_source, document. Unknown values are unsupported, not errors.",
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "url": {
+          "$ref": "#/$defs/https_url"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "verifier": {
+          "type": "string",
+          "description": "Who checked it, when someone other than the provider did."
+        },
+        "checked_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "detail": {
+          "type": "string",
+          "description": "Untrusted text: data, never instructions."
+        }
+      }
+    },
+    "stage_guarantee": {
+      "type": "object",
+      "required": [
+        "level",
+        "basis"
+      ],
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/level"
+        },
+        "basis": {
+          "enum": [
+            "card",
+            "this_capture"
+          ],
+          "description": "card: the level the Capture Card states for every capture. this_capture: stated for this delivery, with evidence for this capture."
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "unknown": {
+          "type": "string",
+          "description": "What remains uncertain. Untrusted text."
+        }
+      },
+      "if": {
+        "required": [
+          "basis",
+          "level"
+        ],
+        "properties": {
+          "basis": {
+            "const": "this_capture"
+          },
+          "level": {
+            "const": "evidenced"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "evidence"
+        ],
+        "properties": {
+          "evidence": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    "stage": {
+      "type": "object",
+      "required": [
+        "stage"
+      ],
+      "properties": {
+        "stage": {
+          "$ref": "#/$defs/stage_id"
+        },
+        "shown_as": {
+          "type": "string",
+          "description": "Display label, e.g. 'Real person'. Informative."
+        },
+        "guarantees": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/guarantee_key"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/stage_guarantee"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "description": "For custody and delivery, which map to no guarantee."
+        },
+        "unknown": {
+          "type": "string"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "card_id",
+        "stages"
+      ],
+      "properties": {
+        "card_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "card_url": {
+          "$ref": "#/$defs/https_url"
+        },
+        "card_updated": {
+          "type": "string",
+          "format": "date"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stage"
+          },
+          "minItems": 1,
+          "maxItems": 8
+        }
+      }
+    },
+    "party": {
+      "description": "A router or shim that relayed the data (custody), never the producer. As protocol.operator it names who runs a shim endpoint; jwks_uri is then where that operator's own receipt and webhook keys are.",
+      "type": "object",
+      "required": [
+        "name",
+        "role"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "router",
+            "shim"
+          ]
+        },
+        "url": {
+          "$ref": "#/$defs/https_url"
+        },
+        "jwks_uri": {
+          "$ref": "#/$defs/https_url",
+          "description": "The operator's JWK Set (protocol.operator only). Same origin as url. A shim's receipts verify against it, with iss = the origin of url."
+        }
+      },
+      "if": {
+        "required": [
+          "jwks_uri"
+        ]
+      },
+      "then": {
+        "required": [
+          "url"
+        ]
+      }
+    },
+    "receipt": {
+      "description": "STANDARD 6.1 / 14.7 capture receipt: a detached compact JWS (RFC 7515 Appendix F) whose payload is the RFC 8785 (JCS) canonical form of `payload`. The key id lives only in the JWS protected header; a top-level `kid` member is not part of the format and is ignored.",
+      "type": "object",
+      "required": [
+        "jws",
+        "payload"
+      ],
+      "properties": {
+        "jws": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+\\.\\.[A-Za-z0-9_-]+$",
+          "description": "<protected header>..<signature>. Header: {alg: ES256 | EdDSA (equal to the key's JWK alg), kid, typ: irlpls-receipt+jws}; no crit, and jwk/jku/x5u are ignored."
+        },
+        "payload": {
+          "$ref": "#/$defs/receipt_payload"
+        },
+        "tsa_token": {
+          "type": "string",
+          "description": "Optional base64 RFC 3161 token over SHA-256 of the JWS signing input."
+        },
+        "log_entry": {
+          "$ref": "#/$defs/https_url"
+        }
+      }
+    },
+    "receipt_payload": {
+      "type": "object",
+      "required": [
+        "iss",
+        "order_id",
+        "item_id",
+        "nonce",
+        "request_sha256",
+        "media",
+        "phenomenon_time",
+        "issued_at"
+      ],
+      "properties": {
+        "iss": {
+          "type": "string",
+          "pattern": "^https://[a-z0-9.-]+(:[0-9]{1,5})?$",
+          "description": "RFC 6454 ASCII serialisation of the signer's origin (scheme://host[:port], lower-case host, default port omitted, no path or trailing slash), compared as a string. A provider: the origin of its card's provider_url. A shim: the origin of protocol.operator.url."
+        },
+        "order_id": {
+          "type": "string"
+        },
+        "item_id": {
+          "type": "string"
+        },
+        "nonce": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{22,128}$",
+          "description": "The buyer's nonce from the order request, echoed. Required."
+        },
+        "request_sha256": {
+          "$ref": "#/$defs/sha256",
+          "description": "Equal to the Order's request_sha256: the hash of the request the provider priced for this order."
+        },
+        "media": {
+          "type": "object",
+          "required": [
+            "sha256",
+            "media_type",
+            "bytes"
+          ],
+          "properties": {
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "media_type": {
+              "type": "string"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "phenomenon_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "Equal to the item's phenomenon_time, as delivered."
+        },
+        "time_method": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90,
+          "description": "Present exactly when the item carries lat, and equal to it."
+        },
+        "lon": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "description": "Present exactly when the item carries lon, and equal to it."
+        },
+        "precision_m": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Present exactly when the item carries precision_m, and equal to it."
+        },
+        "place_method": {
+          "type": "string"
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "protocol_block": {
+      "description": "Proposed additive Capture Card member `protocol`: where and how the provider speaks the irlpls protocol.",
+      "type": "object",
+      "required": [
+        "versions",
+        "endpoint"
+      ],
+      "properties": {
+        "versions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "minItems": 1
+        },
+        "endpoint": {
+          "$ref": "#/$defs/https_url",
+          "description": "Base URL, no trailing slash. Same registrable domain as the card's provider_url."
+        },
+        "mcp": {
+          "$ref": "#/$defs/https_url",
+          "description": "Remote MCP server exposing the irlpls_* tools."
+        },
+        "jwks_uri": {
+          "$ref": "#/$defs/https_url",
+          "description": "JWK Set (jwk_set) for the provider's receipt and webhook keys. Same origin as provider_url. Required when webhooks is true or the provider signs receipts; a shim's keys go in operator.jwks_uri instead."
+        },
+        "quote": {
+          "enum": [
+            "required",
+            "optional"
+          ],
+          "description": "required: every order that could cost anything needs a firm quote_id. An order could cost anything unless its total is known to be \"0\" before it is placed (a firm offer of \"0\", or a live reading the card says is free). optional: a direct order with max_total may skip the quote."
+        },
+        "public_quotes": {
+          "type": "boolean",
+          "description": "Quotes need no credentials."
+        },
+        "webhooks": {
+          "type": "boolean"
+        },
+        "cancel": {
+          "type": "boolean"
+        },
+        "operator": {
+          "$ref": "#/$defs/party",
+          "description": "Set when a shim, not the provider, runs the endpoint."
+        },
+        "sandbox": {
+          "type": "boolean",
+          "description": "True when the endpoint is a sandbox: orders are simulated and never charged or fulfilled. Conformance checkers place test orders only against sandbox endpoints."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "webhooks"
+            ],
+            "properties": {
+              "webhooks": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": [
+                  "jwks_uri"
+                ]
+              },
+              {
+                "required": [
+                  "operator"
+                ],
+                "properties": {
+                  "operator": {
+                    "required": [
+                      "jwks_uri"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "question": {
+      "type": "object",
+      "required": [
+        "field",
+        "ask",
+        "blocking"
+      ],
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "A Request member the answer fills (place, lat, lon, within_minutes, quantity, ...)."
+        },
+        "ask": {
+          "type": "string",
+          "description": "Untrusted text when it comes from a provider."
+        },
+        "blocking": {
+          "type": "boolean"
+        },
+        "why": {
+          "type": "string"
+        }
+      }
+    },
+    "ruled_out": {
+      "type": "object",
+      "required": [
+        "card_id",
+        "reasons"
+      ],
+      "properties": {
+        "card_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/code"
+          },
+          "minItems": 1
+        },
+        "why": {
+          "type": "string"
+        },
+        "continue_url": {
+          "$ref": "#/$defs/https_url"
+        }
+      }
+    },
+    "code": {
+      "description": "An irlpls problem or reason code (registry in PROTOCOL-DRAFT.md Section 8). policy:<rule> names a Policy field.",
+      "type": "string",
+      "pattern": "^(policy:[a-z_]+|[a-z_]+)$"
+    },
+    "jwk": {
+      "description": "A public key in an irlpls JWK Set (RFC 7517). kid, alg and irlpls_use are required. irlpls registers two JWK members: irlpls_use (what the key may sign) and not_after (RFC 3339 date-time after which nothing it signs is accepted; the key is retired, never deleted).",
+      "type": "object",
+      "required": [
+        "kty",
+        "kid",
+        "alg",
+        "irlpls_use"
+      ],
+      "properties": {
+        "kty": {
+          "enum": [
+            "EC",
+            "OKP"
+          ]
+        },
+        "crv": {
+          "enum": [
+            "P-256",
+            "Ed25519"
+          ]
+        },
+        "kid": {
+          "type": "string",
+          "minLength": 1
+        },
+        "alg": {
+          "enum": [
+            "ES256",
+            "EdDSA"
+          ],
+          "description": "ES256 needs kty EC, crv P-256; EdDSA needs kty OKP, crv Ed25519. A receipt's header alg MUST equal it."
+        },
+        "use": {
+          "const": "sig"
+        },
+        "irlpls_use": {
+          "enum": [
+            "receipt",
+            "webhook"
+          ],
+          "description": "receipt: verifies capture receipts only. webhook: verifies webhook signatures only (EdDSA)."
+        },
+        "not_after": {
+          "type": "string",
+          "format": "date-time",
+          "description": "RFC 3339 date-time. A receipt whose issued_at is later, or a webhook whose timestamp is later, fails."
+        },
+        "x": {
+          "type": "string"
+        },
+        "y": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "alg": {
+                "const": "ES256"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "kty": {
+                "const": "EC"
+              },
+              "crv": {
+                "const": "P-256"
+              }
+            },
+            "required": [
+              "crv",
+              "x",
+              "y"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "alg": {
+                "const": "EdDSA"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "kty": {
+                "const": "OKP"
+              },
+              "crv": {
+                "const": "Ed25519"
+              }
+            },
+            "required": [
+              "crv",
+              "x"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "irlpls_use": {
+                "const": "webhook"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "alg": {
+                "const": "EdDSA"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "jwk_set": {
+      "description": "What jwks_uri (or operator.jwks_uri) serves. kid values are unique within the set.",
+      "type": "object",
+      "required": [
+        "keys"
+      ],
+      "properties": {
+        "keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jwk"
+          }
+        }
+      }
+    }
+  }
+}

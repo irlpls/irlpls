@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://irlpls.com/2026-10-26/schemas/protocol/order.json",
+  "title": "irlpls Order request (DRAFT)",
+  "description": "Body of POST {endpoint}/orders, sent with an Idempotency-Key header. Either an accepted offer (quote_id + offer_id) or a direct order (request + constraints.max_total, the provider never charging more). Draft: docs/protocol/PROTOCOL-DRAFT.md.",
+  "$ref": "#/$defs/order_request",
+  "$defs": {
+    "order_request": {
+      "type": "object",
+      "required": ["nonce"],
+      "oneOf": [
+        {"required": ["quote_id", "offer_id"], "not": {"required": ["request"]}, "description": "An accepted offer: quote_id is a quote this server issued (at a provider, the provider's own quote)."},
+        {
+          "required": ["request", "constraints"],
+          "not": {"required": ["quote_id"]},
+          "properties": {"constraints": {"required": ["max_total"]}}
+        }
+      ],
+      "properties": {
+        "quote_id": {"type": "string"},
+        "offer_id": {"type": "string"},
+        "request": {"$ref": "quote.json#/$defs/quote_request/properties/request"},
+        "constraints": {"$ref": "quote.json#/$defs/constraints"},
+        "nonce": {"type": "string", "pattern": "^[A-Za-z0-9_-]{22,128}$", "description": "Required. At least 128 random bits, base64url. Echoed in every receipt; shown in the scene when scene_nonce is set (the provider gives it to the capturer once the order exists)."},
+        "webhook": {
+          "type": "object",
+          "required": ["url"],
+          "properties": {"url": {"$ref": "common.json#/$defs/https_url", "description": "MUST NOT carry personal data."}}
+        },
+        "approval": {
+          "type": "object",
+          "description": "Informative: how the buyer side authorised this spend. A provider cannot verify it.",
+          "required": ["by"],
+          "properties": {"by": {"enum": ["person", "standing_mandate"]}, "at": {"type": "string", "format": "date-time"}}
+        },
+        "client_reference": {"type": "string", "maxLength": 255, "description": "The client's own reference; GET {endpoint}/orders?client_reference= finds the order again. MUST NOT carry personal data."}
+      }
+    }
+  }
+}

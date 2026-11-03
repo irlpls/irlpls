@@ -58,7 +58,9 @@ def main():
     ap.add_argument("--no-matcher", action="store_true")
     ap.add_argument("--cards-json", default=None, help="a cards.json for the matcher check (default: <out>/cards.json, else site/cards.json)")
     a = ap.parse_args()
-    cards = load_cards()
+    from irlpls import review  # the site's catalog shows levels as the site does: Evidenced only via a recognised reviewer
+    rev = review.reviewers()
+    cards = [review.displayed(c, rev) for c in load_cards()]
     cj = Path(a.cards_json) if a.cards_json else next((p for p in (Path(a.out) / "cards.json", ROOT / "site" / "cards.json") if p.exists()), None)
     needs = [n for f in FAMILIES for n in f[3]]
     top = None if a.no_matcher or not cj else matcher_top(needs, cj)

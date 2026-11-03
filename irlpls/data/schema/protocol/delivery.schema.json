@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://irlpls.com/2026-10-26/schemas/protocol/delivery.json",
+  "title": "irlpls Delivery (DRAFT)",
+  "description": "GET {endpoint}/orders/{id}/delivery. Items are shaped like Job results[] (STANDARD Section 6) plus media hashes; provenance states, stage by stage, what the provider evidences or claims. Draft: docs/protocol/PROTOCOL-DRAFT.md.",
+  "type": "object",
+  "required": ["order_id", "complete", "items", "provenance"],
+  "properties": {
+    "order_id": {"type": "string"},
+    "complete": {"type": "boolean", "description": "true exactly when the order is delivered."},
+    "items": {"type": "array", "items": {"$ref": "#/$defs/item"}, "description": "Item ids are unique within an order; a delivery with a repeated id is malformed."},
+    "provenance": {"$ref": "common.json#/$defs/provenance", "description": "Applies to every item unless the item carries its own."},
+    "relayed_by": {"type": "array", "items": {"$ref": "common.json#/$defs/party"}, "description": "Routers and shims the data passed through (custody)."}
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["id", "provider", "kind", "phenomenon_time"],
+      "properties": {
+        "id": {"type": "string"},
+        "provider": {"type": "string", "description": "Card id."},
+        "kind": {"type": "string"},
+        "phenomenon_time": {"type": ["string", "null"], "format": "date-time"},
+        "result_time": {"type": ["string", "null"], "format": "date-time"},
+        "lat": {"type": "number", "minimum": -90, "maximum": 90},
+        "lon": {"type": "number", "minimum": -180, "maximum": 180},
+        "precision_m": {"type": "number", "minimum": 0},
+        "value": {},
+        "unit": {"type": "string"},
+        "label": {"type": "string", "description": "Untrusted text."},
+        "url": {"$ref": "common.json#/$defs/https_url", "description": "The item's media file, nothing else (other links go in x- members). Requires sha256, media_type and bytes."},
+        "url_expires_at": {"type": "string", "format": "date-time"},
+        "media_type": {"type": "string"},
+        "bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "common.json#/$defs/sha256", "description": "Required with url, whatever the media_type; the client checks it after download and fails the item on a mismatch."},
+        "sensor": {"type": "object", "properties": {"kind": {"enum": ["device", "human", "software"]}}},
+        "c2pa": {"enum": ["trusted", "valid", "well-formed", "absent"]},
+        "stac": {"type": "object", "description": "Optional embedded STAC Item for geospatial results."},
+        "provenance": {"$ref": "common.json#/$defs/provenance"},
+        "receipt": {"$ref": "common.json#/$defs/receipt"}
+      },
+      "if": {"required": ["url"]},
+      "then": {"required": ["sha256", "media_type", "bytes"]}
+    }
+  }
+}

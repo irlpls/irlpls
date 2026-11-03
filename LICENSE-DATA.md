@@ -13,7 +13,7 @@ give appropriate credit, link to the licence, and indicate if you made changes.
 
 Suggested wording:
 
-> Capture Card data from irlpls (https://github.com/TODO/irlpls), CC BY 4.0,
+> Capture Card data from irlpls (https://github.com/irlpls/irlpls), CC BY 4.0,
 > https://creativecommons.org/licenses/by/4.0/. Changes: <describe, or "none">.
 
 Name "the irlpls maintainers" as the creator. Do not suggest that the maintainers

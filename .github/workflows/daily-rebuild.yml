@@ -1,0 +1,24 @@
+# Daily rebuild of irlpls.com (the owner, 2026-11-02). Cloudflare Pages builds `python3 build.py --public`, which reads
+# every provider's published Capture Card fresh and runs the evidence checks itself (short timeouts; a failure falls back
+# to the compiled cards and never breaks the build). This job only asks Cloudflare to build: it POSTs to the Pages deploy
+# hook in the repo secret CF_DEPLOY_HOOK, and skips cleanly when that secret is not set (forks, before setup).
+name: daily-rebuild
+on:
+  schedule:
+    - cron: "30 6 * * *"   # 06:30 UTC
+  workflow_dispatch:
+permissions: {}
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ask Cloudflare Pages to rebuild
+        env:
+          HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "CF_DEPLOY_HOOK is not set: nothing to do."
+            exit 0
+          fi
+          curl -fsS -X POST --max-time 30 "$HOOK" -o /dev/null -w "deploy hook: HTTP %{http_code}\n"

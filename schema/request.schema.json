@@ -86,6 +86,10 @@
     "max_price_usd": {
       "type": "number"
     },
+    "need_ai_training": {
+      "type": "boolean",
+      "description": "The ask wants rights to train AI on what is delivered (\"with AI-training rights\"); providers whose card allows it rank higher"
+    },
     "policy": {
       "$ref": "https://irlpls.com/2026-10-26/schemas/policy.json"
     },

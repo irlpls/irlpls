@@ -35,14 +35,14 @@ def main():
     toc = "".join(f'<li><a href="#{t["id"]}">{html.escape(t["name"])}</a></li>' for t in conv.toc_tokens[0]["children"]) \
         if conv.toc_tokens and conv.toc_tokens[0]["level"] == 1 else "".join(f'<li><a href="#{t["id"]}">{html.escape(t["name"])}</a></li>' for t in conv.toc_tokens)
     page = OUT.read_text()
-    head, rest = page.split('<div class="spec-wrap">', 1)
-    tail = rest[rest.index('<footer class="spec-foot">'):]
-    head = re.sub(r"<title>.*?</title>", f"<title>irlpls standard {version}</title>", head)
-    head = re.sub(r'(<meta name="description" content=")[^"]*', rf"\1The irlpls {version} specification: the Capture Card, discovery, the Request, Policy and Job messages, matching and conformance.", head)
-    OUT.write_text(head + '<div class="spec-wrap">\n'
-                   f'<div class="spec-head"><h1>irlpls standard</h1><p>{version} · draft · private preview</p></div>\n'
-                   f'<details class="toc" id="toc"><summary>Contents</summary><nav aria-label="Contents"><ol>{toc}</ol></nav></details>\n'
-                   f'<main id="main" class="std">\n{main_html}\n</main>\n</div>\n' + tail)
+    # replace only the contents and the body; the page's head, title block and footer are kept as they are
+    a, b = '<main id="main" class="std">\n', "\n</main>"
+    i = page.index(a) + len(a)
+    page = page[:i] + main_html + page[page.index(b, i):]
+    t0 = page.index('<nav aria-label="Contents"><ol>') + len('<nav aria-label="Contents"><ol>')
+    page = page[:t0] + toc + page[page.index("</ol></nav>", t0):]
+    page = re.sub(r"<title>.*?</title>", f"<title>irlpls standard {version}</title>", page, count=1)
+    OUT.write_text(page)
     print(f"standard {version}: {len(main_html)} chars")
 
 

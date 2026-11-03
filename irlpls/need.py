@@ -326,6 +326,7 @@ class Request:
     within_minutes: int = None  # deadline for delivery, if stated
     quantity: int = 1
     max_price_usd: float = None
+    need_ai_training: bool = False  # the ask wants rights to train AI on the result ("with AI-training rights", "for AI training")
     default_proof: bool = False
     parts: list = field(default_factory=list)  # distinct asks joined by "and"; a hint only, matching is not split
     targets_person: bool = False  # watches, follows or photographs a specific person: never sent to people-based providers by default
@@ -409,10 +410,12 @@ def web_fact(text):
     return bool(re.search(WEB_FACT, t)) and not re.search(ON_SITE, t)
 
 
+# the ask wants rights to train AI on what is delivered (src/match.js AI_TRAINING is the same pattern)
+AI_TRAINING = r"\b(?:ai[- ]training(?: rights)?|(?:rights|licen[cs]ed?|ok|okay|allowed) (?:for|to) (?:ai|model) training|for (?:ai|model|ml) training|to train (?:an? )?(?:ai|models?|ml)|training rights)\b"
 MAX_REQUEST_QUANTITY = 10000   # items per request (STANDARD 14.5); split a bigger dataset into several orders
 MODES = ("live", "commission")
 HINTS = ("place", "lat", "lon", "country_code", "state", "subdivision", "within_minutes", "quantity", "mode", "terms",
-         "modalities", "require", "max_price_usd", "anywhere", "targets_person", "specifics", "regions", "parts", "default_proof")
+         "modalities", "require", "max_price_usd", "need_ai_training", "anywhere", "targets_person", "specifics", "regions", "parts", "default_proof")
 
 
 def _number(x):
@@ -532,6 +535,7 @@ def parse(text, cards=()):
     m = re.search(r"(?:under|below|max|less than|<)\s*\$?(\d{1,3}(?:,\d{3})+|\d{1,9})(?!\d)(\.\d{1,6})?\s*(k\b)?", t)
     if m:
         r.max_price_usd = float(m.group(1).replace(",", "") + (m.group(2) or "")) * (1000 if m.group(3) else 1)
+    r.need_ai_training = bool(re.search(AI_TRAINING, t))
     r.anywhere = bool(re.search(ANYWHERE, t))
     _where(text, r)
     addresses, rest = [], re.sub(ANYWHERE, " ", text, flags=re.I)

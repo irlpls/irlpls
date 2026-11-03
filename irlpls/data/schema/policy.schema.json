@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://irlpls.com/2026-10-26/schemas/policy.json",
+  "title": "irlpls Policy 2026-10-26",
+  "description": "Rules a requester sets once; the broker executes them. Evaluated only against what Capture Cards state: an unknown right or unproven guarantee is a violation, never a pass. A violating order is never sent.",
+  "type": "object",
+  "properties": {
+    "require": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "human",
+          "application",
+          "camera",
+          "time",
+          "location",
+          "content",
+          "corroboration"
+        ]
+      },
+      "additionalProperties": {
+        "enum": [
+          "claimed",
+          "evidenced"
+        ]
+      },
+      "description": "Minimum level per guarantee"
+    },
+    "max_unit_price_usd": {
+      "type": "number"
+    },
+    "max_order_usd": {
+      "type": "number",
+      "description": "Ceiling on a commission's quoted total"
+    },
+    "free_only": {
+      "type": "boolean",
+      "default": false,
+      "description": "Only providers whose Capture Card says they are free to use"
+    },
+    "need_ai_training": {
+      "type": "boolean"
+    },
+    "need_resale": {
+      "type": "boolean"
+    },
+    "allow": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "deny": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "include_unclaimed": {
+      "type": "boolean",
+      "default": true
+    },
+    "auto_submit": {
+      "type": "boolean",
+      "default": false,
+      "description": "Standing mandate: the broker may confirm orders within max_order_usd without asking. Has no effect unless max_order_usd is set."
+    },
+    "require_c2pa": {
+      "type": "boolean",
+      "default": false,
+      "description": "The camera guarantee must be backed by C2PA (standard: c2pa)"
+    },
+    "min_assurance_level": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "...from a C2PA conforming product at this assurance level or higher"
+    },
+    "allow_person_targeting": {
+      "type": "boolean",
+      "default": false,
+      "description": "A request that watches, follows or photographs a specific person may go to people-based providers. Off by default."
+    }
+  }
+}

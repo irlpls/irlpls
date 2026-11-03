@@ -117,6 +117,7 @@ function content(p){return (p.toLowerCase().match(/[a-zà-ÿ0-9]+/g)||[]).filter
 function splitParts(text){var pieces=[];text.split(/\s*(?:;|,?\s*\band\b|,?\s*\bplus\b|,?\s*\bas well as\b)\s*/).forEach(function(p){p=p.replace(/^[ ,.]+|[ ,.]+$/g,'');if(!p)return;
   if(pieces.length&&content(p).length<2)pieces[pieces.length-1]+=' and '+p;else if(pieces.length&&content(pieces[pieces.length-1]).length<2)pieces[pieces.length-1]+=' and '+p;else pieces.push(p)});
   return pieces.length>1?pieces:[]}
+var AI_TRAINING=/\b(?:ai[- ]training(?: rights)?|(?:rights|licen[cs]ed?|ok|okay|allowed) (?:for|to) (?:ai|model) training|for (?:ai|model|ml) training|to train (?:an? )?(?:ai|models?|ml)|training rights)\b/;
 function parse(text,cards){
   var t=text.toLowerCase(),r={need:text,terms:[],specifics:[],modalities:[],regions:[],require:[],mode:'commission',within_minutes:null,quantity:1,state:null,country_code:null,subdivision:null,anywhere:false};
   Object.keys(MOD).forEach(function(m){if(MOD[m].test(t))r.modalities.push(m)});
@@ -138,6 +139,7 @@ function parse(text,cards){
   if(dataset)r.mode='commission';
   r.parts=splitParts(text);
   var pm=t.match(/(?:under|below|max|less than|<)\s*\$?(\d{1,3}(?:,\d{3})+|\d{1,9})(?!\d)(\.\d{1,6})?\s*(k\b)?/);if(pm)r.max_price_usd=parseFloat(pm[1].replace(/,/g,'')+(pm[2]||''))*(pm[3]?1000:1);  // "under $2,500" is 2500, not 2
+  r.need_ai_training=AI_TRAINING.test(t);  /* the ask wants rights to train AI on the result (irlpls/need.py AI_TRAINING) */
   r.anywhere=ANYWHERE.test(t);where(text,r);
   var places=[],rest=text.replace(new RegExp(ANYWHERE.source,'gi'),' '),m;
   [ADDRESS,ADDRESS_LC].forEach(function(rx){(rest.match(rx)||[]).forEach(function(a){places.push(a.replace(/^[ ,.]+|[ ,.]+$/g,''))});rest=rest.replace(rx,' , ')});
@@ -201,7 +203,7 @@ function regional(c,cc){if(!cc)return false;cc=cc.toLowerCase();var ar=(c.covera
   if(ar.indexOf(cc)>-1||ar.some(function(a){return a.indexOf(cc+'-')===0}))return true;
   var sh=[c.name].concat(c.coverage.regions,c.tags||[]).join(' ; ').toLowerCase();return !!(codesIn(sh)[cc]||codesIn((c.summary||'').toLowerCase(),5)[cc])}
 /* dense only somewhere else ("Global (dense in Europe)"): fit x SPARSE (match.py sparse_here) */
-var SPARSE=0.85;
+var SPARSE=0.85,AI_UNKNOWN=0.75;  /* irlpls/match.py: the ask wants AI-training rights and the card doesn't state them */
 function sparseHere(c,cc){if(!cc)return false;var hit=false;c.coverage.regions.forEach(function(g){var re=/dense(?:st)? in ([a-z -]+?)(?=[),;]| and |$)/g,m;g=g.toLowerCase();
   while((m=re.exec(g))){var cs=codesIn(m[1]);if(Object.keys(cs).length&&!cs[cc.toLowerCase()])hit=true}});return hit}
 function verdict(t){return t==null?null:t>=STRONG?'strong':t>=WEAK?'weak':'none'}
@@ -223,6 +225,7 @@ function score(c,r){
   if(namesPlace(c,r)||regional(c,r.country_code))parts.local=true;
   var tm=timing(c,r);cov.push(tm[0]);if(tm[1])why.push(tm[1]);
   if(r.max_price_usd!=null){var p=(c.pricing||{}).from_usd;if(typeof p==='number'&&isFinite(p)&&p>0){var ok=p<=r.max_price_usd;cov.push(ok?1:0);if(!ok)why.push('over budget')}else if(['free','free with key'].indexOf((c.access||{}).cost)<0){cov.push(0.5);why.push('price not published')}}
+  var ai=(c.licensing||{}).ai_training;if(r.need_ai_training&&ai!=='allowed')why.push('AI training '+(ai==='forbidden'?'forbidden':'rights not stated'));
   parts.coverage=cov.reduce(function(a,b){return a+b},0)/cov.length;
   /* the description gates everything: proof and coverage rank providers that do what you asked, they can't rescue one that only half does */
   var sum=0,wt=0;Object.keys(WEIGHTS).forEach(function(k){if(parts[k]!=null){sum+=(k==='description'?1:parts[k])*WEIGHTS[k];wt+=WEIGHTS[k]}});
@@ -232,6 +235,7 @@ function score(c,r){
   if(total&&r.mode!=='live'&&w!=null&&(dl.modes||[]).indexOf('live')<0){if(dl.speed==='weeks'&&w<=4320)total=Math.round(total*LATE_WEEKS);else if(dl.speed==='days'&&w<=1440)total=Math.round(total*LATE_DAYS)}
   if(total&&singleCapture(r)&&bulkVendor(c)){total=Math.round(total*BULK_SINGLE);parts.bulk=true}  /* one photo of one spot: on-site capture first */
   if(total&&sparseHere(c,r.country_code)){total=Math.round(total*SPARSE);parts.sparse=true}
+  if(total&&r.need_ai_training&&ai!=='allowed'){total=ai==='forbidden'?0:Math.round(total*AI_UNKNOWN);parts.ai_training=ai||'unknown'}  /* asked for AI-training rights: a card that grants them first */
   if((d!=null&&d<MIN_DESCRIPTION)||parts.outside)total=0;
   return{total:total,verdict:verdict(total),parts:parts,gaps:why}}
 /* Whether a ranked card goes into the broker's plan at all (irlpls.broker.plannable, no policy): terms that allow agents,
@@ -253,7 +257,20 @@ function lvl(g){return (g&&g.level)||'none'}
 /* weakest of: a stage that needs every input is only as strong as its weakest one (camera none + location claimed = none) */
 function weakest(gs){var l=gs.map(lvl);return l.indexOf('none')>=0?'none':l.indexOf('claimed')>=0?'claimed':'evidenced'}
 function both(gs){var l=gs.map(lvl);if(!l.length||l.every(function(x){return x==='none'}))return 'none';return l.every(function(x){return x==='evidenced'})?'evidenced':'claimed'}
-function stageLevels(c){var v=c.verification||{},pv=c.provenance||{},t=v.time||{};
+/* Evidenced only via an independent reviewer irlpls recognises (irlpls/review.py, the same rule): a provider's own
+   "evidenced" reads as claimed unless a recognised reviewer's attestation names that link. REVIEWERS is irlpls's list
+   (irlpls/data/reviewers.json, empty today; a test keeps the two equal). Cards the site built are already displayed this
+   way; this covers any other card the browser reads (a pasted or fetched one on check.html). */
+var REVIEWERS=[],REVIEW_NOTE='evidence awaits independent review';
+function rkey(s){return String(s==null?'':s).toLowerCase().replace(/[^a-z0-9]+/g,'')}
+function attested(c,k,revs){revs=revs||REVIEWERS;if(!revs.length)return false;
+  return (c.attestations||[]).some(function(a){if(!a||typeof a!=='object')return false;var who=rkey(a.verifier);
+    if(!who||!revs.some(function(r){return who===rkey(r.id)||who===rkey(r.name)}))return false;
+    return String(a.scope||'').split(/[,;\/]|\band\b/).some(function(x){return x.trim()&&rkey(x.split('.').pop())===rkey(k)})})}
+function selfEvidenced(c){return ['verification','provenance'].some(function(gr){var o=c[gr]||{};return Object.keys(o).some(function(k){return o[k]&&o[k].level==='evidenced'})})}
+function reviewed(c,revs){if(!c||!selfEvidenced(c))return c;var out=JSON.parse(JSON.stringify(c));['verification','provenance'].forEach(function(gr){var o=out[gr]||{};
+  Object.keys(o).forEach(function(k){var g=o[k];if(g&&typeof g==='object'&&g.level==='evidenced'&&!attested(out,k,revs)){g.stated_level='evidenced';g.level='claimed';g.review='awaiting'}})});return out}
+function stageLevels(c){c=reviewed(c);var v=c.verification||{},pv=c.provenance||{},t=v.time||{};
   var seal=['camera','content'].map(function(k){return v[k]}).filter(function(g){return g&&lvl(g)!=='none'&&((g===v.camera&&String(g.standard||'').toLowerCase()==='c2pa')||SEAL.test(g.method||''))});
   var time=lvl(t)!=='none'&&ATTEST.test(t.method||'')?lvl(t):(lvl(t)!=='none'||REPORTS.test(t.method||''))?'reported':'none';
   return [lvl(v.human),weakest([v.camera,v.location]),lvl(v.application),both(seal),time,lvl(pv.custody),lvl(v.corroboration),lvl(pv.receipt)]}
@@ -265,5 +282,23 @@ function stageTally(c,short){var l=stageLevels(c),e=0,cl=0;l.forEach(function(x)
    Mirrored by build.py stage_mark. */
 function stageMark(l){return l==='evidenced'?'e':l==='claimed'?'c':l==='reported'?'r':''}
 var STAGE_TITLES=["Real person","Captured locally","Genuine device","Sealed capture","Known timestamp","Tracked in transit","Independently verified","Delivered to you"];
-window.IRLMatch={gazetteer:{countries:COUNTRIES,cities:CITIES,caseless:CASELESS},parse:parse,score:score,inScope:inScope,plannable:plannable,isFree:isFree,isKeyless:isKeyless,compare:compare,covers:covers,targetsPerson:detectTargetsPerson,bulkVendor:bulkVendor,singleCapture:singleCapture,stageLevels:stageLevels,stageTally:stageTally,stageMark:stageMark,stageTitles:STAGE_TITLES};
+/* the pick, as irlpls/broker.py Job.best() makes it (no policy set): list is the ranked [{c, s}] (compare order), cat the
+   catalog's providers (catalog.json: adapter ops/env, readiness). A provider the reference SDK can call wins only within
+   CALLABLE_MARGIN fit of the best overall (LIVE_MARGIN on a live route); among those, one that needs no key wins within 5
+   (10 live); last, one-yes readiness breaks a near-tie (READY_MARGIN). Keys: none are configured in a browser. */
+var CALLABLE_MARGIN=15,LIVE_MARGIN=10,READY_MARGIN=5,LEVELS=['ready_now','one_consent','account_first','contract'];
+function routeOf(c,r){var m=(c.delivery||{}).modes||[];if(r.mode==='live'&&m.indexOf('live')>-1)return 'live';if(m.indexOf('commission')>-1)return 'commission';return m.indexOf('live')>-1?'live':null}
+function best(list,r,cat){var ok=(list||[]).filter(function(x){return x.s.total>0});if(!ok.length)return null;cat=cat||{};
+  var fit=function(x){return x.s.total||0},P=function(x){return cat[x.c.id]||{}};
+  var rr=function(x){var l=(P(x).readiness||{}).level,i=LEVELS.indexOf(l);return i<0?LEVELS.length:i};
+  var info=function(x){var a=P(x).adapter||{},rt=routeOf(x.c,r),pr=x.c.protocol,proto=pr&&typeof pr.endpoint==='string'&&pr.versions;
+    return{route:rt,callable:!!proto||!!(a.ready&&rt&&(a.ops||[]).indexOf(rt)>-1),key:!proto&&!!a.env}};
+  function nearest(pool,pick){var near=pool.filter(function(x){return fit(x)>=fit(pick)-READY_MARGIN});
+    return near.slice().sort(function(a,b){return rr(a)-rr(b)||fit(b)-fit(a)||(a===pick?-1:b===pick?1:0)})[0]}
+  var top=ok.reduce(function(a,b){return fit(b)>fit(a)?b:a});
+  var cl=ok.filter(function(x){var i=info(x);return i.callable&&fit(x)>=fit(top)-(i.route==='live'?LIVE_MARGIN:CALLABLE_MARGIN)});
+  if(!cl.length)return nearest(ok,top);
+  var lead=fit(cl[0]),win=info(cl[0]).route==='live'?10:5,ready=cl.filter(function(x){return !info(x).key&&fit(x)>=lead-win});
+  return ready.length?nearest(ready,ready[0]):nearest(cl,cl[0])}
+window.IRLMatch={reviewed:reviewed,attested:attested,REVIEWERS:REVIEWERS,REVIEW_NOTE:REVIEW_NOTE,best:best,gazetteer:{countries:COUNTRIES,cities:CITIES,caseless:CASELESS},parse:parse,score:score,inScope:inScope,plannable:plannable,isFree:isFree,isKeyless:isKeyless,compare:compare,covers:covers,targetsPerson:detectTargetsPerson,bulkVendor:bulkVendor,singleCapture:singleCapture,stageLevels:stageLevels,stageTally:stageTally,stageMark:stageMark,stageTitles:STAGE_TITLES};
 })();

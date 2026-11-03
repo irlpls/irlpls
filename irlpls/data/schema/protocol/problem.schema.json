@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://irlpls.com/2026-10-26/schemas/protocol/problem.json",
+  "title": "irlpls Problem (DRAFT)",
+  "description": "Every non-2xx response: RFC 9457 problem details (application/problem+json) with irlpls extension members. Over MCP: the tool result with isError true and this object as structuredContent. All text members are untrusted data. Draft: docs/protocol/PROTOCOL-DRAFT.md.",
+  "type": "object",
+  "required": ["type", "title", "status", "code", "resolution"],
+  "properties": {
+    "type": {"type": "string", "pattern": "^https://irlpls\\.com/\\d{4}-\\d{2}-\\d{2}/problems/[a-z_]+$", "description": "https://irlpls.com/<version>/problems/<code>; every policy:<rule> uses .../problems/policy."},
+    "title": {"type": "string"},
+    "status": {"type": "integer", "minimum": 400, "maximum": 599},
+    "detail": {"type": "string"},
+    "instance": {"type": "string"},
+    "code": {"$ref": "common.json#/$defs/code"},
+    "resolution": {"enum": ["recoverable", "requires_buyer_input", "requires_buyer_review", "retry_later", "unrecoverable"], "description": "What the client does next. For an unknown code a client acts on this; an unknown resolution falls back to the HTTP status class."},
+    "continue_url": {"$ref": "common.json#/$defs/https_url"},
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {"path": {"type": "string", "description": "RFC 9535 JSONPath into the request body."}, "code": {"type": "string"}, "detail": {"type": "string"}}
+      }
+    },
+    "questions": {"type": "array", "items": {"$ref": "common.json#/$defs/question"}},
+    "violations": {"type": "array", "items": {"type": "string"}},
+    "ruled_out": {"type": "array", "items": {"$ref": "common.json#/$defs/ruled_out"}},
+    "supported_versions": {"type": "array", "items": {"type": "string"}},
+    "quote_id": {"type": "string"},
+    "order_id": {"type": "string"},
+    "upstream": {"type": "object", "description": "Router only: the provider's own problem, passed through as data."}
+  }
+}

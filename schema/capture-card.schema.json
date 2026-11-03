@@ -263,12 +263,32 @@
           "conforming_product": {
             "type": "string",
             "description": "Entry on the C2PA Conforming Products List"
+          },
+          "stated_level": {
+            "const": "evidenced",
+            "description": "Display only (irlpls builds): the level the provider stated, when the site shows a lower one because no independent reviewer irlpls recognises has attested it."
+          },
+          "review": {
+            "enum": [
+              "awaiting"
+            ],
+            "description": "Display only (irlpls builds): 'awaiting' when a stated 'evidenced' awaits independent review and is shown as claimed."
           }
         },
         "if": {
           "properties": {
             "level": {
               "const": "evidenced"
+            },
+            "stated_level": {
+              "const": "evidenced",
+              "description": "Display only (irlpls builds): the level the provider stated, when the site shows a lower one because no independent reviewer irlpls recognises has attested it."
+            },
+            "review": {
+              "enum": [
+                "awaiting"
+              ],
+              "description": "Display only (irlpls builds): 'awaiting' when a stated 'evidenced' awaits independent review and is shown as claimed."
             }
           },
           "required": [
@@ -349,12 +369,32 @@
                   }
                 }
               }
+            },
+            "stated_level": {
+              "const": "evidenced",
+              "description": "Display only (irlpls builds): the level the provider stated, when the site shows a lower one because no independent reviewer irlpls recognises has attested it."
+            },
+            "review": {
+              "enum": [
+                "awaiting"
+              ],
+              "description": "Display only (irlpls builds): 'awaiting' when a stated 'evidenced' awaits independent review and is shown as claimed."
             }
           },
           "if": {
             "properties": {
               "level": {
                 "const": "evidenced"
+              },
+              "stated_level": {
+                "const": "evidenced",
+                "description": "Display only (irlpls builds): the level the provider stated, when the site shows a lower one because no independent reviewer irlpls recognises has attested it."
+              },
+              "review": {
+                "enum": [
+                  "awaiting"
+                ],
+                "description": "Display only (irlpls builds): 'awaiting' when a stated 'evidenced' awaits independent review and is shown as claimed."
               }
             },
             "required": [
@@ -417,12 +457,32 @@
                   }
                 }
               }
+            },
+            "stated_level": {
+              "const": "evidenced",
+              "description": "Display only (irlpls builds): the level the provider stated, when the site shows a lower one because no independent reviewer irlpls recognises has attested it."
+            },
+            "review": {
+              "enum": [
+                "awaiting"
+              ],
+              "description": "Display only (irlpls builds): 'awaiting' when a stated 'evidenced' awaits independent review and is shown as claimed."
             }
           },
           "if": {
             "properties": {
               "level": {
                 "const": "evidenced"
+              },
+              "stated_level": {
+                "const": "evidenced",
+                "description": "Display only (irlpls builds): the level the provider stated, when the site shows a lower one because no independent reviewer irlpls recognises has attested it."
+              },
+              "review": {
+                "enum": [
+                  "awaiting"
+                ],
+                "description": "Display only (irlpls builds): 'awaiting' when a stated 'evidenced' awaits independent review and is shown as claimed."
               }
             },
             "required": [

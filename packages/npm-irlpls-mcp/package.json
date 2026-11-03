@@ -1,0 +1,15 @@
+{
+  "name": "irlpls-mcp",
+  "version": "0.1.0",
+  "description": "npx shim for the irlpls MCP server: runs the Python package irlpls-mcp through uvx.",
+  "license": "Apache-2.0",
+  "author": "irlpls maintainers <hello@irlpls.com>",
+  "homepage": "https://irlpls.com",
+  "repository": {"type": "git", "url": "git+https://github.com/irlpls/irlpls.git", "directory": "packages/npm-irlpls-mcp"},
+  "bugs": "https://github.com/irlpls/irlpls/issues",
+  "keywords": ["mcp", "model-context-protocol", "agents", "real-world-data", "irlpls"],
+  "bin": {"irlpls-mcp": "bin/irlpls-mcp.js"},
+  "files": ["bin/", "README.md", "LICENSE"],
+  "engines": {"node": ">=18"},
+  "mcpName": "com.irlpls/irlpls"
+}

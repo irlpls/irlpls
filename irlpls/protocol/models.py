@@ -5,8 +5,6 @@ source checkout, or under $IRLPLS_SCHEMA_DIR. Validation uses `jsonschema` when 
 top-level `required` members are checked (a degraded mode the server logs once).
 """
 import json
-import os
-import pathlib
 import re
 import secrets
 from datetime import datetime, timezone
@@ -137,10 +135,8 @@ def money(amount, currency="USD"):
 # ---------------------------------------------------------------- schemas
 
 def schema_dir():
-    env = os.environ.get("IRLPLS_SCHEMA_DIR")
-    if env:
-        return pathlib.Path(env)
-    return pathlib.Path(__file__).resolve().parents[2] / "schema"
+    from irlpls.paths import schema_dir as _schema_dir
+    return _schema_dir()
 
 
 _REGISTRY = None

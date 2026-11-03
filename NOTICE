@@ -13,3 +13,7 @@ except as follows:
   descriptive only and implies no endorsement.
 - src/places.json is derived from GeoNames (https://www.geonames.org/),
   licensed CC BY 4.0 (see src/media/CREDITS.md).
+- irlpls/data/places.json (the Python package's copy of src/places.json) is
+  likewise derived from GeoNames, CC BY 4.0.
+- irlpls/data/public_suffix_list.dat is the Public Suffix List
+  (https://publicsuffix.org/), Mozilla Public License 2.0.

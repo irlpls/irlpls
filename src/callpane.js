@@ -14,7 +14,7 @@
 
    IRLCall.html(opts) -> string     opts: {provider, readiness: {level|state, line}, price, rc, text, req, place, street,
                                            policy (extra policy fields), card (for the policy check), ran: {status, ms}, cache (note),
-                                           open (step 3 starts open), docs (when rc is missing)}
+                                           open (step 3 starts open), order (where to order by hand when rc is missing: the card's docs or site), docs}
    IRLCall.bind(root)               wires step 3's fold and both Copy buttons in every pane under root
    IRLCall.variants(opts)           {http, curl, python} as plain text (tests)
    Every value is escaped; the highlighter is a few regexes, no dependency. */
@@ -65,7 +65,7 @@ var CSS='.ircp{margin:0;padding:0;min-width:0;max-width:100%;border:0;background
  '.ircp-ck{display:flex;align-items:baseline;gap:6px}.ircp-ck:before{content:"";flex:none;width:5px;height:5px;border-radius:50%;background:currentColor;transform:translateY(-2px)}'+
  '.ircp-ck.ok{color:var(--live,#0a6e34)}.ircp-ck.bad{color:var(--bad,#b3261e)}'+
  '.ircp-l{margin:6px 0 0;font:500 12.5px/1.4 '+SANS+';color:var(--fg3,#5b6574)}'+
- '.ircp-q{margin:0;font:500 13px/1.4 '+SANS+';color:var(--fg3,#5b6574)}.ircp-q .ircp-gk{margin:0 0 0 6px}';
+ '.ircp-q{margin:0;font:500 13px/1.4 '+SANS+';color:var(--fg3,#5b6574)}.ircp-q .ircp-gk{margin:0}.ircp-or{display:inline-flex;font-weight:600;overflow-wrap:anywhere;white-space:normal}';
 function css(){if(document.getElementById('ircp-css'))return;var s=document.createElement('style');s.id='ircp-css';s.textContent=CSS;(document.head||document.documentElement).appendChild(s)}
 
 /* ---------- segments: [text, class] pairs, so one pass gives both the plain text (copy) and the highlighted HTML ---------- */
@@ -136,8 +136,7 @@ function vPy(c){var S=new Seg(),k=c.key,I='    ';
 
 /* step 1: the irlpls call, as irlpls understood the ask (the page's parser, IRLMatch.parse, and the place it mapped): only
    the fields present, each a real irlpls_request parameter (place, lat, lon, within_minutes, quantity, policy). A budget in
-   the words becomes policy max_order_usd; AI-training rights become policy need_ai_training. No fields: one line. */
-var AIT=/\b(?:ai[- ]?training|train(?:ing)?\s+(?:an?\s+)?(?:ai|models?)|training rights)\b/i;
+   the words becomes policy max_order_usd; AI-training rights (the parser's need_ai_training) policy need_ai_training. No fields: one line. */
 function askFields(o){var r=o.req||{},pl=o.place||{},f=[],pol={};
   /* a street address stays as written (its city's point would mislead, so no lat/lon then); else the place as mapped */
   var addr=/^\s*\d/.test(r.place||''),where=addr?r.place:(!pl.missing&&pl.name?pl.name:(r.place||''));
@@ -148,7 +147,7 @@ function askFields(o){var r=o.req||{},pl=o.place||{},f=[],pol={};
   if(tq.length)f.push(tq);
   if(o.policy&&typeof o.policy==='object')for(var k in o.policy)pol[k]=o.policy[k];
   if(r.max_price_usd!=null&&pol.max_order_usd==null)pol.max_order_usd=r.max_price_usd;
-  if(AIT.test(o.text||'')&&pol.need_ai_training==null)pol.need_ai_training=true;
+  if(r.need_ai_training&&pol.need_ai_training==null)pol.need_ai_training=true;
   return{groups:f,policy:pol}}
 function vAsk(o){var S=new Seg(),F=askFields(o),pk=Object.keys(F.policy),need=JSON.stringify(String(o.text||''));
   S.p('irlpls_request','t-fn');S.p('(','t-p');
@@ -173,7 +172,7 @@ function checks(o){var c=o.card,F=askFields(o),P=F.policy,out=[];if(!c)return ou
     out.push(ai==='allowed'?['AI training allowed','ok']:ai==='forbidden'?['AI training forbidden','bad']:['AI-training rights not stated: irlpls asks first',''])}
   return out}
 function variants(o){var c=filled(o);return{http:vHttp(c).text(),curl:vCurl(c).text(),python:vPy(c).text(),c:c}}
-var PILL={ready_now:['Ready now',1],one_consent:['One sign-up'],account_first:['Account first'],contract:['Contract']};
+var PILL={ready_now:['Ready now',1],one_consent:['One sign-up'],account_first:['Account first'],contract:['By agreement']};
 var CHEV='<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>';
 var COPY='<svg class="cp" viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.8"/><path d="M10.5 3.5v-.3A1.7 1.7 0 0 0 8.8 1.5H3.2A1.7 1.7 0 0 0 1.5 3.2v5.6a1.7 1.7 0 0 0 1.7 1.7h.3"/></svg>'+
  '<svg class="ck" viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.5 3.2 3L13 4.5"/></svg>';
@@ -191,12 +190,13 @@ function html(o){css();o=o||{};var rd=o.readiness||{},pill=PILL[rd.level||rd.sta
   var m=[];if(o.provider)m.push('<b class="ircp-n">'+E(o.provider)+'</b>');
   if(pill)m.push('<span class="ircp-r'+(pill[1]?' ok':'')+'"'+(rd.line?' title="'+E(rd.line)+'"':'')+'>'+E(pill[0])+'</span>');
   if(o.price&&!/not stated/i.test(o.price))m.push('<span class="ircp-p">'+E(o.price)+'</span>');  /* an unstated price says nothing here */
-  if(a.key_name)m.push('<span class="ircp-nk">needs your key</span>');
+  if(a.key_name)m.push('<span class="ircp-nk">needs your key</span>');else if(!rc)m.push('<span class="ircp-nk">no public API</span>');
   var ck=checks(o).map(function(x){return '<span class="ircp-ck'+(x[1]?' '+x[1]:'')+'">'+E(x[0])+'</span>'}).join('');
   if(m.length)h+=step('irlpls → matched','<p class="ircp-m">'+m.join('<i aria-hidden="true">·</i>')+'</p>'+(ck?'<p class="ircp-cks">'+ck+'</p>':'')+
     (a.get_key_url?'<a class="ircp-gk ircp-gk2" href="'+E(a.get_key_url)+'" rel="noopener">Get a key</a>':''));
   /* 3. what irlpls sends the provider: one line, the full request (curl) when tapped */
-  if(!rc){var d=o.docs;return h+step('irlpls → provider','<p class="ircp-q">No ready call yet.'+(d?'<a class="ircp-gk" href="'+E(d)+'" rel="noopener">API docs</a>':'')+'</p>')+'</ol></div>'}
+  /* no ready call (directory-only, or by agreement): how to order by hand, from the card (its docs, else its site) */
+  if(!rc){var d=o.order||o.docs;return h+step('irlpls → provider','<p class="ircp-q">Order by hand'+(d?': <a class="ircp-gk ircp-or" href="'+E(d)+'" rel="noopener">'+E(String(d).replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))+'</a>':' from the provider.')+'</p>')+'</ol></div>'}
   var c=filled(o),cu=vCurl(c),id='ircp'+(++n),r=o.ran,ok=r&&r.status>=200&&r.status<300,bad=r&&(r.status<0||r.status>=300);
   var st=r?(r.status>0?r.status+' · '+r.ms+' ms':r.status<0?'failed':'running…'):'not sent from this page';
   var cm=o.cache?/(\d+ (?:s|min)) old/.exec(o.cache):null;

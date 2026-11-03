@@ -174,6 +174,8 @@ Level semantics:
 
 Brokers order levels `none` < `claimed` < `evidenced` within one guarantee. An attestation records a third party's check; it does not change the level the provider states.
 
+**Display rule (irlpls).** irlpls shows a link as Evidenced only when an independent reviewer it recognises has attested it: an `attestations` entry from a reviewer on irlpls's published list (`reviewers.json`) whose `scope` names that guarantee or provenance entry. irlpls recognises no reviewer yet. Until one has attested it, a stated `evidenced` is displayed as Claimed with the note "evidence awaits independent review"; the card keeps the level the provider stated, and a site build marks the shown copy with `stated_level` and `review: "awaiting"`. A reference checker's verdict (Section 3.1) never changes the displayed level.
+
 ### 3.1 Provenance after capture (optional)
 
 *In short: two optional entries for what happens after capture, so custody and delivery are stated on the card like the guarantees, not inferred elsewhere.*

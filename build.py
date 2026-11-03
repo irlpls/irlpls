@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT))
 from irlpls import health  # noqa: E402  (the daily read check, tools/healthcheck.py)
 from irlpls.readiness import readiness_for, self_registers  # noqa: E402  (stdlib only; one rule for card pages, catalog and broker)
 from irlpls.catalog import adapters as _adapters  # noqa: E402  (the same adapter facts catalog.json uses)
-from irlpls import published, standing  # noqa: E402  (provider-published cards: tools/fetch_published.py; ranks: tools/bench_asks.json)
+from irlpls import published, review, standing  # noqa: E402  (provider-published cards: tools/fetch_published.py; ranks: tools/bench_asks.json)
 import os  # noqa: E402
 ADAPTERS = _adapters()
 SITE = pathlib.Path(os.environ.get("IRLPLS_SITE") or ROOT / "site")  # tests build a fixture site elsewhere
@@ -64,13 +64,16 @@ def nav(p="", here=""):
 
 def foot(p="", extra=""):
     """The one footer on every page (src/index.html, chain.html, check.html and standard.html carry the same markup with p="";
-    tests/test_ui.py pins them to this). extra: page-specific small print (credits), above the licence line."""
-    links = (("standard.html", "Standard"), ("docs.html", "Docs"), ("providers.html", "For providers"), ("privacy.html", "Privacy"),
-             ("glossary.html", "Glossary"), ("changelog.html", "Changelog"), ("governance.html", "Governance"))
-    return ('<footer class="site-foot"><div class="ft"><p class="fd"><a class="fw" href="' + p + 'index.html" aria-label="irlpls home">irl<i>pls</i></a>'
-            '<span>No data sold, no cut. Buy from providers directly.</span></p><nav class="fl" aria-label="Footer">'
-            + "".join(f'<a href="{p}{h}">{t}</a>' for h, t in links) + '</nav></div>' + extra +
-            '<p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><a href="mailto:hello@irlpls.com">hello@irlpls.com</a><span>© irlpls maintainers</span></p></footer>')
+    tests/test_ui.py pins them to this). Four columns: brand, Product, Standard, Project; then the licence bar.
+    extra: page-specific small print (credits), above the hairline."""
+    groups = (("Product", (("find.html", "Find data"), ("docs.html", "Docs"), ("check.html", "Check a card"))),
+              ("Standard", (("standard.html", "The standard"), ("chain.html", "The full chain"), ("glossary.html", "Glossary"), ("changelog.html", "Changelog"))),
+              ("Project", (("providers.html", "For providers"), ("governance.html", "Governance"), ("privacy.html", "Privacy"), ("mailto:hello@irlpls.com", "hello@irlpls.com"))))
+    cols = "".join(f'<nav class="fcol" aria-label="{t}"><h2>{t}</h2><ul>'
+                   + "".join(f'<li><a href="{h if h.startswith("mailto") else p + h}">{n}</a></li>' for h, n in ls) + '</ul></nav>' for t, ls in groups)
+    return ('<footer class="site-foot"><div class="ft"><div class="fb"><a class="fw" href="' + p + 'index.html" aria-label="irlpls home">irl<i>pls</i></a>'
+            '<p>No data sold, no cut. Buy from providers directly.</p></div>' + cols + '</div>' + extra +
+            '<p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><span>© irlpls maintainers</span></p></footer>')
 
 
 # ---- card values. Every value comes from the card JSON; anything the card leaves out reads "Not stated".
@@ -262,7 +265,8 @@ def card_article(c, p="../"):
               f'<a href="{p}check.html?id={e(c["id"])}">Publish your card&nbsp;›</a></p>')
     h += (f'<p class="foot"><span>{who} · updated {e(c.get("updated") or "date not stated")}</span><span class="links"><a href="{p}cards/{c["id"]}.json">JSON</a>'
           + (f'<a href="{e(c["provider_url"])}" target="_blank" rel="noopener">Site</a>' if c.get("provider_url") else "")
-          + f'<a href="{p}compare.html?ids={c["id"]}">Compare</a></span></p>'
+          + f'<a href="{p}compare.html?ids={c["id"]}">Compare</a>'
+          + f'<a class="fix" href="{e(correction_mail(c))}">Report a correction</a></span></p>'
           + (f'<p class="readfrom">Read from <span class="u">{wb(ent["url"])}</span> · sha256 <code title="{e(ent.get("sha256") or "")}">{e((ent.get("sha256") or "")[:12])}…</code></p>' if mine and ent.get("url") else "")
           + '</article>')
     return h
@@ -523,7 +527,8 @@ def stage_detail(c, i, lv):
     h = ""
     for name, g in parts:
         gl = g.get("level") or "none"
-        h += (f'<p><b>{e(name)}</b> · {LEVEL[gl]}' + (f'. {e(g["method"])}' if g.get("method") else "")
+        h += (f'<p><b>{e(name)}</b> · {LEVEL[gl]}' + (f' <span class="rvw">({review.NOTE})</span>' if g.get("review") == "awaiting" else "")
+              + (f'. {e(g["method"])}' if g.get("method") else "")
               + (f' <a href="{e(g["evidence_url"])}" target="_blank" rel="noopener">public evidence</a>' if g.get("evidence_url") else "") + "</p>"
               + (f'<p class="unk">Still open: {e(g["unknown"])}</p>' if g.get("unknown") else ""))
     best = max((RANK[g.get("level") or "none"] for _, g in parts), default=0)
@@ -545,6 +550,14 @@ def stages_block(c):
     return (f'<h2 class="sec">Eight links</h2><p class="stg-t">{stage_dots(c, True)}<span>{nw_tally(stage_tally(c))}</span></p>'
             f'<p class="stg-l">{e(who)}. <a href="../chain.html">What they mean</a></p>'
             f'<details class="dt stg"><summary>Each link</summary><ol class="stg-o">{rows}</ol></details>')
+
+
+def correction_mail(c):
+    """A quiet way to say a card is wrong (the owner, 2026-11-02): one mail to hello@irlpls.com with the page it is about."""
+    q = urllib.parse.urlencode({"subject": f'Correction: {c["id"]}',
+                                "body": f'Page: https://irlpls.com/c/{c["id"]}.html\n\nWhat is wrong, and a source if you have one:\n'},
+                               quote_via=urllib.parse.quote)
+    return "mailto:hello@irlpls.com?" + q
 
 
 def card_page(c):
@@ -571,7 +584,7 @@ def index_page(cards):
 <noscript><p class="nojs">Search needs JavaScript. All providers are listed below.</p></noscript>
 <div class="search">{SEARCH_IC}<input id="q" type="search" autocomplete="off" enterkeyhint="search" aria-label="Type anything you need: what, where, how soon" placeholder="Type anything" aria-describedby="meta"><button type="button" class="x" id="clr" aria-label="Clear search" hidden>&times;</button></div>
 <p class="examples" id="ex" aria-label="Example requests"><span>Try:</span><button type="button" data-q="river level in Texas right now">river level, Texas</button><i aria-hidden="true">·</i><button type="button" data-q="500 first-person clips of a hand opening a door, with AI-training rights, under $2,000, within 7 days">door clips, $2,000</button><i aria-hidden="true">·</i><button type="button" data-q="Drone photos of my roof at 45 Oak Ave, Austin, TX within 3 days, under $600">roof by drone</button><i aria-hidden="true">·</i><button type="button" data-q="Photo of the storefront at 123 Main St, Springfield, IL today, under $40">storefront, $40</button></p>
-<div class="chips" id="filters" role="group" aria-label="Filters"><button type="button" aria-pressed="false" data-f="live">Live</button><button type="button" aria-pressed="false" data-f="commission">Made to order</button><button type="button" aria-pressed="false" data-f="free">Free</button></div>
+<div class="chips" id="filters" role="group" aria-label="Filters"><button type="button" aria-pressed="false" data-f="live">Live</button><button type="button" aria-pressed="false" data-f="commission">Made to order</button><button type="button" aria-pressed="false" data-f="free">Free</button><button type="button" class="reset" id="rst" hidden>Clear filters</button></div>
 <p class="read" id="parsed" aria-label="How the request was read" hidden></p>
 <div class="notes" id="notes" aria-live="polite"></div>
 <section class="best" id="best" aria-label="Best match" aria-live="polite" hidden></section>
@@ -873,13 +886,42 @@ def public_scrub(site):
         sys.exit("public build refused, preview hosts or local paths in site/:\n  " + "\n  ".join(leaks[:40]))
 
 
+FETCH_BUDGET = 150   # seconds for the whole daily read in a public build; one domain gets 10 s (irlpls/published.py)
+
+
+def fresh_published():
+    """--public (the irlpls.com build, daily via .github/workflows/daily-rebuild.yml): read every provider's published card and
+    run the evidence checks (tools/fetch_published.py) before building, so each deploy uses fresh data. Network allowed,
+    short timeouts; any failure or a run over FETCH_BUDGET is reported and the build goes on with the last state, or the
+    compiled cards. IRLPLS_NO_FETCH=1 skips it (tests, CI, offline builds). Evidence verdicts never change displayed levels."""
+    import os
+    if os.environ.get("IRLPLS_NO_FETCH") == "1":
+        print("published cards: not fetched (IRLPLS_NO_FETCH=1)")
+        return False
+    try:
+        r = subprocess.run([sys.executable, str(ROOT / "tools" / "fetch_published.py"), "--no-board", "--site", str(ROOT / ".no-site")],
+                           cwd=ROOT, capture_output=True, text=True, timeout=FETCH_BUDGET)
+        print((r.stdout.strip().splitlines() or ["published cards: fetched"])[-1] if r.returncode == 0
+              else f"published cards: fetch failed ({(r.stderr.strip().splitlines() or ['exit ' + str(r.returncode)])[-1][:200]}); building from the last state")
+        return r.returncode == 0
+    except Exception as x:  # a timeout or anything else: never break the build
+        print(f"published cards: fetch skipped ({type(x).__name__}); building from the last state")
+        return False
+
+
 def main(public=False):
+    if public:
+        fresh_published()
     all_cards = [json.loads(p.read_text()) for p in sorted((ROOT / "cards").glob("*.json"))]
     # The site lists only providers that deliver NEW data (live feeds or commissioned capture).
     cards = [c for c in all_cards if c.get("status") != "defunct" and (c.get("delivery") or {}).get("modes")]
     # a provider's own card, read daily from its domain, replaces the compiled one while it is live (or stale, kept 7 days)
     PUB["state"] = published.load_state()
     cards, PUB["eff"] = published.overrides(cards, PUB["state"])
+    # Evidenced only via an independent reviewer irlpls recognises (irlpls/review.py; none yet): a provider's own
+    # "evidenced" shows as Claimed everywhere the site reads (pages, cards.json, cards/<id>.json, catalog.json, the browser)
+    REV = review.reviewers()
+    cards = [review.displayed(c, REV) for c in cards]
     for c in cards:
         if c.get("status") == "provider-maintained" and PUB["eff"].get(c["id"]) in published.SHOWN:
             try:
@@ -918,6 +960,7 @@ def main(public=False):
         (SITE / "cards" / f'{c["id"]}.json').write_text(json.dumps(c, indent=2) + "\n")
     (SITE / "cards.json").write_text(json.dumps({"assurances": [list(a) for a in ASSURANCES], "cards": cards}))
     shutil.copy(ROOT / "schema" / "request.schema.json", SITE / "request.schema.json")
+    (SITE / "reviewers.json").write_text(json.dumps({"reviewers": REV, "note": review.NOTE}, indent=1) + "\n")  # IRLMatch.REVIEWERS must match
     pages = ["", "find.html", "compare.html", "docs.html", "agents.html", "standard.html", "changelog.html", "governance.html", "providers.html", "privacy.html", "glossary.html"] + [f'c/{c["id"]}.html' for c in cards]
     (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"<url><loc>https://irlpls.com/{u}</loc></url>\n" for u in pages) + "</urlset>\n")
     (SITE / "published.json").write_text(json.dumps(published.public(PUB["state"]), indent=1) + "\n")  # check.html ?d= reads it

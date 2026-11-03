@@ -67,7 +67,7 @@ def test_pane_renders_three_flat_steps_and_never_sends(browser, base, q):
     # flat: no tabs, no nested cards, no request log, no intro or plan sentence
     assert pane.locator("[role=tab], .ircp-plan, .ircp-a, .ircp-b, .cls").count() == 0
     assert pane.locator(".ircp-n").inner_text().strip()
-    assert pane.locator(".ircp-r").inner_text() in ("Ready now", "One sign-up", "Account first", "Contract")
+    assert pane.locator(".ircp-r").inner_text() in ("Ready now", "One sign-up", "Account first", "By agreement")
     # step 3: method pill, host, "not sent from this page"; opened, one curl block with one Copy
     assert pane.locator(".ircp-x .m").inner_text() in ("GET", "POST", "PUT", "PATCH", "DELETE")
     assert "not sent from this page" in pane.locator(".ircp-x").inner_text()
@@ -76,15 +76,17 @@ def test_pane_renders_three_flat_steps_and_never_sends(browser, base, q):
     assert curl.startswith("curl "), curl
     host = urllib.parse.urlsplit(re.search(r"https?://[^\s'\"]+", curl).group(0)).hostname
     phs = pane.locator("pre.call .t-ph").all_inner_texts()
-    assert any(re.search(r"_(API_)?KEY\}$|_TOKEN\}$", t) for t in phs), phs  # the key, only named
+    # the pick is the broker's (IRLMatch.best): a keyless provider the SDK can call may win; a keyed one names its key only
+    keyed = "needs your key" in pane.locator(".ircp-m").inner_text()
+    assert not keyed or any(re.search(r"_(API_)?KEY\}$|_TOKEN\}$", t) for t in phs), phs
     for t in phs:
         assert re.fullmatch(r"\$?\{[A-Z0-9_]+\}", t), t
     # no header value carries anything that looks like a real secret
     for line in curl.split("\n"):
         if line.strip().startswith("-H"):
             assert not SECRETISH.search(re.sub(r"\$?\{[A-Z0-9_]+\}", "", line)), line
-    assert pane.get_by_role("link", name="Get a key").count() == 1
-    assert "needs your key" in pane.inner_text()
+    assert pane.get_by_role("link", name="Get a key").count() == (1 if keyed else 0)
+    assert keyed or q == SAT, "the storefront call needs a ProxyPics key"
     assert not [u for u in sent if host in u], sent
 
 

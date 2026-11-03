@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://irlpls.com/2026-10-26/schemas/protocol/status.json",
+  "title": "irlpls Order (status) (DRAFT)",
+  "description": "The Order resource: returned by POST /orders (202, or 200 when already delivered), GET /orders/{id} and POST /orders/{id}/cancel. States are the Job words, so a router needs no per-provider status map. Draft: docs/protocol/PROTOCOL-DRAFT.md.",
+  "$ref": "#/$defs/order",
+  "$defs": {
+    "state": {"enum": ["submitted", "in_flight", "delivered", "failed"]},
+    "order": {
+      "type": "object",
+      "required": ["id", "state", "created_at", "updated_at", "links", "request_sha256"],
+      "properties": {
+        "id": {"type": "string", "description": "Unguessable."},
+        "state": {"$ref": "#/$defs/state"},
+        "reason_code": {"type": "string", "pattern": "^[a-z_]+$", "description": "Why a failed order failed. Known values: rejected, cancelled, expired, undeliverable, provider_error. Unknown values are unsupported, never re-mapped."},
+        "reason_text": {"type": "string", "description": "Untrusted text."},
+        "provider_status": {"type": "string", "description": "The provider's own status word, as sent."},
+        "quote_id": {"type": "string"},
+        "request_sha256": {"$ref": "common.json#/$defs/sha256", "description": "Hash of the request the provider priced for this order: the accepted quote's request_sha256, or, for a direct order, SHA-256 of the RFC 8785 form of the order's request. Every receipt carries it; the client checks it against the request it sent."},
+        "offer_id": {"type": "string"},
+        "card_id": {"type": "string"},
+        "route": {"enum": ["live", "commission"]},
+        "total": {"$ref": "common.json#/$defs/money", "description": "The amount the provider will charge for this order. Never more than the accepted offer's total or the direct order's max_total, in the same currency."},
+        "created_at": {"type": "string", "format": "date-time"},
+        "updated_at": {"type": "string", "format": "date-time"},
+        "progress": {
+          "type": "object",
+          "required": ["ordered", "delivered"],
+          "description": "ordered: the request's quantity. delivered: items in the delivery so far (a live reading may return more items than quantity, one per observed property).",
+          "properties": {"ordered": {"type": "integer", "minimum": 0}, "delivered": {"type": "integer", "minimum": 0}}
+        },
+        "status_history": {
+          "type": "array",
+          "description": "Append-only.",
+          "items": {
+            "type": "object",
+            "required": ["at", "state"],
+            "properties": {
+              "at": {"type": "string", "format": "date-time"},
+              "state": {"$ref": "#/$defs/state"},
+              "provider_status": {"type": "string"},
+              "reason_code": {"type": "string"},
+              "reason_text": {"type": "string"}
+            }
+          }
+        },
+        "links": {
+          "type": "object",
+          "required": ["self", "delivery"],
+          "properties": {
+            "self": {"$ref": "common.json#/$defs/https_url"},
+            "delivery": {"$ref": "common.json#/$defs/https_url", "description": "Always present; GET answers in every state (items [] before the first)."},
+            "cancel": {"$ref": "common.json#/$defs/https_url"},
+            "continue": {"$ref": "common.json#/$defs/https_url"}
+          }
+        },
+        "delivery": {"$ref": "delivery.json", "description": "Inline when the order completed synchronously (a live reading)."}
+      },
+      "allOf": [
+        {"if": {"properties": {"state": {"const": "failed"}}, "required": ["state"]}, "then": {"required": ["reason_code"]}}
+      ]
+    },
+    "order_list": {
+      "description": "GET {endpoint}/orders?client_reference=<ref>: this client's orders carrying that client_reference, newest first (recovery after the idempotency window).",
+      "type": "object",
+      "required": ["orders"],
+      "properties": {"orders": {"type": "array", "items": {"$ref": "#/$defs/order"}}}
+    },
+    "webhook_event": {
+      "description": "Thin event POSTed to the order's webhook.url (Standard Webhooks headers). The receiver re-reads the order before acting.",
+      "type": "object",
+      "required": ["type", "timestamp", "data"],
+      "properties": {
+        "type": {"const": "order.updated"},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "data": {
+          "type": "object",
+          "required": ["order_id", "state", "order_url"],
+          "properties": {
+            "order_id": {"type": "string"},
+            "state": {"$ref": "#/$defs/state"},
+            "order_url": {"$ref": "common.json#/$defs/https_url", "description": "MUST equal {endpoint}/orders/{order_id} exactly; the receiver compares it as a string with the endpoint it ordered from."}
+          }
+        }
+      }
+    }
+  }
+}

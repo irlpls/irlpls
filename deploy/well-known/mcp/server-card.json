@@ -1,6 +1,6 @@
 {
   "serverInfo": {"name": "irlpls", "title": "irlpls (read-only)", "version": "0.1.0"},
-  "transport": {"type": "streamable-http", "url": "https://irlpls.com/mcp"},
+  "transport": {"type": "streamable-http", "url": "https://mcp.irlpls.com/mcp"},
   "authentication": {"required": false},
   "tools": [
     {"name": "irlpls_find_providers"}, {"name": "irlpls_get_card"}, {"name": "irlpls_list_capabilities"},

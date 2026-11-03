@@ -46,7 +46,7 @@ OUT = sys.argv[1] if len(sys.argv) > 1 else "qa-pages"
 BASE = sys.argv[2] if len(sys.argv) > 2 else None
 
 BUDGET = {
-    "finder_controls": 44,  # +2 (2026-10-30): the read-back of a street address ("50 Elm St, Burlington, VT → Vermont"). +2: the header link "Sources" became "Find data" (the owner's rename). round 5: "made to order" (was "commissioned") and the stage key's "not stated"   # everything on the finder except the result rows (incl. the lede and the "N sources match" line)
+    "finder_controls": 56,  # +12 (2026-11-02, owner-approved search behaviour): an empty query+filter says 'No free providers match "X".' with two ways out that repeat the ask. +2 (2026-10-30): the read-back of a street address ("50 Elm St, Burlington, VT → Vermont"). +2: the header link "Sources" became "Find data" (the owner's rename). round 5: "made to order" (was "commissioned") and the stage key's "not stated"   # everything on the finder except the result rows (incl. the lede and the "N sources match" line)
     "row": 17,              # one result row (round 5: the eight-stage tally "n claimed · n evidenced" replaced three chips); +1 (sweep nit 14): "Speed not stated" matches "Price not stated"
     "card_head": 60,        # kicker, name, one-liner, fit, spec grid
     "best": 30,             # the finder's best match: label, name, one plan line, readiness line, one or two buttons (its call and live answer apart)
@@ -459,7 +459,10 @@ def main():
     if not base.endswith("/"):
         base += "/"
     os.makedirs(OUT, exist_ok=True)
-    cards = [json.loads(p.read_text()) for p in sorted((ROOT / "cards").glob("*.json"))]
+    sys.path.insert(0, str(ROOT))
+    from irlpls import review  # the site shows each card as displayed: Evidenced only via a recognised reviewer (irlpls/review.py)
+    rev = review.reviewers()
+    cards = [review.displayed(json.loads(p.read_text()), rev) for p in sorted((ROOT / "cards").glob("*.json"))]
     ids = [c["id"] for c in json.loads((SITE / "cards.json").read_text())["cards"]]
     cards = [c for c in cards if c["id"] in ids]
     # a provider's own card (irlpls/published.py) is served in place of the compiled one: check those pages against
@@ -493,7 +496,11 @@ def main():
                 pg.wait_for_timeout(350)
                 if name == "check-id":  # the going-live panel and ranks, computed in the browser from cards.json
                     pg.wait_for_selector("#live .golive", timeout=15000)
-                res = pg.evaluate(PROBE, {"budget": BUDGET, "phone": phone, "kind": kind})
+                try:
+                    res = pg.evaluate(PROBE, {"budget": BUDGET, "phone": phone, "kind": kind})
+                except Exception as x:  # a probe that can't run is a failure of that state, said with its name and URL
+                    fails.append(f"{dev} {name}: the probe could not run at {pg.url} ({str(x).splitlines()[0][:160]})")
+                    continue
                 if phone and kind == "card" and res["first"] > BUDGET["card_first_screen"]:
                     res["problems"].append(f"{res['first']} words on the first screen (budget {BUDGET['card_first_screen']})")
                 fails += [f"{dev} {name}: {x}" for x in res["problems"]]

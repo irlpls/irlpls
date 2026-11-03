@@ -93,20 +93,20 @@ h1{margin:18px 0 0}
 .terms dt{font:700 14px var(--sans)}.terms dd{margin:0;font-size:14px;line-height:1.35;color:var(--fg2)}
 .more{margin:14px 0 0;font-size:14px;color:var(--fg3)}.more a{color:var(--pol)}
 
-.site-foot{margin:56px 0 0;padding:24px max(var(--gut),calc((100% - 1100px)/2 + var(--gut))) max(24px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:rgba(255,255,255,.55);display:flex;flex-direction:column;gap:10px;font:400 13px/1.5 var(--sans);color:var(--fg3)}
+.site-foot{margin:56px 0 0;padding:40px max(var(--gut),calc((100% - 1100px)/2 + var(--gut))) max(24px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#f8fafc;display:flex;flex-direction:column;gap:28px;font:400 13px/1.5 var(--sans);color:var(--fg3)}
 .site-foot a{color:var(--fg2);text-decoration:none}
 @media(hover:hover){.site-foot a:hover{color:var(--fg);text-decoration:underline;text-underline-offset:3px}}
-.site-foot .ft{display:flex;flex-direction:column;gap:4px}
-.site-foot .fd{margin:0;display:flex;flex-wrap:wrap;align-items:center;column-gap:14px}
-.site-foot .fw{display:inline-flex;align-items:center;min-height:44px;font:700 16px var(--sans);letter-spacing:-.04em;color:var(--fg)}.site-foot .fw i{font-style:normal;color:var(--fg3)}
-.site-foot .fl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}
-.site-foot .fl a{display:flex;align-items:center;min-height:44px;font-weight:500}
-/* desktop: a full-width band, content to the site's widest column (1100px), the wordmark left and the links in columns right */
-@media(min-width:760px){.site-foot{padding-top:32px;gap:14px}.site-foot .ft{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:48px;align-items:start}
-  .site-foot .fd{flex-direction:column;align-items:flex-start}.site-foot .fl{grid-template-columns:repeat(4,max-content);column-gap:48px}}
-.site-foot .fc{margin:0;font-size:12px;color:var(--fg3)}
-.site-foot .fm{margin:0;padding-top:6px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;column-gap:18px;font-size:12px}
-.site-foot .fm a{display:inline-flex;align-items:center;min-height:44px}
+.site-foot .ft{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:32px;row-gap:32px;align-items:start}
+.site-foot .fb{display:flex;flex-direction:column;gap:10px;align-items:flex-start}.site-foot .fb p{margin:0;max-width:22em}
+.site-foot .fw{display:inline-flex;align-items:center;font:700 18px/1.2 var(--sans);letter-spacing:-.04em;color:var(--fg)}.site-foot .fw i{font-style:normal;color:var(--fg3)}
+.site-foot .fcol{display:block}.site-foot .fcol h2{margin:0 0 12px;font:600 11px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.site-foot .fcol ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+.site-foot .fcol a{display:inline-block;font-weight:400;line-height:1.4}
+.site-foot .fc{margin:0;font-size:12px;color:var(--fg3);text-align:left}
+.site-foot .fm{margin:0;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 18px;font-size:12px}
+@media(max-width:900px){.site-foot .ft{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.site-foot{padding-top:28px;gap:20px}.site-foot .ft{grid-template-columns:minmax(0,1fr);row-gap:24px}
+  .site-foot .fcol ul{gap:0}.site-foot .fcol a{display:flex;align-items:center;min-height:44px}.site-foot .fm{flex-direction:column;justify-content:flex-start}}
 
 @media(min-width:700px){
   .chain{margin-top:34px}
@@ -244,6 +244,6 @@ h1{margin:18px 0 0}
 <p class="more">The same eight links, defined: <a href="glossary.html">glossary</a>. Exact rules: <a href="standard.html#3-guarantees">standard, Section 3</a>.</p>
 </main>
 
-<footer class="site-foot"><div class="ft"><p class="fd"><a class="fw" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><span>No data sold, no cut. Buy from providers directly.</span></p><nav class="fl" aria-label="Footer"><a href="standard.html">Standard</a><a href="docs.html">Docs</a><a href="providers.html">For providers</a><a href="privacy.html">Privacy</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a><a href="governance.html">Governance</a></nav></div><p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><a href="mailto:hello@irlpls.com">hello@irlpls.com</a><span>© irlpls maintainers</span></p></footer>
+<footer class="site-foot"><div class="ft"><div class="fb"><a class="fw" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><p>No data sold, no cut. Buy from providers directly.</p></div><nav class="fcol" aria-label="Product"><h2>Product</h2><ul><li><a href="find.html">Find data</a></li><li><a href="docs.html">Docs</a></li><li><a href="check.html">Check a card</a></li></ul></nav><nav class="fcol" aria-label="Standard"><h2>Standard</h2><ul><li><a href="standard.html">The standard</a></li><li><a href="chain.html">The full chain</a></li><li><a href="glossary.html">Glossary</a></li><li><a href="changelog.html">Changelog</a></li></ul></nav><nav class="fcol" aria-label="Project"><h2>Project</h2><ul><li><a href="providers.html">For providers</a></li><li><a href="governance.html">Governance</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="mailto:hello@irlpls.com">hello@irlpls.com</a></li></ul></nav></div><p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><span>© irlpls maintainers</span></p></footer>
 <script src="bar.js"></script>
 </body></html>

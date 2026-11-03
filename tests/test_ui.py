@@ -163,7 +163,7 @@ def test_no_match_and_filtered_empty_states_say_why(browser, base):
     p.goto(base + "/find.html?q=xyzzy%20plugh")
     assert p.locator(".row").count() == 0 and "No provider covers this" in p.inner_text("#meta")
     p.goto(base + "/find.html?q=river%20level%20in%20Texas%20right%20now&made=1")
-    p.locator("#clrf").click()
+    p.locator("#allq").click()  # 'Show all matches for "…"': the filter off, the text kept
     assert p.locator(".row").count() > 0 and "made=1" not in p.url
 
 
@@ -440,7 +440,7 @@ def test_swipe_nudge_plays_once_when_screen_one_is_in_view(browser, base):
     p = landing(browser, base)
     p.evaluate("""window.__tx=[];(function f(){const m=getComputedStyle(document.getElementById('ex0')).transform;
       __tx.push(m==='none'?0:new DOMMatrix(m).m41);requestAnimationFrame(f)})()""")
-    p.wait_for_timeout(7500)  # the reply plays on load (up to ~4.1 s), then the nudge (0.95 s later, 1.4 s long)
+    p.wait_for_timeout(9200)  # the question (1.4 s), the reply (up to ~4.1 s more), then the nudge (0.95 s later, 1.4 s long)
     tx = p.evaluate("__tx")
     assert min(tx) <= -28, min(tx)
     # never overlapping: the nudge starts only after the reply has fully arrived
@@ -509,29 +509,43 @@ def test_every_card_plays_its_reply_the_first_time_it_comes_into_view(browser, b
     assert p.locator("#ex2 .att").evaluate("a=>+getComputedStyle(a).opacity") > .9
 
 
-def test_each_card_shows_something_useful_fast_and_arrives_within_3_2s(browser, base):
-    """No blank card: 0.8 s after its turn the question and a status line show; within 4.8 s everything has arrived (answer at
-    reading pace, 120 ms a word, at most 3 s, then the photo, then the chip). The first card's turn is on load (the owner,
-    2026-10-30: never waiting for the headline); a swiped-to card's at once."""
-    p = landing(browser, base)  # landing() waits 0.4 s
-    p.wait_for_timeout(400)
+def test_each_card_opens_on_its_question_then_arrives_within_6_2s(browser, base):
+    """The question is the first beat (the owner, 2026-11-02): 0.8 s after its turn the blue bubble shows alone (risen in,
+    held to be read, no status yet); by 1.8 s the status line shows; within 6.2 s everything has arrived (answer at reading
+    pace, 120 ms a word, at most 3 s, then the photo, then the chip). The first card's turn is on load (never waiting for
+    the headline); a swiped-to card's when it comes into view."""
     vis = "s=>{const e=document.querySelector(s);return +getComputedStyle(e).opacity>.5&&e.getBoundingClientRect().height>0}"
-    assert p.evaluate(vis, "#ex0 .you") and p.evaluate(vis, "#ex0 .tool")
-    assert p.inner_text("#ex0 .tt").strip()
-    p.wait_for_timeout(4400)
-    assert p.evaluate("[...document.querySelectorAll('#ex0 .hide, #ex0 .wait')].length") == 0
-    # a swiped-to card: same budget, counted from when it is in view
+    p = page(browser, 390, 709)
+    p.route("**/*usgs.gov/**", lambda r: None)
+    # each beat's first frame, from navigation start (a page's load event can come after the first card has begun)
+    p.add_init_script("""window.__b={};(function f(){const c=document.getElementById('ex0'),t=performance.now();
+      if(c){const y=c.querySelector('.you'),o=y&&+getComputedStyle(y).opacity;
+        if(y&&o<.1&&__b.empty==null)__b.empty=t;if(o>.5&&__b.you==null)__b.you=t;
+        if(c.querySelector('.tool')&&!c.querySelector('.tool.hide')&&__b.empty!=null&&__b.tool==null)__b.tool=t;
+        if(__b.tool!=null&&!c.querySelector('.hide, .wait, .pre-you')&&__b.done==null)__b.done=t}
+      if(__b.done==null)requestAnimationFrame(f)})()""")
+    p.goto(base + "/")
+    p.wait_for_function("window.__b && __b.done != null", timeout=9000)
+    b = p.evaluate("__b")
+    assert b["empty"] < b["you"] < b["tool"], b              # the empty card, then the question, then irlpls
+    assert b["tool"] - b["you"] >= 900, b                    # the question holds, to be read
+    assert b["you"] - b["empty"] <= 800 and b["done"] <= 6200, b
+    # a swiped-to card: the same beats, counted from when it is in view
     p.click("#pd button:nth-child(2)")
     p.wait_for_function("document.querySelector('#pd button:nth-child(2)').getAttribute('aria-current')==='true'", timeout=3000)
     p.wait_for_timeout(800)
-    assert p.evaluate(vis, "#ex1 .you") and p.evaluate(vis, "#ex1 .tool") and p.inner_text("#ex1 .tt").strip()
+    assert p.evaluate(vis, "#ex1 .you") and p.locator("#ex1 .tool.hide").count() == 1
+    p.wait_for_timeout(1000)
+    assert p.evaluate(vis, "#ex1 .tool") and p.inner_text("#ex1 .tt").strip()
     p.wait_for_timeout(4400)
-    assert p.evaluate("[...document.querySelectorAll('#ex1 .hide, #ex1 .wait')].length") == 0
+    assert p.evaluate("[...document.querySelectorAll('#ex1 .hide, #ex1 .wait, #ex1 .pre-you')].length") == 0
 
 
 def test_reduced_motion_shows_everything_at_once(browser, base):
     p = landing(browser, base, reduced_motion="reduce")
-    assert p.evaluate("[...document.querySelectorAll('#track .hide, #track .wait, #track .run')].length") == 0
+    assert p.evaluate("[...document.querySelectorAll('#track .hide, #track .wait, #track .run, #track .pre-you')].length") == 0
+    s = landing(browser, base, q="?still=1")
+    assert s.evaluate("[...document.querySelectorAll('#track .hide, #track .wait, #track .run, #track .pre-you')].length") == 0
 
 
 def test_cards_come_from_cards_json_with_the_embedded_copy_as_fallback(browser, base):
@@ -1302,7 +1316,7 @@ def test_made_to_order_top_match_shows_its_plan_and_never_orders(browser, base):
     plan = p.locator("#best .bp").first.inner_text()
     assert plan.startswith("Made to order · "), plan
     assert p.locator("#brun").count() == 0
-    p.wait_for_selector("#bcall .call, #bcall .bq", state="attached", timeout=4000)
+    p.wait_for_selector("#bcall .call, #bcall .bq, #bcall .ircp-q", state="attached", timeout=4000)
 
 
 @pytest.mark.parametrize("q,reply,want", [
@@ -1584,7 +1598,9 @@ def test_finder_shows_the_readiness_line_for_the_top_match(browser, base):
     p.goto(base + "/find.html?q=500%20egocentric%20clips")
     p.wait_for_selector("#brdy:not([hidden])", timeout=4000)
     assert p.inner_text("#brdy") == "Needs a sales or approval step first."
-    assert "No ready call for this provider yet." in p.inner_text("#bcall")
+    p.wait_for_selector("#bcall .ircp-q", timeout=4000)
+    t = p.inner_text("#bcall")
+    assert "Order by hand" in t and "No ready call" not in t and "irlpls_request(" in t, t  # the parsed request, always
 
 
 def test_finder_shows_the_call_an_agent_would_make(browser, base):
@@ -1701,7 +1717,7 @@ def test_free_live_top_matches_without_a_browser_route_show_their_call(browser, 
         ids = p.evaluate("[...document.querySelectorAll('#grid .row')].map(a=>a.dataset.id)")
         if ids and ids[0] == cid:
             assert p.locator("#brun").count() == 0
-            p.wait_for_selector("#bcall .call, #bcall .bq", state="attached", timeout=4000)
+            p.wait_for_selector("#bcall .call, #bcall .bq, #bcall .ircp-q", state="attached", timeout=4000)
 
 
 def test_price_words_are_the_same_on_the_landing_and_the_finder(browser, base):
@@ -1884,10 +1900,10 @@ def test_first_card_plays_on_load_and_the_photo_place_is_white(browser, base):
     """The owner (2026-10-30): the first card does not wait for the title; before the photo lands its place is white (no grey)."""
     p = page(browser)
     p.goto(base + "/")
-    p.wait_for_timeout(900)
-    assert p.evaluate("+getComputedStyle(document.querySelector('#ex0 .tool')).opacity") > .5 and p.inner_text("#ex0 .tt").strip()
+    p.wait_for_function("+getComputedStyle(document.querySelector('#ex0 .tool')).opacity > .5", timeout=2500)  # after its question
+    assert p.inner_text("#ex0 .tt").strip()
     assert p.evaluate("getComputedStyle(document.querySelector('#ex0 .media')).backgroundColor") in ("rgba(0, 0, 0, 0)", "transparent")
-    p.wait_for_function("!document.querySelector('#ex0 .att').classList.contains('hide')", timeout=5000)
+    p.wait_for_function("!document.querySelector('#ex0 .att').classList.contains('hide')", timeout=7000)
 
 
 # ---------- the owner, 2026-10-30: every Go ends visibly; world places; the ready call when nothing runs live ----------
@@ -1954,13 +1970,33 @@ def test_screen_one_desktop_arrows_sit_on_the_card_edges(browser, base):
 
 
 def test_footer_is_formal_and_the_same_on_every_page(browser, base):
-    want = ["Standard", "Docs", "For providers", "Privacy", "Glossary", "Changelog", "Governance"]
+    want = {"Product": ["Find data", "Docs", "Check a card"], "Standard": ["The standard", "The full chain", "Glossary", "Changelog"],
+            "Project": ["For providers", "Governance", "Privacy", "hello@irlpls.com"]}
     for path in ("", "find.html", "chain.html", "check.html", "standard.html", "agents.html", "docs.html", "privacy.html"):
         h = (SITE / (path or "index.html")).read_text()
         f = h[h.index('<footer class="site-foot">'):h.index("</footer>")]
-        assert re.findall(r'<nav class="fl"[^>]*>(.*?)</nav>', f) and [re.sub("<.*?>", "", a) for a in re.findall(r"<a [^>]*>.*?</a>", re.search(r'<nav class="fl"[^>]*>(.*?)</nav>', f).group(1))] == want, path
-        assert "Code Apache-2.0 · Cards CC BY 4.0" in f and "hello@irlpls.com" in f and "© irlpls maintainers" in f, path
+        got = {re.search(r"<h2>(.*?)</h2>", n).group(1): [re.sub("<.*?>", "", a) for a in re.findall(r"<a [^>]*>.*?</a>", n)]
+               for n in re.findall(r'<nav class="fcol"[^>]*>(.*?)</nav>', f)}
+        assert got == want, path
+        assert "No data sold, no cut. Buy from providers directly." in f, path
+        assert "Code Apache-2.0 · Cards CC BY 4.0" in f and "© irlpls maintainers" in f, path
         assert "github" not in f.lower() and "!" not in re.sub("<!--.*?-->", "", f), path
+
+
+def test_footer_layout_columns_and_alignment(browser, base):
+    """390: one column, brand first, bottom bar stacked; 1280/1440: four equal columns whose edges match the content above."""
+    for w, cols in ((390, 1), (800, 2), (1280, 4), (1440, 4)):
+        pg = browser.new_context(viewport={"width": w, "height": 800}).new_page()
+        pg.goto(base + "/docs.html")
+        r = pg.evaluate("""(()=>{const f=document.querySelector('.site-foot'),ft=f.querySelector('.ft'),k=[...ft.children].map(e=>e.getBoundingClientRect()),
+          m=document.querySelector('main').getBoundingClientRect(),fm=f.querySelector('.fm').getBoundingClientRect(),
+          lefts=new Set(k.map(r=>Math.round(r.left))).size, tops=k.slice(0,4).map(r=>Math.round(r.top));
+          return {lefts, tops, l:k[0].left, r:Math.max(...k.map(x=>x.right)), fw:f.getBoundingClientRect().width, fmw:fm.width, ov:document.documentElement.scrollWidth-innerWidth}})()""")
+        assert r["ov"] <= 0 and abs(r["fw"] - w) <= 1, (w, r)
+        assert r["lefts"] == cols, (w, r)
+        if cols == 4:
+            assert len(set(r["tops"])) == 1 and r["r"] - r["l"] >= 0.9 * min(1100, w - 48) - 2, (w, r)
+        pg.context.close()
 
 
 def open_impl(p):
@@ -2019,3 +2055,31 @@ def test_enter_runs_go_like_the_button(browser, base):
         p.wait_for_selector("#lv .ans")
         got.append(p.inner_text("#lv .ans"))
     assert got[0] == got[1] and p.evaluate("document.getElementById('q').closest('form').id") == "ask"
+
+
+def test_door_example_shows_the_parsed_request_and_the_brokers_pick(browser, base):
+    """The owner (live bug, 2026-11-02): the door example matched a by-agreement provider and showed only 'No ready call
+    yet' under 'Here's the exact call'. Step 1 always shows what irlpls understood; the pick is Job.best()'s (AI-training
+    rights asked for, a provider the SDK can call within the margin); 'the exact call' only when there is one."""
+    p = landing(browser, base, q="?still=1#try")
+    out = []
+    _no_net(p, base, out)
+    p.click('#hint .eg[data-i="1"]')
+    p.wait_for_selector("#duo .ircp-ask", timeout=10000)
+    ask = p.inner_text("#duo .ircp-ask")
+    for want in ("quantity=500", "within_minutes=10080", '"max_order_usd": 2000', '"need_ai_training": true'):
+        assert want in ask, ask
+    assert p.inner_text("#duo .ircp-n") == "Toloka", p.inner_text("#duo .ircp-m")
+    assert "AI training allowed" in p.inner_text("#duo .ircp-cks") and "No ready call" not in p.inner_text("#duo")
+    has_call = p.locator("#duo pre.call").count() == 1
+    assert ("Here’s the exact call." in p.inner_text("#lv")) == has_call
+    assert out == [], out
+
+
+def test_a_provider_without_a_call_says_how_to_order(browser, base):
+    p = landing(browser, base, q="?still=1#try")
+    h = p.evaluate("""(() => { const c = IRL3.card('unidata'); return IRLCall.html({provider: 'Unidata', readiness: {level: 'contract'}, rc: null,
+        text: 'x', req: IRLMatch.parse('500 clips with AI-training rights', []), card: c, order: c.provider_url}) })()""")
+    t = re.sub(r"<[^>]+>", "", h)
+    assert "By agreement" in t and "no public API" in t and "Order by hand: unidata.pro" in t and "No ready call" not in t, t
+    assert "irlpls_request" in t and "need_ai_training" in t

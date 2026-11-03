@@ -13,6 +13,8 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: pip install -e . pytest jsonschema playwright && python -m playwright install --with-deps chromium
       - run: python build.py --public
+        env:
+          IRLPLS_NO_FETCH: "1"   # CI builds from the repo only; the daily rebuild fetches
       - run: pytest -q tests
       - name: cards validate against the Capture Card schema
         run: |

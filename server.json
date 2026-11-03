@@ -1,0 +1,58 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.irlpls/irlpls",
+  "title": "irlpls",
+  "description": "Find providers of new real-world data (sensors, people, drones, satellites); plan a request.",
+  "version": "0.1.0",
+  "websiteUrl": "https://irlpls.com",
+  "repository": {
+    "url": "https://github.com/irlpls/irlpls",
+    "source": "github",
+    "subfolder": "packages/irlpls-mcp"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "irlpls-mcp",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {"type": "stdio"},
+      "environmentVariables": [
+        {
+          "name": "IRLPLS_MCP_READ_ONLY",
+          "description": "Set to 1 to plan only: no irlpls_submit, no ordering or provider calls.",
+          "isRequired": false,
+          "default": "0",
+          "choices": ["0", "1"]
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {"type": "streamable-http", "url": "https://mcp.irlpls.com/mcp"}
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "remote": {
+        "readOnly": true,
+        "logging": "none: no access log, no request bodies, no outbound calls",
+        "rateLimit": "60 requests/min per client, burst 20; 600/min per server",
+        "tools": [
+          "irlpls_request",
+          "irlpls_answer",
+          "irlpls_choose_provider",
+          "irlpls_get_job",
+          "irlpls_find_providers",
+          "irlpls_get_card",
+          "irlpls_list_capabilities"
+        ]
+      },
+      "package": {
+        "tools": 15,
+        "readOnlyTools": 7,
+        "orders": "only after the user's explicit approval, with the user's own provider credentials"
+      }
+    }
+  }
+}

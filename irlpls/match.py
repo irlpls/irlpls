@@ -31,6 +31,7 @@ LIVE_ONLY = 0.85  # fit multiplier for a "now" request on a provider with no liv
 SENSORS = {"optical", "radar", "thermal", "allweather"}  # imaging-sensor terms: custom-task credit never covers them
 CUSTOM = 0.75    # credit for an unmentioned specific, from a provider that takes custom capture tasks in the requested format
 BULK_SINGLE = 0.5  # fit multiplier: a dataset vendor, for one new photo or clip of a named place or time
+AI_UNKNOWN = 0.75  # fit multiplier: the ask wants AI-training rights and the card doesn't state them (forbidden: 0)
 SPARSE = 0.85    # fit multiplier: a card whose regions say it is dense only somewhere else ("Global (dense in Europe)")
 # A dataset vendor: its capture is datasets made to order by contributors at scale (training-data collection), not one
 # visit to one spot. Read from the card's tags.
@@ -316,6 +317,9 @@ def score(card, req):
         elif not (card.get("access") or {}).get("cost") in ("free", "free with key"):
             cov.append(0.5)  # a paid card with no usable price: unknown, not in budget
             why.append("price not published")
+    ai = (card.get("licensing") or {}).get("ai_training")
+    if getattr(req, "need_ai_training", False) and ai != "allowed":
+        why.append("AI training " + ("forbidden" if ai == "forbidden" else "rights not stated"))
     if cov:
         parts["coverage"] = sum(cov) / len(cov)
     # The description gates everything: proof and coverage rank providers that do what you asked,
@@ -339,6 +343,9 @@ def score(card, req):
     if total and sparse_here(card, req.country_code):
         total = int(total * SPARSE + 0.5)  # few of its sensors or cameras are here
         parts["sparse"] = True
+    if total and getattr(req, "need_ai_training", False) and ai != "allowed":
+        total = 0 if ai == "forbidden" else int(total * AI_UNKNOWN + 0.5)  # asked for AI-training rights: a card that grants them first
+        parts["ai_training"] = ai or "unknown"
     if (d is not None and d < MIN_DESCRIPTION) or parts.get("outside_coverage"):
         total = 0  # does (almost) none of what you described, or not where you need it
     return {"id": card["id"], "name": card["name"], "fit": total, "verdict": verdict(total), "parts": parts, "gaps": why}

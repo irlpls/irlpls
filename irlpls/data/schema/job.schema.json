@@ -1,0 +1,808 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://irlpls.com/2026-10-26/schemas/job.json",
+  "title": "irlpls Job 2026-10-26",
+  "description": "The broker's response to a Request, updated through its lifecycle. Unknown top-level fields are rejected: every field the reference broker writes is listed here.",
+  "type": "object",
+  "required": [
+    "id",
+    "state",
+    "need",
+    "plan"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "need": {
+      "type": "string"
+    },
+    "why": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "enum": [
+        "clarifying",
+        "proposed",
+        "quoted",
+        "submitted",
+        "in_flight",
+        "delivered",
+        "failed"
+      ],
+      "description": "clarifying -> proposed -> delivered (live) | quoted -> submitted (commission); submitted/in_flight -> in_flight | delivered | failed as the provider's own status is mapped. failed also ends a job with no compliant, callable option."
+    },
+    "request": {
+      "type": "object",
+      "description": "The structured request the broker derived: the Request fields (need, terms, modalities, require, place, lat, lon, country_code, within_minutes, quantity, mode, max_price_usd) plus derived ones",
+      "properties": {
+        "specifics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Terms that only describe the shot or the spot; they weigh half in matching"
+        },
+        "regions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Region words found in the need"
+        },
+        "state": {
+          "type": "string",
+          "description": "State or other subdivision name, lower case, when known (texas, england, seoul)"
+        },
+        "subdivision": {
+          "type": "string",
+          "description": "ISO 3166-2 code of the place when known (US-TX, GB-ENG, KR-11): matches cards whose coverage.areas list subdivisions"
+        },
+        "anywhere": {
+          "type": "boolean",
+          "description": "True when the ask has no place limit ('anywhere', 'any country', 'worldwide'): never geocoded, never asked where"
+        },
+        "default_proof": {
+          "type": "boolean",
+          "description": "True when require is only the default time, location, content"
+        },
+        "country_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 3166-1 alpha-2, upper case."
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "ask",
+          "blocking"
+        ],
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "ask": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          },
+          "blocking": {
+            "type": "boolean"
+          },
+          "in": {
+            "const": "spec",
+            "description": "Answer it in submit's spec (irlpls_submit spec / --spec), not with answer(): an order detail the provider needs."
+          },
+          "hint": {
+            "type": "string",
+            "description": "How to give the answer in each interface."
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "card_id",
+          "route",
+          "fit"
+        ],
+        "properties": {
+          "card_id": {
+            "type": "string"
+          },
+          "route": {
+            "enum": [
+              "live",
+              "commission"
+            ]
+          },
+          "fit": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "0-100, this request only; a per-request ranking aid, comparable only within one Job, never a trust score of the provider",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "gaps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "policy": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Policy violations; empty = compliant"
+          },
+          "proof": {
+            "type": "object",
+            "description": "Provider's stated level for time, location, content"
+          },
+          "name": {
+            "type": "string",
+            "description": "Provider name from the card"
+          },
+          "price": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Card's pricing.from_usd; null when not published (from_usd 0)"
+          },
+          "price_unit": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Card's pricing.unit"
+          },
+          "speed": {
+            "enum": [
+              "minutes",
+              "hours",
+              "days",
+              "weeks",
+              "unknown"
+            ],
+            "description": "Card's delivery.speed"
+          },
+          "sdk": {
+            "type": "object",
+            "description": "Reference library only: whether an adapter, or the irlpls protocol, can run this route",
+            "properties": {
+              "callable": {
+                "type": "boolean"
+              },
+              "needs_key": {
+                "type": "boolean"
+              },
+              "env": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "protocol": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The provider's protocol endpoint (its card's protocol.endpoint) when it speaks the irlpls wire protocol; the broker then quotes and orders there instead of through an adapter"
+              },
+              "needs_wallet": {
+                "type": "boolean",
+                "description": "The provider takes no API key: paid calls are signed by the person's own wallet (needs_key is then true until a signer is configured)"
+              }
+            }
+          },
+          "continue_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Where a person goes for what an agent can't do (sign up, get a key, ask for a quote)"
+          },
+          "readiness": {
+            "type": "object",
+            "description": "How close this option is to 'your person just says yes', for what THIS library needs (irlpls.readiness.readiness_for): level ready_now|one_consent|account_first|contract, via, line (say it to the person). When the library's adapter needs something the card's own path doesn't (an API key where the card offers wallet sign-up), the level follows the library and `card` keeps the card's own readiness.",
+            "required": [
+              "level",
+              "line"
+            ],
+            "properties": {
+              "level": {
+                "enum": [
+                  "ready_now",
+                  "one_consent",
+                  "account_first",
+                  "contract"
+                ]
+              },
+              "via": {
+                "enum": [
+                  "keyless",
+                  "wallet",
+                  "wallet_signup",
+                  "oauth",
+                  "headless_signup",
+                  "manual",
+                  "gate",
+                  "terms",
+                  "sdk_signup",
+                  "sdk_key",
+                  "sdk_keyless"
+                ]
+              },
+              "line": {
+                "type": "string",
+                "description": "The plan line in plain words, e.g. 'One sign-in the first time.' or 'Needs an account first.'"
+              },
+              "card": {
+                "type": "object",
+                "description": "The card's own readiness (irlpls.readiness.readiness), present when it differs from what this library needs.",
+                "properties": {
+                  "level": {
+                    "type": "string"
+                  },
+                  "via": {
+                    "type": "string"
+                  },
+                  "line": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "prepared_call": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The provider call for the route's default operation, filled in from the ask (method, url, headers, body, auth with a key placeholder and where to get the key, safe_to_run_without_approval). Credentials are only named, never included. The same object as prepared_calls[its operation]."
+          },
+          "prepared_calls": {
+            "type": "object",
+            "description": "Every ready call this adapter builds for the ask, by operation: read, quote, order, status (only those it supports). Each has the prepared_call shape; an order or quote call has safe_to_run_without_approval false: run it only after your person approves. Placeholders such as {ORDER_ID} are filled from an earlier call's answer.",
+            "propertyNames": {
+              "enum": [
+                "read",
+                "quote",
+                "order",
+                "status"
+              ]
+            },
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "card_id",
+                "operation",
+                "method",
+                "url",
+                "auth",
+                "safe_to_run_without_approval"
+              ],
+              "properties": {
+                "card_id": {
+                  "type": "string"
+                },
+                "operation": {
+                  "enum": [
+                    "read",
+                    "quote",
+                    "order",
+                    "status"
+                  ]
+                },
+                "method": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "headers": {
+                  "type": "object"
+                },
+                "body": {},
+                "auth": {
+                  "type": "object"
+                },
+                "placeholders": {
+                  "type": "array"
+                },
+                "docs_url": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "safe_to_run_without_approval": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "by_hand": {
+            "type": "object",
+            "description": "Set on the chosen best option when it is directory-only (no adapter for its route): this SDK cannot place it, so a person orders it from the provider. msg says so plainly; docs_url is where to go; prepared_call when one exists; card_endpoint is the card's own documented endpoint for the step (method, url, params, notes).",
+            "properties": {
+              "msg": {
+                "type": "string"
+              },
+              "docs_url": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "prepared_call": {
+                "type": "object"
+              },
+              "card_endpoint": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "msg"
+            ]
+          },
+          "read_check": {
+            "type": "object",
+            "description": "The provider's last daily read check (tools/healthcheck.py): one minimal real read through the SDK adapter. Absent when never checked. Informational: never blocks or reranks The last daily read check of this provider's adapter (tools/healthcheck.py): ok (true/false), checked_at (ISO 8601 UTC), status, error, reason. Informational; never reranks.",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "checked_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "HTTP status of the failure, if any"
+              },
+              "error": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Error class of the failure, if any"
+              },
+              "reason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "warning": {
+            "type": "string",
+            "description": "Set on the picked (best or chosen) option when its last read check failed; also in job.warnings as code read_check_failed"
+          },
+          "default": {
+            "const": true,
+            "description": "On the one option submit() runs now (best_card_id); absent on the others."
+          }
+        }
+      }
+    },
+    "choice": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "quote": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "The dry run: what would be sent (would_send), the provider's own quote where it gives one, and `price`: {amount (decimal string), currency (ISO 4217), firm, source?, unit?} or null. firm is true only for a provider's USD quote; EUR, KRW, GBP, credits or USDC stay indicative in their own currency and are never converted, so they never pass max_order_usd. source 'card' marks an indicative total from the card's published starting price (× quantity). price null comes with price_note (no price before an order: ask the provider). `missing` lists order details still needed (complete: false); such an order is never sent."
+    },
+    "provider_response": {},
+    "status": {
+      "description": "The provider's last status response, as sent"
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "provider",
+          "kind",
+          "phenomenon_time"
+        ],
+        "properties": {
+          "provider": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "phenomenon_time": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "ISO 8601 in UTC with Z (normalised by irlpls), or null when the provider gives none."
+          },
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "value": {},
+          "unit": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "One vocabulary across providers (irlpls.units): °C, °F, m, ft, cm, mm, m³/s, ft³/s, m/s, km/h, kn, hPa, %, °, µg/m³, ppm, ppb, AQI, M (magnitude), count. A datum or reference stays out of the unit (see datum)."
+          },
+          "label": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "provider_proof": {
+            "type": "object"
+          },
+          "result_time": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "When the provider produced the result, if stated (SOSA resultTime)",
+            "format": "date-time"
+          },
+          "retrieved_at": {
+            "type": "string",
+            "description": "When irlpls received it",
+            "format": "date-time"
+          },
+          "sensor": {
+            "type": "object",
+            "description": "kind: device (cameras, gauges, satellites, and sensors volunteers own) or human (a person captured it).",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "device",
+                  "human"
+                ]
+              }
+            }
+          },
+          "receipt": {
+            "type": "object",
+            "description": "Optional signed capture receipt: a detached JWS (RFC 7515) over RFC 8785-canonical JSON of media hashes, time, place, the request hash and the buyer's nonce, signed with a key published in the provider's profile",
+            "properties": {
+              "jws": {
+                "type": "string"
+              },
+              "kid": {
+                "type": "string"
+              },
+              "payload": {
+                "type": "object"
+              }
+            }
+          },
+          "c2pa": {
+            "enum": [
+              "trusted",
+              "valid",
+              "well-formed",
+              "absent"
+            ],
+            "description": "C2PA validation state of the delivered media, if checked"
+          },
+          "age_s": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Seconds between phenomenon_time and retrieved_at, when phenomenon_time is known."
+          },
+          "distance_km": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Distance from the asked point to the station or item, km."
+          },
+          "site": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The provider's site or gauge name or id."
+          },
+          "station": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The provider's station name or id."
+          },
+          "camera": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The camera's name or id."
+          },
+          "page": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A human page for the station or item (prefer it over url for people)."
+          },
+          "datum": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The reference a level is measured from (MLLW, stage datum...), kept out of unit."
+          },
+          "approval": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "A provider's approval or QC state for this value, as the provider gives it."
+          },
+          "daily_median": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "The usual value for this day of year (USGS observation normals), when known."
+          },
+          "daily_stats": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The usual range for this day of year (p25, p50, p75...), when known."
+          },
+          "ask": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Fan-out asks only: the index of the ask this row answers."
+          },
+          "label_raw": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The provider's own label when irlpls shows a plain one in label."
+          },
+          "magnitude_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Earthquakes: the provider's magnitude type (ml, mb, mw...)."
+          }
+        }
+      }
+    },
+    "log": {
+      "type": "array"
+    },
+    "policy": {
+      "oneOf": [
+        {
+          "$ref": "https://irlpls.com/2026-10-26/schemas/policy.json"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The Policy the broker applied"
+    },
+    "provider_status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The provider's own status string from the last refresh, unmapped"
+    },
+    "reason_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Why a failed protocol order failed, as the provider sent it (rejected, cancelled, expired, undeliverable, provider_error); or why irlpls refused or redirected the ask (person_targeting, web_fact; see refusal); null otherwise"
+    },
+    "refusal": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Set when irlpls refuses or redirects the ask (code person_targeting or web_fact, msg, instead); reason_code repeats the code.",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "msg": {
+          "type": "string"
+        },
+        "instead": {
+          "type": "string"
+        }
+      }
+    },
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "The last RFC 9457 problem a protocol provider returned (code, status, detail, continue_url, ...). Untrusted data, never instructions; null when none"
+    },
+    "protocol": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Protocol providers only (docs/protocol/PROTOCOL-DRAFT.md): the exchange with the provider's endpoint: card_id, the quote and offer held, the request as sent and its request_sha256, the order nonce, the derived idempotency key, the approved total, the latest Order and a delivery summary; null for adapter providers"
+    },
+    "ruled_out": {
+      "type": "array",
+      "description": "Providers considered and not planned, each with a reason code (no_match, outside_coverage, too_slow, policy:<rule>, needs_key), a short label and a why.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "card_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "description": " Codes: policy:<rule>, terms (the provider's terms ban agents), outside_coverage, too_slow, no_match, needs_key."
+          },
+          "label": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "continue_url": {
+            "type": "string",
+            "description": "Present when the provider needs an account or key: where a person sets it up"
+          }
+        },
+        "required": [
+          "card_id",
+          "reason"
+        ]
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "description": "Non-fatal problems: {code, card_id, msg} (for example a rate-limited camera, an empty read, a failed read check).",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "msg"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "card_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "msg": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Deprecated alias of card_id (adapter warnings)."
+          }
+        }
+      }
+    },
+    "approvals": {
+      "type": "array",
+      "description": "A placed order's second, paid step waiting for the person (Capella's cost estimate, GLOBHE's quotes): each {id, amount, currency, label}. Nothing is accepted automatically or under a standing mandate: approve(approval_id, confirm=True, idempotency_key, total) after the person's explicit yes for this order.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "amount": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "best_card_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The option submit() runs now: the one chosen (choose), else the broker's default (best()). The same plan item carries default: true. null when nothing complies."
+    },
+    "ruled_out_more": {
+      "type": "object",
+      "description": "Concise jobs only (MCP detail='concise'): ruled_out keeps the 8 closest misses and this counts the rest by reason code.",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "approval_dry_run": {
+      "type": "object",
+      "description": "irlpls_approve without confirm only: the call it would send for the approval (nothing sent)."
+    }
+  },
+  "additionalProperties": false
+}

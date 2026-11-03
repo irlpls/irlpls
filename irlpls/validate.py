@@ -10,10 +10,10 @@ import pathlib
 import urllib.parse
 from datetime import date, timedelta
 
-from . import psl
+from . import paths, psl
 
 VERSION = "2026-10-26"
-SCHEMA = pathlib.Path(__file__).resolve().parent.parent / "schema" / "capture-card.schema.json"
+SCHEMA = paths.schema_dir() / "capture-card.schema.json"
 GUARANTEES = ("human", "application", "camera", "time", "location", "content", "corroboration")
 PROVENANCE = ("custody", "receipt")  # optional, after capture: who held it (custody) and a signed statement of delivery (receipt)
 

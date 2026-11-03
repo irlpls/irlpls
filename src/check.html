@@ -77,6 +77,15 @@ section.g h2 i{width:9px;height:9px;border-radius:50%;display:inline-block}
 h3.k{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);margin:22px 0 8px}
 .traffic{color:var(--fg3);font-size:13px;margin:14px 0 0}
 details.notes>summary{display:inline-flex;align-items:center;min-height:44px;color:var(--fg2);font-size:14px;cursor:pointer;margin-bottom:6px}
+/* ?id=<card>: the listed card read-only; "Try changes" makes an editable test copy (the owner, 2026-11-02) */
+#ro{margin:4px 0 0}#ro[hidden],#drop[hidden],#acts[hidden],#tnote[hidden]{display:none}
+.roh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.rod summary{display:inline-flex;align-items:center;min-height:44px;cursor:pointer;font:600 14px var(--sans);color:var(--pol)}
+.rok{margin:0;font:600 13px/1.3 var(--sans);color:var(--fg2)}.rok span{font-family:var(--mono);font-weight:500}
+#rojson{margin:8px 0 0;overflow-x:auto;overflow-y:hidden;padding:12px 14px;border-radius:14px;background:#f4f6f9;border:1px solid var(--line);font:500 12.5px/1.55 var(--mono);color:var(--fg);white-space:pre;tab-size:2}
+#rojson .k{color:var(--fg2)}#rojson .s{color:#0b3d91}#rojson .n{color:#7a3e00}#rojson .l{color:var(--fg3)}
+.tnote{margin:8px 0 0;font:500 13px/1.45 var(--sans);color:var(--fg3)}.tnote b{font-weight:600;color:var(--fg2);overflow-wrap:anywhere}
+.tnote .lk{min-height:44px;margin:-12px 0 -12px 8px;padding:0 4px;border:0;background:none;font:600 13px var(--sans);color:var(--pol);cursor:pointer}
 #pvw{margin-top:18px;border:1px dashed var(--line2);border-radius:var(--r-lg);padding:4px 16px 16px;background:#fbfcfe}
 #pvw .pvk{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3);margin:14px 0 0}
 #pvw h2.ttl{font:700 clamp(26px,6vw,34px)/1.1 var(--head);letter-spacing:-.03em;margin:6px 0 4px}
@@ -87,9 +96,12 @@ details.notes>summary{display:inline-flex;align-items:center;min-height:44px;col
 <h1 class="hl hl-doc all" data-t="Check your card">Check your card</h1>
 <p class="lede">Paste your Capture Card or enter your domain. The reference checks run in your browser; nothing goes to irlpls.</p>
 
+<section id="ro" hidden aria-label="The listed card, read-only"><div class="roh"><p class="rok">The listed card · <span id="roid"></span></p><button class="btn" type="button" id="try">Try changes</button></div>
+<details class="rod"><summary>Show its JSON (read-only)</summary><pre id="rojson" tabindex="0" aria-label="The listed card JSON (read-only)"></pre></details></section>
 <label id="drop"><span class="sr" style="position:absolute;left:-9999px">Capture Card JSON</span>
 <textarea id="json" spellcheck="false" placeholder="Paste card JSON here, or drop a .json file" aria-label="Capture Card JSON"></textarea></label>
-<div class="acts"><button class="btn main" id="go">Check card</button><button class="btn" id="clear">Clear</button></div>
+<p class="tnote" id="tnote">A test copy — nothing here is saved or published. To publish, put the file at <b id="tpub">https://&lt;your domain&gt;/.well-known/irlpls</b>.<button type="button" class="lk" id="reset" hidden>Reset</button></p>
+<div class="acts" id="acts"><button class="btn main" id="go">Check card</button><button class="btn" id="clear">Clear</button></div>
 
 <p class="or">or fetch it from your domain</p>
 <form class="dom" id="domf"><input id="dom" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="provider.example" aria-label="Your domain"><button class="btn" type="submit">Fetch</button></form>
@@ -105,7 +117,7 @@ details.notes>summary{display:inline-flex;align-items:center;min-height:44px;col
 <ul id="proofs"></ul></section>
 </main>
 <script src="match.js"></script>
-<footer class="site-foot"><div class="ft"><p class="fd"><a class="fw" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><span>No data sold, no cut. Buy from providers directly.</span></p><nav class="fl" aria-label="Footer"><a href="standard.html">Standard</a><a href="docs.html">Docs</a><a href="providers.html">For providers</a><a href="privacy.html">Privacy</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a><a href="governance.html">Governance</a></nav></div><p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><a href="mailto:hello@irlpls.com">hello@irlpls.com</a><span>© irlpls maintainers</span></p></footer>
+<footer class="site-foot"><div class="ft"><div class="fb"><a class="fw" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><p>No data sold, no cut. Buy from providers directly.</p></div><nav class="fcol" aria-label="Product"><h2>Product</h2><ul><li><a href="find.html">Find data</a></li><li><a href="docs.html">Docs</a></li><li><a href="check.html">Check a card</a></li></ul></nav><nav class="fcol" aria-label="Standard"><h2>Standard</h2><ul><li><a href="standard.html">The standard</a></li><li><a href="chain.html">The full chain</a></li><li><a href="glossary.html">Glossary</a></li><li><a href="changelog.html">Changelog</a></li></ul></nav><nav class="fcol" aria-label="Project"><h2>Project</h2><ul><li><a href="providers.html">For providers</a></li><li><a href="governance.html">Governance</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="mailto:hello@irlpls.com">hello@irlpls.com</a></li></ul></nav></div><p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><span>© irlpls maintainers</span></p></footer>
 <script>
 "use strict";
 const VERSION="2026-10-26",SCHEMA_URL="2026-10-26/schemas/capture-card.json";
@@ -450,6 +462,11 @@ function previewHtml(card,host,rows,comp){const name=String(card.name||card.id||
  h+=`<h3 class="k">Badge for your site</h3><div class="bdg"><code>&lt;a href="https://irlpls.com/c/${id}.html"&gt;&lt;img src="https://irlpls.com/badge/${id}.svg" alt="${esc(name)} on irlpls"&gt;&lt;/a&gt;</code></div>`;
  return h+`<p class="note">What an agent says and what would move you up are added from irlpls's own plan once it reads your card.</p>`}
 const MAIL="mailto:hello@irlpls.com?subject="+encodeURIComponent("New provider for irlpls");
+/* a valid card from a domain irlpls doesn't list yet: one mail with what the review needs (the owner, 2026-11-02) */
+function listMail(card,at){const d=at||hostOf(card.provider_url)||"your-domain",ok=Object.values(card.verification||{}).filter(g=>g&&g.level&&g.level!=="none").length;
+ const body=[`Domain: ${d}`,`Card: ${card.name||card.id||""} (${card.id||"no id"})`,`Card URL: https://${d}/.well-known/irlpls`,
+  `Check result: valid against the irlpls standard; ${ok} of 7 verification keys stated (checked ${new Date().toISOString().slice(0,10)} on irlpls.com/check.html).`,"","Please review it for listing."].join("\n");
+ return "mailto:hello@irlpls.com?subject="+encodeURIComponent("Listing request: "+d)+"&body="+encodeURIComponent(body)}
 async function goLive(card,fetchedFrom,fixes){const n=++liveRun,box=$("live");
  const host=fetchedFrom?hostOf(fetchedFrom):"",own=hostOf(card.provider_url);
  let D=null;try{D=await siteData()}catch(e){}
@@ -459,7 +476,7 @@ async function goLive(card,fetchedFrom,fixes){const n=++liveRun,box=$("live");
  const owns=comp&&at&&await sameOwner(at,compHost)&&(!own||await sameOwner(at,own));
  let h;
  if(fixes.length){h=`<div class="golive"><span class="cap bad">Not valid${at?" · "+esc(at):""}</span><h2>Fix ${fixes.length} thing${fixes.length>1?"s":""} first</h2><p class="s">They are listed below. irlpls shows your card only when it validates.</p></div>`}
- else if(D&&!comp){h=`<div class="golive"><span class="cap">${ICK}Valid${at?" · "+esc(at):""}</span><h2>New to irlpls</h2><p class="s">irlpls lists a new provider after one review. Write to <a href="${MAIL}">hello@irlpls.com</a> with your domain.</p><div class="acts"><a class="btn main" href="${MAIL}">Add your domain&nbsp;›</a></div></div>`}
+ else if(D&&!comp){h=`<div class="golive"><span class="cap">${ICK}Valid${at?" · "+esc(at):""}</span><h2>New to irlpls</h2><p class="s">Publish it at https://${esc(at||"<your domain>")}/.well-known/irlpls, then ask to be listed.</p><div class="acts"><a class="btn main" id="askl" href="${esc(listMail(card,at))}">Ask to be listed</a></div><p class="s rv">We review new providers before they appear.</p></div>`}
  else if(D&&comp&&!owns){h=`<div class="golive"><span class="cap bad">Not yours to publish${at?" · "+esc(at):""}</span><h2>Fix 1 thing first</h2><p class="s">The id <b>${esc(card.id)}</b> belongs to ${esc(compHost||"another domain")}. Only that host, or its www twin, can publish it.</p></div>`}
  else{const[pid,pe]=pubFor(P,at,card.id),live=pe&&pe.state==="live"&&pid===card.id;
   const nx=P&&P.next_read&&Date.parse(P.next_read)>Date.now()?P.next_read:null;
@@ -484,8 +501,17 @@ async function fromUrl(){const q=new URLSearchParams(location.search),d=(q.get("
    :`<div class="golive"><span class="cap">${esc(d)}</span><h2>Not read yet</h2><p class="s">Press Fetch to check your card. irlpls reads it within a day.</p></div>`;
   $("live").hidden=false;return}
  if(/^[a-z0-9][a-z0-9-]{0,63}$/.test(id)){try{const r=await fetch(`cards/${id}.json`);if(!r.ok)throw 0;const t=await r.text(),c=JSON.parse(t);
-  $("json").value=t;const h=hostOf(c.provider_url);if(h)$("dom").value=h;await run(t)}catch(e){}}}
+  $("json").value=t;const h=hostOf(c.provider_url);if(h)$("dom").value=h;readOnly(t,id,h);await run(t)}catch(e){}}}
 fromUrl();
+/* the listed card, read-only, highlighted; "Try changes" turns it into an editable test copy (nothing is saved) */
+function hl(t){return esc(t).replace(/(&quot;(?:\\.|[^&\\]|&(?!quot;))*?&quot;)(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,(m,str,colon,lit,num)=>str?(colon?`<span class="k">${str}</span>${colon}`:`<span class="s">${str}</span>`):lit?`<span class="l">${lit}</span>`:`<span class="n">${num}</span>`)}
+function pubAt(h){$("tpub").textContent=`https://${h||"<your domain>"}/.well-known/irlpls`}
+let listed=null;
+function readOnly(t,id,h){listed=t;$("roid").textContent=id;let f=t;try{f=JSON.stringify(JSON.parse(t),null,2)}catch(e){}
+ $("rojson").innerHTML=hl(f);$("ro").hidden=false;$("drop").hidden=$("acts").hidden=$("tnote").hidden=true;pubAt(h)}
+$("try").onclick=()=>{$("json").value=$("rojson").textContent;$("ro").hidden=true;$("drop").hidden=$("acts").hidden=$("tnote").hidden=false;$("reset").hidden=false;$("json").focus()};
+$("dom").addEventListener("input",()=>pubAt($("dom").value.trim().toLowerCase().replace(/^https?:\/\//,"").replace(/\/.*$/,"")));
+$("reset").onclick=()=>{if(listed==null)return;$("json").value=$("rojson").textContent;run(listed)};
 
 $("go").onclick=()=>run($("json").value);
 $("clear").onclick=()=>{$("json").value="";$("out").innerHTML="";proofRun++;$("proof").hidden=true;$("proofs").innerHTML="";$("nopack").hidden=true};

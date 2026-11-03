@@ -19,7 +19,7 @@ and fails on:
   - on every example: a source chip whose sheet does not show all eight stages and the card link without inner scrolling,
     anything moving (page, card, headline) while it opens or closes, or a close button that does not return to the chip
   - the one-time swipe nudge not playing (~32px) once the first reply has arrived
-  - a blank card on arrival: by 0.8 s the question and its status line must show; by 2.2 s the whole reply
+  - a blank card on arrival: by 0.8 s the question (alone, the first beat), by 1.8 s its status line; by 6.2 s the whole reply
   - the 'Try:' line cut off (it must fit whole); Match not bringing the results into view
   (the next card's peeking edge is clipped by the row on purpose, so cards not in view skip the screen-edge check)
   - a typed query that renders neither results nor an honest empty state; a person-targeting query that is not refused,
@@ -299,7 +299,7 @@ def main():
             pg.goto(BASE)
             pg.evaluate("""window.__tx = []; (function f() { const m = getComputedStyle(document.getElementById('ex0')).transform;
               __tx.push(m === 'none' ? 0 : new DOMMatrix(m).m41); requestAnimationFrame(f); })()""")
-            pg.wait_for_timeout(7500)  # the reply plays on load (up to ~4.1 s), then the 1.4 s nudge
+            pg.wait_for_timeout(9200)  # the question (1.4 s), the reply (up to ~4.1 s more), then the 1.4 s nudge
             tx = pg.evaluate("__tx")
             if min(tx) > -28 or tx[-1] != 0:
                 fails.append(f"{name} s1: the swipe nudge did not play (min {round(min(tx))}px, ends at {round(tx[-1])}px)")
@@ -342,24 +342,26 @@ def main():
                     fails.append(f"{name} s1 ex{ex}: not yet seen, but already complete (it should play when it comes into view)")
             # the first card plays on load (the owner, 2026-10-30: never waiting for the headline): the status, the answer
             # streaming, the whole reply; while the answer types, the card holds the photo's place in white (no blank band)
-            for t, wait in ((800, 800), (1800, 1000), (3000, 1200), (4800, 1800)):
+            for t, wait in ((800, 800), (1800, 1000), (3000, 1200), (6200, 3200)):
                 pg.wait_for_timeout(wait)
                 screen("#s1", f"s1 playing {t}ms")
                 probe("#s1", f"s1 playing {t}ms")
-                if t == 800 and not pg.evaluate("['.you','.tool'].every(s=>+getComputedStyle(document.querySelector('#ex0 '+s)).opacity>.5)&&!!document.querySelector('#ex0 .tt').textContent.trim()"):
-                    fails.append(f"{name} s1: blank card 0.8 s after load (no question or status line)")
-                if t == 4800 and pg.evaluate("document.querySelectorAll('#ex0 .hide, #ex0 .wait').length"):
-                    fails.append(f"{name} s1: the reply has not fully arrived 4.8 s after load")
+                if t == 800 and not pg.evaluate("+getComputedStyle(document.querySelector('#ex0 .you')).opacity>.5&&document.querySelector('#ex0 .tool').classList.contains('hide')"):
+                    fails.append(f"{name} s1: 0.8 s after load the question is not showing alone (the first beat)")
+                if t == 1800 and not pg.evaluate("+getComputedStyle(document.querySelector('#ex0 .tool')).opacity>.5&&!!document.querySelector('#ex0 .tt').textContent.trim()"):
+                    fails.append(f"{name} s1: no status line 1.8 s after load")
+                if t == 6200 and pg.evaluate("document.querySelectorAll('#ex0 .hide, #ex0 .wait, #ex0 .pre-you').length"):
+                    fails.append(f"{name} s1: the reply has not fully arrived 6.2 s after load")
                 pg.screenshot(path=f"{OUT}/{name}-s1-play{t}.png")
             pg.screenshot(path=f"{OUT}/{name}-s1-played.png")
             pg.click("#pd button:nth-child(2)" if phone else "#next")
-            pg.wait_for_timeout(5000)
+            pg.wait_for_timeout(6600)  # its question (1.4 s), then the reply
             probe("#s1", "s1 after next")
             pg.screenshot(path=f"{OUT}/{name}-s1-next.png")
             if pg.get_attribute("#pd button:nth-child(2)", "aria-current") != "true":
                 fails.append(f"{name}: next did not move to example 2")
             elif pg.evaluate("document.querySelectorAll('#ex1 .hide, #ex1 .wait, #ex1 .run').length"):
-                fails.append(f"{name} s1 ex1: the swiped-to reply has not fully arrived 5 s after next")
+                fails.append(f"{name} s1 ex1: the swiped-to reply has not fully arrived 6.6 s after next")
             # screen 2: reached from screen 1's call to action; then a stage opened
             pg.goto(f"{BASE}?still=1")
             pg.wait_for_timeout(500)

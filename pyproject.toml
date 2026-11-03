@@ -1,27 +1,67 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "irlpls"
 version = "0.1.0"
 description = "Find and call providers that collect real-world observations (people, drones, satellites, sensors). Open registry of Capture Cards plus provider adapters."
-readme = "README.md"
+readme = "README.pypi.md"
 requires-python = ">=3.10"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "LICENSE-DATA.md"]
+authors = [{name = "irlpls maintainers", email = "hello@irlpls.com"}]
+keywords = ["agents", "mcp", "real-world data", "sensors", "satellite imagery", "capture cards", "registry"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+# The library and CLI are stdlib only. Extras add what a few features need.
 dependencies = []
 
 [project.optional-dependencies]
-mcp = ["mcp>=1.2"]
-check = ["jsonschema"]
-dev = ["pytest", "jsonschema"]
+mcp = ["mcp>=2,<3"]                 # the MCP server module; or install the `irlpls-mcp` package
+protocol = ["cryptography>=42"]     # signature checks in evidence and protocol receipts
+check = ["jsonschema>=4.18"]        # schema-check cards and protocol messages
+dev = ["pytest", "jsonschema>=4.18", "cryptography>=42"]
+
+[project.urls]
+Homepage = "https://irlpls.com"
+Documentation = "https://irlpls.com/agents"
+Repository = "https://github.com/irlpls/irlpls"
+Issues = "https://github.com/irlpls/irlpls/issues"
+Changelog = "https://github.com/irlpls/irlpls/blob/main/CHANGELOG.md"
 
 [project.scripts]
 irlpls = "irlpls.cli:main"
-irlpls-mcp = "irlpls.mcp_server:main"
+# irlpls-mcp lives in its own package (packages/irlpls-mcp), so `uvx irlpls-mcp` works. In a checkout:
+# python -m irlpls.mcp_server
+
+[tool.setuptools]
+include-package-data = false
 
 [tool.setuptools.packages.find]
-include = ["irlpls*"]
+include = ["irlpls", "irlpls.*"]
 
+# Only these data files ship (tests/test_packaging.py checks the wheel). Not shipped: data/health.json (local,
+# regenerated daily), data/published/ (fetch state), data/published-domains.txt (owner's review list).
 [tool.setuptools.package-data]
-irlpls = ["data/*.json", "data/*.dat"]
+irlpls = [
+    "data/cards.json",
+    "data/places.json",
+    "data/public_suffix_list.dat",
+    "data/reviewers.json",
+    "data/schema/*.schema.json",
+    "data/schema/protocol/*.schema.json",
+]

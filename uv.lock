@@ -371,21 +371,27 @@ check = [
     { name = "jsonschema" },
 ]
 dev = [
+    { name = "cryptography" },
     { name = "jsonschema" },
     { name = "pytest" },
 ]
 mcp = [
     { name = "mcp" },
 ]
+protocol = [
+    { name = "cryptography" },
+]
 
 [package.metadata]
 requires-dist = [
-    { name = "jsonschema", marker = "extra == 'check'" },
-    { name = "jsonschema", marker = "extra == 'dev'" },
-    { name = "mcp", marker = "extra == 'mcp'", specifier = ">=1.2" },
+    { name = "cryptography", marker = "extra == 'dev'", specifier = ">=42" },
+    { name = "cryptography", marker = "extra == 'protocol'", specifier = ">=42" },
+    { name = "jsonschema", marker = "extra == 'check'", specifier = ">=4.18" },
+    { name = "jsonschema", marker = "extra == 'dev'", specifier = ">=4.18" },
+    { name = "mcp", marker = "extra == 'mcp'", specifier = ">=2,<3" },
     { name = "pytest", marker = "extra == 'dev'" },
 ]
-provides-extras = ["mcp", "check", "dev"]
+provides-extras = ["mcp", "protocol", "check", "dev"]
 
 [[package]]
 name = "jsonschema"

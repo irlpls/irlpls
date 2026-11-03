@@ -89,20 +89,20 @@ h2{margin:4px 0 0;font:700 clamp(25px,7vw,34px)/1.08 var(--head);letter-spacing:
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--dot)}.legend i.e{background:var(--live);box-shadow:none}.legend i.c{background:var(--pol);box-shadow:none}.legend i.r{box-shadow:inset 0 0 0 1.5px var(--fg2)}
 
-.site-foot{margin:56px 0 0;padding:24px max(var(--gut),calc((100% - 1100px)/2 + var(--gut))) max(24px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:rgba(255,255,255,.55);display:flex;flex-direction:column;gap:10px;font:400 13px/1.5 var(--sans);color:var(--fg3)}
+.site-foot{margin:56px 0 0;padding:40px max(var(--gut),calc((100% - 1100px)/2 + var(--gut))) max(24px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#f8fafc;display:flex;flex-direction:column;gap:28px;font:400 13px/1.5 var(--sans);color:var(--fg3)}
 .site-foot a{color:var(--fg2);text-decoration:none}
 @media(hover:hover){.site-foot a:hover{color:var(--fg);text-decoration:underline;text-underline-offset:3px}}
-.site-foot .ft{display:flex;flex-direction:column;gap:4px}
-.site-foot .fd{margin:0;display:flex;flex-wrap:wrap;align-items:center;column-gap:14px}
-.site-foot .fw{display:inline-flex;align-items:center;min-height:44px;font:700 16px var(--sans);letter-spacing:-.04em;color:var(--fg)}.site-foot .fw i{font-style:normal;color:var(--fg3)}
-.site-foot .fl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}
-.site-foot .fl a{display:flex;align-items:center;min-height:44px;font-weight:500}
-/* desktop: a full-width band, content to the site's widest column (1100px), the wordmark left and the links in columns right */
-@media(min-width:760px){.site-foot{padding-top:32px;gap:14px}.site-foot .ft{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:48px;align-items:start}
-  .site-foot .fd{flex-direction:column;align-items:flex-start}.site-foot .fl{grid-template-columns:repeat(4,max-content);column-gap:48px}}
-.site-foot .fc{margin:0;font-size:12px;color:var(--fg3)}
-.site-foot .fm{margin:0;padding-top:6px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;column-gap:18px;font-size:12px}
-.site-foot .fm a{display:inline-flex;align-items:center;min-height:44px}
+.site-foot .ft{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:32px;row-gap:32px;align-items:start}
+.site-foot .fb{display:flex;flex-direction:column;gap:10px;align-items:flex-start}.site-foot .fb p{margin:0;max-width:22em}
+.site-foot .fw{display:inline-flex;align-items:center;font:700 18px/1.2 var(--sans);letter-spacing:-.04em;color:var(--fg)}.site-foot .fw i{font-style:normal;color:var(--fg3)}
+.site-foot .fcol{display:block}.site-foot .fcol h2{margin:0 0 12px;font:600 11px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.site-foot .fcol ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+.site-foot .fcol a{display:inline-block;font-weight:400;line-height:1.4}
+.site-foot .fc{margin:0;font-size:12px;color:var(--fg3);text-align:left}
+.site-foot .fm{margin:0;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 18px;font-size:12px}
+@media(max-width:900px){.site-foot .ft{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.site-foot{padding-top:28px;gap:20px}.site-foot .ft{grid-template-columns:minmax(0,1fr);row-gap:24px}
+  .site-foot .fcol ul{gap:0}.site-foot .fcol a{display:flex;align-items:center;min-height:44px}.site-foot .fm{flex-direction:column;justify-content:flex-start}}
 
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
 /* one title treatment (the owner, 2026-10-30): screen 1's headline style on every main title, from one rule set (src/style.css
@@ -318,6 +318,9 @@ h1 .ln{display:block;white-space:nowrap}
 .chat.pvo .pv>*{opacity:1;transform:none;transition:opacity .28s ease .2s,transform .34s cubic-bezier(.32,.72,0,1) .2s}
 /* the reply underneath: out as the sheet opens, back in as it closes */
 .chat>.you,.chat>.turn{transition:opacity .26s ease .12s}
+/* the question is the first beat (the owner, 2026-11-02): it rises in like a sent iMessage, holds to be read, then irlpls answers */
+.chat>.you.pre-you{opacity:0;transform:translateY(10px) scale(.97)}
+.chat>.you.rise{transform-origin:100% 100%;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
 .chat.pvo>.you,.chat.pvo>.turn{opacity:0;transition:opacity .2s ease}
 .ph{display:flex;align-items:center;gap:8px;min-height:28px}
 .ph .pt{flex:1;min-width:0;font:500 12.5px/1.3 var(--sans);color:var(--fg2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -469,15 +472,17 @@ slides.forEach(function(sl,i){
   q(i,'.cite').onclick=function(){sheet(i,this.getAttribute('aria-expanded')!=='true')};
   q(i,'.pv').addEventListener('click',function(e){if(e.target.closest('.px,.pxb'))sheet(i,false)});
   sl.addEventListener('keydown',function(e){if(e.key==='Escape'&&sl.classList.contains('pvo')){e.preventDefault();sheet(i,false)}})});
-/* a card arrives like a real reply, once, the first time it is in view (the first card on load, the owner 2026-10-30: never
-   waiting for the headline): a one-line status (shimmering), the photo hidden; at 0.65 s the status names the provider; from
-   0.75 s the answer streams in at reading pace (WORD ms a word, at most MAXANS); then the photo appears (once it has loaded),
-   then the source; only when it is done, the swipe nudge. A card swiped to later plays at once, at the same pace. */
-var WORD=120,MAXANS=3000;
+/* a card arrives like a real exchange, once, the first time it is in view (the first card on load, the owner 2026-10-30:
+   never waiting for the headline). The question comes first (the owner, 2026-11-02: the seed the viewer grounds in): the
+   empty card, then the blue bubble rises in (RISE ms, like a sent iMessage) and holds to be read (HOLD ms); then a one-line
+   status (shimmering), at +0.59 s naming the provider; from +0.69 s the answer streams in at reading pace (WORD ms a word, at
+   most MAXANS); then the photo (once it has loaded), then the source; only when it is done, the swipe nudge. A card swiped to
+   later plays the same way when it comes into view. Reduced motion and ?still=1: everything shows at once. */
+var WORD=120,MAXANS=3000,RISE=350,HOLD=1050,ASK=RISE+HOLD;
 var ANIM=!RM&&'IntersectionObserver' in window,seen=[],vis=[],s1in=false;
 function prep(i){var tool=q(i,'.tool'),tl=q(i,'.tl'),tt=q(i,'.tt'),ans=q(i,'.ans');
   ans.innerHTML=words(X[i].say(),true);ans.classList.add('wait');
-  ans.classList.add('pre');tool.classList.add('hide');q(i,'.att').classList.add('hide');q(i,'.cites').classList.add('hide');tl.classList.add('run');
+  q(i,'.you').classList.add('pre-you','rise');ans.classList.add('pre');tool.classList.add('hide');q(i,'.att').classList.add('hide');q(i,'.cites').classList.add('hide');tl.classList.add('run');
   tt.textContent='Asking irlpls · searching '+U.cards.length+' providers';tl.disabled=true}
 /* the photo shows only once it has loaded (a still decoded, a clip's first frame); until then its place stays white */
 function ready(att,f){var m=att.querySelector('img,video');if(!m||(m.tagName==='IMG'?m.complete&&m.naturalWidth:m.readyState>=2||m.poster))return f();
@@ -486,13 +491,15 @@ function arrive(i){var tool=q(i,'.tool'),tl=q(i,'.tl'),tt=q(i,'.tt'),ans=q(i,'.a
   if(!ANIM)return;
   ans.innerHTML=words(x.say(),true);ans.classList.add('wait');
   tt.textContent='Asking irlpls · searching '+U.cards.length+' providers';tl.classList.add('run');
-  var n=Math.min(MAXANS,ans.querySelectorAll('.w').length*WORD);
-  later(function(){tool.classList.remove('hide')},60);
-  later(function(){tl.classList.remove('run');tt.innerHTML=done(x);tl.disabled=false},650);
-  later(function(){ans.classList.remove('pre');ans.offsetWidth;ans.classList.remove('wait')},750);
-  later(function(){ready(att,function(){att.classList.remove('hide');vsync(i)})},800+n);
-  later(function(){cs.classList.remove('hide')},1100+n);
-  if(i===0)later(function(){armed=true;nudge()},1700+n)}
+  var n=Math.min(MAXANS,ans.querySelectorAll('.w').length*WORD),you=q(i,'.you'),A=ASK;
+  later(function(){you.classList.remove('pre-you')},30);  /* the question rises in */
+  later(function(){you.classList.remove('rise')},30+RISE+50);
+  later(function(){tool.classList.remove('hide')},A);
+  later(function(){tl.classList.remove('run');tt.innerHTML=done(x);tl.disabled=false},A+590);
+  later(function(){ans.classList.remove('pre');ans.offsetWidth;ans.classList.remove('wait')},A+690);
+  later(function(){ready(att,function(){att.classList.remove('hide');vsync(i)})},A+740+n);
+  later(function(){cs.classList.remove('hide')},A+1040+n);
+  if(i===0)later(function(){armed=true;nudge()},A+1640+n)}
 /* once, when the first reply has arrived and screen 1 is in view, show that the row moves: the cards slide 32px left,
    hold, and settle back, while the next card's edge keeps peeking. Never after a swipe, never with reduced motion. */
 var armed=false,nudged=false;
@@ -805,19 +812,24 @@ var STREET=/\b\d{1,6}[A-Za-z]?(?:-\d{1,5})?\s+(?:[NSEW]\.?\s+)?[A-Za-z0-9.'-]+(?
 function catalog(){return catP||(catP=fetch('catalog.json').then(function(x){if(!x.ok)throw 0;return x.json()}).then(function(d){CAT=d.providers||{};return CAT},function(){catP=null;return CAT={}}))}
 function plan(q,r,p,t,prefer,head0){shell(q);var t0=$('lvt');if(qa.value.trim()){hs='plan';hint()}
   var list=U.cards.map(function(c){return{c:c,s:IRLMatch.score(c,r)}}).filter(function(x){return x.s.total>0}).sort(IRLMatch.compare);
-  var top=prefer&&U.card(prefer)?{c:U.card(prefer)}:list[0];
-  if(!top){msg(p.missing?'No provider matches this.':'No free live source covers '+p.name+'.',p.missing?'Try a broader ask.':'No provider in the registry states coverage there yet.');
-    impl('<p class="rt">Nothing to call: no provider in the registry matches this ask yet.</p>',tx('Nothing called'));return}
+  if(!list.length&&!(prefer&&U.card(prefer))){msg(p.missing?'No provider matches this.':'No free live source covers '+p.name+'.',p.missing?'Try a broader ask.':'No provider in the registry states coverage there yet.');
+    impl('<p class="rt">Nothing to call: no provider in the registry matches this ask yet.</p>');return}
   lstat('Asking irlpls · finding who can do this');
-  impl('<p class="rt"><b>'+E(nm(top.c))+'</b>: the best match in the registry.</p>',tx('Matching…'));
-  catalog().then(function(cat){if($('lvt')!==t0)return;var pr=cat[top.c.id]||{},rc=pr.ready_call||null,key=rc&&rc.auth&&rc.auth.key_name;
+  impl('<p class="rt">Finding the best match in the registry…</p>');
+  /* the pick is the broker's (IRLMatch.best mirrors Job.best(): a provider the SDK can call wins within the margin) */
+  catalog().then(function(cat){if($('lvt')!==t0)return;
+    var top=prefer&&U.card(prefer)?{c:U.card(prefer)}:IRLMatch.best(list.filter(function(x){return IRLMatch.plannable(x.c,r)}),r,cat)||list[0];
+    var pr=cat[top.c.id]||{},rc=pr.ready_call||null,key=rc&&rc.auth&&rc.auth.key_name,n=nm(top.c),lv=(pr.readiness||{}).level;
     var head=head0||(t&&!p.missing?'No free live source covers '+p.name+' for this.':'');
-    t0.innerHTML='<p class="lvm">'+(head?'<b>'+E(head)+'</b> ':'')+E(nm(top.c))+' can'+(head?'':' do this')+(head?' answer':'')+' through your agent'+(key?', with a key':'')+'. Here’s the exact call.</p>'+
-      '<p class="via"><a class="lnk" href="c/'+E(top.c.id)+'.html">'+E(nm(top.c))+'’s Capture Card</a></p>';
-    var body='';if(window.IRLCall)body=IRLCall.html({provider:nm(top.c),readiness:pr.readiness||null,price:IRLLabels.priceText(top.c),rc:rc,text:q,req:r,place:p,street:STREET.exec(q),card:top.c,docs:(pr.api||{}).docs_url});
+    /* never "the exact call" when there is none: a provider without one is ordered by hand */
+    var line=rc?n+' can'+(head?' answer':' do this')+' through your agent'+(key?', with a key':'')+'. Here’s the exact call.'
+      :n+(lv==='contract'?' takes this by agreement':' has no public API')+' — here’s what your agent sends irlpls and how to order.';
+    t0.innerHTML='<p class="lvm">'+(head?'<b>'+E(head)+'</b> ':'')+E(line)+'</p>'+
+      '<p class="via"><a class="lnk" href="c/'+E(top.c.id)+'.html">'+E(n)+'’s Capture Card</a></p>';
+    var body='';if(window.IRLCall)body=IRLCall.html({provider:n,readiness:pr.readiness||null,price:IRLLabels.priceText(top.c),rc:rc,text:q,req:r,place:p,street:STREET.exec(q),card:top.c,order:(pr.api||{}).docs_url||top.c.provider_url,docs:(pr.api||{}).docs_url});
     impl(body||'<p class="rt">No ready call for this provider yet.</p>');
     if(window.IRLCall)IRLCall.bind($('rb'));
-    say((head?head+' ':'')+nm(top.c)+' can do this through your agent. Here’s the exact call.')})}
+    say((head?head+' ':'')+line)})}
 /* the provenance sheet, as on screen 1: it opens from the chip and closes back into it. The card grows first if the
    eight links need more room than the answer takes, so every link shows without scrolling. */
 function fromChip(){var pv=$('lvp'),a=pv.getBoundingClientRect(),c=$('lvc').querySelector('.chip').getBoundingClientRect();if(!a.width)return;
@@ -853,7 +865,7 @@ if(P.get('go')==='1')U.on(function(){if(!$('lv'))go()});
 
 </main>
 
-<footer class="site-foot"><div class="ft"><p class="fd"><a class="fw" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><span>No data sold, no cut. Buy from providers directly.</span></p><nav class="fl" aria-label="Footer"><a href="standard.html">Standard</a><a href="docs.html">Docs</a><a href="providers.html">For providers</a><a href="privacy.html">Privacy</a><a href="glossary.html">Glossary</a><a href="changelog.html">Changelog</a><a href="governance.html">Governance</a></nav></div><p class="fc">Screen 1’s answers are samples. River photo and reading (Oct 29, 2026): USGS, public domain.</p><p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><a href="mailto:hello@irlpls.com">hello@irlpls.com</a><span>© irlpls maintainers</span></p></footer>
+<footer class="site-foot"><div class="ft"><div class="fb"><a class="fw" href="index.html" aria-label="irlpls home">irl<i>pls</i></a><p>No data sold, no cut. Buy from providers directly.</p></div><nav class="fcol" aria-label="Product"><h2>Product</h2><ul><li><a href="find.html">Find data</a></li><li><a href="docs.html">Docs</a></li><li><a href="check.html">Check a card</a></li></ul></nav><nav class="fcol" aria-label="Standard"><h2>Standard</h2><ul><li><a href="standard.html">The standard</a></li><li><a href="chain.html">The full chain</a></li><li><a href="glossary.html">Glossary</a></li><li><a href="changelog.html">Changelog</a></li></ul></nav><nav class="fcol" aria-label="Project"><h2>Project</h2><ul><li><a href="providers.html">For providers</a></li><li><a href="governance.html">Governance</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="mailto:hello@irlpls.com">hello@irlpls.com</a></li></ul></nav></div><p class="fc">Screen 1’s answers are samples. River photo and reading (Oct 29, 2026): USGS, public domain.</p><p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><span>© irlpls maintainers</span></p></footer>
 <script>/* the last screen ends on the footer (#try's min-height): its height, kept current */
 (function(){var f=document.querySelector('.site-foot');if(!f)return;function set(){var cs=getComputedStyle(f);document.documentElement.style.setProperty('--fh',Math.ceil(f.offsetHeight+parseFloat(cs.marginTop))+'px')}
 set();addEventListener('resize',set);if(document.fonts)document.fonts.ready.then(set)})();</script>

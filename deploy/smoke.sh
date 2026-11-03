@@ -4,7 +4,7 @@
 # initialize, tools/list is exactly the 7 planning tools, no irlpls_submit, no protocol tools, find_providers answers,
 # and the server log holds no access lines, no client IP and none of the request text. Also checks the two guards:
 # a non-loopback bind without --allow-remote is refused, and serve.py refuses to start without --read-only.
-# Then starts the full (not read-only) server on 127.0.0.1 only to count its tools (14); it calls no tool there.
+# Then starts the full (not read-only) server on 127.0.0.1 only to count its tools (15); it calls no tool there.
 # Usage: deploy/smoke.sh [python]   (python needs irlpls[mcp] installed; default: python3). Run from anywhere.
 set -u
 PY=${1:-python3}; PORT=${PORT:-8791}; URL=http://127.0.0.1:$PORT/mcp
@@ -58,7 +58,7 @@ echo "== full server, for comparison (127.0.0.1, tools/list only, no tool called
 start -m irlpls.mcp_server; init
 FULL=$(post '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' | names)
 n=$(echo "$FULL" | wc -w | tr -d ' '); echo "tools ($n): $FULL"
-[ "$n" = 14 ] && ok "full server registers 14 tools" || no "full server registers $n tools"
+[ "$n" = 15 ] && ok "full server registers 15 tools" || no "full server registers $n tools"
 kill $PID; wait $PID 2>/dev/null; PID=; rm -f "$LOG"
 
 [ $fail = 0 ] && echo "SMOKE OK" || { echo "SMOKE FAILED"; exit 1; }

@@ -71,6 +71,9 @@ BENCH = [
     # ---- commission: datasets from people ----
     ("500 first-person video clips of a hand opening a push-bar door within 7 days", {"prolific", "kled"},
      {"usgs-water", "caltrans-cctv", "skyfi", "umbra", "windy-webcams"}),
+    # the landing's example (the owner, 2026-11-02): AI-training rights asked for, so a card that grants them ranks first
+    ("500 first-person clips of a hand opening a door, with AI-training rights, under $2,000, within 7 days", {"kled"},
+     {"usgs-water", "proxypics", "skyfi"}),
     ("200 participants to record a short video of their kitchen within 3 days", {"prolific"}, {"usgs-water", "caltrans-cctv", "umbra"}),
     ("audio recordings of 300 people saying a wake word", {"prolific", "kled", "shaip"}, {"noaa-tides", "nws", "caltrans-cctv"}),
     ("first-person video of household tasks for robotics training", {"toloka", "unidata", "claru"}, {"caltrans-cctv", "hivemapper", "proxypics"}),
@@ -184,3 +187,34 @@ def test_js_parity():
         if not j or not p or j[0][0] != p[0]["id"] or abs(j[0][1] - p[0]["fit"]) > 2:
             bad.append((q, [(r["id"], r["fit"]) for r in p[:3]], j))
     assert not bad, "\n".join(map(str, bad))
+
+
+BEST_ASKS = ["500 first-person clips of a hand opening a door, with AI-training rights, under $2,000, within 7 days",
+             "Drone photos of my roof at 45 Oak Ave, Austin, TX within 3 days, under $600",
+             "Photo of the storefront at 123 Main St, Springfield, IL today, under $40",
+             "500 first-person video clips of a hand opening a push-bar door within 7 days",
+             "river level on Shoal Creek in Austin, TX right now",
+             "first-person video of household tasks for robotics training", "500 egocentric clips"]
+NODE_BEST = r"""
+const fs=require('fs'),path=require('path');global.window={};
+eval(fs.readFileSync(path.join(process.argv[1],'src/match.js'),'utf8'));
+const M=window.IRLMatch,dir=path.join(process.argv[1],'cards'),cat=JSON.parse(fs.readFileSync(path.join(process.argv[1],'site/catalog.json'),'utf8')).providers;
+const C=fs.readdirSync(dir).filter(f=>f.endsWith('.json')).sort().map(f=>JSON.parse(fs.readFileSync(path.join(dir,f),'utf8'))).filter(c=>M.inScope(c)&&c.status!=='sample');
+const Q=JSON.parse(fs.readFileSync(0,'utf8'));
+console.log(JSON.stringify(Q.map(q=>{const r=M.parse(q,C);
+  const l=C.map(c=>({c:c,s:M.score(c,r)})).filter(x=>x.s.total>0&&M.plannable(x.c,r)).sort(M.compare);const b=M.best(l,r,cat);return b&&b.c.id})));
+"""
+
+
+@pytest.mark.skipif(not shutil.which("node") or not (ROOT / "site" / "catalog.json").exists(), reason="node or site/ missing")
+def test_js_best_is_the_brokers_best():
+    """The pick the landing and Find data show (IRLMatch.best) is the one irlpls.request(...).best() makes."""
+    import irlpls
+    out = subprocess.run(["node", "-e", NODE_BEST, str(ROOT)], input=json.dumps(BEST_ASKS), capture_output=True, text=True, check=True)
+    bad = []
+    for q, j in zip(BEST_ASKS, json.loads(out.stdout)):
+        b = irlpls.request(q, geocode=False).best()
+        if (b and b["card_id"]) != j:
+            bad.append((q, b and b["card_id"], j))
+    assert not bad, bad
+    assert json.loads(out.stdout)[0] == "toloka"  # AI-training rights granted, and a call the SDK can make, within the margin
