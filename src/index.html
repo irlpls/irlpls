@@ -319,8 +319,8 @@ h1 .ln{display:block;white-space:nowrap}
 /* the reply underneath: out as the sheet opens, back in as it closes */
 .chat>.you,.chat>.turn{transition:opacity .26s ease .12s}
 /* the question is the first beat (the owner, 2026-11-02): it rises in like a sent iMessage, holds to be read, then irlpls answers */
-.chat>.you.pre-you{opacity:0;transform:translateY(10px) scale(.97)}
-.chat>.you.rise{transform-origin:100% 100%;transition:opacity .35s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
+.chat>.you.pre-you{opacity:0;transform:translateY(26px) scale(.86)}
+.chat>.you.rise{transform-origin:100% 100%;transition:opacity .3s ease,transform .55s cubic-bezier(.2,.9,.25,1.12)}
 .chat.pvo>.you,.chat.pvo>.turn{opacity:0;transition:opacity .2s ease}
 .ph{display:flex;align-items:center;gap:8px;min-height:28px}
 .ph .pt{flex:1;min-width:0;font:500 12.5px/1.3 var(--sans);color:var(--fg2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -385,11 +385,11 @@ var X=[
   note:function(){return 'Read from the USGS gauge and its river camera.'},
   /* the saved reading: 80.6 ft³/s at 2:40 PM CDT, Oct 29 2026; USGS's median for Oct 29 is 100 (p25 53.3) */
   say:function(){return [{b:'Not great today:'},' the Guadalupe at Comfort is running about 81 ft³/s, under the usual ~100 for late October, so expect a slow, scrapey float.']}},
- {ask:'Is the Bellevue Safeway ramp too steep?',call:'measure the ramp at Safeway, Bellevue',id:'rentahuman',pick:'RentAHuman',how:'person for hire',kind:'person for hire',got:'2 photos and a slope measurement',
-  media:function(){return '<img src="media/ex-ramp.jpg" alt="Example photo: a store entrance ramp">'},
+ {ask:'Is there a step-free way into the Bellevue Safeway?',call:'photograph the step-free entrance at Safeway, Bellevue',id:'rentahuman',pick:'RentAHuman',how:'person for hire',kind:'person for hire',got:'2 photos from the entrance',
+  media:function(){return '<img src="media/ex-ramp.jpg" alt="Example photo: a wide, gently curving ramp with low side walls beside a store entrance">'},
   sample:true,
-  note:function(){return 'Measured on site by a person you hired.'},
-  say:function(){return [{b:'Yes, slightly:'},' it measures about 1:10, steeper than the 1:12 guideline. A person measured it on site.']}},
+  note:function(){return 'Photographed on site by a person you hired.'},
+  say:function(){return [{b:'Yes:'},' a wide, curving ramp with low side walls leads up to the entrance, with no steps. A person photographed it on site; slope and width were not measured.']}},
  {ask:'What’s on the menu board at 12 Elm St today?',call:'menu board at 12 Elm St, today',id:'proxypics',pick:'ProxyPics',how:'person nearby, under 24 h',kind:'person nearby',got:'1 photo of the board',
   media:function(){return '<img src="media/ex-menu.jpg" alt="Example photo: a café menu board">'},
   sample:true,
@@ -478,7 +478,7 @@ slides.forEach(function(sl,i){
    status (shimmering), at +0.59 s naming the provider; from +0.69 s the answer streams in at reading pace (WORD ms a word, at
    most MAXANS); then the photo (once it has loaded), then the source; only when it is done, the swipe nudge. A card swiped to
    later plays the same way when it comes into view. Reduced motion and ?still=1: everything shows at once. */
-var WORD=120,MAXANS=3000,RISE=350,HOLD=1050,ASK=RISE+HOLD;
+var WORD=120,MAXANS=3000,LEAD=800,RISE=550,HOLD=1150,ASK=LEAD+RISE+HOLD;  /* LEAD: the card sits empty first, so the eye is there when the question is sent */
 var ANIM=!RM&&'IntersectionObserver' in window,seen=[],vis=[],s1in=false;
 function prep(i){var tool=q(i,'.tool'),tl=q(i,'.tl'),tt=q(i,'.tt'),ans=q(i,'.ans');
   ans.innerHTML=words(X[i].say(),true);ans.classList.add('wait');
@@ -492,8 +492,8 @@ function arrive(i){var tool=q(i,'.tool'),tl=q(i,'.tl'),tt=q(i,'.tt'),ans=q(i,'.a
   ans.innerHTML=words(x.say(),true);ans.classList.add('wait');
   tt.textContent='Asking irlpls · searching '+U.cards.length+' providers';tl.classList.add('run');
   var n=Math.min(MAXANS,ans.querySelectorAll('.w').length*WORD),you=q(i,'.you'),A=ASK;
-  later(function(){you.classList.remove('pre-you')},30);  /* the question rises in */
-  later(function(){you.classList.remove('rise')},30+RISE+50);
+  later(function(){you.classList.remove('pre-you')},LEAD);  /* the question is 'sent': it rises in like a chat message */
+  later(function(){you.classList.remove('rise')},LEAD+RISE+50);
   later(function(){tool.classList.remove('hide')},A);
   later(function(){tl.classList.remove('run');tt.innerHTML=done(x);tl.disabled=false},A+590);
   later(function(){ans.classList.remove('pre');ans.offsetWidth;ans.classList.remove('wait')},A+690);

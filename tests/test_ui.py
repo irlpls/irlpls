@@ -509,10 +509,10 @@ def test_every_card_plays_its_reply_the_first_time_it_comes_into_view(browser, b
     assert p.locator("#ex2 .att").evaluate("a=>+getComputedStyle(a).opacity") > .9
 
 
-def test_each_card_opens_on_its_question_then_arrives_within_6_2s(browser, base):
-    """The question is the first beat (the owner, 2026-11-02): 0.8 s after its turn the blue bubble shows alone (risen in,
-    held to be read, no status yet); by 1.8 s the status line shows; within 6.2 s everything has arrived (answer at reading
-    pace, 120 ms a word, at most 3 s, then the photo, then the chip). The first card's turn is on load (never waiting for
+def test_each_card_opens_on_its_question_then_arrives_within_7_5s(browser, base):
+    """The question is the first beat (the owner, 2026-11-02): the card sits empty ~0.8 s, then the blue bubble rises in like
+    a sent message (0.55 s) and holds ~1.15 s to be read, alone; then the status line; within 7.5 s everything has arrived
+    (answer at reading pace, 120 ms a word, at most 3 s, then the photo, then the chip). The first card's turn is on load (never waiting for
     the headline); a swiped-to card's when it comes into view."""
     vis = "s=>{const e=document.querySelector(s);return +getComputedStyle(e).opacity>.5&&e.getBoundingClientRect().height>0}"
     p = page(browser, 390, 709)
@@ -528,16 +528,18 @@ def test_each_card_opens_on_its_question_then_arrives_within_6_2s(browser, base)
     p.wait_for_function("window.__b && __b.done != null", timeout=9000)
     b = p.evaluate("__b")
     assert b["empty"] < b["you"] < b["tool"], b              # the empty card, then the question, then irlpls
-    assert b["tool"] - b["you"] >= 900, b                    # the question holds, to be read
-    assert b["you"] - b["empty"] <= 800 and b["done"] <= 6200, b
+    assert b["tool"] - b["you"] >= 1200, b                   # the question holds, to be read
+    assert 600 <= b["you"] - b["empty"] <= 1500 and b["done"] <= 7500, b   # an empty beat first, then it appears
     # a swiped-to card: the same beats, counted from when it is in view
     p.click("#pd button:nth-child(2)")
     p.wait_for_function("document.querySelector('#pd button:nth-child(2)').getAttribute('aria-current')==='true'", timeout=3000)
-    p.wait_for_timeout(800)
+    p.wait_for_timeout(500)
+    assert not p.evaluate(vis, "#ex1 .you")                  # still empty: the question has not been sent yet
+    p.wait_for_timeout(1300)
     assert p.evaluate(vis, "#ex1 .you") and p.locator("#ex1 .tool.hide").count() == 1
-    p.wait_for_timeout(1000)
+    p.wait_for_timeout(1500)
     assert p.evaluate(vis, "#ex1 .tool") and p.inner_text("#ex1 .tt").strip()
-    p.wait_for_timeout(4400)
+    p.wait_for_timeout(4500)
     assert p.evaluate("[...document.querySelectorAll('#ex1 .hide, #ex1 .wait, #ex1 .pre-you')].length") == 0
 
 
@@ -1900,10 +1902,10 @@ def test_first_card_plays_on_load_and_the_photo_place_is_white(browser, base):
     """The owner (2026-10-30): the first card does not wait for the title; before the photo lands its place is white (no grey)."""
     p = page(browser)
     p.goto(base + "/")
-    p.wait_for_function("+getComputedStyle(document.querySelector('#ex0 .tool')).opacity > .5", timeout=2500)  # after its question
+    p.wait_for_function("+getComputedStyle(document.querySelector('#ex0 .tool')).opacity > .5", timeout=4500)  # after its question
     assert p.inner_text("#ex0 .tt").strip()
     assert p.evaluate("getComputedStyle(document.querySelector('#ex0 .media')).backgroundColor") in ("rgba(0, 0, 0, 0)", "transparent")
-    p.wait_for_function("!document.querySelector('#ex0 .att').classList.contains('hide')", timeout=7000)
+    p.wait_for_function("!document.querySelector('#ex0 .att').classList.contains('hide')", timeout=9000)
 
 
 # ---------- the owner, 2026-10-30: every Go ends visibly; world places; the ready call when nothing runs live ----------
