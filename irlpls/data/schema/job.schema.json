@@ -224,6 +224,11 @@
             ],
             "description": "Where a person goes for what an agent can't do (sign up, get a key, ask for a quote)"
           },
+          "how_to_pay": {
+            "type": "object",
+            "description": "Made-to-order options only (irlpls.orderpack): how the person finishes the order, chosen from the card alone. kind x402|connect_once|provider_checkout|request_quote|by_hand; steps (max 4); needs_from_user; irlpls_does_not; links (card URLs only); evidence (card fields used); message {subject, body, contact_url} for request_quote. irlpls charges and sends nothing.",
+            "required": ["kind", "steps", "needs_from_user", "irlpls_does_not", "evidence"]
+          },
           "readiness": {
             "type": "object",
             "description": "How close this option is to 'your person just says yes', for what THIS library needs (irlpls.readiness.readiness_for): level ready_now|one_consent|account_first|contract, via, line (say it to the person). When the library's adapter needs something the card's own path doesn't (an API key where the card offers wallet sign-up), the level follows the library and `card` keeps the card's own readiness.",

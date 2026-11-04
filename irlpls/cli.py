@@ -152,6 +152,17 @@ def show(job, d=None):
     if pc and d["state"] in ("proposed", "quoted"):
         print(f'\nready call ({pc.get("operation")}): {pc.get("method")} {pc.get("url")}'
               + ("" if pc.get("safe_to_run_without_approval") else "  · needs your person's yes"))
+    hp = (best or {}).get("how_to_pay")
+    if hp and d["state"] in ("proposed", "quoted"):
+        print("\nTo order:")
+        for i, st in enumerate(hp["steps"], 1):
+            print(f"  {i}. {st}")
+        for ln in hp.get("links") or []:
+            print(f'     {ln["label"]}: {ln["url"]}')
+        print("  You: " + "; ".join(hp["needs_from_user"]) + ".")
+        print("  irlpls does not: " + ", ".join(hp["irlpls_does_not"]) + ".")
+        if hp.get("message"):
+            print(f"  Drafted message: irlpls rfq {d['id']}")
     if d["state"] == "failed":
         print(f'\nfailed: {d["log"][-1]["msg"]}')
     q = d.get("quote")
@@ -230,6 +241,20 @@ def cmd_approve(a):
         print("after your person says yes to this exact price: add --confirm --idempotency-key KEY --total AMOUNT")
         return
     _out(j, a)
+
+
+def cmd_rfq(a):
+    """Print the drafted request-for-quote for the job's pick. Nothing is sent: the person sends it from their own address."""
+    d = _job(a.job).to_dict()
+    o = next((x for x in d["plan"] if x.get("card_id") == (a.card_id or d.get("best_card_id"))), None)
+    m = ((o or {}).get("how_to_pay") or {}).get("message")
+    if not m:
+        sys.exit("irlpls rfq: this option needs no quote request" if o else "irlpls rfq: no such option in this job's plan (irlpls job JOB lists them)")
+    if getattr(a, "json", False):
+        return print(json.dumps(m, indent=2))
+    print(f'Subject: {m["subject"]}\n\n{m["body"]}')
+    if m.get("contact_url"):
+        print(f'\nSend it from your own address. The provider\'s page: {m["contact_url"]}')
 
 
 def cmd_show(a):
@@ -403,6 +428,11 @@ def main(argv=None):
     jb.add_argument("job")
     jb.add_argument("--json", action="store_true")
     jb.set_defaults(fn=cmd_job)
+    rq = sub.add_parser("rfq", help="print the drafted request for a quote, to send yourself (nothing is sent)")
+    rq.add_argument("job")
+    rq.add_argument("card_id", nargs="?", help="a plan option other than the default")
+    rq.add_argument("--json", action="store_true")
+    rq.set_defaults(fn=cmd_rfq)
     s = sub.add_parser("show", help="print a Capture Card")
     s.add_argument("id")
     s.set_defaults(fn=cmd_show)

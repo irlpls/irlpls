@@ -1290,10 +1290,24 @@ class Job:
         except Exception:
             return None
 
+    def _with_pay(self, o):
+        """A commission option with its order pack (irlpls.orderpack): how the person finishes it. Plans and drafts only."""
+        if o.get("route") != "commission" or self.request is None:
+            return o
+        try:
+            from . import card as get_card
+            from .orderpack import how_to_pay
+            c = get_card(o["card_id"])
+            hp = how_to_pay(self, c) if c else None
+        except Exception:
+            hp = None
+        return dict(o, how_to_pay=hp) if hp else o
+
     def to_dict(self):
         d_opt = self.default_option() if self.state not in ("failed",) or self.choice else None
         best_id = d_opt["card_id"] if d_opt else None
         plan = [dict(o, default=True) if best_id and o["card_id"] == best_id else o for o in self.plan]
+        plan = [self._with_pay(o) for o in plan]
         req = self.request.to_dict() if self.request is not None else None
         if req and isinstance(req.get("country_code"), str):   # ISO 3166 upper case on the wire (schema/request.schema.json)
             req["country_code"] = req["country_code"].upper()
