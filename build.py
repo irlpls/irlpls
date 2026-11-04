@@ -50,7 +50,7 @@ def page(title, body, depth=0, cls="", desc="Real-world data on demand, with pro
 <title>{e(title)}</title><meta name="description" content="{e(desc)}">
 <meta name="theme-color" content="#f6f8fb"><meta name="color-scheme" content="light"><link rel="canonical" href="https://irlpls.com/{canon}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="https://irlpls.com/{canon}"><meta property="og:image" content="https://irlpls.com/media/og.png"><meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="{p}favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="{p}fonts.css"><link rel="stylesheet" href="{p}style.css">{head}</head>
+<link rel="icon" href="{p}favicon.svg?v=2" type="image/svg+xml"><link rel="icon" href="{p}favicon-32.png?v=2" sizes="32x32" type="image/png"><link rel="shortcut icon" href="{p}favicon.ico?v=2"><link rel="apple-touch-icon" href="{p}apple-touch-icon.png?v=2"><link rel="stylesheet" href="{p}fonts.css"><link rel="stylesheet" href="{p}style.css">{head}</head>
 <body class="{cls}"><a class="skip" href="#main">Skip to content</a><div id="root" data-base="{p}"{f' data-card="{e(card)}"' if card else ""}>{body}</div>
 <script src="{p}match.js"></script><script src="{p}labels.js"></script><script src="{p}icons.js"></script><script src="{p}app.js" defer></script><script src="{p}bar.js"></script></body></html>'''
 
@@ -64,16 +64,17 @@ def nav(p="", here=""):
 
 def foot(p="", extra=""):
     """The one footer on every page (src/index.html, chain.html, check.html and standard.html carry the same markup with p="";
-    tests/test_ui.py pins them to this). Four columns: brand, Product, Standard, Project; then the licence bar.
+    tests/test_ui.py pins them to this). Three columns: brand, Use it, Standard; then one bar with the small links and the licence.
     extra: page-specific small print (credits), above the hairline."""
-    groups = (("Product", (("find.html", "Find data"), ("docs.html", "Docs"), ("check.html", "Check a card"))),
-              ("Standard", (("standard.html", "The standard"), ("chain.html", "The full chain"), ("glossary.html", "Glossary"), ("changelog.html", "Changelog"))),
-              ("Project", (("providers.html", "For providers"), ("governance.html", "Governance"), ("privacy.html", "Privacy"), ("mailto:hello@irlpls.com", "hello@irlpls.com"))))
+    groups = (("Use it", (("find.html", "Find data"), ("check.html", "Check a card"), ("docs.html", "Docs"), ("providers.html", "For providers"))),
+              ("Standard", (("standard.html", "Specification"), ("chain.html", "Provenance chain"), ("glossary.html", "Glossary"))))
+    small = (("changelog.html", "Changelog"), ("governance.html", "Governance"), ("privacy.html", "Privacy"), ("mailto:hello@irlpls.com", "hello@irlpls.com"))
+    links = "".join(f'<a href="{h if h.startswith("mailto") else p + h}">{n}</a>' for h, n in small)
     cols = "".join(f'<nav class="fcol" aria-label="{t}"><h2>{t}</h2><ul>'
                    + "".join(f'<li><a href="{h if h.startswith("mailto") else p + h}">{n}</a></li>' for h, n in ls) + '</ul></nav>' for t, ls in groups)
     return ('<footer class="site-foot"><div class="ft"><div class="fb"><a class="fw" href="' + p + 'index.html" aria-label="irlpls home">irl<i>pls</i></a>'
             '<p>A neutral open standard. No data sold. Buy from providers directly.</p></div>' + cols + '</div>' + extra +
-            '<p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><span>© irlpls maintainers</span></p></footer>')
+            '<p class="fm"><span class="fl">' + links + '</span><span>Code Apache-2.0 · Cards CC BY 4.0 · © irlpls maintainers</span></p></footer>')
 
 
 # ---- card values. Every value comes from the card JSON; anything the card leaves out reads "Not stated".

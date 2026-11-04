@@ -3,7 +3,7 @@
    green = evidenced, blue = claimed, hollow ring = not stated, red = ruled out. */
 :root{
   --bg:#f6f8fb;--fg:#101418;--fg2:#3d4654;--fg3:#5b6574;--dot:#7a8494;--line:rgba(20,30,50,.09);--line2:rgba(20,30,50,.16);
-  --live:#0a6e34;--pol:#1b5fd6;--bad:#b3261e;
+  --live:#0a6e34;--pol:#2563eb;--bad:#b3261e;
   --card:#fff;--card2:#f1f4f8;--code:#f3f5f8;--track:#e3e8ef;
   --glass:rgba(255,255,255,.62);--edge:rgba(255,255,255,.9);--shadow:0 8px 30px rgba(20,30,50,.08);
   --r-sm:12px;--r-md:18px;--r-lg:24px;--hh:52px;--gut:16px;
@@ -35,17 +35,17 @@ html{scroll-padding-top:68px}
 .site-foot{margin:56px 0 0;padding:40px max(var(--gut),calc((100% - 1100px)/2 + var(--gut))) max(24px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#f8fafc;display:flex;flex-direction:column;gap:28px;font:400 13px/1.5 var(--sans);color:var(--fg3)}
 .site-foot a{color:var(--fg2);text-decoration:none}
 @media(hover:hover){.site-foot a:hover{color:var(--fg);text-decoration:underline;text-underline-offset:3px}}
-.site-foot .ft{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:32px;row-gap:32px;align-items:start}
+.site-foot .ft{display:grid;grid-template-columns:1.4fr 1fr 1fr;column-gap:32px;row-gap:32px;align-items:start}
 .site-foot .fb{display:flex;flex-direction:column;gap:10px;align-items:flex-start}.site-foot .fb p{margin:0;max-width:22em}
 .site-foot .fw{display:inline-flex;align-items:center;font:700 18px/1.2 var(--sans);letter-spacing:-.04em;color:var(--fg)}.site-foot .fw i{font-style:normal;color:var(--fg3)}
 .site-foot .fcol{display:block}.site-foot .fcol h2{margin:0 0 12px;font:600 11px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
 .site-foot .fcol ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
 .site-foot .fcol a{display:inline-block;font-weight:400;line-height:1.4}
 .site-foot .fc{margin:0;font-size:12px;color:var(--fg3);text-align:left}
-.site-foot .fm{margin:0;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 18px;font-size:12px}
-@media(max-width:900px){.site-foot .ft{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.site-foot .fl{display:flex;flex-wrap:wrap;gap:4px 18px}.site-foot .fm{margin:0;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 18px;font-size:12px}
+@media(max-width:900px){.site-foot .ft{grid-template-columns:repeat(2,minmax(0,1fr))}.site-foot .fb{grid-column:1/-1}}
 @media(max-width:560px){.site-foot{padding-top:28px;gap:20px}.site-foot .ft{grid-template-columns:minmax(0,1fr);row-gap:24px}
-  .site-foot .fcol ul{gap:0}.site-foot .fcol a{display:flex;align-items:center;min-height:44px}.site-foot .fm{flex-direction:column;justify-content:flex-start}}
+  .site-foot .fcol ul{gap:0}.site-foot .fcol a{display:flex;align-items:center;min-height:44px}.site-foot .fm{flex-direction:column;justify-content:flex-start}.site-foot .fl{flex-direction:column;gap:0}.site-foot .fl a{display:flex;align-items:center;min-height:44px}}
 
 /* shared marks: a glyph in a circle + a word. Filled green = evidenced, filled blue = claimed, hollow ring = not stated */
 .pf{display:inline-flex;align-items:center;gap:5px;font:500 13px/1.2 var(--sans);color:var(--fg3);white-space:nowrap}
@@ -364,7 +364,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible,select:focus-visible{
    same family and scale in ink, no sweep. Reduced motion and ?still=1: static. */
 .hl{position:relative;font:700 clamp(20px,calc((min(100vw,720px) - 32px)/13.3),40px)/1.12 var(--head);letter-spacing:-.025em;text-wrap:wrap}
 .hl .k3,.hl .k4,.hl .k5{-webkit-background-clip:text;background-clip:text;color:transparent}
-.hl .k3{background-image:linear-gradient(90deg,#0f766e,#0891b2)}.hl .k4{background-image:linear-gradient(90deg,#0891b2,#0284c7)}.hl .k5{background-image:linear-gradient(90deg,#059669,#0d9488)}
+.hl .k3{background-image:linear-gradient(90deg,#2563eb,#0891b2)}.hl .k4{background-image:linear-gradient(90deg,#0891b2,#059669)}.hl .k5{background-image:linear-gradient(90deg,#059669,#047857)}
 .hl[data-t]:after{content:attr(data-t);white-space:inherit;position:absolute;inset:0;pointer-events:none;color:transparent;-webkit-background-clip:text;background-clip:text;background-image:linear-gradient(100deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.38) 50%,rgba(255,255,255,0) 70%);background-repeat:no-repeat;background-size:40% 100%;background-position:-70% 0;opacity:0}
 @media(prefers-reduced-motion:no-preference){html:not(.still) .hl[data-t]:after{opacity:1;animation:shine 7s linear infinite}}
 @keyframes shine{from{background-position:-70% 0}to{background-position:170% 0}}
@@ -383,8 +383,8 @@ main.docs{max-width:1100px;margin:0 auto;padding:8px var(--gut) 0;min-height:cal
 .docs .more a{display:inline-flex;align-items:center;min-height:44px;font:500 14px var(--sans);color:var(--pol);text-decoration:none}
 @media(hover:hover){.docs .more a:hover{text-decoration:underline}}
 /* the title's colours flow into the header's wordmark as the title scrolls away, and stay (irl blue, pls green; --bc 0 ink, 1 colour; src/bar.js sets it) */
-.top .brand,.top .brand i{-webkit-background-clip:text;background-clip:text}.top .brand{background-image:linear-gradient(90deg,#2563eb,#06b6d4)}.top .brand i{background-image:linear-gradient(90deg,#10b981,#16a34a)}
-.top .brand{color:rgba(16,20,24,calc(1 - var(--bc,0)))}.top .brand i{color:rgba(91,101,116,calc(1 - var(--bc,0)))}
+.top .brand,.top .brand i{-webkit-background-clip:text;background-clip:text}.top .brand{background-image:linear-gradient(90deg,#2563eb,#0891b2)}.top .brand i{background-image:linear-gradient(90deg,#059669,#047857)}
+.top .brand{color:rgba(16,20,24,calc(1 - var(--bc,0)))}.top .brand i{color:rgba(91,101,116,calc(1 - var(--bc,0)))}.top nav a.brand:hover,.top .brand:hover{color:rgba(16,20,24,calc(1 - var(--bc,0)))}
 /* on the pages (not the landing's screens): the whole title in the gradient */
 .hl.all{background-image:linear-gradient(90deg,#2563eb,#0891b2 50%,#059669);-webkit-background-clip:text;background-clip:text;color:transparent}
 @media(forced-colors:active){.hl.all{color:CanvasText;background:none}}

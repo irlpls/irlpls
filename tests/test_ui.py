@@ -1257,7 +1257,7 @@ def test_get_it_now_renders_value_age_and_chip(browser, base):
     try_(p, "usgs-water", "river, Texas")
     p.wait_for_selector("#lv .ans")
     assert p.inner_text("#lv .you") == "river, Texas"
-    assert p.evaluate("getComputedStyle(document.querySelector('#lv .you')).backgroundColor") == "rgb(0, 122, 255)"
+    assert p.evaluate("getComputedStyle(document.querySelector('#lv .you')).backgroundColor") == "rgb(37, 99, 235)"
     ans = p.inner_text("#lv .ans")
     assert ans == "Right now the Colorado River at Austin, TX is flowing at 76.3 ft³/s, measured 12 min ago.", ans  # a reply, not a data row: the station name spelled out, the figure bold
     assert p.inner_text("#lv .ans b") == "76.3 ft³/s"
@@ -1974,8 +1974,7 @@ def test_screen_one_desktop_arrows_sit_on_the_card_edges(browser, base):
 
 
 def test_footer_is_formal_and_the_same_on_every_page(browser, base):
-    want = {"Product": ["Find data", "Docs", "Check a card"], "Standard": ["The standard", "The full chain", "Glossary", "Changelog"],
-            "Project": ["For providers", "Governance", "Privacy", "hello@irlpls.com"]}
+    want = {"Use it": ["Find data", "Check a card", "Docs", "For providers"], "Standard": ["Specification", "Provenance chain", "Glossary"]}
     for path in ("", "find.html", "chain.html", "check.html", "standard.html", "agents.html", "docs.html", "privacy.html"):
         h = (SITE / (path or "index.html")).read_text()
         f = h[h.index('<footer class="site-foot">'):h.index("</footer>")]
@@ -1983,22 +1982,23 @@ def test_footer_is_formal_and_the_same_on_every_page(browser, base):
                for n in re.findall(r'<nav class="fcol"[^>]*>(.*?)</nav>', f)}
         assert got == want, path
         assert "A neutral open standard. No data sold. Buy from providers directly." in f, path
-        assert "Code Apache-2.0 · Cards CC BY 4.0" in f and "© irlpls maintainers" in f, path
+        assert "Code Apache-2.0 · Cards CC BY 4.0 · © irlpls maintainers" in f, path
+        assert [re.sub("<.*?>", "", a) for a in re.findall(r"<a [^>]*>.*?</a>", f.split('class="fl"')[1])] == ["Changelog", "Governance", "Privacy", "hello@irlpls.com"], path
         assert "github" not in f.lower() and "!" not in re.sub("<!--.*?-->", "", f), path
 
 
 def test_footer_layout_columns_and_alignment(browser, base):
-    """390: one column, brand first, bottom bar stacked; 1280/1440: four equal columns whose edges match the content above."""
-    for w, cols in ((390, 1), (800, 2), (1280, 4), (1440, 4)):
+    """390: one column, brand first, bottom bar stacked; 1280/1440: three columns whose edges match the content above."""
+    for w, cols in ((390, 1), (800, 2), (1280, 3), (1440, 3)):
         pg = browser.new_context(viewport={"width": w, "height": 800}).new_page()
         pg.goto(base + "/docs.html")
         r = pg.evaluate("""(()=>{const f=document.querySelector('.site-foot'),ft=f.querySelector('.ft'),k=[...ft.children].map(e=>e.getBoundingClientRect()),
           m=document.querySelector('main').getBoundingClientRect(),fm=f.querySelector('.fm').getBoundingClientRect(),
-          lefts=new Set(k.map(r=>Math.round(r.left))).size, tops=k.slice(0,4).map(r=>Math.round(r.top));
+          lefts=new Set(k.map(r=>Math.round(r.left))).size, tops=k.slice(0,3).map(r=>Math.round(r.top));
           return {lefts, tops, l:k[0].left, r:Math.max(...k.map(x=>x.right)), fw:f.getBoundingClientRect().width, fmw:fm.width, ov:document.documentElement.scrollWidth-innerWidth}})()""")
         assert r["ov"] <= 0 and abs(r["fw"] - w) <= 1, (w, r)
         assert r["lefts"] == cols, (w, r)
-        if cols == 4:
+        if cols == 3:
             assert len(set(r["tops"])) == 1 and r["r"] - r["l"] >= 0.9 * min(1100, w - 48) - 2, (w, r)
         pg.context.close()
 
@@ -2096,3 +2096,28 @@ def test_wordmark_takes_the_title_colour_on_the_chain_page(browser, base):
     pg.evaluate("scrollTo(0, 1200)")
     pg.wait_for_timeout(300)
     assert float(pg.evaluate("getComputedStyle(document.querySelector('.top .brand')).getPropertyValue('--bc')")) == 1.0
+
+
+def test_wordmark_hover_changes_neither_half_once_it_is_the_gradient(browser, base):
+    # hovering used to turn "irl" black while "pls" stayed green; both halves keep following the scroll handoff
+    for path in ("/chain.html", "/index.html?still=1"):
+        pg = page(browser)
+        pg.goto(base + path)
+        pg.evaluate("scrollTo(0, 2500)")
+        pg.wait_for_timeout(500)
+        js = "(()=>{const b=document.querySelector('.top .brand');return [getComputedStyle(b).color,getComputedStyle(b.querySelector('i')).color]})()"
+        before = pg.evaluate(js)
+        pg.evaluate("document.querySelector('.top .brand').dispatchEvent(new MouseEvent('mouseover',{bubbles:true}))")
+        pg.hover(".top .brand")
+        pg.wait_for_timeout(300)
+        assert pg.evaluate(js) == before, path
+
+
+def test_every_page_offers_the_tab_icon_in_svg_png_ico_and_touch_sizes(browser, base):
+    for path in ("/", "/chain.html", "/check.html", "/standard.html", "/docs.html", "/find.html"):
+        h = page(browser)
+        h.goto(base + path)
+        got = h.evaluate("[...document.querySelectorAll('link[rel~=icon],link[rel=apple-touch-icon]')].map(l=>l.getAttribute('href'))")
+        assert any("favicon.svg" in g for g in got) and any("favicon-32.png" in g for g in got) and any("favicon.ico" in g for g in got) and any("apple-touch-icon.png" in g for g in got), (path, got)
+    for f in ("favicon.ico", "favicon-32.png", "apple-touch-icon.png"):
+        assert (SITE / f).stat().st_size > 200, f

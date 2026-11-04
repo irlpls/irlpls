@@ -35,14 +35,14 @@ var CSS='.ircp{margin:0;padding:0;min-width:0;max-width:100%;border:0;background
  '.ircp-ask .l0{display:block}.ircp-ask .ln{display:block;padding-left:4ch;text-indent:-2ch}'+
  '.ircp-i{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin:-6px -10px -6px 0;padding:0;border:0;background:none;cursor:pointer;color:var(--fg3,#5b6574);border-radius:12px}'+
  '.ircp-i svg{display:block}.ircp-i .ck{display:none}.ircp-i.done .cp{display:none}.ircp-i.done .ck{display:block;color:var(--live,#0a6e34)}'+
- '@media(hover:hover){.ircp-i:hover{color:var(--fg,#101418)}}.ircp-i:focus-visible{outline:2px solid var(--pol,#1b5fd6);outline-offset:-4px}'+
+ '@media(hover:hover){.ircp-i:hover{color:var(--fg,#101418)}}.ircp-i:focus-visible{outline:2px solid var(--pol,#2563eb);outline-offset:-4px}'+
  /* step 2: provider · readiness · price */
  '.ircp-m{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;margin:0;font:500 14px/1.4 '+SANS+';color:var(--fg2,#3d4654)}'+
  '.ircp-n{font-weight:600;color:var(--fg,#101418);overflow-wrap:anywhere}.ircp-m i{font-style:normal;color:var(--fg3,#5b6574)}'+
  '.ircp-r{display:inline-flex;align-items:center;padding:1px 8px;border-radius:999px;background:rgba(20,30,50,.06);font:600 12px/1.5 '+SANS+';color:var(--fg2,#3d4654);white-space:nowrap}'+
  '.ircp-r.ok{background:rgba(10,110,52,.1);color:var(--live,#0a6e34)}'+
  '.ircp-p{white-space:nowrap}.ircp-nk{color:var(--fg3,#5b6574)}'+
- '.ircp-gk{display:inline-flex;align-items:center;min-height:44px;margin:0;font:600 14px '+SANS+';color:var(--pol,#1b5fd6);text-decoration:none;white-space:nowrap}'+
+ '.ircp-gk{display:inline-flex;align-items:center;min-height:44px;margin:0;font:600 14px '+SANS+';color:var(--pol,#2563eb);text-decoration:none;white-space:nowrap}'+
  '.ircp-gk2{display:flex;width:max-content;margin:-6px 0 -12px;font-weight:500}'+
  '@media(hover:hover){.ircp-gk:hover{text-decoration:underline;text-underline-offset:3px}}'+
  /* step 3: the provider call, one line that opens to the full request */
@@ -51,13 +51,13 @@ var CSS='.ircp{margin:0;padding:0;min-width:0;max-width:100%;border:0;background
  '.ircp-x .ircp-st{flex:none;white-space:nowrap;font:600 12.5px/1.3 '+SANS+';color:var(--fg3,#5b6574)}.ircp-st.ok{color:var(--live,#0a6e34)}.ircp-st.bad{color:var(--bad,#b3261e)}.ircp-st.q{font-weight:500}'+
  '.ircp-c{font-weight:500;color:var(--fg3,#5b6574)}'+
  '.ircp-x .m{margin-top:-1px}.ircp-x svg{margin-top:3px;flex:none;color:var(--fg3,#5b6574);transition:transform .2s ease}.ircp-x[aria-expanded="true"] svg{transform:rotate(90deg)}'+
- '.ircp-x:focus-visible{outline:2px solid var(--pol,#1b5fd6);outline-offset:2px;border-radius:8px}'+
+ '.ircp-x:focus-visible{outline:2px solid var(--pol,#2563eb);outline-offset:2px;border-radius:8px}'+
  '.ircp .m{flex:none;display:inline-block;padding:1px 6px;border-radius:6px;font:700 11px/1.5 '+MONO+';letter-spacing:.02em;background:rgba(20,30,50,.07);color:var(--fg2,#3d4654)}'+
- '.ircp .m-get{background:rgba(10,110,52,.1);color:var(--live,#0a6e34)}.ircp .m-post{background:rgba(27,95,214,.1);color:var(--pol,#1b5fd6)}'+
+ '.ircp .m-get{background:rgba(10,110,52,.1);color:var(--live,#0a6e34)}.ircp .m-post{background:rgba(27,95,214,.1);color:var(--pol,#2563eb)}'+
  '.ircp-bb{margin:10px 0 0}.ircp-bb[hidden]{display:none}'+
  '.ircp-bb .ircp-row{align-items:flex-start}.ircp-bb .ircp-i{margin-top:-4px}'+
  '.ircp pre.ircp-code{flex:1 1 auto;display:block;min-width:0;margin:0;padding:10px 12px;border:0;border-radius:10px;background:#f4f6f9;color:var(--fg,#101418);font:500 12.5px/1.6 '+MONO+';white-space:pre;overflow-wrap:normal;word-break:normal;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;max-width:100%;tab-size:2}'+
- '.ircp pre.ircp-code:focus-visible{outline:2px solid var(--pol,#1b5fd6);outline-offset:2px}'+
+ '.ircp pre.ircp-code:focus-visible{outline:2px solid var(--pol,#2563eb);outline-offset:2px}'+
  /* quiet highlighting: ink for what matters, grey for punctuation, the key to fill in marked */
  '.ircp .t-host,.ircp .t-q,.ircp .t-flag,.ircp .t-p,.ircp .t-lit,.ircp .t-kw{color:var(--fg3,#5b6574)}.ircp .t-fn{font-weight:600}.ircp .t-key,.ircp .t-qk,.ircp .t-hk{color:var(--fg2,#3d4654)}'+
  '.ircp .t-ph{background:rgba(250,204,21,.22);border-radius:4px;color:#7a5200}'+
