@@ -3,7 +3,7 @@
 Find and call providers that collect new real-world observations: people, drones, satellites, dashcams, sensors.
 Each provider is described by a **Capture Card** (what it captures, where, how fast, at what price, under what
 rights, and what it can prove). irlpls plans against the cards, enforces your policy and calls the provider's own
-API with your credentials. It captures nothing, sells no data and takes no cut.
+API with your credentials. It captures nothing, sells no data and stays neutral: nothing buys rank.
 
 ```bash
 pip install irlpls

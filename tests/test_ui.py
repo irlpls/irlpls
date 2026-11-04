@@ -1982,7 +1982,7 @@ def test_footer_is_formal_and_the_same_on_every_page(browser, base):
         got = {re.search(r"<h2>(.*?)</h2>", n).group(1): [re.sub("<.*?>", "", a) for a in re.findall(r"<a [^>]*>.*?</a>", n)]
                for n in re.findall(r'<nav class="fcol"[^>]*>(.*?)</nav>', f)}
         assert got == want, path
-        assert "No data sold, no cut. Buy from providers directly." in f, path
+        assert "A neutral open standard. No data sold. Buy from providers directly." in f, path
         assert "Code Apache-2.0 · Cards CC BY 4.0" in f and "© irlpls maintainers" in f, path
         assert "github" not in f.lower() and "!" not in re.sub("<!--.*?-->", "", f), path
 

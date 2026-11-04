@@ -1,6 +1,6 @@
 """Order pack: how a person finishes a commission plan, chosen only from what the provider's Capture Card documents.
 
-irlpls plans and quotes. It never holds money, credentials or accounts, takes no cut, sends no email and places no
+irlpls plans and quotes. It never holds money, credentials or accounts, stays neutral, sends no email and places no
 order. `how_to_pay(job, card)` returns one block that says which of five ways fits this provider and what the person
 does, using only the card's own fields and URLs (never an invented one):
 

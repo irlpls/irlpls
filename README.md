@@ -2,7 +2,7 @@
 
 An open protocol and benchmark for new, verifiable observations of the physical world.
 
-One function across providers (people, drones, satellites, dashcams, sensors). Each provider's rights and proof are stated on its **Capture Card**. You buy direct. irlpls captures nothing, sells no data and takes no cut.
+One function across providers (people, drones, satellites, dashcams, sensors). Each provider's rights and proof are stated on its **Capture Card**. You buy direct. irlpls captures nothing, sells no data and stays neutral: nothing buys rank.
 
 Private preview. Standard version 2026-10-26.
 

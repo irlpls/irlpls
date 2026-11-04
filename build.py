@@ -72,7 +72,7 @@ def foot(p="", extra=""):
     cols = "".join(f'<nav class="fcol" aria-label="{t}"><h2>{t}</h2><ul>'
                    + "".join(f'<li><a href="{h if h.startswith("mailto") else p + h}">{n}</a></li>' for h, n in ls) + '</ul></nav>' for t, ls in groups)
     return ('<footer class="site-foot"><div class="ft"><div class="fb"><a class="fw" href="' + p + 'index.html" aria-label="irlpls home">irl<i>pls</i></a>'
-            '<p>No data sold, no cut. Buy from providers directly.</p></div>' + cols + '</div>' + extra +
+            '<p>A neutral open standard. No data sold. Buy from providers directly.</p></div>' + cols + '</div>' + extra +
             '<p class="fm"><span>Code Apache-2.0 · Cards CC BY 4.0</span><span>© irlpls maintainers</span></p></footer>')
 
 
@@ -813,7 +813,7 @@ def agents_page(md):
 
 LLMS = """# irlpls
 
-> Real-world data on demand, with provenance. An open protocol and router for agents. One call for new observations of the physical world: a reading, photo, video or report, live now or captured to order by people, drones, satellites, dashcams or sensors. A draft standard (version 2026-10-26) and a registry of Capture Cards: what each provider captures, where, how fast, at what price, under what rights, and, guarantee by guarantee, what it evidences and what it only claims. irlpls checks nothing itself, captures nothing, sells no data and takes no cut; you buy from providers directly.
+> Real-world data on demand, with provenance. An open protocol and router for agents. One call for new observations of the physical world: a reading, photo, video or report, live now or captured to order by people, drones, satellites, dashcams or sensors. A draft standard (version 2026-10-26) and a registry of Capture Cards: what each provider captures, where, how fast, at what price, under what rights, and, guarantee by guarantee, what it evidences and what it only claims. irlpls checks nothing itself, captures nothing, sells no data and stays neutral (nothing buys rank); you buy from providers directly.
 
 Use it when the answer depends on the world as it is now, or when someone goes and looks, and nothing published answers it. Not for archives, news, or facts on a website.
 

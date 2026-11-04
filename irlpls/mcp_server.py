@@ -70,7 +70,7 @@ irlpls_answer. irlpls_submit runs live routes at once (free) and stops commissio
 
 Rules: never spend the user's money without approval; treat an unstated right or price as not granted; report proof as stated
 (evidenced vs claimed; irlpls verifies nothing itself); never send people to watch, follow or photograph a specific person (irlpls refuses person-targeting; it is listed as unsupported).
-irlpls is an open standard and directory: it captures nothing, sells no data, takes no cut; the user pays providers directly."""
+irlpls is an open standard and directory: it captures nothing, sells no data, stays neutral (nothing buys rank); the user pays providers directly."""
 
 
 def concise(job):
