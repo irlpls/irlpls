@@ -219,7 +219,7 @@ h1 .ln{display:block;white-space:nowrap}
 .top .brand{color:rgba(16,20,24,calc(1 - var(--bc,0)))}.top .brand i{color:rgba(91,101,116,calc(1 - var(--bc,0)))}.top nav a.brand:hover,.top .brand:hover{color:rgba(16,20,24,calc(1 - var(--bc,0)))}
 /* the five chats: a swipeable row; the next card's edge peeks in, dots below */
 .stage{position:relative;display:flex;flex-direction:column;flex:1 1 0;min-height:0}
-.track{display:flex;gap:10px;flex:1 1 0;min-height:0;margin:8px calc(-1*var(--gut)) -12px;padding:4px var(--gut) 16px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding:0 var(--gut);overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.track{display:flex;gap:10px;flex:1 1 0;min-height:0;margin:14px calc(-1*var(--gut)) -6px;padding:4px var(--gut) 16px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-padding:0 var(--gut);overscroll-behavior-x:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 /* the row takes what the screen leaves (flex-basis 0), so its height never follows its content: all five cards are one
    height, a card's photo fills what its reply leaves (no blank band), and an opened tool line scrolls inside its card
    instead of pushing the chip off the screen. Below 500px tall the page scrolls, so the cards size to their content. */
@@ -325,7 +325,7 @@ h1 .ln{display:block;white-space:nowrap}
 .ph{display:flex;align-items:center;gap:8px;min-height:28px}
 .ph .pt{flex:1;min-width:0;font:500 12.5px/1.3 var(--sans);color:var(--fg2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ph .pt b{font-weight:600;color:var(--fg)}
-.pxb{flex:none;align-self:center;width:64px;height:44px;margin:auto 0 -6px;padding:0;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--fg2)}
+.pxb{flex:none;align-self:center;width:64px;height:44px;margin:auto 0 -6px;padding:0;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--pol)}
 .px{flex:none;width:44px;height:44px;margin:-8px -10px -8px 0;padding:0;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--fg2)}
 .px>span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(20,30,50,.06);transition:background .15s}
 @media(hover:hover){.px:hover>span{background:rgba(20,30,50,.11)}}
