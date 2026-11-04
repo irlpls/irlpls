@@ -50,7 +50,7 @@ BENCH = [
     # ---- live: cameras ----
     ("is traffic backed up on the Bay Bridge in San Francisco, CA right now", {"caltrans-cctv", "empiric-earth"}, {"usgs-water", "noaa-tides", "nws"}),
     ("snow on the road at Lake Tahoe, CA right now", {"caltrans-cctv", "empiric-earth"}, {"usgs-water", "openaq", "skyfi"}),
-    ("live traffic camera on the highway in Austin, TX", {"windy-webcams"}, {"caltrans-cctv", "usgs-water", "nws"}),
+    ("live traffic camera on the highway in Austin, TX", {"windy-webcams", "road511"}, {"caltrans-cctv", "usgs-water", "nws"}),
     ("live webcam of the beach in Lisbon, Portugal", {"windy-webcams"}, {"caltrans-cctv", "nws", "noaa-tides"}),
     ("river camera photo of the Potomac at Washington, DC right now", {"usgs-water"}, {"caltrans-cctv", "openaq", "skyfi"}),
     ("mountain pass road conditions camera at Stevens Pass, WA right now", {"wsdot-cameras"}, {"caltrans-cctv", "usgs-water", "skyfi"}),

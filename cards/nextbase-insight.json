@@ -1,0 +1,151 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "nextbase-insight",
+  "name": "Nextbase InSight",
+  "provider_url": "https://nextbase.com/imagery-solutions/",
+  "status": "unclaimed",
+  "short": "Road-facing dash cam clips from partner fleets, requested by segment; quote only.",
+  "summary": "Street-level imagery platform from dash cam maker Nextbase, unveiled at CES 2026. InSight Connect uses road-facing cameras on partner fleet vehicles (the vendor names Geopost Vision in Europe and USPS in the US); the cameras do not stream, and send short clips (usually about eight seconds) only on request. The vendor says faces and licence plates are removed at source. Nextbase names transportation agencies, mapping platforms, mobility providers, insurers, infrastructure owners and AI developers as groups needing such imagery; access is by request and partnership, with no published price or API.",
+  "tags": [
+    "dashcam",
+    "street-level",
+    "road imagery",
+    "fleet",
+    "infrastructure",
+    "mapping",
+    "quote"
+  ],
+  "capabilities": {
+    "modalities": [
+      "video",
+      "photo"
+    ],
+    "tasks": [
+      "road-facing clips of a requested road segment from partner fleet vehicles",
+      "road imagery for mapping and infrastructure platforms (per the vendor page)",
+      "rare driving scenes for autonomy training (per the vendor page)"
+    ]
+  },
+  "pricing": {
+    "model": "quote (partners pay Nextbase for access to redacted road imagery)",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "from_usd 0 means not published, not free. The InSight Connect page says 'Partners pay Nextbase for access to redacted road imagery' and gives no amounts."
+  },
+  "latency": {
+    "typical": "Not stated",
+    "notes": "The vendor page says cameras do not stream; clips are sent only on request and are usually about eight seconds long. No delivery time or SLA is published. The CES release and press describe the platform as 'low-latency' (vendor claim, no number)."
+  },
+  "coverage": {
+    "regions": [
+      "Partner fleet routes in Europe (Geopost Vision) and the US (USPS)"
+    ],
+    "notes": "The InSight Connect page says: 'Right now we're deployed with partners including Geopost Vision in Europe and USPS in the US.' Coverage follows where partner vehicles drive. The CES coverage (Automotive World) quotes '13 billion miles' a year and 'more than 20 countries' as vendor figures for the platform; no country list or per-fleet coverage is published, so coverage.areas is left out and the figures are not used as coverage."
+  },
+  "licensing": {
+    "summary": "No licence terms for data customers are published. The InSight Privacy Policy says Nextbase 'does not commercialise, licence, sell, or package imagery, telemetry, or personal data' for law enforcement agencies, and the vendor page says law enforcement is excluded as a buyer. Video passed to a customer is deleted from Nextbase's cloud within 24 hours and delivered data is to be deleted within 120 days of receipt, per the policy. The policy also says 'a small subset of data my [sic] be retained for the purposes of improving quality models and algorithms at the Data Customer', which does not say who trains what. Nothing states AI-training, resale or ownership rights for buyers."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Capture is passive, by cameras in partner vehicles. The policy says it is 'not designed to identify individual drivers'; no identity check of the people involved is described."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No device or app attestation is documented. Camera files are said to be encrypted individually with keys kept by Nextbase, which is storage security, not attestation."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No signed capture or C2PA is documented. Nextbase makes the cameras, but no signing of footage is described."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Vendor page: each asset is 'geo-aligned, time-stamped, and enriched at source'; the policy lists timestamp metadata.",
+      "evidence_url": "https://nextbase.com/imagery-solutions/",
+      "unknown": "Clock source and any trusted time-stamping are not documented; buyers see no public way to check the time."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "The InSight Privacy Policy lists GPS coordinates and speed as collected metadata.",
+      "evidence_url": "https://nextbase.com/insight-privacy-policy/",
+      "unknown": "GPS accuracy and spoofing resistance are not documented. The CES release's claim of sync within 100 ms was seen only in a third-party summary and is not used."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "The vendor describes removal of faces and plates, not integrity checks. The policy says 'we cannot claim that it will always be free of all personal data'. No tamper-evidence is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent confirmation across vehicles is described."
+    }
+  },
+  "freshness": {
+    "mode": "on_demand",
+    "typical_age": "Not stated",
+    "notes": "Clips are requested from cameras that recorded the segment; the vendor says cameras record over footage typically within about 30 days. The vendor page says 'Continuous refreshed data' without a rate."
+  },
+  "api": {
+    "available": false,
+    "self_serve": false,
+    "docs_url": "https://nextbase.com/imagery-solutions/",
+    "auth": [],
+    "notes": "No API, docs, OpenAPI file or MCP server was found. The only routes are the 'Request Imagery Information' and 'Explore a Data Partnership' links on the vendor page and the contact form's 'Head Office & Biz Dev' topic. Nextbase's /.well-known/ucp is a dev.ucp.shopping endpoint for its dash cam web shop, not for InSight."
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Vendor page: access is 'request-based'; clips are sent 'only on request' and are 'usually about eight seconds long'. No delivery time is given."
+  },
+  "access": {
+    "cost": "quote",
+    "key_required": false,
+    "tested_live": null,
+    "gate": "approval"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "The InSight Connect page says: 'Law enforcement is not a customer and has no access to InSight data.' It also says Nextbase caps how often imagery can be requested from the same vehicle.",
+    "unknown": "How a buyer is vetted or approved is not published."
+  },
+  "sources": [
+    {
+      "claim": "Launch coverage: InSight Crowd (1080p+) and InSight Connect (4K, AI edge detection); '13 billion miles' annually and 'more than 20 countries' (vendor figures, via press); Geopost, Bentley Systems and Hawaii DOT named; 'low-latency'; no pricing, licence or API",
+      "url": "https://www.automotiveworld.com/news/nextbase-launches-insight-data-platform-at-ces-2026/"
+    },
+    {
+      "claim": "Vendor page: request-based access, geo-aligned and time-stamped at source, PII (faces and licence plates) removal, encryption and geofencing, autonomous-model training scenes, 'Request Imagery Information' and 'Explore a Data Partnership' links; no price, API, partner names or law-enforcement statement",
+      "url": "https://nextbase.com/imagery-solutions/"
+    },
+    {
+      "claim": "InSight Connect page: cabin camera and mics disabled, nothing streams, clips usually about eight seconds, on-camera files individually encrypted, 24-hour cloud deletion after delivery, about 30-day camera overwrite, per-vehicle request cap, Geopost Vision (Europe) and USPS (US), law enforcement not a customer, 'Partners pay Nextbase for access to redacted road imagery'",
+      "url": "https://nextbase.com/insight-connect/"
+    },
+    {
+      "claim": "InSight Privacy Policy: collected metadata (GPS, speed, timestamp), purposes, recipients, retention (30 days; 24 hours after transfer; 120 days at customer), legitimate-interests basis with no consent from drivers' data subjects, server regions, no licensing to law enforcement, subset retained for quality models, PII not guaranteed fully removed, controller Portable Multimedia Limited",
+      "url": "https://nextbase.com/insight-privacy-policy/"
+    },
+    {
+      "claim": "Nextbase blog: fleet imagery from commercial vehicles, buyers include transportation agencies, mapping platforms, mobility providers, insurers and AI developers; faces and plates protected, audio stripped; no revenue-share terms",
+      "url": "https://nextbase.com/hub/beyond-compliance-how-a-proposed-dash-cam-law-could-create-a-new-revenue-lane-for-street-level-imagery-/"
+    },
+    {
+      "claim": "Contact form offers a 'Head Office & Biz Dev' topic; no InSight-specific contact; support email and phone are for products",
+      "url": "https://nextbase.com/contact-us/"
+    },
+    {
+      "claim": "Well-known probes on 2026-11-04: /.well-known/ucp serves a dev.ucp.shopping profile (dash cam shop); agent-card.json, irlpls, oauth-protected-resource and oauth-authorization-server return 404",
+      "url": "https://nextbase.com/.well-known/ucp"
+    },
+    {
+      "claim": "MCP Registry search for 'nextbase' returned no servers on 2026-11-04",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=nextbase"
+    }
+  ],
+  "updated": "2026-11-04",
+  "expires": "2027-11-04"
+}

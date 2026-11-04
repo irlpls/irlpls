@@ -1,0 +1,198 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "geopost-vision",
+  "name": "Geopost Vision",
+  "provider_url": "https://www.geopost-vision.com/en/",
+  "status": "unclaimed",
+  "short": "Street-level imagery of Europe from delivery-van dashcams; contact the provider.",
+  "tags": [
+    "street-level imagery",
+    "dashcam",
+    "fleet data",
+    "europe",
+    "mapping",
+    "road signs",
+    "ADAS",
+    "insurance",
+    "quote only"
+  ],
+  "summary": "Geopost Vision SAS (France), a Geopost venture, sells street-level imagery and telemetry captured by connected dashcams fitted to selected DPD, Chronopost, SEUR and BRT delivery vehicles across Europe. The provider's use-cases page says data is available through an API; no API documentation, price or licence terms are published, and the only route in is a contact form.",
+  "capabilities": {
+    "modalities": [
+      "photo",
+      "video",
+      "sensor"
+    ],
+    "tasks": [
+      "street-level imagery of European roads",
+      "road sign, speed limit and traffic light change detection (object-level insights, per press release)",
+      "map updates and road network validation",
+      "training and validation imagery for ADAS and autonomous driving",
+      "road surface and signage condition monitoring",
+      "infrastructure inventory for smart cities and insurance"
+    ]
+  },
+  "pricing": {
+    "model": "Not published; contact the provider",
+    "from_usd": 0,
+    "unit": "not published",
+    "notes": "Not published. No page read states a price or a pricing model."
+  },
+  "latency": {
+    "typical": "Not published; the provider says data collection never stops",
+    "notes": "The solution page says 'data collection never stops' (vendor claim) with no refresh interval. A January 2026 trade article says data is 'often refreshed on an hourly basis' (secondary, not on the provider's own site). The home-page coverage counters render as placeholders (0), so no real figure is given."
+  },
+  "coverage": {
+    "regions": [
+      "Europe (21 countries listed as live on the provider's solution page; vendor claim)"
+    ],
+    "notes": "The solution page (read 2026-11-04) lists 21 countries as live: UK, France, Spain, Italy, Germany, Hungary, Slovakia, Ireland, Czech Republic, Portugal, Netherlands, Poland, Belgium, Bulgaria, Romania, Latvia, Estonia, Luxembourg, Croatia, Slovenia, Lithuania. The 3 Dec 2025 Geopost press release said 11 live and 10 planned for mid-2026, and a 14 Jan 2026 trade article repeated 11 with more than 20 targeted by end 2026, so the 21-country list is the provider's later self-report. Density within a country is not published; the vans are a delivery fleet, so rural and off-route roads may be sparse.",
+    "areas": [
+      "GB",
+      "FR",
+      "ES",
+      "IT",
+      "DE",
+      "HU",
+      "SK",
+      "IE",
+      "CZ",
+      "PT",
+      "NL",
+      "PL",
+      "BE",
+      "BG",
+      "RO",
+      "LV",
+      "EE",
+      "LU",
+      "HR",
+      "SI",
+      "LT"
+    ]
+  },
+  "licensing": {
+    "summary": "No licence, usage-rights, AI-training or resale terms are published. The legal notice covers only the website's content (reuse requires prior consent) and the use-cases and solution pages state no data licence. Rights would be set in a contract after contact. The privacy page says the footage is recorded and processed jointly with Geopost."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Capture is passive by delivery drivers' vehicles. No enrolment or identity check of a person is described, and none is needed for the claim; the capturing people are not identified."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No app or device attestation is documented. A trade article describes the camera as a Nextbase IQ connected dashcam."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No signed capture is documented, and neither Geopost nor Nextbase is on the C2PA conforming products list (checked 2026-11-04). The provider says the cameras are connected dashcams on its own fleet vehicles."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Telemetry is logged alongside imagery, including timestamps",
+      "evidence_url": "https://www.geopost-vision.com/en/solution/",
+      "unknown": "Whether timestamps are from a trusted source or signed, and whether the time is delivered with each image, is not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "GPS coordinates (longitude, latitude, altitude), HDOP, VDOP, PDOP, heading, speed and IMU are logged with the imagery",
+      "evidence_url": "https://www.geopost-vision.com/en/solution/",
+      "unknown": "Position is device-reported GNSS with quality metrics; spoofing resistance and signing are not documented."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Provider states the imagery is delivered 'fully anonymized and GDPR-compliant' (vendor claim)",
+      "evidence_url": "https://www.geopost-vision.com/en/",
+      "unknown": "No integrity check (hash, signature) is documented. The press release (not the provider's own pages) says faces and licence plates are removed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent cross-check is documented. Repeat passes by several vans may overlap, but the provider does not say that is used for confirmation."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Contact form at https://www.geopost-vision.com/en/contact/ or contact@geopost-vision.com; no key issuance process is published."
+      }
+    ],
+    "notes": "The use-cases page says 'Through our API, teams can also improve routing accuracy'; the press release says data is delivered 'through APIs to clients including mapping providers'. No documentation, base URL, endpoints, formats or OpenAPI file was found. No /.well-known/oauth-protected-resource or oauth-authorization-server on the provider's domain (404, 2026-11-04). Not in the official MCP Registry (searched 'geopost', 2026-11-04).",
+    "mcp": {
+      "registry_name": null,
+      "first_party": false,
+      "notes": "No MCP server found; the official registry search for 'geopost' returned none."
+    }
+  },
+  "delivery": {
+    "modes": [],
+    "speed": "unknown",
+    "basis": "No turnaround or delivery mode is published; the provider says only that data collection never stops."
+  },
+  "access": {
+    "cost": "quote",
+    "tested_live": null
+  },
+  "payment": {
+    "methods": [],
+    "agent_can_pay": false,
+    "notes": "No payment method is published."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "unknown": "No check of who requests data, or for what purpose, is published; the contact form asks first and last name, email, optional work phone, company and a message."
+  },
+  "updated": "2026-11-04",
+  "expires": "2027-11-04",
+  "sources": [
+    {
+      "claim": "Article dated 14 Jan 2026: Geopost Vision CEO Martin Calmels; Nextbase IQ connected dashcam, 4K imagery at 30 FPS, GPS up to 10 Hz; customers retrieve imagery through an API; 11 countries, goal of 20+ by end 2026; data often refreshed hourly; four verticals (mapping, mobility, insurance, road maintenance)",
+      "url": "https://www.geoweeknews.com/articles/geopost-launches-new-venture-street-level-imagery/"
+    },
+    {
+      "claim": "Cameras on selected DPD, Chronopost, SEUR and BRT vehicles; imagery 'fully anonymized and GDPR-compliant'; counters render as 0; no API or price mentioned",
+      "url": "https://www.geopost-vision.com/en/"
+    },
+    {
+      "claim": "Telemetry (timestamps, lat/long/altitude, HDOP/VDOP/PDOP, heading, speed, IMU); up to 4K, 30 FPS, 140 degree view; 21 countries listed live; 'data collection never stops'; no API, anonymisation, licence or price stated",
+      "url": "https://www.geopost-vision.com/en/solution/"
+    },
+    {
+      "claim": "Use cases (mapping and navigation, autonomous driving and ADAS, smart cities, road maintenance, insurance); mentions 'our API'; no licence, price or refresh interval",
+      "url": "https://www.geopost-vision.com/en/use-cases/"
+    },
+    {
+      "claim": "Contact form fields and contact@geopost-vision.com",
+      "url": "https://www.geopost-vision.com/en/contact/"
+    },
+    {
+      "claim": "Legal notice: Geopost Vision SAS, 26 rue Guynemer, Issy-les-Moulineaux, RCS Nanterre 878 301 407; website content needs prior consent to reuse; no clause on data, AI or automated access",
+      "url": "https://www.geopost-vision.com/en/legal-and-copyright-notice-disclaimer-dispute-settlement/"
+    },
+    {
+      "claim": "Privacy page: Geopost Vision records video of the road and street environment via connected dashcams and jointly processes it with Geopost; anonymisation and retention not stated on this page",
+      "url": "https://www.geopost-vision.com/en/gv/"
+    },
+    {
+      "claim": "Press release 3 Dec 2025: 11 live and 10 planned countries; strict anonymization removing faces and licence plates; imagery never made publicly available; data delivered through APIs to clients including mapping providers",
+      "url": "https://www.geopost.com/en/?p=36320"
+    },
+    {
+      "claim": "Post&Parcel: 11 live and 10 planned countries; no raw imagery made publicly available; no pricing mentioned",
+      "url": "https://postandparcel.info/?p=160781"
+    },
+    {
+      "claim": "No Geopost server in the official MCP Registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=geopost"
+    },
+    {
+      "claim": "Neither Geopost nor Nextbase on the C2PA conforming products list",
+      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+  ]
+}

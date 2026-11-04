@@ -1,0 +1,253 @@
+{
+  "id": "open-meteo",
+  "name": "Open-Meteo",
+  "status": "unclaimed",
+  "provider_url": "https://open-meteo.com",
+  "tags": [
+    "weather",
+    "forecast",
+    "model",
+    "modelled",
+    "not observed",
+    "temperature",
+    "wind",
+    "precipitation",
+    "air quality",
+    "pollen",
+    "marine",
+    "waves",
+    "flood",
+    "geocoding",
+    "api",
+    "no key",
+    "free",
+    "cc by",
+    "global",
+    "real-time",
+    "keyless"
+  ],
+  "summary": "Open-Meteo is a free, keyless JSON API that serves weather forecasts (up to 16 days), air-quality (including pollen in Europe, in season), marine-wave and river-discharge values for any latitude and longitude worldwide. The values are computed by numerical weather and atmospheric models from national weather services and others, then interpolated to the requested point. They are modelled estimates, not readings from a sensor at that spot. A 'current' block gives the latest model time step (15 minutes to hourly in live checks); the same API also serves ERA5 history back to 1940. The free tier is for non-commercial use only; API data is offered under CC BY 4.0 with attribution.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current and forecast weather at a point (temperature, wind, up to 16 days)",
+      "modelled air-quality forecasts (particulates, CO, NO2, SO2, ozone, dust, UV index) and pollen for Europe in season; model values, not measurements",
+      "marine wave forecast",
+      "river discharge forecast (GloFAS)",
+      "geocoding place names",
+      "ERA5 reanalysis history back to 1940 (not new capture)"
+    ]
+  },
+  "pricing": {
+    "model": "free non-commercial tier; paid monthly subscriptions for commercial use",
+    "from_usd": 0,
+    "unit": "per month",
+    "notes": "Free tier: no charge, no sign-up, non-commercial use only; 10,000 calls/day, 5,000/hour, 600/minute, 300,000/month (pricing page). Commercial use needs a paid plan (Standard 1M calls/month, Professional 5M, Enterprise >50M); payments via Stripe. The pricing page states no euro or dollar amounts, only a fixed monthly price, so none is stated here."
+  },
+  "latency": {
+    "typical": "Live current block 15 minutes to 1 hour behind; most global models update every 6 hours",
+    "notes": "Features page (vendor): 'Most global models are updated every 6 hours'; 15-minutely data available for Central Europe and North America, interpolated from hourly output elsewhere. Live check 2026-11-04 15:50 GMT: forecast current block time 15:45 with interval 900 s; air-quality current block time 15:00 with interval 3600 s. Values are model output, not captured on request."
+  },
+  "coverage": {
+    "regions": [
+      "Global model grid; 1 to 2 km high-resolution models for the first few days in some regions and 9 to 11 km global models (vendor, Features page); air quality 11 to 45 km; marine 5 to 50 km"
+    ],
+    "notes": "Coverage is a model grid, not a station network: any coordinate returns a value, which does not mean something was measured there. Pollen is Europe-only, in season, 4-day forecast. The returned coordinates are snapped to the grid (a request for 52.52, 13.41 returned 52.5126, 13.4195). Marine docs say accuracy in coastal areas is limited and data is not suitable for coastal navigation.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "The licence page states 'API data are offered under Attribution 4.0 International (CC BY 4.0)': credit Open-Meteo, link the licence, indicate changes, and link 'Weather data by Open-Meteo.com' wherever the data is displayed. Upstream sources (DWD, ECMWF, JMA, UK Met Office under CC-BY-SA) are listed with their own licences. Separately the Terms say 'You may only use the free API services for non-commercial purposes' (commercial = websites or apps with subscriptions or advertising); a subscription grants a commercial use licence. The terms do not mention AI or ML training or resale; the Features page recommends the data for 'Training weather post-processing models'."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: values are model output, not captured by a person."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No attestation or signing of data from model to API; integrity rests on Open-Meteo running the service over HTTPS."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable; no imagery is captured."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each response carries the model time step in a 'time' field and the current block an 'interval' in seconds (live check 2026-11-04).",
+      "unknown": "The time is the model valid time, not the moment anything was observed; the ingest time of the underlying model run is not shown per response."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "The response returns the grid-snapped latitude, longitude and an elevation for the point.",
+      "unknown": "The value is an interpolation from a model grid (about 1 to 50 km depending on product) and does not describe conditions at the exact point."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Terms state accuracy and completeness are not guaranteed and data is provided without warranty. The values are model estimates, and no per-value quality flag or check is documented."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent confirmation of any returned value is exposed."
+    }
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Current block is the latest model step, 15 minutes to about an hour old in live checks; most global models update every 6 hours",
+    "notes": "Model output, not measurement. Historical endpoints (ERA5 from 1940, forecast archive from 2021) are archive and not new capture."
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://open-meteo.com/en/docs",
+    "base_url": "https://api.open-meteo.com/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No sign-up for non-commercial use; send a plain GET."
+      },
+      {
+        "type": "api_key_query",
+        "how_to_get": "Paid plans only: subscribe at https://open-meteo.com/en/pricing; the key goes in the apikey query parameter and the host becomes customer-api.open-meteo.com."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/forecast",
+        "params": "latitude, longitude, current=temperature_2m,wind_speed_10m (any variables), hourly, daily, forecast_days, models",
+        "notes": "Live check 2026-11-04 returned current temperature_2m 9.4 C and wind_speed_10m 7.7 km/h for Berlin. Host api.open-meteo.com."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://air-quality-api.open-meteo.com/v1/air-quality",
+        "params": "latitude, longitude, current=pm2_5 (or hourly pollutants)",
+        "notes": "Live check 2026-11-04 returned pm2_5 5.0 ug/m3 for Berlin."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://marine-api.open-meteo.com/v1/marine",
+        "params": "latitude, longitude, hourly wave variables",
+        "notes": "Endpoint from the marine docs page; not called."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://flood-api.open-meteo.com/v1/flood",
+        "params": "latitude, longitude, daily=river_discharge",
+        "notes": "Endpoint from the flood docs page; not called."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "https://geocoding-api.open-meteo.com/v1/search",
+        "params": "name",
+        "notes": "Live check 2026-11-04 returned HTTP 200 with results for name=Berlin."
+      }
+    ],
+    "rate_limits": "Free tier: 600 calls/minute, 5,000/hour, 10,000/day, 300,000/month (pricing page and terms), applied per IP and application. Response headers X-RateLimit-Limit (600), X-RateLimit-Remaining, X-RateLimit-Window (60), X-RateLimit-Cost were returned on 2026-11-04.",
+    "mcp": {
+      "remote": null,
+      "registry_name": "io.github.cyanheads/open-meteo-mcp-server",
+      "first_party": false,
+      "community": "Only a third-party server (cyanheads) is in the official MCP Registry search; no Open-Meteo-run MCP server found."
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live current block observed 15 to 60 minutes old on 2026-11-04; most global models update every 6 hours (vendor, Features page). Model output, not a new capture."
+  },
+  "short": "Free keyless global weather, air-quality, wave and flood model data; non-commercial.",
+  "access": {
+    "cost": "freemium",
+    "key_required": false,
+    "tested_live": "2026-11-04",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 600,
+      "scope": "per-ip",
+      "notes": "Free tier also 5,000/hour, 10,000/day, 300,000/month; applied per IP and application (Terms).",
+      "source_url": "https://open-meteo.com/en/terms",
+      "per_seconds": 60
+    }
+  },
+  "payment": {
+    "methods": [
+      "hosted_checkout",
+      "card"
+    ],
+    "notes": "Only for paid commercial plans, by a person at Stripe checkout (card, Apple Pay, Google Pay, SOFORT, SEPA); the free tier needs no payment.",
+    "agent_can_pay": false
+  },
+  "capture": {
+    "by": "subject"
+  },
+  "requester": {
+    "checks": "None for the free tier; no account or key. Paid plans are bought through Stripe checkout and give an API key.",
+    "unknown": "Whether a requester's use is checked as non-commercial is not stated."
+  },
+  "sources": [
+    {
+      "claim": "Free tier limits (600/min, 5,000/h, 10,000/day, 300,000/month), non-commercial only, CC BY 4.0, definition of commercial use, per-IP and application limits, no warranty",
+      "url": "https://open-meteo.com/en/terms"
+    },
+    {
+      "claim": "Plans: Free, Standard 1M, Professional 5M, Enterprise >50M calls/month; no euro/dollar amounts; commercial licence; customer-api host and apikey parameter; Stripe payments",
+      "url": "https://open-meteo.com/en/pricing"
+    },
+    {
+      "claim": "Licence: API data CC BY 4.0, attribution link required, upstream source list and their licences",
+      "url": "https://open-meteo.com/en/licence"
+    },
+    {
+      "claim": "Features: models from over 15 national weather services, 1-2 km and 9-11 km resolution, 6-hourly updates, 15-minutely data, ERA5 from 1940, forecast archive from 2021, pollen, geocoding, 16-day forecast",
+      "url": "https://open-meteo.com/en/features"
+    },
+    {
+      "claim": "Air quality API variables; pollen Europe-only, in season, 4-day forecast; resolutions 11 to 45 km",
+      "url": "https://open-meteo.com/en/docs/air-quality-api"
+    },
+    {
+      "claim": "Marine API endpoint, variables, resolutions 5 to 50 km",
+      "url": "https://open-meteo.com/en/docs/marine-weather-api"
+    },
+    {
+      "claim": "Flood API endpoint, GloFAS river discharge, 5 km",
+      "url": "https://open-meteo.com/en/docs/flood-api"
+    },
+    {
+      "claim": "Live keyless test 2026-11-04: Berlin current temperature_2m 9.4 C, wind 7.7 km/h at 15:45, interval 900 s; X-RateLimit headers (limit 600, window 60); CORS *",
+      "url": "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,wind_speed_10m"
+    },
+    {
+      "claim": "Live keyless test 2026-11-04: Berlin pm2_5 5.0 ug/m3 at 15:00, interval 3600 s",
+      "url": "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=52.52&longitude=13.41&current=pm2_5"
+    },
+    {
+      "claim": "Only a community Open-Meteo MCP server in the official registry (cyanheads)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=open-meteo"
+    },
+    {
+      "claim": "Docs: forecast endpoint, up to 16 days, apikey only for commercial",
+      "url": "https://open-meteo.com/en/docs"
+    },
+    {
+      "claim": "Live keyless test 2026-11-04: geocoding search name=Berlin returned HTTP 200",
+      "url": "https://geocoding-api.open-meteo.com/v1/search?name=Berlin&count=1"
+    }
+  ],
+  "updated": "2026-11-04",
+  "expires": "2027-11-04",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

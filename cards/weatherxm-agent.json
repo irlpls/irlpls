@@ -1,0 +1,236 @@
+{
+  "id": "weatherxm-agent",
+  "name": "WeatherXM Agent API",
+  "status": "unclaimed",
+  "provider_url": "https://agent.weatherxm.com/",
+  "tags": [
+    "weather",
+    "weather stations",
+    "community network",
+    "depin",
+    "x402",
+    "usdc",
+    "pay per call",
+    "temperature",
+    "wind",
+    "humidity",
+    "pressure",
+    "precipitation",
+    "uv index",
+    "forecast",
+    "history",
+    "real-time",
+    "global",
+    "agent api"
+  ],
+  "summary": "WeatherXM, which runs a community network of independently operated weather stations (its own pages claim 9,500+ deployed, 5,900+ active, 85+ countries), sells weather by latitude and longitude to software agents through an x402 API: current conditions, a 7-day hourly and daily forecast, and one day of history from the last 4 days. Each call costs $0.001 in USDC on Base, paid in the request with no account or API key. /api/health is free. The OpenAPI spec says data_source 'live' means data 'from a weather provider' and 'sample' means static testnet data; it does not say that a reading comes from a named station or from the station network, and responses carry no station ID. No payment was made, so no real response was seen.",
+  "short": "Weather by lat/lon for $0.001 USDC per call via x402, no key.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current conditions at a latitude/longitude: temperature, feels-like, wind speed and direction, UV index, precipitation and its probability, pressure, humidity (GET /api/current)",
+      "7-day forecast, 168 hourly and 7 daily entries (GET /api/forecast)",
+      "hourly and daily weather for one date within the last 4 days (GET /api/history)"
+    ]
+  },
+  "pricing": {
+    "model": "pay per request",
+    "from_usd": 0.001,
+    "unit": "per request",
+    "notes": "$0.001 USDC per call on /api/current, /api/forecast and /api/history (402 response: amount 1000 in USDC's 6-decimal units on Base, eip155:8453). /api/health is free. Larger or key-based access is sold separately through WeatherXM Pro, whose prices were not read."
+  },
+  "latency": {
+    "typical": "Not stated",
+    "notes": "The OpenAPI spec returns 204 when there is no current data within a plus-or-minus 1 hour window. The weatherxm.com/data page warns that an observation's timestamp, its aggregation interval and the moment it is available through the API are three different things, and gives no number."
+  },
+  "coverage": {
+    "regions": [
+      "Global: any latitude/longitude is accepted; density follows the station network"
+    ],
+    "notes": "The API takes any lat (-90 to 90) and lon (-180 to 180). WeatherXM's own pages claim 9,500+ stations deployed in 85+ countries (weatherxm.com/network) and, as an August 2026 snapshot, 5,900+ active and 4,300+ synoptic quality (weatherxm.com/data). It lists no countries, and the spec does not say whether or how far a point may be from a station.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "No licence for Agent API data is stated on the pages read. weatherxm.com/terms (last updated August 2026) covers the websites, station hardware and 'integrating with WeatherXM APIs', names the 'x402 Agent API' as a way to pay for access, and says 'Redistribution of bulk raw telemetry without appropriate licensing is prohibited.' It says forecasts and observations are provided as-is and are not the sole basis for life-critical decisions. The Pro Terms of Service (PDF, for business customers on a subscription) license data by tier, require credit 'Data provided by WeatherXM Association' where attribution applies, bar selling or passing data on to third parties under the commercial tier except in products without 'Substantial Amounts of Data', and do not mention x402. The Network Association says full commercial licences of the whole dataset are auctioned, four a year. AI or ML training and resale are not mentioned in any of these, and whether a $0.001 call grants more than personal use is not stated."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Not stated",
+    "notes": "On demand per call. Forecast and 4-day history are also offered, but irlpls lists this for current conditions."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "unknown",
+    "basis": "The spec's /api/current says 'Get current weather conditions' and returns 204 if there is no data within a plus-or-minus 1 hour window; no delivery time is stated.",
+    "formats": [
+      "json"
+    ]
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://agent.weatherxm.com/openapi.json",
+    "base_url": "https://agent.weatherxm.com",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "GET /api/health needs nothing. The data endpoints need no key or login either, only payment: an unpaid request returns 402 with a PAYMENT-REQUIRED header (base64 JSON, x402 version 2, scheme exact, USDC on Base eip155:8453, amount 1000, a payTo address, 300 s timeout). Retry with an x402 payment from the agent's own wallet; the mainnet facilitator is Coinbase CDP. A testnet server at https://agent-testnet.weatherxm.com uses Base Sepolia."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/current",
+        "params": "lat, lon (required); tz (IANA or auto), units (metric or imperial)",
+        "notes": "$0.001 USDC. 200 gives location, current{time, temperature, feels_like, wind_speed, wind_direction, uv_index, precipitation_probability, precipitation, pressure, humidity}, timezone, units and data_source (live = 'from a weather provider'; sample = static testnet data, per the spec); 204 if no data within +/-1 h."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/forecast",
+        "params": "lat, lon (required); tz, units",
+        "notes": "$0.001 USDC. 168 hourly and 7 daily entries."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/api/history",
+        "params": "lat, lon, date YYYY-MM-DD (required, within the last 4 days); tz, units",
+        "notes": "$0.001 USDC. 24 hourly entries and 1 daily entry."
+      },
+      {
+        "action": "status",
+        "method": "GET",
+        "path": "/api/health",
+        "notes": "Free, no payment. Returned status ok, version 1.0.0, network mainnet on 2026-11-04."
+      }
+    ],
+    "rate_limits": "Not stated in the spec.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    },
+    "notes": "The spec lists lat and lon as strings although they are numbers. No /.well-known/ucp, agent-card.json, irlpls or oauth-protected-resource file exists on agent.weatherxm.com (all 404). A separate keyed REST API (stations/near, stations/{id}/latest, history, cells/{h3}/forecast) is sold as WeatherXM Pro at https://pro.weatherxm.com/ and is not covered by this card."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": false,
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "payment": {
+    "methods": [
+      "x402",
+      "crypto"
+    ],
+    "agent_rails": [
+      "x402"
+    ],
+    "agent_can_pay": true,
+    "prepaid": false,
+    "notes": "Per-call USDC micropayment on Base through x402, signed by the agent's own wallet; no card, invoice or account. The OpenAPI spec describes the API as built for agent workflows and names Coinbase AgentKit as a client."
+  },
+  "requester": {
+    "checks": "None beyond payment: no account, key or identity check is described for the x402 endpoints.",
+    "unknown": "Not stated whether any request-time check beyond payment applies."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Stations are run by owners (businesses, landowners and communities) but no person-level identity check is described for readings."
+    },
+    "application": {
+      "level": "claimed",
+      "method": "weatherxm.com/network says sensors sign observations 'at the source'; weatherxm.com/data says 'Supported stations sign each observation in hardware'; /network/quality says 'device identity and signing, where the hardware supports it' establish which station produced a reading.",
+      "evidence_url": "https://weatherxm.com/network/quality",
+      "unknown": "Signing depends on hardware support and the method and keys are not described on the pages read. The Agent API response carries no station ID, signature or hash, so a buyer cannot check a signature, and it is not stated that API values are signed station data."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No imagery."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each reading has an ISO 8601 time with offset in the response.",
+      "unknown": "How station clocks are checked is not described, no trusted time-stamp is documented, and the API's availability delay is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "WeatherXM scores station location 0 to 1 daily from 'Location Packets' (Proof of Location); a relocated station drops to 0 for a penalty period.",
+      "evidence_url": "https://docs.weatherxm.com/rewards/proof-of-location",
+      "unknown": "The pages do not say how Location Packets are generated (for example GNSS), and the score is WeatherXM's own with no public proof. The Agent API returns the requested lat/lon, not the station's, and does not say which station or how far away it is."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "WeatherXM describes five checks on station data: physical limits, weather dynamics, siting signature, photographic audit, and obstruction analysis; results feed a station quality assessment visible to the owner.",
+      "evidence_url": "https://weatherxm.com/network/quality",
+      "unknown": "No thresholds are published, WeatherXM says a quality score 'is not a statement of sensor accuracy and it is not a certification', and the Agent API response gives no quality score. The spec says data_source 'live' is from 'a weather provider', so it is not stated that Agent API values are station readings that passed these checks."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-check between stations or sources is documented for what the Agent API returns."
+    }
+  },
+  "sources": [
+    {
+      "claim": "OpenAPI 3.1 spec v1.0.0: endpoints /api/current, /api/forecast, /api/history at $0.001 USDC, parameters, responses (200 with data_source live or sample, 204 outside +/-1 h, 402, 502), x402 on Base and Base Sepolia, facilitators x402.org (testnet) and Coinbase CDP (mainnet), free /api/health, servers agent.weatherxm.com and agent-testnet.weatherxm.com; data_source live = 'from a weather provider', sample = static testnet data",
+      "url": "https://agent.weatherxm.com/openapi.json"
+    },
+    {
+      "claim": "Free health check returned status ok, version 1.0.0, network mainnet (2026-11-04 15:47 UTC)",
+      "url": "https://agent.weatherxm.com/api/health"
+    },
+    {
+      "claim": "Unpaid GET /api/current returned HTTP 402 with a PAYMENT-REQUIRED header decoding to x402 version 2, scheme exact, network eip155:8453, amount 1000, USDC asset, 300 s timeout (2026-11-04)",
+      "url": "https://agent.weatherxm.com/api/current?lat=37.98&lon=23.72"
+    },
+    {
+      "claim": "/.well-known/ucp, agent-card.json, irlpls and oauth-protected-resource returned 404 on agent.weatherxm.com (2026-11-04)",
+      "url": "https://agent.weatherxm.com/.well-known/agent-card.json"
+    },
+    {
+      "claim": "Official MCP Registry search for weatherxm returned no servers (2026-11-04)",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=weatherxm"
+    },
+    {
+      "claim": "Terms (last updated August 2026): scope includes WeatherXM APIs; section 4 names the x402 Agent API; bulk raw telemetry redistribution prohibited without licensing; as-is disclaimer; AI training and resale not mentioned",
+      "url": "https://weatherxm.com/terms"
+    },
+    {
+      "claim": "Pro Terms of Service PDF: Data licence tiers (free personal and academic, paid commercial), attribution 'Data provided by WeatherXM Association', no Distribution to third parties and no Substantial Amounts of Data in customer services, no mention of x402 or AI training",
+      "url": "https://weatherxm.com/wp-content/uploads/2025/01/WeatherXM-AG-Terms-of-Service.pdf"
+    },
+    {
+      "claim": "5,900+ active and 4,300+ synoptic quality stations, 85+ countries (network snapshot August 2026); 'Supported stations sign each observation in hardware'; WeatherXM AG and Network Association roles; x402 machine-to-machine option; latency caveat; Pro REST API endpoints (a deployed count of 9,500+ is not on this page)",
+      "url": "https://weatherxm.com/data"
+    },
+    {
+      "claim": "9,500+ deployed stations and 85+ countries (undated headline stats); station owners are businesses, landowners and communities; five station models; sensors sign observations at the source",
+      "url": "https://weatherxm.com/network"
+    },
+    {
+      "claim": "Five data quality checks; signing where hardware supports it; quality score is not a certification",
+      "url": "https://weatherxm.com/network/quality"
+    },
+    {
+      "claim": "Proof of Location score 0 to 1, calculated daily from Location Packets; relocation penalty",
+      "url": "https://docs.weatherxm.com/rewards/proof-of-location"
+    },
+    {
+      "claim": "Network Dataset commercial licences: four auctioned each year to the highest $WXM bidders (2026 holders WeatherXM AG and Zeus Bittensor Subnet); non-commercial personal use free; academic use needs approval; AI training and x402 not mentioned",
+      "url": "https://weatherxm.network/docs/data-licensing.html"
+    }
+  ],
+  "updated": "2026-11-04",
+  "expires": "2027-11-04",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}

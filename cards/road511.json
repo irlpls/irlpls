@@ -1,0 +1,134 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "road511",
+  "name": "Road511",
+  "status": "unclaimed",
+  "provider_url": "https://road511.com",
+  "tags": ["traffic", "road conditions", "511", "incidents", "road closures", "work zones", "traffic cameras", "dynamic message signs", "bridge clearances", "truck routing", "weigh stations", "ev charging", "united states", "canada", "government data", "aggregator", "real-time", "sensor", "geojson"],
+  "summary": "Road511 is a paid REST API (and remote MCP server) that normalises traffic and road data from US and Canadian state, provincial and federal sources into one GeoJSON schema: live incidents, closures and work zones, 60+ feature types (vendor figure) such as traffic cameras (image URLs), dynamic message signs, weather stations, weigh stations, truck parking, bridge clearances and EV chargers, plus a truck-routing endpoint. It aggregates what the DOTs publish; it does not capture anything itself. Every data call needs an API key; a 14-day free trial returns data 15 minutes late, paid plans are real-time. Data stays under each upstream source's licence, and standalone redistribution is barred.",
+  "short": "Normalised US/Canada DOT traffic events, cameras and road data via a keyed API; an aggregator.",
+  "capabilities": {
+    "modalities": ["sensor", "photo", "text-report"],
+    "tasks": [
+      "current traffic incidents, closures, construction and weather events by jurisdiction, road, severity, bounding box or radius",
+      "traffic camera listings with the DOT's image URL (a still or stream link, as published by the source)",
+      "road features: dynamic message signs, road-weather stations, weigh stations, rest areas, truck parking, bridge clearances, border crossings, EV chargers, ferries",
+      "truck-legal routing with hazard warnings along the route (paid plans)",
+      "analytics and history: clearance times, trends, corridor reliability (Pro and above)"
+    ]
+  },
+  "pricing": {
+    "model": "monthly subscription with a 14-day free trial",
+    "from_usd": 29,
+    "unit": "per month (Starter)",
+    "notes": "Free Trial $0 for 14 days: 20 requests per minute, 1,000 per day, 2 jurisdictions per request, 15-minute data delay, no credit card. Starter $29/mo (300 rpm, 50,000/day, all jurisdictions, GeoJSON, 1,000+ routing calls), Pro $99/mo (1,000 rpm, 500,000/day, analytics, truck corridor), Enterprise $279/mo (custom rpm, SLA). Annual billing is 10% off. Routing top-up packs from $5 for 250 calls. After the trial ends keys stop working until a plan is bought."
+  },
+  "latency": {
+    "typical": "Live feeds; the home page claims sub-minute polling on hot feeds",
+    "notes": "On 2026-11-04 15:4x UTC the keyless /map/events endpoint returned events with last_updated within about 7 minutes of the request. Freshness depends on each upstream DOT feed; the trial plan adds a 15-minute delay."
+  },
+  "coverage": {
+    "regions": ["United States", "Canada"],
+    "notes": "The home page lists all 50 US states plus DC (marked 51 or 52 jurisdictions in different places) and 13 Canadian provinces and territories, plus federal sources (FHWA, NBI bridges, NREL EV charging, FRA rail crossings, WZDx work-zone feeds). Europe is served by a sibling product, NAPSPAN. Depth varies by state: some feeds have no cameras or signs, and the public status endpoint lists per-jurisdiction health.",
+    "areas": ["US", "CA"]
+  },
+  "licensing": {
+    "summary": "Terms (version 2026-10-16): Road511 claims no ownership of underlying source data; rights stay with each government agency or other source. Each upstream licence, attribution and disclaimer travels with the data in an attribution block on every response and in the /data-sources catalogue, and customers must pass those conditions on. Some sources are restrictive (the API itself shows Pennsylvania asserting that resale, republication and modification are barred without written permission, and British Columbia requiring prior written permission to redistribute). Building the data into your own products, caching it, and processing it through AI or machine-learning systems is permitted; standalone resale or redistribution as a feed, API, database or dataset needs a separate written agreement. Anyone who makes the data available outside their own organisation must notify Road511. The terms say customers should not assume that a general right to use the data extends to reproducing or redistributing expressive source material such as photographs or video. The terms do not say whether AI or ML training on the data is allowed.",
+    "resale": "forbidden"
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes, depending on the upstream feed; 15 minutes older on the free trial",
+    "notes": "Analytics and history exist on Pro and above; irlpls lists Road511 for current conditions."
+  },
+  "delivery": {
+    "modes": ["live"],
+    "speed": "minutes",
+    "basis": "Home page: \"Sub-minute polling on hot feeds.\" Plans table (OpenAPI description): Free plan data delay 15 min, paid plans real-time."
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://road511.com/docs.html",
+    "base_url": "https://api.road511.com/api/v1",
+    "self_serve": true,
+    "auth": [
+      {
+        "type": "api_key_header",
+        "header": "X-API-Key",
+        "env_var": "ROAD511_API_KEY",
+        "how_to_get": "Sign up at https://portal.road511.com/signup (account with email and name; free 14-day trial, no credit card). The key is also accepted as the api_key query parameter."
+      },
+      {
+        "type": "bearer",
+        "header": "Authorization",
+        "env_var": "ROAD511_API_KEY",
+        "how_to_get": "The remote MCP server at https://api.road511.com/api/v1/mcp takes the same API key as Authorization: Bearer YOUR_API_KEY. The docs say clients that only support OAuth sign-in cannot connect yet."
+      },
+      {
+        "type": "none",
+        "how_to_get": "Only the public map and metadata endpoints need no key: /map/events, /map/features, /jurisdictions, /stats, /status, /data-sources, /plans, /health (per the OpenAPI description). The terms say an account and key are required to use the API unless Road511 expressly permits otherwise."
+      }
+    ],
+    "endpoints": [
+      {"action": "list", "method": "GET", "path": "/events", "params": "jurisdiction, type, severity, road, bbox, lat/lng/radius_km, status", "notes": "Traffic events (incidents, closures, construction, weather). Key required. /events/geojson returns GeoJSON on Starter and above."},
+      {"action": "list", "method": "GET", "path": "/features", "params": "jurisdiction, type (e.g. cameras), group, bbox, lat/lng/radius_km", "notes": "Points of interest such as cameras, signs, weigh stations, EV chargers. Key required; cursor paging."},
+      {"action": "fetch", "method": "GET", "path": "/features/{id}/details", "notes": "One feature in full, for example a camera's image URL. Key required."},
+      {"action": "list", "method": "GET", "path": "/map/events", "params": "limit, offset", "notes": "Public, keyless map endpoint returning current events with an attribution block; /map/features?type=cameras likewise. Intended for the Road511 live map."},
+      {"action": "order", "method": "POST", "path": "/routing/route", "notes": "Truck-legal route with hazard warnings; metered against a monthly routing-call quota (Free Trial 30 calls)."},
+      {"action": "status", "method": "GET", "path": "/status", "notes": "Public per-jurisdiction health snapshot, no key."}
+    ],
+    "rate_limits": "Per plan: Free Trial 20 requests/min and 1,000/day; Starter 300/min and 50,000/day; Pro 1,000/min and 500,000/day; Enterprise 5,000/min. Results per page 100 / 500 / 1,000. Scraping or bulk-downloading outside normal API use is barred by the terms.",
+    "mcp": {
+      "remote": "https://api.road511.com/api/v1/mcp",
+      "registry_name": null,
+      "first_party": true,
+      "notes": "First-party remote MCP server (docs.html): tools include search_events, get_event, search_features, get_feature_details, get_fuel_prices, get_truck_corridor, plan_truck_route. Bearer API key; each tool call is one API request on your plan. Not found in the official MCP Registry on 2026-11-04 (search for road511 returned 0 servers)."
+    },
+    "notes": "OpenAPI 3 spec at https://road511.com/openapi.json (50 paths, licence 'Proprietary'). The spec covers data endpoints only."
+  },
+  "access": {
+    "cost": "paid",
+    "key_required": true,
+    "tested_live": "2026-11-04",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {"requests": 20, "per_seconds": 60, "scope": "per-key", "source_url": "https://road511.com/openapi.json"}
+  },
+  "payment": {
+    "methods": ["card"],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Subscriptions are billed monthly or annually in advance through Paddle (merchant of record). The free trial needs no card. No agent payment rail is documented, so a person has to sign up and subscribe."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "requester": {
+    "checks": "An account (email, name, optional company) is needed to get a key; the terms require accurate registration information and limit each person or organisation to one free trial.",
+    "unknown": "No identity or purpose check beyond sign-up is documented. Nothing is commissioned: Road511 republishes what government sources already publish."
+  },
+  "verification": {
+    "human": {"level": "none", "unknown": "Not applicable: automated agency feeds and sensors; some events are entered by DOT staff."},
+    "application": {"level": "none", "unknown": "No signing or device attestation from source to API."},
+    "camera": {"level": "none", "unknown": "Cameras are DOT cameras; Road511 passes on the DOT's image URL. No signed capture or content credentials are documented."},
+    "time": {"level": "claimed", "method": "Events carry start_time, end_time and last_updated; features carry last_updated", "unknown": "These come from the upstream feed or from when Road511 ingested it; the terms warn data may be delayed, stale or inaccurate, and no time-stamp authority is used."},
+    "location": {"level": "claimed", "method": "Events and features carry latitude and longitude and affected roads as published by the source", "unknown": "Coordinates are as reported by each DOT and not independently authenticated."},
+    "content": {"level": "none", "unknown": "The terms disclaim accuracy, completeness and currency; no integrity hash or content check is documented."},
+    "corroboration": {"level": "none", "unknown": "No independent cross-check is documented; the home page says the data is from DOT and federal publishers, not crowdsourcing."}
+  },
+  "sources": [
+    {"claim": "Product description, 64 jurisdictions normalised, 60+ feature types, DOT and federal sources not crowdsourcing, 51 US jurisdictions and 13 Canadian provinces and territories, Europe covered by sibling NAPSPAN, pricing tiers (Free Trial, Starter $29, Pro $99, Enterprise $279), top-up packs, 14-day trial no credit card, sub-minute polling on hot feeds, sign-up at portal.road511.com", "url": "https://road511.com/"},
+    {"claim": "Quick start, X-API-Key header or api_key parameter, public metadata endpoints, first-party remote MCP server at https://api.road511.com/api/v1/mcp with Bearer key and tool list, OAuth-only clients cannot connect yet", "url": "https://road511.com/docs.html"},
+    {"claim": "OpenAPI spec: base URL https://api.road511.com/api/v1, auth schemes, plan limits table (rpm, daily requests, jurisdictions, results per page, data delay 15 min on Free), keyless map and metadata endpoints, proprietary licence, 50 paths", "url": "https://road511.com/openapi.json"},
+    {"claim": "Terms of Service v2026-10-16: sole proprietorship; account and API key required; no scraping or bulk download outside plan; embedded product use, caching and AI/ML processing permitted; standalone redistribution or resale needs written agreement; no ownership claimed of source data, upstream conditions pass through; notify Road511 of onward redistribution; expressive material such as photographs not covered by a general right; billing via Paddle; one trial per person; best-effort availability, no accuracy warranty", "url": "https://road511.com/terms.html"},
+    {"claim": "Per-source licences and attribution for each upstream source (for example Pennsylvania resale and republication barred without written permission; BC redistribution needs prior written permission); attribution block in responses", "url": "https://api.road511.com/api/v1/data-sources"},
+    {"claim": "Plan data including price_monthly 0/29/99/279, rate limits, data_delay_sec 900 on Free, trial_days 14", "url": "https://api.road511.com/api/v1/plans"},
+    {"claim": "Keyless live call 2026-11-04 returned current events with last_updated timestamps and an attribution block; cameras feature returned image_url pointing to the DOT", "url": "https://api.road511.com/api/v1/map/events?limit=2"},
+    {"claim": "Public status snapshot: overall operational, 99.94% availability over 14 days, per-jurisdiction health", "url": "https://api.road511.com/api/v1/status"},
+    {"claim": "Privacy policy v2026-09-30: account data, API usage logs kept 30 days, payments handled by Paddle", "url": "https://road511.com/privacy.html"},
+    {"claim": "Official MCP Registry search for road511 returned no servers", "url": "https://registry.modelcontextprotocol.io/v0/servers?search=road511"}
+  ],
+  "updated": "2026-11-04",
+  "expires": "2027-11-04"
+}

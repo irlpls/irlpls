@@ -1,0 +1,149 @@
+{
+  "id": "mapilio",
+  "name": "Mapilio",
+  "status": "unclaimed",
+  "provider_url": "https://mapilio.com",
+  "short": "Contributor street-level imagery licensed by road-km; price by quote.",
+  "tags": [
+    "street-level imagery",
+    "street view",
+    "photo",
+    "360",
+    "crowdsourced",
+    "map features",
+    "traffic signs",
+    "object detections",
+    "road",
+    "openstreetmap",
+    "geotagged",
+    "quote"
+  ],
+  "summary": "Street-level imagery platform. Contributors upload geotagged photos from phones, action cameras and 360 cameras; the site reports about 20.3M image records in 72 countries and territories (snapshot 28 September 2026, not a live count). Mapilio sells annual licences priced by the road-network length of an area (packages from 1,000 to 100,000 km, price not published) and separately licenses automatically extracted Object Detections and Map Features. Paid capture jobs are a planned marketplace, not available yet. Imagery is existing contributor capture, not made to order.",
+  "capabilities": {
+    "modalities": [
+      "photo"
+    ],
+    "tasks": [
+      "license street-level imagery for an area by road-km on an annual plan",
+      "license object detections (items visible in images) for an area",
+      "license map features (estimated object positions or geometry derived from imagery, e.g. traffic signs)",
+      "host private imagery on the Mapilio platform (monthly plans by number of images)"
+    ]
+  },
+  "delivery": {
+    "modes": [
+      "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Pricing page: contact Mapilio with the area, data type, output format and integration needed; this leads to a quote covering availability, licensing and pricing. No turnaround is published."
+  },
+  "pricing": {
+    "from_usd": 0,
+    "model": "annual subscription by road-network length; quote",
+    "unit": "per year, by road-km package (1,000 to 100,000 km)",
+    "notes": "from_usd 0 is a schema placeholder, not a price: no amount is published. The pricing page shows no numeric price (price field blank, '1,000 km road coverage' label). 'If your shooting is under 1000km, you can contact us to get a free trial.' Private hosting is on monthly plans by number of images, and 'automatically extracted data needs to be licensed separately'. Vendor figure: '1000km corresponds to approximately 200,000 pictures' at a five-metre distance calculation."
+  },
+  "payment": {
+    "notes": "No payment methods are published on the pricing page; terms are agreed through the quote."
+  },
+  "latency": {
+    "typical": "Not published; quote-based",
+    "notes": "No delivery or turnaround time is stated; 'We will confirm what is available for your area before promising a delivery date.'"
+  },
+  "freshness": {
+    "mode": "archive",
+    "typical_age": "Depends on when a contributor last captured the place",
+    "notes": "Existing contributor imagery. No way to order new capture today; the paid capture marketplace is 'a planned product, not a currently available earnings program'."
+  },
+  "coverage": {
+    "regions": [
+      "Contributor-driven; 72 countries and territories in the stored country summary, density uneven"
+    ],
+    "notes": "About page (snapshot 28 September 2026): 20,328,577 image records, 72 countries and territories, 281 uploading accounts. The page says this is not a live coverage count and gives no kilometre figure. The pricing page lists no coverage and says the team confirms availability for your area before promising delivery. No country list is published, so no areas are set."
+  },
+  "licensing": {
+    "summary": "Public imagery is published under CC BY-SA, which licences pages say permits commercial use subject to attribution and ShareAlike. The licences page says the imagery policy 'does not specify a blanket license for all AI-generated detections' and to contact Mapilio before redistribution; the pricing page warns 'do not assume the imagery license grants access to every extracted dataset or service', and that dataset-specific terms are confirmed in the quote. Terms: users 'do NOT retain all rights' in User Content and grant Mapilio a nonexclusive, royalty-free, irrevocable, worldwide licence; reselling the Mapilio Services is prohibited unless permitted in separate writing; data mining, robots and scraping not approved by Mapilio are barred. Terms expressly allow extracting information from Mapilio images for OpenStreetMap. Neither the terms nor the licences page mention AI or machine-learning training, so ai_training and resale are not set."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Nothing documented about whether contributors are identified or distinct real people; the site reports 281 uploading accounts."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No app or device attestation is documented. Uploads come from the Mapilio app, the Mapilio Kit CLI and a desktop uploader."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No signed capture is documented. Mapilio was not checked against the C2PA conforming products list."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "Not documented whether or how capture time is verified; the terms and pricing pages say nothing on this."
+    },
+    "location": {
+      "level": "none",
+      "unknown": "Not documented whether positions are authenticated. The pricing page says detections may not be at the image's location and map-feature positions are estimated."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Automated face and licence-plate blurring with a report control for missed cases (home page)",
+      "unknown": "Blurring is privacy, not authenticity. The pricing page says detections show what is in an image, not necessarily where, and that classes and accuracy depend on model, imagery and GPS quality."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-checking of individual images is documented."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": false,
+    "docs_url": "https://docs.mapilio.com",
+    "auth": [
+      {
+        "type": "other",
+        "how_to_get": "Not documented publicly. The pricing page says Mapilio confirms 'the available API or delivery method and the dataset-specific terms' after you describe your needs; the developer page lists APIs for images, sequences, changesets, map objects, image detections and users but gives no base URL or auth method."
+      }
+    ],
+    "notes": "docs.mapilio.com returned HTTP 502 on every attempt on 2026-11-04, so endpoints, base URL, auth and rate limits could not be read. No first-party MCP server found in the MCP Registry."
+  },
+  "access": {
+    "cost": "quote",
+    "tested_live": null,
+    "gate": "approval",
+    "notes": "Order is by contacting Mapilio for a quote. Terms bar 'data mining, robots or similar data gathering or extraction methods not approved by Mapilio', so automated bulk access is not open. automation_allowed is left unset."
+  },
+  "capture": {
+    "by": "contributors"
+  },
+  "sources": [
+    {
+      "claim": "Annual plans by road-km (1,000 to 100,000 km), price not shown, free trial under 1,000 km, optional private hosting, detections vs map features, dataset-specific terms and API confirmed in quote, marketplace planned not available",
+      "url": "https://mapilio.com/pricing"
+    },
+    {
+      "claim": "Terms: broad user-content licence, reselling Services prohibited, scraping/data mining barred, OSM extraction allowed, no AI/ML training mention",
+      "url": "https://mapilio.com/terms"
+    },
+    {
+      "claim": "CC BY-SA public imagery incl. commercial use; no blanket licence for AI-generated detections; no statement on AI training or resale",
+      "url": "https://mapilio.com/licenses"
+    },
+    {
+      "claim": "About 20.3M image records, 72 countries and territories, 281 uploading accounts (snapshot 28 September 2026); capture tools; blurring; planned marketplace",
+      "url": "https://mapilio.com/"
+    },
+    {
+      "claim": "Developer page lists APIs for images, sequences, changesets, map objects, image detections and users; no base URL or auth stated",
+      "url": "https://mapilio.com/developer"
+    },
+    {
+      "claim": "No MCP server listed in the official registry",
+      "url": "https://registry.modelcontextprotocol.io/v0/servers?search=mapilio"
+    }
+  ],
+  "updated": "2026-11-04",
+  "expires": "2027-11-04",
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card"
+}
