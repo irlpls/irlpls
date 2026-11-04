@@ -298,7 +298,12 @@ def cmd_live(a):
         return print(json.dumps(obs, indent=2))
     for o in obs:
         where = o.get("station") or o.get("site") or ""
-        print(f'{o["phenomenon_time"]}  {o.get("label",""):<24} {o.get("value")!s:>10} {o.get("unit","") or "":<8} {where} ({o.get("distance_km","?")} km)')
+        shown = o.get("value")
+        if shown is None:  # a photo (or other non-numeric reading) has a link, not a number
+            shown = "photo" if o.get("kind") == "photo" else "-"
+        print(f'{o["phenomenon_time"]}  {o.get("label",""):<24} {shown!s:>10} {o.get("unit","") or "":<8} {where} ({o.get("distance_km","?")} km)')
+        if o.get("kind") == "photo" and o.get("url"):
+            print(f'{"":<27}{o["url"]}')
 
 
 def cmd_commission(a):
