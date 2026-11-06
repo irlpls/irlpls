@@ -62,7 +62,7 @@ MAX_AGE_CAP_S = 86400
 MAX_CARDS_PER_DOC = 50
 MAX_CHANGED = 5
 USER_AGENT = "irlpls-cardreader/0.1 (+https://irlpls.com/providers.html; hello@irlpls.com)"
-SCHEDULE = {"every": "day", "read_at": "06:10 (the Mac running the preview)", "live_within_minutes": 30}
+SCHEDULE = {"every": "day", "read_at": "06:10 local time", "live_within_minutes": 30}
 SHOWN = ("live", "stale")   # states in which the site shows the provider's copy
 WELL_KNOWN = "/.well-known/irlpls"
 

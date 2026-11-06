@@ -625,6 +625,9 @@ class Job:
             self.refusal = {"code": "no_provider", "msg": unsupported(r, ranked) + (" irlpls cannot get this today." if unsupported(r, ranked).startswith("No provider") else ""), "instead": None}
             self.questions, ready, ranked = [], True, []
         kept = {m["id"] for m in ranked}
+        if r.lat is None and not r.place and not getattr(r, "anywhere", False) and __import__("re").search(
+                r"\b(mars|moon|venus|jupiter|saturn|neptune|uranus|pluto|titan|europa)\b", r.need or "", __import__("re").I):
+            ranked, kept = [], set()   # "weather on Mars": the question says why; no Earth provider is offered meanwhile
         if (self.refusal or {}).get("code") in ("web_fact", "history", "about_provider") or ambiguous_place(r):
             ranked, kept = [], set()   # ambiguous place: rank nothing until the person says which one   # a web page answers it: no provider is planned, least of all a person sent to look
         for m in ranked:

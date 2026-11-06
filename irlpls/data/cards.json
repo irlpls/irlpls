@@ -8697,6 +8697,233 @@
    ]
   },
   {
+   "id": "human-pages",
+   "name": "Human Pages",
+   "provider_url": "https://humanpages.ai",
+   "status": "unclaimed",
+   "tags": [
+    "agent-native",
+    "api",
+    "mcp",
+    "x402",
+    "usdc",
+    "human task",
+    "errand",
+    "photography",
+    "local research",
+    "mystery shopping",
+    "deliveries",
+    "phone calls",
+    "gig",
+    "directory",
+    "job board",
+    "global",
+    "webhooks",
+    "commission"
+   ],
+   "summary": "Directory and job board where an AI agent searches human profiles by skill and location, sends a job offer or posts a listing, and pays the person directly in USDC. Callable through a REST API or an npm MCP server (npx humanpages). The provider's pages say it charges no platform fee; they describe no proof-of-work submission step.",
+   "capabilities": {
+    "modalities": [
+     "photo",
+     "text-report"
+    ],
+    "tasks": [
+     "photography",
+     "local research",
+     "phone calls",
+     "deliveries",
+     "data entry",
+     "mystery shopping",
+     "other real-world tasks (the provider's own task list)"
+    ]
+   },
+   "pricing": {
+    "model": "worker sets a rate; agent offers a price in USDC; provider states zero platform fees",
+    "from_usd": 0,
+    "unit": "job (price set by the agent's offer)",
+    "notes": "from_usd 0 because there is no fixed price: the agent states priceUsdc per job and pays the person peer-to-peer. The provider says 'Zero platform fees'. Agent side: PRO tier is free during launch (15 job offers/day, 50 profile views/day); the provider also lists an optional $5 USDC payment-verification trust badge, listings beyond the free quota at $0.50 each via x402 (BASIC agents 1 free listing/week, PRO 5/day), and x402 pay-per-use at $0.05 per profile view and $0.25 per job offer. 'Free during launch' may end."
+   },
+   "latency": {
+    "typical": "Not stated",
+    "notes": "No response time or completion window is stated. A job offer goes to the person, who can accept or reject it; the page does not say how fast people answer. Jobs can be paid upfront or upon completion (paymentTiming)."
+   },
+   "coverage": {
+    "regions": [
+     "Global (self-registered people)"
+    ],
+    "notes": "The provider says 'Available globally' and supports 8 languages (English, Spanish, Chinese, Filipino, Hindi, Vietnamese, Turkish, Thai). The public search endpoint returned total 4994 profiles on 2026-11-06; this is a count of self-listed profiles, not verified availability. City-level depth is not stated; profile location can be just 'Remote'.",
+    "areas": [
+     "*"
+    ]
+   },
+   "licensing": {
+    "summary": "Not stated on the pages read. Payment is peer-to-peer between agent and person; the provider's pages describe no work-product or evidence upload, so who owns or may reuse a person's photos or reports is not addressed. The Terms of Service (https://humanpages.ai/terms) and Privacy Policy were not readable as text (the pages render in JavaScript and showed only a heading), so no licence or AI-training term could be read."
+   },
+   "verification": {
+    "human": {
+     "level": "claimed",
+     "method": "llms.txt describes the directory as 'verified humans' and shows reputation, completed jobs and ratings in search; people can review jobs",
+     "evidence_url": "https://humanpages.ai/llms.txt",
+     "unknown": "Who verifies and how is not documented: no ID check, liveness or vendor is named, and profiles are self-written. Optional agent-side trust badges (social post, $5 USDC) are for agents, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No app or device attestation is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "No capture step is documented, so no signed or live-camera capture exists on the pages read."
+    },
+    "time": {
+     "level": "none",
+     "unknown": "No capture time is documented. Job status and messages are platform-recorded, but nothing about capture time is stated."
+    },
+    "location": {
+     "level": "none",
+     "unknown": "Profiles carry a self-stated location; agents may send agentLat/agentLng for distance filtering. No on-site proof of presence is documented."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No submission or review of evidence is documented; the agent and person agree outcomes through in-platform messaging. Agents can leave a review after completion."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No cross-check is documented."
+    }
+   },
+   "api": {
+    "available": true,
+    "docs_url": "https://humanpages.ai/dev",
+    "base_url": "https://humanpages.ai/api",
+    "auth": [
+     {
+      "type": "api_key_header",
+      "header": "X-Agent-Key",
+      "env_var": "HUMANPAGES_AGENT_KEY",
+      "how_to_get": "POST /api/agents/register returns an API key; the agent is auto-activated on PRO tier (free during launch). Searching humans and listing browsing need no key. Optional agent trust badges via social post or a $5 USDC payment. x402 pay-per-use (USDC on Base, x-payment header) bypasses tier limits."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/humans/search",
+      "params": "skill, location, availability, minExperience, sortBy (completed_jobs|rating|experience|recent), minCompletedJobs",
+      "notes": "Public, returns limited profiles (skills, location, rates, reputation); no key."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/humans/{id}/profile",
+      "notes": "Full profile with contact info and wallets; needs agent key (50 views/day on PRO, or $0.05 each via x402)."
+     },
+     {
+      "action": "order",
+      "method": "POST",
+      "path": "/jobs",
+      "params": "humanId, agentId, title (max 200), description (max 5000), priceUsdc; optional category, paymentMode ONE_TIME|STREAM, paymentTiming upfront|upon_completion, agentLat, agentLng, callbackUrl, callbackSecret",
+      "notes": "Sends a job offer to one person who can accept or reject. 15 per day on PRO, or $0.25 each via x402. No dry-run or quote endpoint is documented."
+     },
+     {
+      "action": "order",
+      "method": "POST",
+      "path": "/listings",
+      "params": "title, description, budget, required skills, location, work mode",
+      "notes": "Post to the public job board; people apply; GET /listings/{id}/applications then POST .../offer creates the job."
+     },
+     {
+      "action": "status",
+      "method": "GET",
+      "path": "/jobs/{id}",
+      "notes": "Job status; GET/POST /jobs/{id}/messages for in-platform messaging; PATCH /jobs/{id}/paid submits payment proof; POST /jobs/{id}/review leaves a review."
+     }
+    ],
+    "sdk": "npm package humanpages (MCP server, run with npx humanpages; also an OpenClaw skill via ClawHub)",
+    "rate_limits": "PRO tier (free during launch): 15 job offers/day, 50 profile views/day; BASIC: 1 free listing/week, PRO: 5 free listings/day",
+    "self_serve": true,
+    "mcp": {
+     "first_party": true,
+     "notes": "Local stdio package (npx humanpages). The tool count differs between the provider's pages: llms.txt says 16 tools, /dev says 31. No remote MCP endpoint is documented."
+    },
+    "notes": "Webhooks (HMAC-SHA256) are available for agent events via webhookUrl at registration. The Terms were not readable, so whether automation or agent-driven hiring is permitted there is unknown (the provider's own pages invite agents)."
+   },
+   "freshness": {
+    "mode": "on_demand",
+    "typical_age": "After a person accepts the offer; timing not stated",
+    "notes": "No archive. Search returns profiles, not observations."
+   },
+   "delivery": {
+    "modes": [
+     "commission"
+    ],
+    "speed": "unknown",
+    "basis": "Not stated. A job offer is accepted or rejected by the person; no response time is published."
+   },
+   "updated": "2026-11-06",
+   "sources": [
+    {
+     "claim": "What it is, agent flow (register, search, profile, job offer, messaging, USDC payment, review), job board flow, endpoints and fields, rate limits, PRO tier free during launch, $5 USDC badge, x402 $0.05 profile view / $0.25 job offer / $0.50 extra listing, zero platform fees, 'Available globally', 8 languages, 16-tool MCP server, 'verified humans'",
+     "url": "https://humanpages.ai/llms.txt"
+    },
+    {
+     "claim": "MCP package (npm humanpages, 31 tools), REST base https://humanpages.ai/api, tool and endpoint list, PRO limits",
+     "url": "https://humanpages.ai/dev"
+    },
+    {
+     "claim": "Landing page: marketplace where AI agents hire humans for photography, deliveries, research and more; zero platform fees; keep 100% of earnings; no hiring process, payment, verification or terms detail on the page",
+     "url": "https://humanpages.ai"
+    },
+    {
+     "claim": "Pricing page: 'PRO access is free during launch'",
+     "url": "https://humanpages.ai/pricing"
+    },
+    {
+     "claim": "Public search endpoint returned total 4994 profiles (2026-11-06); profile fields include username, bio, location, skills",
+     "url": "https://humanpages.ai/api/humans/search"
+    }
+   ],
+   "spec_version": "2026-10-26",
+   "adapter": "human-pages",
+   "short": "A directory where an agent finds and hires people, paying in USDC.",
+   "access": {
+    "cost": "freemium",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none",
+    "notes": "Searching profiles needs no key. Automation is invited on the provider's pages; the Terms were not readable."
+   },
+   "capability": "com.irlpls.capture.card",
+   "expires": "2027-11-06",
+   "capture": {
+    "by": "people"
+   },
+   "payment": {
+    "methods": [
+     "crypto",
+     "x402"
+    ],
+    "agent_rails": [
+     "x402"
+    ],
+    "agent_can_pay": true,
+    "prepaid": false,
+    "notes": "Agent pays the person peer-to-peer in USDC (payment upfront or upon completion); PATCH /jobs/{id}/paid submits payment proof. x402 (USDC on Base) pays platform fees per request. No escrow or dispute process is described on the pages read."
+   },
+   "account": {
+    "headless_signup": true,
+    "kyc": "none",
+    "agent_may_act": {
+     "allowed": true,
+     "source_url": "https://humanpages.ai/llms.txt"
+    }
+   },
+   "requester": {
+    "checks": "Agents register through the API and receive a key; optional trust badges by social post or $5 USDC payment.",
+    "unknown": "No requester identity check, content screening or person-targeting policy is documented on the pages read; the Terms were not readable."
+   }
+  },
+  {
    "id": "iceye",
    "name": "ICEYE",
    "status": "unclaimed",
@@ -22783,6 +23010,198 @@
    "status": "unclaimed",
    "updated": "2026-10-28",
    "expires": "2027-10-27"
+  },
+  {
+   "id": "vizzion",
+   "name": "Vizzion road imagery",
+   "provider_url": "https://vizzion.com",
+   "status": "unclaimed",
+   "tags": [
+    "traffic camera",
+    "road camera",
+    "cctv",
+    "camera",
+    "live",
+    "road conditions",
+    "weather",
+    "incident",
+    "aggregator",
+    "on-vehicle camera",
+    "dashcam",
+    "api",
+    "jpeg",
+    "global",
+    "north america",
+    "europe",
+    "australasia",
+    "quote required",
+    "street-level",
+    "roadside",
+    "traffic"
+   ],
+   "summary": "Commercial aggregator of live road imagery: it says it provides data from over 100,000 traffic cameras and on-vehicle cameras in 600+ markets in 30+ countries, authorised by more than 200 government agencies and private organisations. Delivered by an API that returns JPEG images by region, bounding box, route or TMC code. Pricing and access terms are not public; a demo is requested by email.",
+   "capabilities": {
+    "modalities": [
+     "photo"
+    ],
+    "tasks": [
+     "current image from a roadside traffic camera near a location",
+     "road, weather and incident conditions viewed on camera",
+     "cameras along a route, within a polygon or bounding box",
+     "imagery from live on-vehicle cameras at road hot spots (North America)",
+     "camera metadata: lat/long, road marker, intersection, name, refresh rate, service status, facing direction"
+    ]
+   },
+   "pricing": {
+    "model": "quote required (demo and sales contact)",
+    "from_usd": 0,
+    "unit": "Not stated",
+    "notes": "No price, plan or licence fee is published on the pages read. The API and products pages say to contact busdev@vizzion.com for a demo. from_usd 0 means 'quote required', not free. A free consumer app (Sigalert) is named as a demo of the API."
+   },
+   "latency": {
+    "typical": "Not stated per camera in aggregate; the provider says top North American markets often refresh in 30 seconds or less",
+    "notes": "The cameras page says traffic camera update frequencies in top North American markets are 'often 30 seconds or less' and some markets offer live video or faster images; it does not give a fleet-wide figure. Each camera record includes a refresh rate field. Nothing is captured on request: fixed cameras and vehicle cameras on their own schedule. That page is undated."
+   },
+   "coverage": {
+    "regions": [
+     "North America",
+     "South America",
+     "Europe",
+     "Asia",
+     "Australasia",
+     "Africa (provider's API page list)"
+    ],
+    "notes": "Homepage: over 100,000 cameras in more than 600 markets and 30+ countries, 200+ agencies and organisations authorising it; products page: key markets on six continents, almost every major city in North America, Europe and Australasia. The on-vehicle network is stated as tens of thousands of vehicles across North America. Per-city lists are on a coverage page that renders as a map; they were not read. Counts are the vendor's own claims, not independently checked. Only existing cameras; you cannot place or point one.",
+    "areas": [
+     "*"
+    ]
+   },
+   "licensing": {
+    "summary": "Not stated. The provider says it has authorisation from 200+ agencies and organisations to aggregate their cameras, but the terms under which a customer may use, store, redistribute or train on the images are not on the pages read; the access agreement is by contact. Image use rights likely vary by source agency."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Cameras are fixed or vehicle-mounted; no person is involved or verified."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No attestation of cameras or the aggregation pipeline is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "No signed capture is documented. Images are relayed from agency and fleet cameras, and the API crops and resizes them ('only the most relevant and useful portions of the image, determined by our automated systems'), so what you get is not the original frame."
+    },
+    "time": {
+     "level": "none",
+     "unknown": "A refresh-rate field and service-status field are supplied per camera, but no trusted capture timestamp or signature is documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "The API supplies an accurate lat/long, road marker, intersection and facing direction per camera (provider's words)",
+     "evidence_url": "https://vizzion.com/API.html",
+     "unknown": "Coordinate accuracy is not documented. For on-vehicle cameras, how position is derived is not stated."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No content integrity check is documented. The provider claims the cameras give visual verification of road conditions, but states no check of the images themselves."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No cross-check between cameras is documented. The provider says on-vehicle and roadside cameras together can validate road weather conditions (a news item whose body was not read)."
+    }
+   },
+   "api": {
+    "available": true,
+    "docs_url": "https://vizzion.com/API.html",
+    "base_url": "Not public",
+    "auth": [],
+    "endpoints": [
+     {
+      "action": "search",
+      "method": "Not public",
+      "path": "Not public",
+      "params": "region, bounding box, travel route, TMC code(s), polygon",
+      "notes": "Provider describes retrieval by region, bounding box, route or TMC code, and cameras within a polygon. Method names, paths and parameters are in a Developer Guide that is not public on the pages read."
+     },
+     {
+      "action": "fetch",
+      "method": "Not public",
+      "path": "Not public",
+      "params": "image size",
+      "notes": "JPEG returned at the requested size. Up to 12 data fields per camera (lat/long, road marker, intersection, name, refresh rate, service status, attribution text, facing direction)."
+     }
+    ],
+    "rate_limits": "Not stated",
+    "self_serve": false,
+    "notes": "The provider says integration 'can take as little as one day' and a Developer Guide gives code examples; it is supplied after contact. No sandbox or key flow is public."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Seconds to minutes in top North American markets per the provider; varies by camera",
+    "notes": "Live and near-live images from existing cameras. A one-year archive at key locations appears only in a 2023 press release (not read from the provider's own site)."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Provider: update frequencies in top North American markets are 'often 30 seconds or less'; coverage elsewhere unstated, so the speed band is a conservative reading."
+   },
+   "updated": "2026-11-06",
+   "sources": [
+    {
+     "claim": "Over 100,000 traffic cameras and on-vehicle cameras, 600+ markets and 30+ countries, authorisation from 200+ agencies, API quick to integrate, customers named, contact for demo",
+     "url": "https://vizzion.com/"
+    },
+    {
+     "claim": "API: retrieve by region, bounding box, route or TMC code; up to 12 data fields per camera incl. refresh rate, service status, accurate lat/long, facing direction; JPEG at requested size with automatic cropping; integration as little as one day; cameras within a polygon; 200+ agencies on six continents; demo via busdev@vizzion.com",
+     "url": "https://vizzion.com/API.html"
+    },
+    {
+     "claim": "Products: road imagery API, Desktop Video Wall, 100,000 cameras, key markets on six continents, demo by emailing busdev@vizzion.com, no pricing",
+     "url": "https://vizzion.com/products.html"
+    },
+    {
+     "claim": "Traffic camera update frequencies in top North American markets often 30 seconds or less; some markets offer live video (page undated)",
+     "url": "https://vizzion.com/cameras.html"
+    },
+    {
+     "claim": "On-vehicle camera network of tens of thousands of cellular-connected vehicles via a telematics partnership, live imagery at road hot spots; available across North America",
+     "url": "https://vizzion.com/on-vehicle-cameras.html"
+    },
+    {
+     "claim": "Coverage page: continental maps and city/region breakdowns; on-vehicle network across North America",
+     "url": "https://vizzion.com/coverage.html"
+    }
+   ],
+   "spec_version": "2026-10-26",
+   "adapter": "vizzion",
+   "short": "A commercial feed of road camera images from 100,000+ cameras in 30+ countries.",
+   "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "contract",
+    "notes": "Access is by contacting the vendor for a demo and developer guide; automation terms are not public."
+   },
+   "capability": "com.irlpls.capture.card",
+   "expires": "2027-11-06",
+   "capture": {
+    "by": "devices"
+   },
+   "payment": {
+    "methods": [
+     "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Not stated. Sales-led; no agent payment rail is documented."
+   },
+   "account": {
+    "headless_signup": false
+   }
   },
   {
    "id": "weatherxm-agent",

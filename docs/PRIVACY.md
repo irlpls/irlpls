@@ -21,7 +21,7 @@ Pages are plain files from irlpls.com. They set no cookies and load no analytics
 
 These pages contact someone else from your browser. Each request goes from your browser straight to that service, never through irlpls, and each service sees your IP address and user agent, as with any site:
 
-- **Home page, first screen:** fetches the latest flow for USGS site 08167000 (Guadalupe River at Comfort, TX) from `api.waterdata.usgs.gov`. The river photos are saved copies served from irlpls.com.
+- **Home page, first screen:** loads nothing from outside irlpls.com. The river photos and the reading shown are saved copies served from irlpls.com. A tap on "Get it now" (or a live example) fetches the latest flow for USGS site 08167000 (Guadalupe River at Comfort, TX) from `api.waterdata.usgs.gov`.
 - **Home page, "Get it now"** (`live.js`): when you tap it on a free match, your browser asks that one provider for a reading. It sends the map point of the place your ask was matched to (rounded to about 100 m, or a box around it), or a station id; the text you typed is not sent. Matching the ask to a place runs in your browser, from a built-in list of cities. The providers:
 
 | Provider | Host | Sent |
@@ -44,7 +44,7 @@ These pages contact someone else from your browser. Each request goes from your 
 
 - **Card checker:** fetches the domain you type, or the card you paste, and, under "Check a sample pack", the sample-pack links that card lists (an `evidence_url` ending in `irlpls-sample.json`) and the files each pack names. Other evidence links are listed, not fetched.
 
-The static host's own access logs (IP, user agent, URL, time) depend on the host, which is not chosen yet **(unverified)**.
+The static host's own access logs (IP, user agent, URL, time) depend on the host: irlpls.com is served as static files by Cloudflare, whose own logs are outside irlpls's control **(unverified here)**. irlpls itself runs no analytics and sets no cookies.
 
 ## The reference library
 

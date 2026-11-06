@@ -158,3 +158,12 @@ def test_slow_geocoder_falls_back_to_the_offline_gazetteer(monkeypatch):
     assert slow and g and g["approximate"] is True and g["country_code"] == "de"
     g, slow = broker._geocode_timeboxed("Smallville nowhere xyz", budget=0.05)
     assert slow and g is None
+
+
+def test_an_off_world_ask_offers_no_earth_provider_while_it_asks_where():
+    import irlpls
+    j = irlpls.request("weather on Mars", geocode=False)
+    assert j.state == "clarifying" and j.plan == []
+    assert any("Earth" in q["ask"] and q["blocking"] for q in j.questions)
+    ok = irlpls.request("weather in Moon, PA", geocode=False, lat=40.5061, lon=-80.2082, country_code="us")
+    assert ok.plan, "a real Earth place that shares a name must still plan"

@@ -1,6 +1,6 @@
 # Contributing
 
-The project is private and has one maintainer; this describes how a change is made, not an open invitation.
+The project has one maintainer for now; this describes how a change is made. Issues and pull requests are welcome, and a card correction from the provider itself is the most useful kind.
 
 ## Setup and the gate
 

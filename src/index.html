@@ -73,7 +73,7 @@ h2{margin:4px 0 0;font:700 clamp(25px,7vw,34px)/1.08 var(--head);letter-spacing:
 /* ---------- screen 3: type anything ---------- */
 .ask{display:flex;align-items:center;gap:6px;margin-top:12px;padding:5px 5px 5px 16px;border-radius:999px}
 .ask textarea{flex:1;min-width:0;height:44px;min-height:44px;margin:0;padding:11px 0;border:0;background:none;font:16px/22px var(--sans);outline:none;color:var(--fg);resize:none;overflow:hidden;display:block}
-.ask textarea::placeholder{color:#6b7480}
+.ask textarea::placeholder{color:var(--fg3)}
 /* a long ask wraps: the capsule becomes a rounded box, Match stays at the bottom right */
 .ask.tall{align-items:flex-end;border-radius:24px}
 .ask:focus-within{box-shadow:var(--shadow),0 0 0 2px var(--pol)}
@@ -94,8 +94,8 @@ h2{margin:4px 0 0;font:700 clamp(25px,7vw,34px)/1.08 var(--head);letter-spacing:
 @media(hover:hover){.site-foot a:hover{color:var(--fg);text-decoration:underline;text-underline-offset:3px}}
 .site-foot .ft{display:grid;grid-template-columns:1.4fr 1fr 1fr;column-gap:32px;row-gap:32px;align-items:start}
 .site-foot .fb{display:flex;flex-direction:column;gap:10px;align-items:flex-start}.site-foot .fb p{margin:0;max-width:22em}
-.site-foot .fw{display:inline-flex;align-items:center;font:700 18px/1.2 var(--sans);letter-spacing:-.04em;color:var(--fg)}.site-foot .fw i{font-style:normal;color:var(--fg3)}
-.site-foot .fcol{display:block}.site-foot .fcol h2{margin:0 0 12px;font:600 11px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.site-foot .fw{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;margin:-6px -8px;font:700 18px/1.2 var(--sans);letter-spacing:-.04em;color:var(--fg)}.site-foot .fw i{font-style:normal;color:var(--fg3)}
+.site-foot .fcol{display:block}.site-foot .fcol h2{margin:0 0 12px;font:600 12px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
 .site-foot .fcol ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
 .site-foot .fcol a{display:inline-block;font-weight:400;line-height:1.4}
 .site-foot .fc{margin:0;font-size:12px;color:var(--fg3);text-align:left}
@@ -215,7 +215,7 @@ h1 .ln{display:block;white-space:nowrap}
    so one band of light crosses every word and never the page behind them. ?still=1 and reduced motion: static colour, no light. The first card never waits for it. */
 #h1:after{white-space:pre}  /* its two lines, as broken in the markup (the shared .hl rules draw the colour and the light) */
 /* scrolling past the headline, its colours flow into the wordmark and stay: irl in the headline's blue, pls in its green (--bc: 0 ink, 1 colour) */
-.top .brand,.top .brand i{-webkit-background-clip:text;background-clip:text}.top .brand{background-image:linear-gradient(90deg,#2563eb,#0891b2)}.top .brand i{background-image:linear-gradient(90deg,#059669,#047857)}
+.top .brand,.top .brand i{-webkit-background-clip:text;background-clip:text}.top .brand{background-image:linear-gradient(90deg,#2563eb,#0e7490)}.top .brand i{background-image:linear-gradient(90deg,#047857,#047857)}
 .top .brand{color:rgba(16,20,24,calc(1 - var(--bc,0)))}.top .brand i{color:rgba(91,101,116,calc(1 - var(--bc,0)))}.top nav a.brand:hover,.top .brand:hover{color:rgba(16,20,24,calc(1 - var(--bc,0)))}
 /* the five chats: a swipeable row; the next card's edge peeks in, dots below */
 .stage{position:relative;display:flex;flex-direction:column;flex:1 1 0;min-height:0}
@@ -380,25 +380,25 @@ var U=IRL3,E=U.E,$=U.$,RM=matchMedia('(prefers-reduced-motion: reduce)').matches
    with it (media/guadalupe-comfort-2026-10-29.jpg and .json, public domain, see media/CREDITS.md), never fetched live */
 var X=[
  {ask:'Tubing on the Guadalupe today?',call:'river at Comfort, TX now',id:'usgs-water',pick:'USGS stream gauges',src:'USGS',how:'live, free',kind:'stream gauge',got:'1 reading and the river camera’s photo',
-  media:function(){return '<img src="media/guadalupe-comfort-2026-10-29.jpg" alt="Sample photo: the Guadalupe River at Comfort, Texas, from the USGS camera, October 29, 2026">'},
+  media:function(){return '<img src="media/guadalupe-comfort-2026-10-29.jpg" width="720" height="407" decoding="async" alt="Sample photo: the Guadalupe River at Comfort, Texas, from the USGS camera, October 29, 2026">'},
   sample:true,
   note:function(){return 'Read from the USGS gauge and its river camera.'},
   /* the saved reading: 80.6 ft³/s at 2:40 PM CDT, Oct 29 2026; USGS's median for Oct 29 is 100 (p25 53.3) */
   say:function(){return [{b:'Not great today:'},' the Guadalupe at Comfort is running about 81 ft³/s, under the usual ~100 for late October, so expect a slow, scrapey float.']}},
  {ask:'Is there a step-free way into the Bellevue Safeway?',call:'photograph the step-free entrance at Safeway, Bellevue',id:'rentahuman',pick:'RentAHuman',how:'person for hire',kind:'person for hire',got:'2 photos from the entrance',
-  media:function(){return '<img src="media/ex-ramp.jpg" alt="Example photo: a wide, gently curving ramp with low side walls beside a store entrance">'},
+  media:function(){return '<img src="media/ex-ramp.jpg" width="800" height="600" loading="lazy" decoding="async" alt="Example photo: a wide, gently curving ramp with low side walls beside a store entrance">'},
   sample:true,
   note:function(){return 'Photographed on site by a person you hired.'},
   say:function(){return [{b:'Yes:'},' a wide, curving ramp, no steps. Slope and width were not measured.']}},
  {ask:'What’s on the menu board at 12 Elm St today?',call:'menu board at 12 Elm St, today',id:'proxypics',pick:'ProxyPics',how:'person nearby, under 24 h',kind:'person nearby',got:'1 photo of the board',
-  media:function(){return '<img src="media/ex-menu.jpg" alt="Example photo: a café menu board">'},
+  media:function(){return '<img src="media/ex-menu.jpg" width="800" height="530" loading="lazy" decoding="async" alt="Example photo: a café menu board">'},
   sample:true,
   note:function(){return 'Photographed at the address by someone nearby.'},
   say:function(){return [{b:'Fried oyster dinner $9.90,'},' shrimp $7.50 and navy bean soup. Someone nearby went and photographed it for you.']}},
  {ask:'Has field 14 been harvested yet?',call:'new satellite image of field 14',id:'skyfi',pick:'SkyFi',how:'tasked satellite',kind:'tasked satellite',got:'1 new satellite image',
   /* the licensor's watermark (bottom-left) is kept, never cropped or covered: the image is pinned to that corner, and
      the credit is in its alt and title (see media/CREDITS.md) */
-  media:function(){return '<img class="wm" src="media/ex-fields.jpg" alt="Example image: farm fields from above. Image © Airbus DS / Sentinel Hub, contains modified Copernicus Sentinel data, CC BY 2.0" title="© Airbus DS / Sentinel Hub, contains modified Copernicus Sentinel data (CC BY 2.0)">'},
+  media:function(){return '<img class="wm" src="media/ex-fields.jpg" width="800" height="525" loading="lazy" decoding="async" alt="Example image: farm fields from above. Image © Airbus DS / Sentinel Hub, contains modified Copernicus Sentinel data, CC BY 2.0" title="© Airbus DS / Sentinel Hub, contains modified Copernicus Sentinel data (CC BY 2.0)">'},
   sample:true,
   note:function(){return 'A satellite tasked for this field.'},
   say:function(){return [{b:'Yes, it’s cut.'},' The new satellite pass shows stubble rows across field 14.']}},
@@ -557,7 +557,7 @@ U.on(function(fresh){if(fresh)paint()});
 <style>
 /* icon size follows the screen's height: the whole screen shows at 390x844; heading + six links at 375x667 */
 #how{--is:clamp(40px,calc((100svh - var(--hh) - 334px)/8 - 8px),54px);--bad2:#b91c1c;--step:330ms}
-#how .kick{font-size:11.5px;letter-spacing:.09em}
+#how .kick{font-size:12px;letter-spacing:.09em}
 #how h2{margin-top:8px}
 #how h2 em{font-style:normal;color:var(--bad2)}
 #how .lede{margin-top:8px;font:500 clamp(14.5px,4vw,16.5px)/1.35 var(--sans)}
@@ -646,7 +646,7 @@ new IntersectionObserver(function(es,o){var f0=first;first=false;if(!es[0].isInt
 .hint{margin:10px 16px 0;font:500 14px/1.4 var(--sans);color:var(--fg3)}
 .hint b{font-weight:600;color:var(--fg2)}
 .hint .eg{min-height:44px;margin:-12px 0;padding:0 2px;border:0;background:none;font:600 14px/1.4 var(--sans);color:var(--pol);cursor:pointer}
-.hint i{font-style:normal;padding:0 6px;color:var(--dot)}
+.hint i{font-style:normal;padding:0 6px;color:var(--fg3)}
 @media(hover:hover){.hint .eg:hover{text-decoration:underline}}
 #try .docs{margin-top:18px}
 #try .out{margin-top:12px}
@@ -654,7 +654,7 @@ new IntersectionObserver(function(es,o){var f0=first;first=false;if(!es[0].isInt
 /* the frame: two columns on a desktop, stacked on a phone */
 .duo{display:grid;grid-template-columns:minmax(0,1fr);border-radius:24px;overflow:hidden}
 @media(min-width:900px){.duo{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}.impl{border-top:0!important;border-left:1px solid var(--line)}}
-.dk{margin:0 0 8px;font:600 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
+.dk{margin:0 0 8px;font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--fg3)}
 /* left: the chat (screen 1's classes) */
 .lv{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px;background:none;box-shadow:none;transition:min-height .3s ease}
 .lv .turn{flex:none}

@@ -28,7 +28,7 @@ I suggest: <the one next step>
 What is usually missing today, so say it early:
 - **There is no hosted irlpls service.** You call each provider directly, with your person's account.
 - **Paid providers need your person's account** (a linked account or a key), and several quote only. Some free public feeds need no key (`access.key_required` on each card says which).
-- **Most guarantees are claimed, not evidenced.** Few cards evidence any guarantee; read the levels before you promise anything.
+- **Most guarantees are claimed, not evidenced.** No card evidences a guarantee yet (that needs an independent reviewer); read the levels before you promise anything.
 - **Every listed card is compiled from public sources today** (`status: unclaimed`), not confirmed by the provider.
 - **Drones:** Globhe (`globhe`) orders a local operator in 150 countries by API, but client access needs approval; Spexi covers the US and Canada.
 

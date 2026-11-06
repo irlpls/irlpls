@@ -1,0 +1,192 @@
+{
+  "id": "vizzion",
+  "name": "Vizzion road imagery",
+  "provider_url": "https://vizzion.com",
+  "status": "unclaimed",
+  "tags": [
+    "traffic camera",
+    "road camera",
+    "cctv",
+    "camera",
+    "live",
+    "road conditions",
+    "weather",
+    "incident",
+    "aggregator",
+    "on-vehicle camera",
+    "dashcam",
+    "api",
+    "jpeg",
+    "global",
+    "north america",
+    "europe",
+    "australasia",
+    "quote required",
+    "street-level",
+    "roadside",
+    "traffic"
+  ],
+  "summary": "Commercial aggregator of live road imagery: it says it provides data from over 100,000 traffic cameras and on-vehicle cameras in 600+ markets in 30+ countries, authorised by more than 200 government agencies and private organisations. Delivered by an API that returns JPEG images by region, bounding box, route or TMC code. Pricing and access terms are not public; a demo is requested by email.",
+  "capabilities": {
+    "modalities": [
+      "photo"
+    ],
+    "tasks": [
+      "current image from a roadside traffic camera near a location",
+      "road, weather and incident conditions viewed on camera",
+      "cameras along a route, within a polygon or bounding box",
+      "imagery from live on-vehicle cameras at road hot spots (North America)",
+      "camera metadata: lat/long, road marker, intersection, name, refresh rate, service status, facing direction"
+    ]
+  },
+  "pricing": {
+    "model": "quote required (demo and sales contact)",
+    "from_usd": 0,
+    "unit": "Not stated",
+    "notes": "No price, plan or licence fee is published on the pages read. The API and products pages say to contact busdev@vizzion.com for a demo. from_usd 0 means 'quote required', not free. A free consumer app (Sigalert) is named as a demo of the API."
+  },
+  "latency": {
+    "typical": "Not stated per camera in aggregate; the provider says top North American markets often refresh in 30 seconds or less",
+    "notes": "The cameras page says traffic camera update frequencies in top North American markets are 'often 30 seconds or less' and some markets offer live video or faster images; it does not give a fleet-wide figure. Each camera record includes a refresh rate field. Nothing is captured on request: fixed cameras and vehicle cameras on their own schedule. That page is undated."
+  },
+  "coverage": {
+    "regions": [
+      "North America",
+      "South America",
+      "Europe",
+      "Asia",
+      "Australasia",
+      "Africa (provider's API page list)"
+    ],
+    "notes": "Homepage: over 100,000 cameras in more than 600 markets and 30+ countries, 200+ agencies and organisations authorising it; products page: key markets on six continents, almost every major city in North America, Europe and Australasia. The on-vehicle network is stated as tens of thousands of vehicles across North America. Per-city lists are on a coverage page that renders as a map; they were not read. Counts are the vendor's own claims, not independently checked. Only existing cameras; you cannot place or point one.",
+    "areas": [
+      "*"
+    ]
+  },
+  "licensing": {
+    "summary": "Not stated. The provider says it has authorisation from 200+ agencies and organisations to aggregate their cameras, but the terms under which a customer may use, store, redistribute or train on the images are not on the pages read; the access agreement is by contact. Image use rights likely vary by source agency."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Cameras are fixed or vehicle-mounted; no person is involved or verified."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No attestation of cameras or the aggregation pipeline is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "No signed capture is documented. Images are relayed from agency and fleet cameras, and the API crops and resizes them ('only the most relevant and useful portions of the image, determined by our automated systems'), so what you get is not the original frame."
+    },
+    "time": {
+      "level": "none",
+      "unknown": "A refresh-rate field and service-status field are supplied per camera, but no trusted capture timestamp or signature is documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "The API supplies an accurate lat/long, road marker, intersection and facing direction per camera (provider's words)",
+      "evidence_url": "https://vizzion.com/API.html",
+      "unknown": "Coordinate accuracy is not documented. For on-vehicle cameras, how position is derived is not stated."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No content integrity check is documented. The provider claims the cameras give visual verification of road conditions, but states no check of the images themselves."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No cross-check between cameras is documented. The provider says on-vehicle and roadside cameras together can validate road weather conditions (a news item whose body was not read)."
+    }
+  },
+  "api": {
+    "available": true,
+    "docs_url": "https://vizzion.com/API.html",
+    "base_url": "Not public",
+    "auth": [],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "Not public",
+        "path": "Not public",
+        "params": "region, bounding box, travel route, TMC code(s), polygon",
+        "notes": "Provider describes retrieval by region, bounding box, route or TMC code, and cameras within a polygon. Method names, paths and parameters are in a Developer Guide that is not public on the pages read."
+      },
+      {
+        "action": "fetch",
+        "method": "Not public",
+        "path": "Not public",
+        "params": "image size",
+        "notes": "JPEG returned at the requested size. Up to 12 data fields per camera (lat/long, road marker, intersection, name, refresh rate, service status, attribution text, facing direction)."
+      }
+    ],
+    "rate_limits": "Not stated",
+    "self_serve": false,
+    "notes": "The provider says integration 'can take as little as one day' and a Developer Guide gives code examples; it is supplied after contact. No sandbox or key flow is public."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Seconds to minutes in top North American markets per the provider; varies by camera",
+    "notes": "Live and near-live images from existing cameras. A one-year archive at key locations appears only in a 2023 press release (not read from the provider's own site)."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Provider: update frequencies in top North American markets are 'often 30 seconds or less'; coverage elsewhere unstated, so the speed band is a conservative reading."
+  },
+  "updated": "2026-11-06",
+  "sources": [
+    {
+      "claim": "Over 100,000 traffic cameras and on-vehicle cameras, 600+ markets and 30+ countries, authorisation from 200+ agencies, API quick to integrate, customers named, contact for demo",
+      "url": "https://vizzion.com/"
+    },
+    {
+      "claim": "API: retrieve by region, bounding box, route or TMC code; up to 12 data fields per camera incl. refresh rate, service status, accurate lat/long, facing direction; JPEG at requested size with automatic cropping; integration as little as one day; cameras within a polygon; 200+ agencies on six continents; demo via busdev@vizzion.com",
+      "url": "https://vizzion.com/API.html"
+    },
+    {
+      "claim": "Products: road imagery API, Desktop Video Wall, 100,000 cameras, key markets on six continents, demo by emailing busdev@vizzion.com, no pricing",
+      "url": "https://vizzion.com/products.html"
+    },
+    {
+      "claim": "Traffic camera update frequencies in top North American markets often 30 seconds or less; some markets offer live video (page undated)",
+      "url": "https://vizzion.com/cameras.html"
+    },
+    {
+      "claim": "On-vehicle camera network of tens of thousands of cellular-connected vehicles via a telematics partnership, live imagery at road hot spots; available across North America",
+      "url": "https://vizzion.com/on-vehicle-cameras.html"
+    },
+    {
+      "claim": "Coverage page: continental maps and city/region breakdowns; on-vehicle network across North America",
+      "url": "https://vizzion.com/coverage.html"
+    }
+  ],
+  "spec_version": "2026-10-26",
+  "adapter": "vizzion",
+  "short": "A commercial feed of road camera images from 100,000+ cameras in 30+ countries.",
+  "access": {
+    "cost": "quote",
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "contract",
+    "notes": "Access is by contacting the vendor for a demo and developer guide; automation terms are not public."
+  },
+  "capability": "com.irlpls.capture.card",
+  "expires": "2027-11-06",
+  "capture": {
+    "by": "devices"
+  },
+  "payment": {
+    "methods": [
+      "invoice"
+    ],
+    "agent_can_pay": false,
+    "prepaid": false,
+    "notes": "Not stated. Sales-led; no agent payment rail is documented."
+  },
+  "account": {
+    "headless_signup": false
+  }
+}

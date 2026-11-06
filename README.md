@@ -31,7 +31,7 @@ Output from real runs is in `examples/README.md`.
 
 ## The idea in four objects
 
-- **Capture Card**: what a provider captures, where, how fast, at what price, under what rights, how to call it, and what it can prove. Proof is shown as eight provenance stages (Real person, Captured locally, Genuine device, Sealed capture, Known timestamp, Tracked in transit, Independently verified, Delivered to you), each Evidenced, Claimed, Reported (a time only) or Not stated. They are read from the card's seven guarantee fields (human, application, camera, time, location, content, corroboration; `evidenced`, `claimed` or `none` in the JSON), each with a line on what is still uncertain. There is no overall score.
+- **Capture Card**: what a provider captures, where, how fast, at what price, under what rights, how to call it, and what it can prove. Proof is shown as eight provenance links (Real person, Captured locally, Genuine device, Sealed capture, Known timestamp, Tracked in transit, Independently verified, Delivered to you), each Evidenced, Claimed, Reported (a time only) or Not stated. They are read from the card's seven guarantee fields (human, application, camera, time, location, content, corroboration; `evidenced`, `claimed` or `none` in the JSON), each with a line on what is still uncertain. There is no overall score.
 - **Request**: a need in plain language, with the place and time in it, and why.
 - **Policy**: your rules, set once: required proof, price ceilings, AI-training rights, allow and deny lists, a standing budget. An unstated right or unpublished price counts as a violation. A violating order is never sent.
 - **Job**: the answer. A ranked plan, every other provider with the reason it was ruled out, and results with each provider's proof attached.
@@ -64,7 +64,7 @@ uv run irlpls adapters
 
 ## Providers with an adapter
 
-61 of the 86 listed providers have an adapter: 22 need no key, 37 take your key or account, and 2 are paid from your own wallet (`vangrid`, `execution-market`: the SDK prepares the call, your wallet signs it). The other 25 are directory-only. All 61 also return ready calls (`plan[i].prepared_call`, and `prepared_calls` per operation: read, quote, order, status) with your key named, never filled in. Made-to-order routes are a dry run unless you confirm; a price is firm only in USD (EUR, KRW, GBP, credits and USDC stay indicative, in their own currency). `irlpls adapters` prints the live list.
+61 of the 94 listed providers have an adapter: 22 need no key, 37 take your key or account, and 2 are paid from your own wallet (`vangrid`, `execution-market`: the SDK prepares the call, your wallet signs it). The other 33 are directory-only. All 61 also return ready calls (`plan[i].prepared_call`, and `prepared_calls` per operation: read, quote, order, status) with your key named, never filled in. Made-to-order routes are a dry run unless you confirm; a price is firm only in USD (EUR, KRW, GBP, credits and USDC stay indicative, in their own currency). `irlpls adapters` prints the live list.
 
 The remaining cards are listed for comparison; their `api` block says how to reach the provider.
 
@@ -78,4 +78,4 @@ Capture anything, sell data, verify anything itself, search archives, or run a m
 
 ## Licence
 
-Code: Apache-2.0. Card data licence: not yet decided.
+Code: Apache-2.0. Card data: CC BY 4.0 (`LICENSE-DATA.md`).
