@@ -175,3 +175,31 @@ class Policy:
 def _unset(v):
     """None, False or an empty list/dict. Not 0: a zero ceiling is a real setting."""
     return v is None or v is False or (isinstance(v, (list, dict)) and not v)
+
+
+# ---------------------------------------------------------------- safety: named people and cautions
+
+_CAUTIONS = [
+    ("sensitive_site", r"\b(?:pentagon|military (?:base|installation|site)|army base|air force base|naval base|nuclear (?:plant|power|facility|site)|"
+                       r"power (?:plant|station)|power plants|substation|water treatment|prison|government (?:building|facility)|embassy|"
+                       r"white house|classified|restricted (?:area|site))\b",
+     "Sensitive site: photographing or flying over military, government or critical-infrastructure sites is often restricted or illegal. "
+     "Check the local rules and the provider's terms before ordering, and expect a refusal or a restricted-area exclusion."),
+    ("minors", r"\b(?:kids?|children|child|minors?|toddlers?|babies|baby|schoolchildren|school kids|students at|playgrounds?|"
+               r"schoolyard|school yard|daycare|kindergarten)\b",
+     "Children may be in the shot: images of identifiable minors need the consent of a parent or guardian in many places. "
+     "Ask for views without identifiable faces, or get consent first."),
+    ("airspace", r"\b(?:drones?|uav|uas|quadcopter)\b[^.\n]{0,100}\b(?:airports?|airfields?|airstrip|runway|heliport)\b|"
+                 r"\b(?:airports?|airfields?|airstrip|runway|heliport)\b[^.\n]{0,100}\b(?:drones?|uav|uas|quadcopter)\b",
+     "Airspace: drone flights near airports are restricted in most countries and need authorisation from the aviation authority. "
+     "Check local airspace rules before any flight."),
+]
+
+
+def cautions(*texts):
+    """Plain, neutral cautions for an ask that touches a sensitive site, children, or drones near an airport: a list of
+    {"code", "msg"}. Not a refusal; the person decides. Texts may be a need, a why, or any strings from the request."""
+    import re
+    import unicodedata
+    t = " ".join(unicodedata.normalize("NFKC", str(x)).lower() for x in texts if isinstance(x, str) and x)
+    return [{"code": code, "msg": msg} for code, rx, msg in _CAUTIONS if re.search(rx, t)]

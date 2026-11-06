@@ -24,6 +24,10 @@
    {"ask": "how smoky is the air in Portland, OR right now", "label": "Smoke, Portland OR"},
    {"ask": "air quality sensor readings in London this morning", "label": "Air sensors, London"}
   ],
+  "parking-occupancy": [
+   {"ask": "free parking spaces at Sydney train station car park", "label": "Free spaces, Sydney station"},
+   {"ask": "is the car park at Tallawong full", "label": "Is Tallawong car park full"}
+  ],
   "earthquake": [
    {"ask": "latest earthquakes in Japan", "label": "Latest earthquakes, Japan"},
    {"ask": "earthquakes near Anchorage, Alaska today", "label": "Earthquakes, Anchorage"},

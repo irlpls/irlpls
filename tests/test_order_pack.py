@@ -32,7 +32,7 @@ def check_shape(p):
     assert p["kind"] in orderpack.KINDS
     assert 1 <= len(p["steps"]) <= 4 and all(len(s.split()) <= 14 for s in p["steps"])
     assert p["needs_from_user"] and p["irlpls_does_not"] and p["evidence"]
-    assert {"charge you", "take a cut"} <= set(p["irlpls_does_not"])
+    assert {"charge you"} <= set(p["irlpls_does_not"])
 
 
 def test_x402(job):

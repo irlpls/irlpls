@@ -91,7 +91,7 @@
   "freshness": {
     "mode": "on_demand",
     "typical_age": "n/a, service closed",
-    "notes": "Historically, work was performed after a HIT was posted. The service closed on 2026-09-30. Requesters can approve or reject pending HITs (otherwise auto-approved) and send bonuses until 2026-10-30, a balance refund is expected within 30 days of closure, and transaction history stays available until 2027-01-28."
+    "notes": "Historically, work was performed after a HIT was posted. The service closed on 2026-09-30. Requesters could approve or reject pending HITs (otherwise auto-approved) and send bonuses until 2026-10-30 (now past); a balance refund was expected within 30 days of closure; transaction history stays available until 2027-01-28."
   },
   "api": {
     "available": false,

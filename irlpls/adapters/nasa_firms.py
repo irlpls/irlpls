@@ -24,9 +24,10 @@ DOCS = "https://firms.modaps.eosdis.nasa.gov/api/"
 KEYLESS_FILE = f"{BASE}/data/active_fire/modis-c6.1/csv/MODIS_C6_1_Global_24h.csv"
 MAP_KEY_ENV = "FIRMS_MAP_KEY"   # optional: not `env`, because the keyless file works without it
 GET_KEY_URL = "https://firms.modaps.eosdis.nasa.gov/api/map_key/"
-SOURCES = ("VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT", "VIIRS_NOAA21_NRT", "MODIS_NRT", "LANDSAT_NRT")
+# Suomi NPP (VIIRS_SNPP_*) stopped delivering on 2026-11-02 13:00 UTC (FIRMS FAQ), so it is no longer offered.
+SOURCES = ("VIIRS_NOAA20_NRT", "VIIRS_NOAA21_NRT", "MODIS_NRT", "LANDSAT_NRT")
 MODIS_SATELLITE = {"T": "Terra", "A": "Aqua"}   # FIRMS MODIS attributes: T = Terra, A = Aqua
-SOURCE_LABEL = {"VIIRS_SNPP_NRT": "VIIRS Suomi NPP", "VIIRS_NOAA20_NRT": "VIIRS NOAA-20", "VIIRS_NOAA21_NRT": "VIIRS NOAA-21",
+SOURCE_LABEL = {"VIIRS_NOAA20_NRT": "VIIRS NOAA-20", "VIIRS_NOAA21_NRT": "VIIRS NOAA-21",
                 "MODIS_NRT": "MODIS", "LANDSAT_NRT": "Landsat"}
 
 

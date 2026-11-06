@@ -18,7 +18,7 @@ KINDS = ("x402", "connect_once", "provider_checkout", "request_quote", "by_hand"
 
 _URL = re.compile(r"https?://[^\s,;)\]'\"<>]+")
 
-DOES_NOT = ["charge you", "take a cut", "hold your money, login or account", "place the order for you"]
+DOES_NOT = ["charge you", "hold your money, login or account", "place the order for you"]
 
 
 def _urls(text):

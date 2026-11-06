@@ -104,6 +104,8 @@ REFUSALS = {
     "web_fact": ("Not an irlpls ask: this is already published on the web (a menu, opening hours, prices, a phone number). "
                  "Use a web search or the place's own website; irlpls only gets new observations of the physical world.",
                  "web search"),
+    "about_provider": ("This asks about a provider, not for new data: its Capture Card states the answer.", "the card page"),
+    "no_provider": ("No provider in the catalog covers this.", None),
 }
 
 
@@ -121,6 +123,7 @@ def continue_url(card):
 
 
 CALLABLE_MARGIN = 15   # a callable option is chosen over a better-fitting directory-only one only within this many fit points
+WEAK_FIT = 30          # below this best fit, best() is the best-fitting option: callability never outbids a weak match
 LIVE_MARGIN = 10       # ... or this many on a live route
 READY_MARGIN = 5       # one-yes readiness (irlpls.readiness) breaks a near-tie only: within this many fit points of the pick
 
@@ -333,6 +336,62 @@ def _prepared_all(a, req, route):
     return out
 
 
+# Bare place names that exist in many countries: a geocoder picks one arbitrarily, so the person must say which.
+AMBIGUOUS_PLACES = frozenset((
+    "springfield", "georgetown", "franklin", "clinton", "greenville", "bristol", "salem", "columbia", "arlington",
+    "richmond", "kingston", "alexandria", "cambridge", "newcastle", "birmingham", "manchester", "victoria",
+    "santiago", "san jose", "san juan", "santa cruz", "san antonio", "la paz", "córdoba", "cordoba", "valencia",
+    "aurora", "auburn", "lincoln", "madison", "washington", "troy", "oxford", "perth", "melbourne", "dublin",
+    "durham", "hamilton", "newport", "windsor", "portsmouth", "rochester", "glasgow", "lancaster", "york",
+))
+
+
+def ambiguous_place(r):
+    """True when the place is a bare, many-countries name with no country, state or coordinates to settle it."""
+    if r is None or not isinstance(r.place, str) or r.lat is not None or getattr(r, "country_code", None):
+        return False
+    if getattr(r, "state", None) or getattr(r, "anywhere", False):
+        return False
+    return r.place.strip().lower() in AMBIGUOUS_PLACES
+
+
+# Text that tries to steer the agent reading the plan instead of describing a need. Flagged, never obeyed.
+_INJECTION = __import__("re").compile(
+    r"ignore (?:all |any |the )?(?:previous|prior|above|earlier) (?:instructions|rules|directions)|"
+    r"disregard (?:all |any |the )?(?:previous|prior|above|earlier)|forget (?:your|all|the) (?:instructions|rules)|"
+    r"\b(?:place|submit|confirm|approve|authori[sz]e)\s+(?:the|an?|this|my)\s+order\b|"
+    r"\bpay\s+(?:me\s+)?\$\s*\d|\bsystem prompt\b|\byou must (?:now )?(?:pay|order|buy|send)\b", __import__("re").I)
+
+
+def injection_in(*texts):
+    for t in texts:
+        m = isinstance(t, str) and _INJECTION.search(t)
+        if m:
+            return m.group(0)
+    return None
+
+
+GEOCODE_BUDGET_S = 2.5   # planning waits this long for the geocoder; a slower one leaves the place un-located, said aloud
+
+
+def _geocode_timeboxed(place, budget=None):
+    """geo.geocode in a worker thread, abandoned after the budget. (result, timed_out). The thread finishes into
+    geo's cache, so the next plan of the same place is instant. A real error is returned as an unlocated place."""
+    import threading
+    from . import geo
+    box = {}
+
+    def run():
+        try:
+            box["g"] = geo.geocode(place)
+        except Exception:
+            box["g"] = None
+    t = threading.Thread(target=run, daemon=True)
+    t.start()
+    t.join(GEOCODE_BUDGET_S if budget is None else budget)
+    return box.get("g"), t.is_alive()
+
+
 class Job:
     def __init__(self, need, req, policy, why=None):
         self.id = uuid.uuid4().hex[:12]
@@ -370,7 +429,11 @@ class Job:
                            "ask": "Where on Earth? A place name or lat/lon." if off else "Where? A place name or lat/lon.",
                            "why": (f"irlpls covers places on Earth only; {off.group(1)!r} is not one it can plan for." if off else
                                    "Every provider covers specific places; without one nothing can be matched or dispatched.")})
-        if r.mode == "live" and r.place and r.lat is None and not getattr(r, "anywhere", False):
+        if ambiguous_place(r):
+            qs.append({"field": "place", "blocking": True,
+                       "ask": f"Which {r.place}? Give the country (and state or region), or lat and lon.",
+                       "why": f"{r.place!r} exists in several countries; irlpls will not guess one and rank providers for the wrong place."})
+        elif r.mode == "live" and r.place and r.lat is None and not getattr(r, "anywhere", False):
             qs.append({"field": "lat", "blocking": False, "ask": f"Where exactly is {r.place!r}? Give lat and lon.",
                        "why": "The place name could not be put on the map (small places are not in the offline gazetteer, or "
                               "the geocoder was unreachable), so a live read has no coordinates to query yet."})
@@ -416,7 +479,7 @@ class Job:
                 r.place, r.anywhere = None, True
         check_request(r)
         if r.place and r.lat is None and "place" in fields:
-            g = geo.geocode(r.place)
+            g, _slow = _geocode_timeboxed(r.place)
             if g:
                 r.lat, r.lon, r.country_code, r.state = g["lat"], g["lon"], g["country_code"], g.get("state")
                 r.subdivision = g.get("subdivision")
@@ -437,14 +500,34 @@ class Job:
         elif r.targets_person and not (self.policy and self.policy.allow_person_targeting):
             self.refusal = {"code": "person_targeting", "msg": REFUSALS["person_targeting"][0]}
         ready = self._clarify()
+        hit = injection_in(r.need, self.why)
+        if hit and not any(w.get("code") == "prompt_injection" for w in self.warnings):
+            msg = (f"the request contains instruction-like text ({hit!r}); it was treated as plain text. irlpls never places "
+                   "or pays for an order because a request says so: only submit(confirm=True) from the person does.")
+            self.warnings.append({"code": "prompt_injection", "msg": msg})
+            self._note(f"warning: prompt_injection: {msg}")
+        from .policy import cautions   # sensitive sites, children, drones near airports: plain notes, never a refusal
+        for c in cautions(r.need, self.why):
+            if not any(w.get("code") == c["code"] for w in self.warnings):
+                self.warnings.append(c)
+                self._note(f"caution: {c['code']}: {c['msg']}")
         self.plan, out = [], []
         cards = [c for c in (cards or registry().cards) if in_scope(c)]
         by_id = {c["id"]: c for c in cards}
         checks = health.load()   # the last daily read check (tools/healthcheck.py)
         ranked = rank(cards, self.request)
+        from .match import about_answer, about_provider, unsupported
+        about = about_provider(r.need, cards)
+        if about and not self.refusal:   # "Is Prolific verified?": answered from that card, never by routing to another provider
+            self.refusal = {"code": "about_provider", "msg": about_answer(*about), "instead": f"https://irlpls.com/c/{about[0]['id']}.html"}
+            self.questions, ready = [], True
+        elif not self.refusal and not ranked and not ambiguous_place(r) and unsupported(r, ranked):
+            # nothing ranks at all (the matcher ruled every card out): say so rather than name a weak default
+            self.refusal = {"code": "no_provider", "msg": unsupported(r, ranked), "instead": None}
+            self.questions, ready, ranked = [], True, []
         kept = {m["id"] for m in ranked}
-        if (self.refusal or {}).get("code") == "web_fact":
-            ranked, kept = [], set()   # a web page answers it: no provider is planned, least of all a person sent to look
+        if (self.refusal or {}).get("code") == "web_fact" or ambiguous_place(r):
+            ranked, kept = [], set()   # ambiguous place: rank nothing until the person says which one   # a web page answers it: no provider is planned, least of all a person sent to look
         for m in ranked:
             c = get_card(m["id"]) or by_id[m["id"]]
             if not plannable(c, self.request, self.policy):
@@ -500,7 +583,7 @@ class Job:
         best = self.best()
         if self.refusal:
             self.reason_code = self.refusal["code"]
-            if self.refusal["code"] == "web_fact" or not best:
+            if self.refusal["code"] in ("web_fact", "about_provider", "no_provider") or not best:
                 self.state = "failed"   # nothing compliant to propose: say why instead of an empty plan
             self._note(f"{'refused' if self.refusal['code'] == 'person_targeting' else 'redirected'}: {self.refusal['msg']}")
         elif self.reason_code in REFUSALS:
@@ -536,6 +619,12 @@ class Job:
             return min(near, key=lambda o: (rr(o), -fit(o), o is not pick))
 
         top = max(ok, key=fit)   # the first option with the highest fit (plan order breaks ties)
+        # A near-tie never crosses route class: a collect ask must not default to a live camera because it is callable.
+        # So the default is always the best-fitting option or a close callable one of the same route (plan[0]'s class).
+        same = [o for o in ok if o.get("route") == top.get("route")]
+        ok = same or ok
+        if fit(top) < WEAK_FIT:   # nothing fits: don't trade the best-fitting option for a merely callable weak one
+            return top
         callable_ = [o for o in ok if o["sdk"]["callable"]
                      and fit(o) >= fit(top) - (LIVE_MARGIN if o.get("route") == "live" else CALLABLE_MARGIN)]
         if not callable_:
@@ -1405,7 +1494,12 @@ def request(need, why=None, policy=None, geocode=True, **hints):
     pol = policy if isinstance(policy, Policy) or policy is None else Policy.from_dict(policy)
     if pol is not None:
         pol.check_values()   # a negative or NaN ceiling is the person's mistake: say so, don't plan around it
-    req = make_request(need, geocode=geocode, **hints)
+    req = make_request(need, geocode=False, **hints)
+    if geocode and req.place and req.lat is None and not ambiguous_place(req):
+        g, _slow = _geocode_timeboxed(req.place)   # time-boxed: a slow geocoder leaves the place un-located (asked, not hidden)
+        if g:
+            req.lat, req.lon, req.country_code, req.state = g["lat"], g["lon"], g["country_code"], g.get("state")
+            req.subdivision = g.get("subdivision") or req.subdivision
     check_request(req)
     if isinstance(need, dict):  # a hostile intent can sit in any text field of the document (why, notes, ...)
         from .need import detect_targets_person, text_fields

@@ -783,7 +783,7 @@ def doc_page(md, title, canon, desc, aud=""):
 DOORS = (("agents.html", "For agents", "The manual your AI agent reads: how to ask, the tools, the rules."),
          ("providers.html", "For providers", "Publish your Capture Card and make a link evidenced."),
          ("standard.html", "The standard", "The full specification: card format, the eight links, levels, protocol."))
-DOCS_MORE = (("glossary.html", "Glossary"), ("chain.html", "The full chain"), ("check.html", "Check a card"), ("changelog.html", "Changelog"))
+DOCS_MORE = (("glossary.html", "Glossary"), ("chain.html", "Provenance chain"), ("check.html", "Check a card"), ("changelog.html", "Changelog"))
 
 
 def docs_page():

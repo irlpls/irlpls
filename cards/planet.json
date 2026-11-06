@@ -122,7 +122,7 @@
   "freshness": {
     "mode": "mixed",
     "typical_age": "Tasking: captured after you order. Archive: PlanetScope from near-daily to years old; self-serve Insights Flex gets PlanetScope 30 days and older; SkySat archive via Planet Select is 30 days and older.",
-    "notes": "The Data API and Orders API serve existing scenes; the Tasking API and Planet Select order new captures. A tasking customer may buy an archive hold of up to 30 days before its captures join the shared SkySat archive. Buying archive imagery through the Tasking API is deprecated and ends November 1, 2026."
+    "notes": "The Data API and Orders API serve existing scenes; the Tasking API and Planet Select order new captures. A tasking customer may buy an archive hold of up to 30 days before its captures join the shared SkySat archive. Buying archive imagery through the Tasking API was scheduled to end on November 1, 2026 (Planet's docs, read 2026-10-28; not re-confirmed after that date)."
   },
   "api": {
     "available": true,

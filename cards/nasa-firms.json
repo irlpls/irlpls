@@ -32,7 +32,7 @@
     "tasks": [
       "active fire hotspot detections in a bounding box (or the world) for the last 1-5 days",
       "keyless global or regional CSV/KML/shapefile of detections from the last 24 hours, 48 hours or 7 days",
-      "VIIRS (S-NPP until Nov. 2, 2026, NOAA-20, NOAA-21) and MODIS near-real-time fire detections (Terra and Aqua MODIS wind down in late 2026/early 2027)",
+      "VIIRS (NOAA-20, NOAA-21; Suomi NPP ended 2026-11-02 13:00 UTC) and MODIS near-real-time fire detections (Terra and Aqua MODIS wind down in late 2026/early 2027)",
       "Landsat fire detections over the US and Canada",
       "per-detection fields such as brightness, scan/track pixel size, confidence, fire radiative power, acquisition date and time, satellite, day/night"
     ]
@@ -84,7 +84,7 @@
         "action": "fetch",
         "method": "GET",
         "path": "/api/area/csv/{MAP_KEY}/{SOURCE}/{AREA_COORDINATES}/{DAY_RANGE}",
-        "params": "SOURCE: VIIRS_SNPP_NRT, VIIRS_NOAA20_NRT, VIIRS_NOAA21_NRT, MODIS_NRT, LANDSAT_NRT (US/Canada), or *_SP for standard processing; AREA_COORDINATES: west,south,east,north or world; DAY_RANGE 1-5",
+        "params": "SOURCE: VIIRS_NOAA20_NRT, VIIRS_NOAA21_NRT, MODIS_NRT, LANDSAT_NRT (US/Canada), or *_SP for standard processing; AREA_COORDINATES: west,south,east,north or world; DAY_RANGE 1-5",
         "notes": "Most recent detections from today back DAY_RANGE-1 days. A /{DATE} suffix returns DATE to DATE+DAY_RANGE-1 instead. An invalid key returns HTTP 400 'Invalid MAP_KEY.'"
       },
       {
@@ -104,7 +104,7 @@
         "action": "list",
         "method": "GET",
         "path": "/api/data_availability/csv/{MAP_KEY}/{SENSOR}",
-        "params": "SENSOR: ALL, LANDSAT_NRT, MODIS_NRT, MODIS_SP, VIIRS_NOAA20_NRT, VIIRS_NOAA20_SP, VIIRS_NOAA21_NRT, VIIRS_NOAA21_SP, VIIRS_SNPP_NRT, VIIRS_SNPP_SP",
+        "params": "SENSOR: ALL, LANDSAT_NRT, MODIS_NRT, MODIS_SP, VIIRS_NOAA20_NRT, VIIRS_NOAA20_SP, VIIRS_NOAA21_NRT, VIIRS_NOAA21_SP (VIIRS_SNPP_* ended 2026-11-02)",
         "notes": "Date availability of SP and NRT data per sensor."
       }
     ],

@@ -43,7 +43,7 @@ MODALITIES = {
     "video": r"\b(video|footage|film|clip)s?\b",
     "audio": r"\b(audio|sound|recording|noise)\b",
     "aerial": r"\b(aerial|drone|satellite|roofs?|overhead)\b",
-    "sensor": r"\b(sensor|measure|air quality|temperature|pm2|humidity|weather|river|stream|flood|water level|gauge|wind|rain)\b",
+    "sensor": r"\b(sensor|measure|air quality|temperature|pm2|humidity|weather|river|stream|flood|water level|gauge|wind|rain(?:s|ing)?)\b",
     "text-report": r"\b(report|inspect|audit|check|survey)\b",
 }
 EXPLICIT_SENSOR = r"\b(sensor|measure\w*|readings?|gauge|pm2)\b"
@@ -73,6 +73,9 @@ TODAY = r"\btoday\b"
 # reporting now answers it ("tide at Santa Monica", "earthquake Alaska", "air quality London").
 CONDITION = r"\b(tides?|earthquakes?|quakes?|waves?|swell|surf|air|ships?|vessels?|web ?cams?|cctv|jam ?cams?|cameras?)\b"
 LOOKBACK = r"\b(?:last|past)\s+(?:(?:\d+|few|couple of)\s+)?(?:minute|min|hour|hr|day|week)s?\b|\bago\b|\bthis (?:morning|afternoon|evening)\b|\byesterday\b|\bearlier today\b"  # "in the last hour": recent reports
+# a visit asked for "this afternoon": the part of the day is the deadline
+THIS_PART = r"this (?:morning|afternoon|evening)"
+SEND = r"\b(?:send|take|capture|shoot|visit|count|photograph|film)\b"
 # "7 days" on its own, as in "500 clips, 7 days"; not a lookback, a repeat, a lag or a duration of footage
 BARE_DEADLINE = r"(?<![\w.$-])(?<!last )(?<!past )(?<!every )(\d{1,6})[\s-]*(minute|min|hour|hr|day|week)s?\b(?!\s+(?:ago|after|of|old|later|earlier|before|long)\b)"
 # A road scene: a road user, a manoeuvre, road works; or a street or road under some condition (ROAD + CONDITIONS).
@@ -162,7 +165,7 @@ CITIES = {"Los Angeles": ("us", "california"), "San Francisco": ("us", "californ
           "Kyiv": ("ua", None), "Kiev": ("ua", None), "Kharkiv": ("ua", None), "Lviv": ("ua", None), "Odesa": ("ua", None),
           "Odessa": ("ua", None), "Moscow": ("ru", None), "Bangkok": ("th", None), "Prague": ("cz", None),
           "Budapest": ("hu", None), "Beirut": ("lb", None), "Gaza": ("ps", None), "Tel Aviv": ("il", None),
-          "Jerusalem": ("il", None),
+          "Jerusalem": ("il", None), "South Pole": ("aq", None), "Seine": ("fr", None), "Seville": ("es", None),
           # landmarks and US cities named without a state ("traffic cam on the Golden Gate Bridge", "Tampa after the storm")
           "Golden Gate Bridge": ("us", "california"), "Golden Gate": ("us", "california"), "Bay Bridge": ("us", "california"),
           "Hollywood": ("us", "california"), "Yosemite": ("us", "california"), "San Diego": ("us", "california"),
@@ -284,6 +287,19 @@ TARGETS_PERSON = (r"\b(?:" + VERBS + r")\b[^\n]{0,120}?(?:" + _PERSON + r")|(?:"
                   + _ASK_ABOUT + r"|" + _PRONOUN + r"|\b(?:photograph|film|record|watch|follow|track)\w*\b[^\n]{0,80}[.;]\s*(?:him|her|them)\s*[.!]|\b(?:whereabouts|comings and goings|movements) of\b|"
                   r"\bsubject:\s*(?:" + _REL_OWNED + r"|a person)|\b(?:" + _REL_OWNED + r")[^\n]{0,60}\b(?:is really|really at|arrives?|leaves?|goes)\b|"
                   r"\bwhoever (?:leaves|exits|enters|arrives)\b[^\n]{0,80}\b(?:my|it's my)\b|\bit's my (?:ex|wife|husband|partner|girlfriend|boyfriend)\b")
+# "follow John Smith" aims a capture at a named private person, as "follow my ex" does: a title ("Dr Jones") or a first name
+# from the list below (plus a surname), after a tracking verb. The text is already lower case here. Mirrored in src/match.js.
+_FIRST = ("john|jane|james|mary|michael|sarah|david|emma|robert|jennifer|william|linda|richard|susan|joseph|karen|thomas|lisa|chris|"
+          "daniel|laura|matt|matthew|mark|paul|anna|peter|kate|steve|steven|alex|sam|ben|tom|jack|emily|jessica|amy|nick|andrew|"
+          "ryan|kevin|brian|jason|megan|rachel|ashley|nicole|maria|juan|carlos|ahmed|mohamed|ali|wei|li|priya|raj|omar|fatima|"
+          "olivia|sophia|liam|noah|ethan|lucy|hannah|james|dan|joe|bob|bill|jim|tim|tony|ann|helen|julia|karl|sean|adam|luke")
+_PNAME = r"(?:(?:mr|mrs|ms|miss|dr|prof)\.?\s+[a-z][a-z'\-]+|(?:" + _FIRST + r")(?:\s+[a-z][a-z'\-]+)?)"
+NAMED_PERSON_TARGET = (r"\b(?:follow(?:ing)?|track(?:ing)?|tail(?:ing)?|trail(?:ing)?|stalk(?:ing)?|spy(?:ing)? on|surveil\w*|"
+                       r"keep(?:ing)? (?:an )?eye on|monitor(?:ing)?|find out where|where does|where did)\s+" + _PNAME + r"\b|"
+                       r"\b(?:stalk(?:ing)?|spy(?:ing)? on)\s+[a-z][a-z'\-]+\s+[a-z][a-z'\-]+\b|"
+                       r"\bwhere (?:he|she|they) (?:goes|went|lives|works|is going)\b|\bwhen (?:he|she|they) (?:leaves?|arrives?|gets? home|goes out)\b|"
+                       r"\b(?:" + _FIRST + r")\s+[a-z][a-z'\-]+\s+(?:and\s+)?(?:tell me )?where (?:he|she) goes\b")
+TARGETS_PERSON += "|" + NAMED_PERSON_TARGET
 
 
 def normalise(text):
@@ -403,11 +419,23 @@ def anywhere(text):
     return bool(re.search(ANYWHERE, str(text or ""), re.I))
 
 
+# A question about the past ("last year", "in 2023", "3 months ago"): irlpls only gets new observations, never an archive.
+HISTORY = (r"\b(?:last|previous)\s+(?:year|month|summer|winter|spring|autumn|fall|decade|century|january|february|march|april|may|june|july|"
+           r"august|september|october|november|december)\b|\b(?:in|during|from|of|for)\s+(?:19\d\d|20[01]\d|202[0-5])\b|"
+           r"\b(?:\d+|a|an|one|two|three|several|few)\s+(?:years?|months?|decades?)\s+ago\b|\bhistorical(?:ly)?\b|\bsince\s+(?:19\d\d|20[01]\d|202[0-5])\b")
+
+
+def history(text):
+    """True if the ask is about the past ("river level last year"): not a live read, not a new capture, so not an irlpls ask."""
+    return bool(re.search(HISTORY, str(text or "").lower()))
+
+
 def web_fact(text):
     """True if the ask is for something a web page already publishes (a menu, opening hours, prices, a phone number) and
-    nothing is to be captured on site: not an irlpls ask, a web search answers it."""
+    nothing is to be captured on site, or for the past (history): not an irlpls ask, a web search or the provider's own
+    archive answers it."""
     t = str(text or "").lower()
-    return bool(re.search(WEB_FACT, t)) and not re.search(ON_SITE, t)
+    return history(t) or (bool(re.search(WEB_FACT, t)) and not re.search(ON_SITE, t))
 
 
 # the ask wants rights to train AI on what is delivered (src/match.js AI_TRAINING is the same pattern)
@@ -491,8 +519,55 @@ def split_parts(text):
             pieces.append(p)
     return pieces if len(pieces) > 1 else []
 
+# Minimal multilingual vocabulary (Spanish, French, German, Russian, Japanese): the words that say what is read, where and
+# when, rewritten into the English the matcher knows, so "nivel del río en Sevilla ahora" routes like "river level in Seville
+# now". Names of places become the gazetteer's English name. The request keeps the original text as `need`. Mirrored in
+# src/match.js (generated from this table; tests/test_matcher_simulation.py checks they agree).
+NONENGLISH = [
+    # phrases first (longest match wins)
+    ("nivel del río", "river level"), ("nivel del rio", "river level"), ("niveau de la rivière", "river level"),
+    ("niveau du fleuve", "river level"), ("niveau de la", "water level"), ("niveau du", "water level"), ("nivel del", "water level"),
+    ("calidad del aire", "air quality"), ("qualité de l'air", "air quality"), ("luftqualität", "air quality"),
+    ("качество воздуха", "air quality"), ("уровень воды", "water level"), ("уровень реки", "river level"),
+    ("wie hoch ist", "water level"), ("pegelstand", "water level"), ("wasserstand", "water level"),
+    ("cerca de", "near"), ("près de", "near"), ("tiempo en", "weather in"),
+    # words
+    ("ahora", "now"), ("ahora mismo", "now"), ("maintenant", "now"), ("actuellement", "now"), ("gerade", "now"), ("jetzt", "now"),
+    ("aktuell", "now"), ("сейчас", "now"), ("сегодня", "today"), ("hoy", "today"), ("aujourd'hui", "today"), ("heute", "today"),
+    ("nivel", "water level"), ("niveau", "water level"), ("río", "river"), ("rivière", "river"),
+    ("fleuve", "river"), ("fluss", "river"), ("rhein", "river Rhine"),
+    ("temperatura", "temperature"), ("température", "temperature"), ("temperatur", "temperature"), ("температура", "temperature"),
+    ("tiempo", "weather"), ("météo", "weather"), ("wetter", "weather"), ("погода", "weather"), ("clima", "weather"),
+    ("lluvia", "rain"), ("llueve", "raining"), ("pluie", "rain"), ("regen", "rain"), ("дождь", "rain"),
+    ("aire", "air"), ("luft", "air"), ("воздух", "air"), ("terremoto", "earthquake"), ("séisme", "earthquake"),
+    ("erdbeben", "earthquake"), ("землетрясение", "earthquake"), ("marea", "tide"), ("marée", "tide"), ("gezeiten", "tide"),
+    ("der", "the"), ("die", "the"), ("das", "the"), ("en", "in"), ("à", "in"), ("bei", "near"), ("в", "in"), ("во", "in"),
+    # places (any case form) -> the gazetteer's English name
+    ("sevilla", "Seville"), ("españa", "Spain"), ("espagne", "Spain"), ("spanien", "Spain"), ("köln", "Cologne"),
+    ("koeln", "Cologne"), ("münchen", "Munich"), ("wien", "Vienna"), ("moskau", "Moscow"), ("tokio", "Tokyo"),
+    ("москве", "Moscow"), ("москва", "Moscow"), ("москвы", "Moscow"), ("москву", "Moscow"), ("франция", "France"),
+    ("deutschland", "Germany"), ("alemania", "Germany"), ("allemagne", "Germany"),
+]
+# Japanese has no spaces: each term is rewritten in place, spaced, longest first
+NONENGLISH_CJK = [("東京", "in Tokyo"), ("大阪", "in Osaka"), ("京都", "in Kyoto"), ("空気質", "air quality"), ("大気質", "air quality"),
+                  ("天気", "weather"), ("気温", "temperature"), ("水位", "water level"), ("地震", "earthquake"), ("現在", "now"),
+                  ("今", "now"), ("川", "river"), ("雨", "rain")]
+_NE = {k: v for k, v in NONENGLISH}
+_NE_RX = re.compile(r"(?<!\w)(?:" + "|".join(re.escape(k) for k, _ in sorted(NONENGLISH, key=lambda x: -len(x[0]))) + r")(?!\w)", re.I)
+_NE_CJK = {k: v for k, v in NONENGLISH_CJK}
+_NE_CJK_RX = re.compile("|".join(re.escape(k) for k, _ in sorted(NONENGLISH_CJK, key=lambda x: -len(x[0]))))
+
+
+def localise(text):
+    """The ask with its Spanish, French, German, Russian or Japanese vocabulary and place names put into English; the same
+    text when it has none. The place stays in the ask: "東京の今の空気質" reads as "in Tokyo now air quality"."""
+    t = _NE_CJK_RX.sub(lambda m: " " + _NE_CJK[m.group(0)] + " ", text)
+    return _NE_RX.sub(lambda m: _NE[m.group(0).lower()], t)
+
 
 def parse(text, cards=()):
+    original = text
+    text = localise(text)
     t = text.lower()
     r = Request(need=text)
     r.modalities = [m for m, rx in MODALITIES.items() if re.search(rx, t)]
@@ -527,7 +602,10 @@ def parse(text, cards=()):
     if q:
         r.quantity = min(int(q.group(1).replace(",", "") or 1), MAX_QUANTITY)
     dataset = r.quantity > 1 or re.search(r"\b(dataset|training data|examples|corpus)\b", t)
-    if re.search(LIVE, t) or re.search(LOOKBACK, t) or (r.within_minutes is not None and r.within_minutes <= 60) \
+    lb = re.search(LOOKBACK, t)
+    if lb and re.fullmatch(THIS_PART, lb.group(0)) and re.search(SEND, t):
+        lb = None   # "send someone this afternoon" is a visit due then, not a look back at the morning's reports
+    if re.search(LIVE, t) or lb or (r.within_minutes is not None and r.within_minutes <= 60) \
             or (re.search(TODAY, t) and not re.search(CAPTURE, t)):
         r.mode = "live"
         r.within_minutes = r.within_minutes or 60
@@ -596,4 +674,5 @@ def parse(text, cards=()):
         from .match import mentions, vocab
         vs = [vocab(c) for c in cards]
         r.specifics += [w for w in r.terms if w not in r.specifics and not any(mentions(None, w, v) for v in vs)]
+    r.need = original
     return r

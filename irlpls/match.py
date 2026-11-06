@@ -39,8 +39,52 @@ BULK = r"(?<![a-z])(training data|custom collection|data collection|physical ai|
 DATASET = r"\b(dataset|datasets|training data|examples|corpus|samples)\b"
 
 
+REMOTE_PANEL = r"wherever contributors|says nothing about where a capture is made|where a participant lives"
+
+
 def bulk_vendor(card):
     return bool(re.search(BULK, " ; ".join(card.get("tags") or []).lower()))
+
+
+def remote_capture(card):
+    """A dataset vendor or an online panel: its people record where they live, not at a spot the requester picks."""
+    return bulk_vendor(card) or bool(re.search(REMOTE_PANEL, (card["coverage"].get("notes") or "").lower()))
+
+
+# An ask only a person on site can answer: whether a place is open or busy, a head count, "send a human". A satellite, a
+# dataset vendor (its contributors record wherever they live) or any provider with no live feed to look at can't.
+ON_SITE_STATUS = (r"\b(?:is|are|was)\b[^?.]{0,80}\b(?:open|closed|busy|crowded|full)\b|\b(?:count|counting)\b[^?.]{0,40}\b(?:people|persons|cars|visitors|customers|crowds?)\b|"
+                  r"\bhow many (?:people|cars|visitors|customers)\b|\bsend (?:a |an )?(?:human|person|someone|people)\b")
+
+
+def on_site_ask(req):
+    return bool(re.search(ON_SITE_STATUS, (req.need or "").lower()))
+
+
+def place_bound(req):
+    """The ask is for one spot's own state, now or by someone there: a dataset vendor's contributors, who record wherever they
+    live, can't serve it. A photo or clip due "now", or an on-site question."""
+    placed = bool(req.place or req.country_code or getattr(req, "lat", None) is not None)
+    return placed and (on_site_ask(req) or (req.mode == "live" and bool({"photo", "video"} & set(req.modalities or []))))
+
+
+QUESTION = r"^\W*(?:is|are|was|were|will|does|do|can|how|what|where|which)\b|\?\s*$"
+
+
+def question(req):
+    """The ask is phrased as a question about conditions somewhere ("is it raining"); bare keywords ("river") are a directory
+    search (Find data), which lists providers whatever the place."""
+    return bool(re.search(QUESTION, (req.need or "").lower()))
+
+
+def country_locked(card):
+    """The card's explicit areas name countries (not "*") and it isn't Global: it works only there."""
+    areas = [a.lower() for a in card["coverage"].get("areas") or []]
+    return bool(areas) and "*" not in areas and not _global(card)
+
+
+NO_PROVIDER = ("No provider in the catalog covers this: nothing listed can do it where and when you ask. "
+               "irlpls will not name a weak default; see `unsupported` in the catalog (irlpls_list_capabilities) for what is not offered.")
 
 
 def single_capture(req):
@@ -346,12 +390,61 @@ def score(card, req):
     if total and getattr(req, "need_ai_training", False) and ai != "allowed":
         total = 0 if ai == "forbidden" else int(total * AI_UNKNOWN + 0.5)  # asked for AI-training rights: a card that grants them first
         parts["ai_training"] = ai or "unknown"
+    # Hard rule-outs: a live question with no place can't use a live feed or a card that works only in some countries; a spot's own state can't
+    # come from a dataset vendor; an on-site question can't be answered by a satellite or any card with no live feed and no people.
+    if req.mode == "live" and question(req) and not (req.place or req.country_code or getattr(req, "lat", None) is not None
+                                   or getattr(req, "anywhere", False) or req.regions) and (country_locked(card) or "live" in (dl.get("modes") or [])):
+        total, parts["needs_place"] = 0, True   # a live feed is read at a place: with none given, nothing can be read yet
+        why.append("a live read needs a place; none given")
+    if total and place_bound(req) and remote_capture(card):
+        total, parts["bulk_elsewhere"] = 0, True
+        why.append("dataset vendor: contributors record where they live, not at the spot you name")
+    if total and on_site_ask(req) and "live" not in (dl.get("modes") or []) and (card.get("capture") or {}).get("by") == "devices":
+        total, parts["no_one_on_site"] = 0, True
+        why.append("no one on site and no live feed: can't tell you what is happening there")
     if (d is not None and d < MIN_DESCRIPTION) or parts.get("outside_coverage"):
         total = 0  # does (almost) none of what you described, or not where you need it
     return {"id": card["id"], "name": card["name"], "fit": total, "verdict": verdict(total), "parts": parts, "gaps": why}
 
 
+def about_provider(text, cards):
+    """(card, aspect) when the ask is a question about a provider itself ("Is Prolific verified?", "how much does GetterDone
+    cost?"), else None. aspect is "verification" or "price". Such a question is answered from the card, never by routing the
+    person to another provider."""
+    t = (text or "").lower()
+    if not re.match(r"\W*(?:is|are|does|do|how|what|can|who|why|ist|est)\b", t):
+        return None
+    aspect = "verification" if re.search(r"\b(?:verified|verify|trusted|trustworthy|legit|reliable)\b", t) else \
+        "price" if re.search(r"\b(?:cost|costs|price|pricing|how much|fees?|expensive)\b", t) else None
+    if not aspect:
+        return None
+    for c in cards:
+        names = {c["id"].lower(), c["id"].lower().replace("-", " "), c["name"].lower(), c["name"].lower().split(" (")[0]}
+        if any(len(n) > 3 and re.search(r"(?<![a-z0-9])" + re.escape(n) + r"(?![a-z0-9])", t) for n in names):
+            return c, aspect
+    return None
+
+
+def about_answer(card, aspect):
+    """What the card itself states about verification or price: the levels it claims (never upgraded) or its price line."""
+    if aspect == "price":
+        p = card.get("pricing") or {}
+        return (f"{card['name']} states: {p.get('model') or 'no price model'}"
+                + (f" (from ${p['from_usd']} {p.get('unit') or ''})" if p.get("from_usd") else "") + ". The card page has the full terms.")
+    v = card["verification"]
+    lv = ", ".join(f"{k} {v[k]['level']}" for k in ("human", "application", "camera", "time", "location", "content", "corroboration") if k in v)
+    return (f"{card['name']} states: {lv}. 'claimed' is the provider's own statement; irlpls verifies nothing itself. "
+            "The card page lists the method and what is still uncertain for each.")
+
+
+def unsupported(req, ranked):
+    """NO_PROVIDER when nothing ranked fits (no result, or the best fit is below WEAK): say so instead of naming a weak default."""
+    return NO_PROVIDER if not ranked or max((s["fit"] or 0) for s in ranked) < WEAK else None
+
+
 def rank(cards, req):
+    if about_provider(req.need, [c for c in cards if in_scope(c)]):
+        return []   # a question about a provider is answered from its card, never routed to a provider
     out = [score(c, req) for c in cards if in_scope(c)]
     out = [s for s in out if s["fit"] is None or s["fit"] > 0]
     by_id = {c["id"]: c for c in cards}

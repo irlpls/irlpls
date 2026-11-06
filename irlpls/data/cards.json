@@ -10631,7 +10631,7 @@
    "freshness": {
     "mode": "on_demand",
     "typical_age": "n/a, service closed",
-    "notes": "Historically, work was performed after a HIT was posted. The service closed on 2026-09-30. Requesters can approve or reject pending HITs (otherwise auto-approved) and send bonuses until 2026-10-30, a balance refund is expected within 30 days of closure, and transaction history stays available until 2027-01-28."
+    "notes": "Historically, work was performed after a HIT was posted. The service closed on 2026-09-30. Requesters could approve or reject pending HITs (otherwise auto-approved) and send bonuses until 2026-10-30 (now past); a balance refund was expected within 30 days of closure; transaction history stays available until 2027-01-28."
    },
    "api": {
     "available": false,
@@ -11195,7 +11195,7 @@
     "tasks": [
      "active fire hotspot detections in a bounding box (or the world) for the last 1-5 days",
      "keyless global or regional CSV/KML/shapefile of detections from the last 24 hours, 48 hours or 7 days",
-     "VIIRS (S-NPP until Nov. 2, 2026, NOAA-20, NOAA-21) and MODIS near-real-time fire detections (Terra and Aqua MODIS wind down in late 2026/early 2027)",
+     "VIIRS (NOAA-20, NOAA-21; Suomi NPP ended 2026-11-02 13:00 UTC) and MODIS near-real-time fire detections (Terra and Aqua MODIS wind down in late 2026/early 2027)",
      "Landsat fire detections over the US and Canada",
      "per-detection fields such as brightness, scan/track pixel size, confidence, fire radiative power, acquisition date and time, satellite, day/night"
     ]
@@ -11247,7 +11247,7 @@
       "action": "fetch",
       "method": "GET",
       "path": "/api/area/csv/{MAP_KEY}/{SOURCE}/{AREA_COORDINATES}/{DAY_RANGE}",
-      "params": "SOURCE: VIIRS_SNPP_NRT, VIIRS_NOAA20_NRT, VIIRS_NOAA21_NRT, MODIS_NRT, LANDSAT_NRT (US/Canada), or *_SP for standard processing; AREA_COORDINATES: west,south,east,north or world; DAY_RANGE 1-5",
+      "params": "SOURCE: VIIRS_NOAA20_NRT, VIIRS_NOAA21_NRT, MODIS_NRT, LANDSAT_NRT (US/Canada), or *_SP for standard processing; AREA_COORDINATES: west,south,east,north or world; DAY_RANGE 1-5",
       "notes": "Most recent detections from today back DAY_RANGE-1 days. A /{DATE} suffix returns DATE to DATE+DAY_RANGE-1 instead. An invalid key returns HTTP 400 'Invalid MAP_KEY.'"
      },
      {
@@ -11267,7 +11267,7 @@
       "action": "list",
       "method": "GET",
       "path": "/api/data_availability/csv/{MAP_KEY}/{SENSOR}",
-      "params": "SENSOR: ALL, LANDSAT_NRT, MODIS_NRT, MODIS_SP, VIIRS_NOAA20_NRT, VIIRS_NOAA20_SP, VIIRS_NOAA21_NRT, VIIRS_NOAA21_SP, VIIRS_SNPP_NRT, VIIRS_SNPP_SP",
+      "params": "SENSOR: ALL, LANDSAT_NRT, MODIS_NRT, MODIS_SP, VIIRS_NOAA20_NRT, VIIRS_NOAA20_SP, VIIRS_NOAA21_NRT, VIIRS_NOAA21_SP (VIIRS_SNPP_* ended 2026-11-02)",
       "notes": "Date availability of SP and NRT data per sensor."
      }
     ],
@@ -14111,7 +14111,7 @@
    "freshness": {
     "mode": "mixed",
     "typical_age": "Tasking: captured after you order. Archive: PlanetScope from near-daily to years old; self-serve Insights Flex gets PlanetScope 30 days and older; SkySat archive via Planet Select is 30 days and older.",
-    "notes": "The Data API and Orders API serve existing scenes; the Tasking API and Planet Select order new captures. A tasking customer may buy an archive hold of up to 30 days before its captures join the shared SkySat archive. Buying archive imagery through the Tasking API is deprecated and ends November 1, 2026."
+    "notes": "The Data API and Orders API serve existing scenes; the Tasking API and Planet Select order new captures. A tasking customer may buy an archive hold of up to 30 days before its captures join the shared SkySat archive. Buying archive imagery through the Tasking API was scheduled to end on November 1, 2026 (Planet's docs, read 2026-10-28; not re-confirmed after that date)."
    },
    "api": {
     "available": true,
@@ -19486,6 +19486,241 @@
    ],
    "updated": "2026-10-28",
    "expires": "2027-10-27",
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card"
+  },
+  {
+   "id": "tfnsw-carparks",
+   "name": "Transport for NSW Car Park API",
+   "status": "unclaimed",
+   "provider_url": "https://opendata.transport.nsw.gov.au/data/dataset/car-park-api",
+   "tags": [
+    "api",
+    "car park",
+    "parking",
+    "occupancy",
+    "park and ride",
+    "real-time",
+    "sensor",
+    "government",
+    "australia",
+    "sydney",
+    "nsw",
+    "transport",
+    "cc by",
+    "open data",
+    "train station",
+    "railway station",
+    "metro station",
+    "spaces",
+    "free spaces",
+    "available spaces",
+    "car parks",
+    "full"
+   ],
+   "summary": "Transport for NSW's Car Park API reports estimated real-time vehicle counts and capacity for Transport Park&Ride commuter car parks around Sydney and NSW (46 facilities listed in the v2.5 documentation, 5 of them 'Historical Only', e.g. Tallawong, Gosford, Penrith, Leppington, Seven Hills), with per-day history by facility. It is open data under Creative Commons Attribution (the Hub's data licence page says 4.0 unless a dataset states otherwise), but every call needs an API key from an Open Data Hub account (registration required; no fee is stated in the pages read). The counts are estimates fed by outsourced car park systems and can be reset at any time.",
+   "short": "Estimated live occupancy of NSW Park&Ride car parks; API key needed.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current estimated vehicles in a Park&Ride car park (occupancy.total) against its total spots, by facility",
+     "list all car park facilities with their IDs",
+     "occupancy of all car parks in one call (full-list)",
+     "per-zone occupancy within a facility (not accurate for some car parks)",
+     "occupancy history for a facility on a given day",
+     "car park entry location (latitude/longitude) and suburb"
+    ]
+   },
+   "pricing": {
+    "model": "no fee stated; open data under CC BY 4.0",
+    "notes": "No price or fee is published for the API in the pages read; from_usd 0 is a required-field placeholder, not a stated price. An Open Data Hub account and API token are required (not tested: registering is not allowed in this audit).",
+    "from_usd": 0,
+    "unit": "not stated"
+   },
+   "latency": {
+    "typical": "Documented update frequency per facility: 15 s, or 'On counter change or every 10mins' (60 s only for the five Historical Only entries)",
+    "notes": "The car park documentation v2.5 (Sept 2026) lists an update frequency per facility. Five Sydney Metro station car parks (IDs 1-5) are marked 'Historical Only'. Works at Kiama may intermittently affect real-time availability. Not checked live: the endpoint returns HTTP 401 without a key."
+   },
+   "coverage": {
+    "regions": [
+     "New South Wales, Australia (Sydney region and some regional/coastal sites)"
+    ],
+    "notes": "Only the Transport Park&Ride facilities listed in the API documentation v2.5 (IDs 1-41 and 486-490; IDs 1-5 are marked 'Historical Only'). Examples: Gosford, Kiama, Penrith, Leppington, Campbelltown, Hornsby, Seven Hills, Manly Vale, Brookvale. The dataset page says other car park occupancy data is intended to be added in future and mentions a newer API returning all car parks at once. Spot counts are standard bays only (accessible, EV and motorcycle bays excluded) per the documentation.",
+    "areas": [
+     "AU"
+    ]
+   },
+   "licensing": {
+    "summary": "Dataset licence: Creative Commons Attribution 4.0 International; you must attribute Transport for NSW as the source and must not suggest official status or endorsement, nor use TfNSW logos or trademarks. The Hub Terms require registration, bind you to the licence and the Acceptable Use Policy, and let TfNSW suspend access at any time. The Acceptable Use Policy bans excessive use and use 'to track or profile any individuals'. The API documentation states the occupancy data come from outsourced systems, are an estimated count, and may be reset at any time. The terms do not mention AI training or resale; CC BY 4.0 itself is the only licence grant."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Per documented update frequency: 15 s, or on counter change / every 10 minutes",
+    "notes": "Each record carries MessageDate. History is available per facility and day through /carpark/history, but irlpls lists this card for current readings."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Car Park API Documentation v2.5: update frequency '15s' / '60s' for some car parks and 'On counter change or every 10mins' for most."
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://opendata.transport.nsw.gov.au/data/dataset/car-park-api",
+    "base_url": "https://api.transport.nsw.gov.au/v1",
+    "auth": [
+     {
+      "type": "api_key_header",
+      "header": "Authorization",
+      "env_var": "TFNSW_API_KEY",
+      "how_to_get": "Register and log in to the Open Data Hub at https://opendata.transport.nsw.gov.au, open your profile icon > API Tokens, name a token and click Create API Token (shown once). Send it as the header 'Authorization: apikey <TOKEN>'."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/carpark",
+      "params": "none",
+      "notes": "With no facility parameter, returns the list of facility names with their IDs."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/carpark",
+      "params": "facility=<facility_id>",
+      "notes": "Current occupancy for one facility: spots, occupancy.total (use for the vehicle count; availability = spots - total), zones, location (entry lat/lon, address, suburb), MessageDate, tfnsw_facility_id."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/carpark/full-list",
+      "params": "none",
+      "notes": "Occupancy for all car parks in one call (OpenAPI: 'Returns occupancy details of all the car parks'; the dataset page's 'newer API' is presumably this, not confirmed)."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/carpark/history",
+      "params": "facility=<facility_id>; eventdate=YYYY-MM-DD",
+      "notes": "Historical occupancy for a facility on a day."
+     }
+    ],
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false,
+     "community": "No TfNSW or car park MCP server found in the official MCP Registry (searches for 'transport nsw' returned none)."
+    },
+    "rate_limits": "No rate limit number found in the pages read; the Acceptable Use Policy bans 'excessive' use.",
+    "notes": "Without a key the endpoints answer HTTP 401 'The calling application is unauthenticated.' The OpenAPI file declares an APIKey security scheme (Authorization header, 'Expected Format: apikey [TOKEN]'). Several car parks (Ashfield, Kogarah, Seven Hills, Manly Vale, Brookvale) have inaccurate zone data; use the facility-level occupancy.total. The documentation recommends showing 'Full' when availability drops below 1 and prefixing counts with ~ because they are estimates."
+   },
+   "access": {
+    "key_required": true,
+    "tested_live": null,
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No request number published in the pages read; Acceptable Use Policy bans excessive use.",
+     "source_url": "https://opendata.transport.nsw.gov.au/sites/default/files/2024-09/TfNSW-Acceptable-Use-Policy.pdf"
+    }
+   },
+   "payment": {
+    "methods": [],
+    "notes": "No payment is described: the data are open data under CC BY 4.0. The pages read do not state the API's cost outright."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "requester": {
+    "checks": "Registration for an Open Data Hub account is required before an API token can be created. TfNSW may refuse registration for any reason, requires valid and correct registration information, may suspend access with no notice for invalid details, and users must be able to form legally binding contracts.",
+    "unknown": "Which registration fields are asked was not checked; nothing is commissioned, the car parks report on their own."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: counts come from car park entry/exit equipment."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing, attestation or published hashes of the feed."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "No imagery."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each record carries a MessageDate for the event; the documentation says to use MessageDate, not the raw 'time' field (seconds since 2000).",
+     "unknown": "Time zone of MessageDate is not stated in the documentation, and how device clocks are checked is not documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Each facility has a fixed entry latitude/longitude, address and Transit Stop Number published in the feed and documentation.",
+     "unknown": "Coordinates are provider-published and not authenticated; the documentation says they mark the car park entry."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "The documentation says occupancy is an estimated count from outsourced systems, can be affected by various faults, and may be reset at any time; no integrity protection is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent cross-check documented."
+    }
+   },
+   "sources": [
+    {
+     "claim": "Dataset description, CC BY licence, selected Park&Ride car parks, Sydney Metro station car parks reporting, more to come, newer all-car-parks API, last updated 2026-11-05, resources (OpenAPI file and documentation PDF), login/register required to download",
+     "url": "https://opendata.transport.nsw.gov.au/data/dataset/car-park-api"
+    },
+    {
+     "claim": "Machine-readable dataset record: licence cc-by, title, notes, resources, metadata_modified 2026-09-22 as read on 2026-11-04",
+     "url": "https://opendata.transport.nsw.gov.au/api/3/action/package_show?id=car-park-api"
+    },
+    {
+     "claim": "OpenAPI: host api.transport.nsw.gov.au, basePath /v1, paths /carpark, /carpark/full-list, /carpark/history (facility, eventdate), APIKey scheme in Authorization header, 'Expected Format: apikey [TOKEN]'",
+     "url": "https://opendata.transport.nsw.gov.au/data/dataset/543cbdf4-9b52-4013-8ddb-8721a33bda97/resource/b880cae7-ed81-4d3e-9aba-b948d6626b20/download/carparkswagger_prod_2.yaml"
+    },
+    {
+     "claim": "Car Park API Documentation v2.5 (October 2026): terms (outsourced data, estimated count, may be reset), data fields, MessageDate, availability = spots - total, car park table with update frequency and 'Historical Only' entries, location added July 2024, zone data inaccurate for some car parks",
+     "url": "https://opendata.transport.nsw.gov.au/data/dataset/543cbdf4-9b52-4013-8ddb-8721a33bda97/resource/1cd0b16d-d9f8-4973-93cd-3c6f66a3e99c/download/car-park-api-documentation-v2.4.pdf"
+    },
+    {
+     "claim": "Without a key, GET /v1/carpark returns HTTP 401 'The calling application is unauthenticated.'",
+     "url": "https://api.transport.nsw.gov.au/v1/carpark"
+    },
+    {
+     "claim": "You must be logged in to use the APIs; create a token under profile > API Tokens; use 'apikey <token>' format; cost and rate limits not stated on the page",
+     "url": "https://opendata.transport.nsw.gov.au/developers/userguide"
+    },
+    {
+     "claim": "Data licence: Creative Commons Attribution 4.0, attribute Transport for NSW as the source",
+     "url": "https://opendata.transport.nsw.gov.au/datalicence"
+    },
+    {
+     "claim": "Hub Terms: registration required, may refuse registration, datasets under CC BY 4.0, no logos or trademarks, no suggestion of official status or endorsement, access may be suspended or restricted at any time",
+     "url": "https://opendata.transport.nsw.gov.au/sites/default/files/2024-09/TfNSW-Open-Data-Portal-Terms.pdf"
+    },
+    {
+     "claim": "Acceptable Use Policy: bans excessive use and use to track or profile individuals",
+     "url": "https://opendata.transport.nsw.gov.au/sites/default/files/2024-09/TfNSW-Acceptable-Use-Policy.pdf"
+    },
+    {
+     "claim": "FAQ: API key authentication recommended; CC BY 4.0 data may be reused and redistributed; TfNSW data is not an endorsement",
+     "url": "https://opendata.transport.nsw.gov.au/faqs"
+    },
+    {
+     "claim": "No MCP server for Transport for NSW car parks in the official MCP Registry",
+     "url": "https://registry.modelcontextprotocol.io/v0/servers?search=transport%20nsw"
+    }
+   ],
+   "updated": "2026-11-06",
+   "expires": "2027-11-04",
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card"
   },

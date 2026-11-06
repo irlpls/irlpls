@@ -32,25 +32,56 @@ US_STATES = ["alabama", "alaska", "arizona", "arkansas", "california", "colorado
              "wisconsin", "wyoming"]
 
 
+US_ABBR = dict(zip("AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC".split(),
+                   US_STATES[:7] + ["delaware", "florida", "georgia", "hawaii", "idaho", "illinois", "indiana", "iowa", "kansas", "kentucky",
+                                    "louisiana", "maine", "maryland", "massachusetts", "michigan", "minnesota", "mississippi", "missouri",
+                                    "montana", "nebraska", "nevada", "new hampshire", "new jersey", "new mexico", "new york", "north carolina",
+                                    "north dakota", "ohio", "oklahoma", "oregon", "pennsylvania", "rhode island", "south carolina",
+                                    "south dakota", "tennessee", "texas", "utah", "vermont", "virginia", "washington", "west virginia",
+                                    "wisconsin", "wyoming", "district of columbia"]))
+_TRAILING_ABBR = re.compile(r",\s*([A-Za-z]{2})\.?\s*(?:\d{5}(?:-\d{4})?)?\s*$")
+
+
+def _us_form(place):
+    """"Boston, MA" -> "Boston, Massachusetts, USA" (a trailing two-letter US state, upper case), else None. A bare "Boston, MA"
+    otherwise lets the geocoder pick Boston, Lincolnshire."""
+    m = _TRAILING_ABBR.search(place.strip())
+    if not m or m.group(1) not in US_ABBR:
+        return None
+    return place.strip()[:m.start()] + ", " + US_ABBR[m.group(1)].title() + ", USA"
+
+
 def geocode(place):
     """Return {lat, lon, name, country_code} for a place name, or None."""
     key = place.strip().lower()
     if key in _cache:
         return _cache[key]
-    out = None
-    for q in candidates(place):
-        res = http.get("https://nominatim.openstreetmap.org/search",
-                       params={"q": q, "format": "jsonv2", "limit": 1, "addressdetails": 1, "accept-language": "en"},
-                       provider="nominatim")
+    out, failed = None, False
+    us = _us_form(place)
+    qs = candidates(place)
+    while qs:
+        q = qs.pop(0)
+        try:
+            res = http.get("https://nominatim.openstreetmap.org/search",
+                           params={"q": q, "format": "jsonv2", "limit": 1, "addressdetails": 1, "accept-language": "en"},
+                           provider="nominatim")
+        except OSError:   # rate limit (HTTP 429), timeout or no network: the place is unknown for now, not "not found"
+            failed = True
+            continue
         if res:
             r = res[0]
             addr = r.get("address") or {}
+            if us and q != us and addr.get("country_code", "").lower() != "us":
+                qs.insert(0, us)   # "Boston, MA" came back as Boston, England: ask again with the state spelt out
+                us = None
+                continue
             iso = [addr[k] for k in ("ISO3166-2-lvl4", "ISO3166-2-lvl3", "ISO3166-2-lvl5", "ISO3166-2-lvl6") if addr.get(k)]
             out = {"lat": float(r["lat"]), "lon": float(r["lon"]), "name": r.get("display_name", place),
                    "country_code": addr.get("country_code", "").lower(), "state": (addr.get("state") or "").lower() or None,
                    "subdivision": iso[0].upper() if iso else None, "subdivisions": [x.upper() for x in iso]}
             break
-    _cache[key] = out
+    if out or not failed:   # a geocoder outage must not be remembered as "no such place"
+        _cache[key] = out
     return out
 
 

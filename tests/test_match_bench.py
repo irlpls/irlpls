@@ -112,6 +112,8 @@ BENCH = [
     ("thermal infrared image of a factory in Tokyo at night", {"satvu"}, {"proxypics", "capella", "zeitview"}),
     # ---- time words set timing, never description; non-US places ----
     ("earthquake near Los Angeles in the last hour", {"usgs-earthquakes"}, {"noaa-tides", "ndbc-buoys", "nasa-firms", "caltrans-cctv"}),
+    ("free parking spaces at Sydney train station car park", {"tfnsw-carparks"}, {"caltrans-cctv", "windy-webcams"}),
+    ("is the car park at Tallawong full", {"tfnsw-carparks"}, {"caltrans-cctv", "windy-webcams"}),
     ("earthquakes near Tokyo in the past 24 hours", {"usgs-earthquakes"}, {"noaa-tides", "nws", "hivemapper"}),
     ("what was the magnitude of the quake 10 minutes ago near Seattle", {"usgs-earthquakes"}, {"wsdot-cameras", "noaa-tides", "nws"}),
     ("wildfire hotspots in California in the past 2 days", {"nasa-firms"}, {"caltrans-cctv", "proxypics", "skyfi"}),
@@ -132,6 +134,14 @@ BENCH = [
     ("photo: cyclist at dusk", {"hivemapper", "empiric-earth"}, {"noaa-tides", "usgs-water", "prolific"}),
     ("photo: roadwork at night", {"hivemapper", "empiric-earth"}, {"capella", "iceye", "skyfi"}),
     ("fresh dashcam video of flooded street", {"hivemapper", "empiric-earth", "natix"}, {"noaa-tides", "usgs-water", "proxypics"}),
+    # ---- asks in other languages keep their place and route like their English twins (launch simulation 2026-11, F2) ----
+    ("niveau de la Seine à Paris maintenant", {"hubeau-hydrometrie"}, {"usgs-water", "nws", "pegelonline"}),
+    ("Wie hoch ist der Rhein bei Köln gerade?", {"pegelonline"}, {"usgs-water", "nws", "hubeau-hydrometrie"}),
+    ("東京の今の空気質を教えて", {"open-meteo", "sensor-community", "openaq"}, {"nws", "airnow", "usgs-water"}),
+    ("какая погода сейчас в Москве", {"weatherxm-agent", "open-meteo"}, {"nws", "usgs-water", "noaa-tides"}),
+    # ---- a person on site for a spot's own state (not a satellite, not a dataset vendor) ----
+    ("send a human to Kathmandu, Nepal to count people in Durbar Square this afternoon", {"execution-market", "human-for-ai", "rentahuman"},
+     {"toloka", "satellogic", "prolific", "kled"}),
     # ---- a bare deadline ("7 days") ----
     ("500 first-person clips of a hand opening a door, 7 days", {"prolific", "kled"}, {"usgs-water", "caltrans-cctv", "skyfi", "umbra"}),
 ]
