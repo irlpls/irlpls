@@ -415,14 +415,16 @@ RANK = {"none": 0, "reported": 1, "claimed": 2, "evidenced": 3}
 
 
 HEALTH = health.load()   # tools/healthcheck.py's last daily read check (irlpls/data/health.json, gitignored)
+PUBLIC_HEALTH = {}       # data/health-public.json, sanitized (irlpls/health.py): {card_id: {status, last_checked}}; {} when none
 LIVE = {}                # the landing's 30-minute check (src/media/live/health.json); main() loads it
 
 
 def read_check_line(c):
     """One quiet line from the newest check of either source: 'Read check: worked 28 Oct' or 'Read check: failed 28 Oct (404)'."""
     r = health.latest(c["id"], HEALTH, LIVE)
-    if not r:
-        return ""
+    if not r:   # no local check (the public build): the committed snapshot speaks only when a read check failed or looked wrong
+        pl = health.public_line(PUBLIC_HEALTH.get(c["id"]))
+        return f'<p class="rl rc" data-ok="false">{e(pl)}</p>' if pl else ""
     t = re.sub(r"\s+for https?://.*$", ")", health.line(c["id"], HEALTH, LIVE), flags=re.S)  # the status, never the raw URL and body
     t = t if len(t) <= 90 else t[:88].rstrip() + "…)"
     return f'<p class="rl rc" data-ok="{str(r["ok"]).lower()}">{e(t)}</p>'
@@ -934,6 +936,9 @@ def main(public=False):
                 PUB["eff"][c["id"]] = "rejected"
     if not public:  # the private refresh job's check (gitignored); the public build never reads it
         LIVE.update(health.load(ROOT / "src" / "media" / "live" / "health.json"))  # merged into each card's read-check line
+    PUBLIC_HEALTH.clear()   # a committed, sanitized snapshot, when there is one: no snapshot, nothing shown, nothing written
+    PUBLIC_HEALTH.update(health.load_public(os.environ.get("IRLPLS_HEALTH_PUBLIC") or ROOT / "data" / "health-public.json",
+                                            known={c["id"] for c in cards}).get("cards") or {})
     if SITE.exists():
         for f in SITE.iterdir():
             if f.name != "CNAME":
@@ -959,7 +964,10 @@ def main(public=False):
             pg = card_page(c)
         (SITE / "c" / f'{c["id"]}.html').write_text(pg)
         (SITE / "cards" / f'{c["id"]}.json').write_text(json.dumps(c, indent=2) + "\n")
-    (SITE / "cards.json").write_text(json.dumps({"assurances": [list(a) for a in ASSURANCES], "cards": cards}))
+    flagged = {k: v for k, v in PUBLIC_HEALTH.items() if v.get("status") in ("degraded", "failing")}
+    if PUBLIC_HEALTH:   # site/health.json: card_id, status, last_checked only; never a reason to rank (see docs/research/ops/HEALTH-PUBLIC-DESIGN.md)
+        (SITE / "health.json").write_text(json.dumps({"irlpls_public_health": 1, "cards": PUBLIC_HEALTH}, indent=1) + "\n")
+    (SITE / "cards.json").write_text(json.dumps({"assurances": [list(a) for a in ASSURANCES], "cards": cards, **({"health": flagged} if flagged else {})}))
     shutil.copy(ROOT / "schema" / "request.schema.json", SITE / "request.schema.json")
     (SITE / "reviewers.json").write_text(json.dumps({"reviewers": REV, "note": review.NOTE}, indent=1) + "\n")  # IRLMatch.REVIEWERS must match
     pages = ["", "find.html", "compare.html", "docs.html", "agents.html", "standard.html", "changelog.html", "governance.html", "providers.html", "privacy.html", "glossary.html"] + [f'c/{c["id"]}.html' for c in cards]

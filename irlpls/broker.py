@@ -849,8 +849,12 @@ class Job:
         rc = (opt or {}).get("read_check")
         if not rc or rc.get("ok") is not False:
             return
-        msg = (f"{opt['name']}'s last read check failed ({health.why(rc)}, {str(rc.get('checked_at') or '')[:10]}): "
-               f"a real read through its adapter did not work then. It may be down or changed; expect errors, or pick another option.")
+        if rc.get("result") == "degraded":
+            msg = (f"{opt['name']}'s last read check answered, but not as expected ({str(rc.get('checked_at') or '')[:10]}): "
+                   f"the reply was empty or missing fields. We cannot tell whether it changed or has nothing now; expect gaps, or pick another option.")
+        else:
+            msg = (f"{opt['name']}'s last read check failed ({health.why(rc)}, {str(rc.get('checked_at') or '')[:10]}): "
+                   f"a real read through its adapter did not work then. It may be down or changed; expect errors, or pick another option.")
         opt["warning"] = msg
         if not any(w.get("code") == "read_check_failed" and w.get("card_id") == opt["card_id"] for w in self.warnings):
             self.warnings.append({"code": "read_check_failed", "card_id": opt["card_id"], "msg": msg})

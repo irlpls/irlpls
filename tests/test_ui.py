@@ -2028,6 +2028,7 @@ def test_air_quality_in_tokyo_shows_the_openaq_call(browser, base):
     p.fill("#q", "air quality in Tokyo")
     p.press("#q", "Enter")
     open_impl(p)
+    p.wait_for_function("document.querySelector('#duo').innerText.includes('No free live source for air near Tokyo.')", timeout=20000)   # a slow CI box renders it late
     t = p.inner_text("#duo")
     assert "No free live source for air near Tokyo." in t and "OpenAQ" in t, t
 

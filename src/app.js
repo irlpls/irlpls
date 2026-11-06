@@ -85,10 +85,16 @@ fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.sta
     var P=new URLSearchParams(location.search),flt={free:P.get('free')==='1',live:P.get('live')==='1',commission:P.get('made')==='1'};
     function syncF(){fb.forEach(function(b){b.setAttribute('aria-pressed',String(!!flt[b.dataset.f]))})}syncF();
     var sheet=document.createElement('div');sheet.id='sheet';sheet.hidden=true;sheet.setAttribute('role','dialog');sheet.setAttribute('aria-modal','true');sheet.setAttribute('aria-labelledby','card-h');document.body.appendChild(sheet);
+    /* provider read-check note (data-gated: D.health exists only when the build had a committed snapshot, and lists only
+       degraded/failing). A neutral line; it never changes a row's place. */
+    function hline(c){var h=(D.health||{})[c.id],d=h&&/^\d{4}-\d\d-\d\d$/.test(h.last_checked||'')?new Date(h.last_checked+'T00:00:00Z'):null;
+      if(!d||isNaN(d)||(h.status!=='failing'&&h.status!=='degraded'))return '';
+      var w=d.toLocaleDateString('en-GB',{day:'numeric',month:'short',timeZone:'UTC'});
+      return '<span class="sub">'+(h.status==='failing'?'Read check failed on '+w:'Read check on '+w+': answered but not as expected')+'</span>'}
     function row(c,s,on){
       return '<li><a class="row" data-id="'+c.id+'" href="'+base+'c/'+c.id+'.html'+(on?'?q='+encodeURIComponent(q.value.trim()):'')+'">'+
         '<span class="main"><span class="nmr"><span class="nm">'+E(plainName(c))+(c.status==='provider-maintained'?'<span class="pmk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Published</span>':'')+'</span>'+(on?'<span class="fit'+(s.verdict==='strong'?'':' w')+'" title="'+fitTitle(s)+'">'+fitWord(s)+'</span>':'')+'</span>'+
-        '<span class="sub">'+E(modeText(c))+' · '+E(speed(c))+' · '+E(priceText(c))+'</span></span>'+
+        '<span class="sub">'+E(modeText(c))+' · '+E(speed(c))+' · '+E(priceText(c))+'</span>'+hline(c)+'</span>'+
         '<span class="proof">'+dots(c)+'<span class="tl">'+tally(c)+'</span></span></a></li>'}
     /* how the request was read: only the constraints (place, timing, budget, extra proof), in plain words.
        Topic words stay in the box, where the user typed them. */

@@ -13,7 +13,8 @@ money (PurpleAir points) or sit under a contract. Each request times out after R
 PROVIDER_BUDGET_S, and the whole run stops waiting at TOTAL_S (under two minutes).
 
 Result per provider (irlpls/health.py documents the file): ok, or failed with the HTTP status or the error class,
-latency, checked_at, a short reason, and one entry per day in `history`. An adapter that swallows an HTTP error into a
+latency, checked_at, a short reason, and one entry per day in `history`. An empty or field-less answer from a normally
+non-empty source (EXPECT) is "degraded", not ok ("answered, but not as expected"; never "down"). An adapter that swallows an HTTP error into a
 warning and returns nothing counts as failed with that warning's status. A read that answers with an empty list is ok
 ("answered; empty result").
 
@@ -74,6 +75,21 @@ EXTRA = {
 NEVER = {"purpleair": "each read spends paid PurpleAir points",
          "empiric-earth": "reads sit under a sales contract (Nexar VirtualCam)"}
 
+# What a normally non-empty source must return at its test point: {card_id: minimum number of readings}. Required
+# fields come from the adapter's own parse: observation() (irlpls/adapters/base.py) always sets these keys, so a
+# reading without them did not come through the parse. Only sources that nearly always have a reading at their test
+# point are listed (a quiet one, such as fires or quakes, would cry wolf). A miss marks the check "degraded" (not ok):
+# the provider answered, but we cannot tell a renamed key from a quiet day, so the wording never says "down".
+EXPECT = {cid: 1 for cid in ("nws", "usgs-water", "noaa-tides", "uk-ea-flood", "pegelonline", "hubeau-hydrometrie", "ndbc-buoys",
+                             "tfl-jamcams", "wsdot-cameras", "caltrans-cctv", "fintraffic-weathercams", "sensor-community",
+                             "fmi-open-data")}
+
+
+def _required_fields():
+    from irlpls.adapters.base import observation
+    return tuple(sorted(k for k, v in observation("p", "k", None, 0.0, 0.0).items() if k in ("provider", "kind", "phenomenon_time", "retrieved_at")))
+
+
 FAIL_CODES = {"provider_error", "not_found", "refused", "rate_limited", "unexpected_response", "http_error"}
 
 
@@ -116,8 +132,16 @@ def _short(text, n=160):
     return text if len(text) <= n else text[: n - 1] + "…"
 
 
-def classify(out):
-    """(ok, status, reason, items) from what an adapter read returned."""
+def classify(out, expect=None):
+    """(ok, status, reason, items) from what an adapter read returned. With expect (a minimum reading count for a
+    normally non-empty source) an empty or field-less answer is not ok: see shape()."""
+    ok, status, reason, n, _ = shape(out, expect)
+    return ok, status, reason, n
+
+
+def shape(out, expect=None):
+    """(ok, status, reason, items, kind): kind is 'data', 'empty' or 'unexpected' for a read that answered, else None.
+    ok is False for a failure and for a degraded answer; run_one tells them apart by kind."""
     if isinstance(out, tuple) and len(out) == 2 and (out[1] is None or isinstance(out[1], dict)):
         val, w = out   # errand.coverage: (dict or None, warning or None)
         items, warns = ([val] if val else []), ([w] if w else [])
@@ -127,13 +151,24 @@ def classify(out):
     bad = [w for w in warns if isinstance(w, dict) and (w.get("status") or w.get("code") in FAIL_CODES)]
     if not items and bad:
         w = bad[0]
-        return False, w.get("status"), _short(w.get("msg") or w.get("code") or "provider error"), 0
+        return False, w.get("status"), _short(w.get("msg") or w.get("code") or "provider error"), 0, None
     if not items:
-        return True, None, "answered; empty result (nothing near the test point, or nothing listed)", 0
+        if expect:
+            return False, None, ("answered, but with no reading where one is usual; the provider may have changed its reply, "
+                                 "or have nothing right now (we cannot tell)"), 0, "empty"
+        return True, None, "answered; empty result (nothing near the test point, or nothing listed)", 0, "empty"
+    if expect:
+        need = _required_fields()
+        good = [i for i in items if isinstance(i, dict) and all(i.get(k) is not None for k in need)]
+        if not good:
+            return False, None, (f"answered with {len(items)} item{'s' if len(items) != 1 else ''}, none with the fields the adapter's "
+                                 f"parse always sets ({', '.join(need)}); the reply's shape may have changed"), len(items), "unexpected"
+        if len(items) < expect:
+            return False, None, f"answered with {len(items)} reading{'s' if len(items) != 1 else ''}, fewer than the {expect} usual here", len(items), "empty"
     reason = f"answered with {len(items)} item{'s' if len(items) != 1 else ''}"
     if bad:
         reason += f"; partial: {_short(bad[0].get('msg') or bad[0].get('code'), 80)}"
-    return True, None, reason, len(items)
+    return True, None, reason, len(items), "data"
 
 
 def run_one(cid, adapter, what, fn, timeout_s=REQUEST_TIMEOUT_S, budget_s=PROVIDER_BUDGET_S):
@@ -142,9 +177,12 @@ def run_one(cid, adapter, what, fn, timeout_s=REQUEST_TIMEOUT_S, budget_s=PROVID
     try:
         with ratelimit.using(cid, budget_s=budget_s), http.timeout_cap(timeout_s):
             out = fn(adapter)
-        ok, status, reason, n = classify(out)
-        rec.update(result="ok" if ok else "failed", ok=ok, status=status, error=None if ok else "HTTPError" if status else "ProviderWarning",
-                   reason=reason, items=n)
+        ok, status, reason, n, kind = shape(out, EXPECT.get(cid))
+        if not ok and kind:   # answered, but empty or key-less where a reading is usual: degraded, not failed, not ok
+            rec.update(result="degraded", ok=False, status=None, error=None, reason=reason, items=n, shape=kind)
+        else:
+            rec.update(result="ok" if ok else "failed", ok=ok, status=status, error=None if ok else "HTTPError" if status else "ProviderWarning",
+                       reason=reason, items=n, shape=kind)
     except ratelimit.RateLimited as e:
         rec.update(result="skipped", ok=None, status=None, error="RateLimited", reason=_short(f"not sent: {e}"), items=0)
     except Exception as e:  # anything the read raised is the finding
@@ -181,14 +219,15 @@ def check(adapters, previous=None, only=None, total_s=TOTAL_S, **kw):
     for cid in sorted(res):
         r = res[cid]
         hist = (prev.get(cid) or {}).get("history") or []
-        if r["result"] in ("ok", "failed"):
+        if r["result"] in ("ok", "degraded", "failed"):
             hist = health.add_history(hist, today, r["ok"])
         providers[cid] = {**r, "history": hist}
     if only:  # a partial run keeps the others' last results
         providers = {**{k: v for k, v in prev.items() if k not in providers}, **providers}
     n = lambda k: sum(1 for r in providers.values() if r["result"] == k)
     return {"irlpls_health": 1, "checked_at": started, "duration_s": round(time.monotonic() - t0, 1),
-            "summary": {"checked": n("ok") + n("failed"), "ok": n("ok"), "failed": n("failed"), "skipped": n("skipped")},
+            "summary": {"checked": n("ok") + n("degraded") + n("failed"), "ok": n("ok"), "failed": n("failed"), "skipped": n("skipped"),
+                        **({"degraded": n("degraded")} if n("degraded") else {})},
             "providers": dict(sorted(providers.items()))}
 
 
@@ -200,11 +239,12 @@ def board_alerts(data, names=None, board_path=BOARD, days=ALERT_DAYS):
     for cid, r in (data.get("providers") or {}).items():
         hist = r.get("history") or []
         streak = health.failed_streak(hist)
-        if r.get("result") != "failed" or streak < days:
+        if r.get("result") not in ("failed", "degraded") or streak < days:
             continue
         start = hist[-streak]["date"]
+        what = ("has answered but not as expected" if r["result"] == "degraded" else "has failed")
         new.append({"id": f"u-health-{cid}-{start}", "kind": "info",
-                    "text": f"{names.get(cid) or cid}: the daily read check has failed {streak} days in a row "
+                    "text": f"{names.get(cid) or cid}: the daily read check {what} {streak} days in a row "
                             f"({health.why(r)}: {_short(r.get('reason') or '', 120)}). Its card page says so and plans "
                             f"that pick it warn; the adapter or the provider's API needs a look.",
                     "link": f"/c/{cid}.html"})
@@ -223,6 +263,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--out", default=None, help="health.json to write (default irlpls/data/health.json)")
     ap.add_argument("--only", default="", help="comma-separated card ids")
+    ap.add_argument("--public-snapshot", default=None, metavar="PATH",
+                    help="also write the sanitized public summary (card_id, status, date only) to PATH, e.g. data/health-public.json")
     ap.add_argument("--no-board", action="store_true", help="never touch docs/research/BOARD.json")
     ap.add_argument("--no-published", action="store_true", help="skip the daily read of provider-published cards")
     a = ap.parse_args()
@@ -231,6 +273,8 @@ def main():
     data = check(adapters.ADAPTERS, health.load(out), only={x for x in a.only.split(",") if x} or None)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, indent=1) + "\n")
+    if a.public_snapshot:
+        Path(a.public_snapshot).write_text(json.dumps(health.sanitize_public(data), indent=1) + "\n")
     s = data["summary"]
     print(f"{data['checked_at']} read check: {s['ok']} ok, {s['failed']} failed, {s['skipped']} skipped "
           f"in {data['duration_s']} s -> {out}")
