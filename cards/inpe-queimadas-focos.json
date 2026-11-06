@@ -1,0 +1,161 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "inpe-queimadas-focos",
+  "name": "INPE Programa Queimadas (Brazil active fire detections)",
+  "provider_url": "https://terrabrasilis.dpi.inpe.br/queimadas/portal/",
+  "short": "Brazil's space institute publishes satellite active-fire points as CSV every 10 minutes. Free, no key.",
+  "summary": "INPE's Programa Queimadas serves its fire-detection points as plain CSV files from a public data server (dataserver-coids.inpe.br). Directories hold 10-minute files (lat, lon, satellite, time), daily files for Brazil with municipality, state, biome, days without rain, fire-risk and fire radiative power, plus monthly and annual archives. On 2026-11-06 UTC the 10-minute folder listed files up to 21:10 UTC (file modified 21:10), the 21:00 file had 182 detections from GOES-19, and the daily Brazil file for 2026-11-06 was listed as modified at 18:06 (listing time zone not stated). Cross-origin reads are open (Access-Control-Allow-Origin: *).",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "recent active-fire detections as lat/lon points with satellite and time (10-minute files)",
+      "daily Brazil fire points with municipality, state, biome, rainless days, fire risk and fire radiative power"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Brazil",
+      "South America"
+    ],
+    "areas": [
+      "BR"
+    ],
+    "notes": "The 10-minute files cover the region the sample showed (for example Guyana and Brazil points); the daily file is named for Brazil. Detections are satellite hot spots, not confirmed fires."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: newest 10-minute file focos_10min_20261106_2110.csv, Last-Modified 21:10:04 GMT, fetched about 10 minutes later; daily file updates were listed twice a day (09:05 and 18:06)."
+  },
+  "latency": {
+    "typical": "About 10 to 20 minutes for the 10-minute files",
+    "notes": "Cadence read from directory listing; no service-level statement found."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 30 minutes on 2026-11-06",
+    "notes": "One sample only."
+  },
+  "licensing": {
+    "summary": "No licence or terms page could be read for the data server or the Queimadas portal (the portal is a JavaScript app and its data-policy URL returned 404). The data server sends open cross-origin headers but states no licence, attribution rule or rate limit. Automated access, AI training and resale are not addressed. Ask INPE before commercial reuse and cite INPE as the source."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each detection carries a satellite overpass time in GMT.",
+      "unknown": "Time is the satellite's detection time, not ignition time."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Detection latitude and longitude in the file.",
+      "unknown": "Pixel-scale positions from the satellite; accuracy not stated here."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Official INPE hot-spot detections from named satellites such as GOES-19.",
+      "unknown": "Detections include false alarms; no per-point confidence field in the 10-minute files."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://terrabrasilis.dpi.inpe.br/queimadas/portal/",
+    "base_url": "https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/10min/",
+        "params": "none",
+        "notes": "Directory listing of files named focos_10min_YYYYMMDD_HHMM.csv; columns lat, lon, satelite, data."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/diario/Brasil/",
+        "params": "none",
+        "notes": "Directory listing of focos_diario_br_YYYYMMDD.csv; columns include municipio, estado, bioma, frp, risco_fogo."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "CSV over HTTPS from an Apache index. No official API documentation was found; paths were read from the directory listings.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "wildfire",
+    "fire",
+    "hotspots",
+    "queimadas",
+    "brazil",
+    "amazon",
+    "south america",
+    "satellite",
+    "burning",
+    "government",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-06: 10-minute fire files up to 2026-11-06 21:10, header lat,lon,satelite,data, GOES-19 rows",
+      "url": "https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/10min/"
+    },
+    {
+      "claim": "Daily Brazil fire files with municipality, state, biome and fire radiative power columns",
+      "url": "https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/diario/Brasil/"
+    },
+    {
+      "claim": "Programa Queimadas portal of INPE",
+      "url": "https://terrabrasilis.dpi.inpe.br/queimadas/portal/"
+    }
+  ]
+}

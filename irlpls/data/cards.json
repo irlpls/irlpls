@@ -1510,6 +1510,171 @@
    ]
   },
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "bom-anon-ftp-observations",
+   "name": "Bureau of Meteorology anonymous FTP observations",
+   "provider_url": "https://www.bom.gov.au/catalogue/data-feeds.shtml",
+   "short": "Australia's official station observations as XML on the Bureau's anonymous FTP. Free, no key, non-commercial use.",
+   "summary": "The Bureau of Meteorology publishes state and territory observation products on its anonymous FTP (ftp.bom.gov.au/anon/gen/fwo/). On 2026-11-06 (UTC) the New South Wales observation file IDN60920.xml was modified minutes before the fetch and held per-station readings (air temperature, apparent temperature, dew point, pressure, humidity, wind, gust, rain, visibility, cloud) with station WMO id, name and coordinates. The Bureau's Data Services page lists these as free to access and not for commercial use, with no availability guarantee. The Bureau's website blocks automated access to its web JSON paths, so use the FTP route.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest observation per station in a state or territory: temperature, humidity, wind, gust, pressure, rain, visibility, cloud",
+     "station list with WMO id, name, height and coordinates",
+     "state forecasts, warnings and radar products from the same FTP directory (not read here)"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Australia"
+    ],
+    "areas": [
+     "AU"
+    ],
+    "notes": "Per-state files in /anon/gen/fwo/ (IDN New South Wales and ACT, IDV Victoria, IDQ Queensland, IDS South Australia, IDW Western Australia, IDT Tasmania, IDD Northern Territory, per the Bureau's FTP guide). Only IDN60920.xml was fetched and parsed here."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live FTP fetch 2026-11-06 UTC: IDN60920.xml Last-Modified 21:13:58 GMT, issue-time-utc 21:11:02, observation period 21:10 UTC."
+   },
+   "latency": {
+    "typical": "About 10 minutes",
+    "notes": "Observation period time 21:10 UTC against issue time 21:11 UTC in one fetch; the Bureau's guide names these '10-minute updates' products. Not independently measured over time."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "Each station carries a period time-utc; the file carries issue-time-utc."
+   },
+   "licensing": {
+    "summary": "Bureau Data Services page: products on the anonymous FTP are free to access and not for commercial use; the Bureau does not guarantee availability; use follows the default Copyright Notice. That notice permits personal use or use within your organisation, not supplying content to others or commercial use, unless a page states otherwise (some content is CC BY 4.0). It also forbids using automated or manual techniques to scrape or extract material from the website. Registered User services (charges apply to most products) exist for uses outside the default terms. Not for redistribution or commercial agent services without permission."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "issue-time-utc and per-period time-utc in the XML.",
+     "unknown": "Clock handling at stations is not documented on pages read."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station WMO id, name and lat/lon in the XML.",
+     "unknown": "Survey or siting quality not stated on pages read."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Official Bureau observations with units in each element.",
+     "unknown": "Quality control process not read."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.bom.gov.au/catalogue/data-feeds.shtml",
+    "base_url": "ftp://ftp.bom.gov.au/anon/gen/fwo",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "Anonymous FTP, no key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/",
+      "params": "none",
+      "notes": "Directory listing of all forecast, warning and observation products."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/IDN60920.xml",
+      "params": "product id",
+      "notes": "New South Wales observations XML; other states use their own IDx prefix."
+     }
+    ],
+    "rate_limits": "Not stated. The Bureau says it cannot track anonymous usage or guarantee availability.",
+    "notes": "The Bureau's anonymous FTP user guide covers use. Its website returned a block message to an automated request for HTTP JSON observation paths on 2026-11-06; an unofficial api.weather.bom.gov.au service carries a notice that it must not be used, copied or shared and is not covered here.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "observations",
+    "temperature",
+    "wind",
+    "rainfall",
+    "australia",
+    "sydney",
+    "oceania",
+    "government",
+    "free",
+    "non-commercial",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Data Services: anonymous FTP products free, not for commercial use, no availability guarantee, 72-hour station observations in xml/axf/json, default Copyright Notice applies",
+     "url": "https://www.bom.gov.au/catalogue/data-feeds.shtml"
+    },
+    {
+     "claim": "Copyright notice: personal or in-organisation use unless stated; no supplying to others or commercial use; scraping not allowed; some content CC BY",
+     "url": "https://www.bom.gov.au/other/copyright.shtml"
+    },
+    {
+     "claim": "FTP directory layout and state prefixes",
+     "url": "https://www.bom.gov.au/catalogue/anon-ftp.shtml"
+    },
+    {
+     "claim": "Live anonymous FTP fetch 2026-11-06 of ftp://ftp.bom.gov.au/anon/gen/fwo/IDN60920.xml: NSW observations, issued 21:11:02 UTC, Sydney Observatory Hill 17.7 C, humidity 83 percent (the FTP file itself has no https address; this page lists the products)",
+     "url": "https://www.bom.gov.au/catalogue/data-feeds.shtml"
+    }
+   ]
+  },
+  {
    "id": "caltrans-cctv",
    "name": "Caltrans highway cameras",
    "status": "unclaimed",
@@ -6520,6 +6685,171 @@
    ]
   },
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "gdacs-alerts",
+   "name": "GDACS (Global Disaster Alert and Coordination System)",
+   "provider_url": "https://www.gdacs.org",
+   "short": "UN/EC worldwide disaster alerts (Green/Orange/Red): quakes, cyclones, floods, volcanoes. Free, no key.",
+   "summary": "GDACS is a cooperation framework between the United Nations and the European Commission. Its keyless event list endpoint returns GeoJSON of recent and ongoing events with type, alert level and score, country, ISO3 code, dates, source and a severity text such as 'Magnitude 7M, Depth:18km', plus links to a detailed report and geometry. On 2026-11-06 UTC one call over six event types answered 200 with 82 features (20 earthquakes, 17 cyclones, 17 floods, 15 wildfires, 7 volcanoes, 6 droughts), newest end date 2026-11-04. A feed page lists RSS feeds for the last 24 hours and the last week, described as updated every 6 minutes. It covers every continent, including Africa, South Asia and Latin America.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "list of current disaster events with alert level, country and severity",
+     "earthquake, tropical cyclone, flood, volcano, drought and wildfire alerts"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Worldwide"
+    ],
+    "areas": [
+     "*"
+    ],
+    "notes": "Global event alerts, not station data. Event types in the 2026-11-06 sample: EQ, TC, FL, WF, VO, DR."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: event list with latest event dates 2026-11-04 and a modification stamp of 2026-11-04 02:04 on the first earthquake; the feed page says RSS is updated every 6 minutes."
+   },
+   "latency": {
+    "typical": "Minutes for the RSS feeds as stated; event dates are days old when quiet",
+    "notes": "Alerts are issued after an event, with updates by episode."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Hours to days depending on the event",
+    "notes": "One call only."
+   },
+   "licensing": {
+    "summary": "The GDACS pages link to the European Commission copyright notice, which says content owned by the EU is licensed under Creative Commons Attribution 4.0 (CC BY 4.0) unless otherwise indicated; credit and a note of changes are required. GDACS entries come from named sources (for example NEIC for earthquakes) that may carry their own terms. No rate limit is published. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each event has from and to dates and a modified stamp.",
+     "unknown": "Date is the event or episode date, not detection time."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Event geometry (point or polygon) and country codes.",
+     "unknown": "Centroids and modelled footprints, not on-site measurements."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "UN and EC alert scores derived from agency data such as NEIC.",
+     "unknown": "Alert levels are modelled estimates of impact, not damage reports."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.gdacs.org/feed_reference.aspx",
+    "base_url": "https://www.gdacs.org/gdacsapi/api/events",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/geteventlist/SEARCH",
+      "params": "eventlist=EQ,TC,FL,VO,DR,WF (optional alertlevel, fromdate, todate)",
+      "notes": "GeoJSON FeatureCollection of events."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/geteventdata",
+      "params": "eventtype=<type>&eventid=<id>",
+      "notes": "Detail of one event, as linked from each feature (not called)."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "The event list endpoint was found by calling it; the documented feeds page lists RSS files updated every 6 minutes.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "disaster",
+    "alerts",
+    "earthquake",
+    "cyclone",
+    "flood",
+    "volcano",
+    "drought",
+    "wildfire",
+    "worldwide",
+    "africa",
+    "south asia",
+    "latin america",
+    "united nations",
+    "european commission",
+    "free",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-06: GeoJSON with 82 events (EQ, TC, FL, WF, VO, DR), fields alertlevel, country, iso3, severitydata",
+     "url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventlist=EQ,TC,FL,VO,DR,WF"
+    },
+    {
+     "claim": "Feed reference page: RSS feeds for the last 24 hours and week, updated every 6 minutes",
+     "url": "https://www.gdacs.org/feed_reference.aspx"
+    },
+    {
+     "claim": "European Commission legal notice: EU-owned content licensed under CC BY 4.0 unless otherwise indicated (linked from GDACS pages as the copyright notice)",
+     "url": "https://commission.europa.eu/legal-notice_en#copyright-notice"
+    }
+   ]
+  },
+  {
    "id": "geonet-nz",
    "name": "GeoNet (New Zealand earthquakes and volcanoes)",
    "provider_url": "https://www.geonet.org.nz",
@@ -10126,6 +10456,314 @@
    "capability": "com.irlpls.capture.card",
    "updated": "2026-11-06",
    "expires": "2027-11-06",
+   "id": "igp-peru-sismos",
+   "name": "IGP Peru (Instituto Geofisico del Peru latest earthquakes)",
+   "provider_url": "https://ultimosismo.igp.gob.pe",
+   "short": "Peru's geophysical institute's earthquake list: magnitude, depth, place, intensity. Free, no key; undocumented.",
+   "summary": "The Instituto Geofisico del Peru runs the public latest-earthquake site ultimosismo.igp.gob.pe, whose backend returns JSON for a year of reported events. Each row has a report code, local and UTC date and time, latitude, longitude, magnitude, depth, a place reference such as '2 km al E de Huambo, Caylloma - Arequipa', felt intensity and a link to an accelerograph PDF. On 2026-11-06 UTC a keyless GET of the 2026 list answered 200 with 766 events, the newest at 18:07:54 UTC that day (record created 18:13:11 UTC). No documentation, licence or terms could be found, so this is the website's own backend and may change.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "list of earthquakes reported in Peru in a given year with magnitude, depth, location and intensity"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Peru"
+    ],
+    "areas": [
+     "PE"
+    ],
+    "notes": "Peru and its surroundings; the list covers events IGP reports. 766 events for 2026 up to 2026-11-06."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: newest event 18:07:54 UTC, record created 18:13:11 UTC, about 5 minutes after the event; the call was made later that day."
+   },
+   "latency": {
+    "typical": "About 5 minutes from event to record on the newest row",
+    "notes": "One sample; cadence depends on seismic activity."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 1 day on 2026-11-06 (newest event the same day)",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "Not stated. No terms, licence or open-data page could be found for the site or the endpoint (guessed terms URLs on igp.gob.pe returned 404). The endpoint is undocumented. Automated access, AI training and resale are not addressed. Ask IGP before relying on it commercially."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each row has local and UTC date and time.",
+     "unknown": "Time zone handling in the JSON is odd (time stored with a 1970 date); use the UTC time-of-day field with the date field."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Epicentre latitude and longitude as strings.",
+     "unknown": "Agency location; uncertainty not given."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Official IGP magnitude, depth and felt intensity per event.",
+     "unknown": "Initial values may be revised; magnitude type is empty on the sampled row."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://ultimosismo.igp.gob.pe",
+    "base_url": "https://ultimosismo.igp.gob.pe/api",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the call made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/ultimo-sismo/ajaxb/{year}",
+      "params": "year, e.g. 2026",
+      "notes": "JSON array of the year's earthquakes, oldest first."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "JSON. No official API documentation found; the path is used by the public website.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "earthquake",
+    "seismic",
+    "sismo",
+    "peru",
+    "lima",
+    "south america",
+    "andes",
+    "government",
+    "free",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, 766 events, newest codigo 2026-0766 with magnitude, profundidad, latitud, longitud, referencia, intensidad",
+     "url": "https://ultimosismo.igp.gob.pe/api/ultimo-sismo/ajaxb/2026"
+    },
+    {
+     "claim": "IGP public latest earthquake site",
+     "url": "https://ultimosismo.igp.gob.pe"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "inpe-queimadas-focos",
+   "name": "INPE Programa Queimadas (Brazil active fire detections)",
+   "provider_url": "https://terrabrasilis.dpi.inpe.br/queimadas/portal/",
+   "short": "Brazil's space institute publishes satellite active-fire points as CSV every 10 minutes. Free, no key.",
+   "summary": "INPE's Programa Queimadas serves its fire-detection points as plain CSV files from a public data server (dataserver-coids.inpe.br). Directories hold 10-minute files (lat, lon, satellite, time), daily files for Brazil with municipality, state, biome, days without rain, fire-risk and fire radiative power, plus monthly and annual archives. On 2026-11-06 UTC the 10-minute folder listed files up to 21:10 UTC (file modified 21:10), the 21:00 file had 182 detections from GOES-19, and the daily Brazil file for 2026-11-06 was listed as modified at 18:06 (listing time zone not stated). Cross-origin reads are open (Access-Control-Allow-Origin: *).",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "recent active-fire detections as lat/lon points with satellite and time (10-minute files)",
+     "daily Brazil fire points with municipality, state, biome, rainless days, fire risk and fire radiative power"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Brazil",
+     "South America"
+    ],
+    "areas": [
+     "BR"
+    ],
+    "notes": "The 10-minute files cover the region the sample showed (for example Guyana and Brazil points); the daily file is named for Brazil. Detections are satellite hot spots, not confirmed fires."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: newest 10-minute file focos_10min_20261106_2110.csv, Last-Modified 21:10:04 GMT, fetched about 10 minutes later; daily file updates were listed twice a day (09:05 and 18:06)."
+   },
+   "latency": {
+    "typical": "About 10 to 20 minutes for the 10-minute files",
+    "notes": "Cadence read from directory listing; no service-level statement found."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 30 minutes on 2026-11-06",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "No licence or terms page could be read for the data server or the Queimadas portal (the portal is a JavaScript app and its data-policy URL returned 404). The data server sends open cross-origin headers but states no licence, attribution rule or rate limit. Automated access, AI training and resale are not addressed. Ask INPE before commercial reuse and cite INPE as the source."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each detection carries a satellite overpass time in GMT.",
+     "unknown": "Time is the satellite's detection time, not ignition time."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Detection latitude and longitude in the file.",
+     "unknown": "Pixel-scale positions from the satellite; accuracy not stated here."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Official INPE hot-spot detections from named satellites such as GOES-19.",
+     "unknown": "Detections include false alarms; no per-point confidence field in the 10-minute files."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://terrabrasilis.dpi.inpe.br/queimadas/portal/",
+    "base_url": "https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/10min/",
+      "params": "none",
+      "notes": "Directory listing of files named focos_10min_YYYYMMDD_HHMM.csv; columns lat, lon, satelite, data."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/diario/Brasil/",
+      "params": "none",
+      "notes": "Directory listing of focos_diario_br_YYYYMMDD.csv; columns include municipio, estado, bioma, frp, risco_fogo."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "CSV over HTTPS from an Apache index. No official API documentation was found; paths were read from the directory listings.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "wildfire",
+    "fire",
+    "hotspots",
+    "queimadas",
+    "brazil",
+    "amazon",
+    "south america",
+    "satellite",
+    "burning",
+    "government",
+    "free",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-06: 10-minute fire files up to 2026-11-06 21:10, header lat,lon,satelite,data, GOES-19 rows",
+     "url": "https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/10min/"
+    },
+    {
+     "claim": "Daily Brazil fire files with municipality, state, biome and fire radiative power columns",
+     "url": "https://dataserver-coids.inpe.br/queimadas/queimadas/focos/csv/diario/Brasil/"
+    },
+    {
+     "claim": "Programa Queimadas portal of INPE",
+     "url": "https://terrabrasilis.dpi.inpe.br/queimadas/portal/"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
    "id": "jma-bosai",
    "name": "Japan Meteorological Agency bosai data feeds",
    "provider_url": "https://www.jma.go.jp/bosai/",
@@ -13638,6 +14276,180 @@
    ],
    "updated": "2026-11-04",
    "expires": "2027-11-04"
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "noaa-awc-metar-taf",
+   "name": "NOAA Aviation Weather Center data API (worldwide METAR and TAF)",
+   "provider_url": "https://aviationweather.gov",
+   "short": "Worldwide airport weather (METAR) and forecasts (TAF) as JSON, covering Africa, S. Asia, LatAm. Free, no key.",
+   "summary": "The US National Weather Service Aviation Weather Center runs a machine-to-machine API at aviationweather.gov/api/data. METAR (terminal observations) and TAF (terminal forecasts) have worldwide coverage, so one keyless call returns the latest report for any ICAO airport, for example Lagos DNMM, Johannesburg FAOR, Casablanca GMMN or Cairo HECA, with temperature, dew point, wind, visibility, pressure, cloud layers, weather string and flight category. On 2026-11-06 UTC a call for six African and Indian airports answered 200 with reports stamped 19:00 to 21:00 UTC, and a bounding-box call over Africa and the Mediterranean returned 66 reports. A once-a-minute gzip cache file of all current METARs is offered for bulk use.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "latest METAR observation for any ICAO airport worldwide (temperature, wind, visibility, pressure, clouds, flight category)",
+     "TAF terminal forecasts, SIGMETs and station lists"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Worldwide"
+    ],
+    "areas": [
+     "*"
+    ],
+    "notes": "Coverage is wherever airports file METARs, so airports only, not rural stations. Seen in the call: Lagos (NG), Johannesburg (ZA), Casablanca (MA). Most METARs are hourly; some airports report half-hourly or not at all."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "per-ip",
+     "notes": "Stated on the data API page; exceeding it gets you blocked.",
+     "source_url": "https://aviationweather.gov/data/api/",
+     "requests": 100,
+     "per_seconds": 60
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: reports with reportTime 19:00 to 21:00 UTC; receiptTime within minutes of the report. The provider says most METARs update once per hour and the cache files update once a minute."
+   },
+   "latency": {
+    "typical": "Minutes after the report time (hourly cadence for most airports)",
+    "notes": "Receipt time on one sample was 0 to 70 minutes after report time."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 2 hours on 2026-11-06",
+    "notes": "One call only."
+   },
+   "licensing": {
+    "summary": "The API page at aviationweather.gov/data/api states no licence or reuse terms, only usage rules: keep requests limited in scope and frequency, set a custom user agent, no more than 100 requests per minute, most endpoints return at most 400 entries, no cross-origin browser access, and exceeding limits gets you blocked. The site is a US government information system. Resale and AI training are not addressed. Check with the provider before commercial reuse."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each report carries an observation time and report time.",
+     "unknown": "Report time is the airport's own issue time."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Airport latitude and longitude in the feed.",
+     "unknown": "Fixed airport coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Airport observations filed in the standard METAR code, with the raw text included.",
+     "unknown": "Agency values with a QC field of unclear meaning; some airports auto-report without a human observer."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://aviationweather.gov/data/api/",
+    "base_url": "https://aviationweather.gov/api/data",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/metar",
+      "params": "ids=<ICAO list>&format=json (or bbox=<lat0,lon0,lat1,lon1>)",
+      "notes": "Latest METAR per airport. 204 when no data."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/taf",
+      "params": "ids=<ICAO list>&format=json",
+      "notes": "Terminal forecasts (from the docs page; not called)."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/data/cache/metars.cache.csv.gz",
+      "params": "none",
+      "notes": "All current METARs, updated once a minute (from the docs page; not called)."
+     }
+    ],
+    "rate_limits": "100 requests per minute; most endpoints return at most 400 entries; use the cache files for bulk.",
+    "notes": "JSON, GeoJSON, XML, CSV or raw text. Set a custom user agent, as the provider asks.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "metar",
+    "taf",
+    "airport",
+    "aviation",
+    "wind",
+    "visibility",
+    "temperature",
+    "worldwide",
+    "africa",
+    "south asia",
+    "latin america",
+    "government",
+    "free",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, METARs for DNMM, FAOR, GMMN, HECA with reportTime 19:00-21:00 UTC",
+     "url": "https://aviationweather.gov/api/data/metar?ids=FAOR,DNMM,GMMN&format=json"
+    },
+    {
+     "claim": "Data API page: METAR and TAF worldwide, formats, 100 requests per minute, 400-entry limit, cache files updated once a minute, custom user agent requested",
+     "url": "https://aviationweather.gov/data/api/"
+    }
+   ]
   },
   {
    "id": "noaa-tides",
@@ -19243,6 +20055,159 @@
    "capability": "com.irlpls.capture.card",
    "updated": "2026-10-27",
    "expires": "2027-10-27"
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "seoul-realtime-city-air",
+   "name": "Seoul Open Data Plaza realtime air quality by district",
+   "provider_url": "https://data.seoul.go.kr/dataList/OA-2219/S/1/datasetView.do",
+   "short": "Seoul's hourly air quality by district (PM10, PM2.5, ozone, NO2, CO, SO2) as JSON. Free key; sample key gives 5 rows.",
+   "summary": "Seoul Metropolitan Government's Open Data Plaza serves the RealtimeCityAir service: one row per monitoring district (25 rows on 2026-11-06) with PM10, PM2.5, ozone, nitrogen dioxide, carbon monoxide, sulphur dioxide, a 5-level air quality grade and index, and the dominant pollutant. A free key from the portal is needed for full use. The portal's shared 'sample' key returned HTTP 200 with data but is limited to 5 rows per call. Field names are Korean-style codes; the grade text is in Korean.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest PM10 and PM2.5 per Seoul district",
+     "ozone, NO2, CO and SO2 readings",
+     "air quality index and grade by district"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Seoul, South Korea"
+    ],
+    "areas": [
+     "KR"
+    ],
+    "notes": "Seoul only, 25 district-level rows on 2026-11-06 (the dataset page says 25 records). For nationwide Korean air quality the AirKorea service was not usable keyless (see research note)."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": true,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC with the sample key: MSRMT_DT 202611070500 (KST, 05:00 on 7 Nov) on 5 rows requested, list_total_count 25. Dataset page: refresh 'real time', data updated 2026.11.06."
+   },
+   "latency": {
+    "typical": "Hourly",
+    "notes": "Dataset page says time range is real time in hourly units and update cycle 'real time'; measurement timestamp is on the hour."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Within about an hour",
+    "notes": "MSRMT_DT gives the measurement hour in KST."
+   },
+   "licensing": {
+    "summary": "Dataset page lists the usage scope as Korea Open Government License (KOGL) Type 1: attribution required, commercial use and modification allowed. Copyright holder is Seoul Metropolitan Government, no third-party copyright. Portal terms of use were not read in full. Sample-key calls are rate-limited by the portal; the full key terms were not read."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "MSRMT_DT measurement time field.",
+     "unknown": "Timezone is not stated in the response; KST assumed from local time."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "District and station names in the rows (SAREA_NM, MSRSTN_NM).",
+     "unknown": "No coordinates in the response read."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Official municipal monitoring values; units not stated in the response.",
+     "unknown": "Units and QA are described on the portal's long description, not read here."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.seoul.go.kr/together/guide/useGuide.do",
+    "base_url": "http://openapi.seoul.go.kr:8088",
+    "auth": [
+     {
+      "type": "api_key_query",
+      "how_to_get": "Register on data.seoul.go.kr and request an Open API key; the portal's 'sample' key works for tests with limits."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/{key}/json/RealtimeCityAir/{start}/{end}/",
+      "params": "key, start and end row index",
+      "notes": "Also xml. With key 'sample' at most 5 rows per call (ERROR-335 otherwise)."
+     }
+    ],
+    "rate_limits": "Not read for full keys; sample key limited to 5 rows per call.",
+    "notes": "HTTP only on this host as tested.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "air quality",
+    "pm2.5",
+    "pm10",
+    "ozone",
+    "seoul",
+    "south korea",
+    "east asia",
+    "government",
+    "open data",
+    "free key",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset page: Seoul realtime regional air quality, KOGL Type 1, hourly real time, 25 records, owner Seoul Metropolitan Government",
+     "url": "https://data.seoul.go.kr/dataList/OA-2219/S/1/datasetView.do"
+    },
+    {
+     "claim": "API guide: key required; 'sample' key is limited",
+     "url": "https://data.seoul.go.kr/together/guide/useGuide.do"
+    },
+    {
+     "claim": "Live GET 2026-11-06 of http://openapi.seoul.go.kr:8088/sample/json/RealtimeCityAir/1/2/ with the sample key: HTTP 200, list_total_count 25, MSRMT_DT 202611070500, Jung-gu PM 21 FPM 14 (the host serves plain HTTP only; this page is the dataset record)",
+     "url": "https://data.seoul.go.kr/dataList/OA-2219/S/1/datasetView.do"
+    }
+   ]
   },
   {
    "status": "unclaimed",

@@ -1,0 +1,174 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "noaa-awc-metar-taf",
+  "name": "NOAA Aviation Weather Center data API (worldwide METAR and TAF)",
+  "provider_url": "https://aviationweather.gov",
+  "short": "Worldwide airport weather (METAR) and forecasts (TAF) as JSON, covering Africa, S. Asia, LatAm. Free, no key.",
+  "summary": "The US National Weather Service Aviation Weather Center runs a machine-to-machine API at aviationweather.gov/api/data. METAR (terminal observations) and TAF (terminal forecasts) have worldwide coverage, so one keyless call returns the latest report for any ICAO airport, for example Lagos DNMM, Johannesburg FAOR, Casablanca GMMN or Cairo HECA, with temperature, dew point, wind, visibility, pressure, cloud layers, weather string and flight category. On 2026-11-06 UTC a call for six African and Indian airports answered 200 with reports stamped 19:00 to 21:00 UTC, and a bounding-box call over Africa and the Mediterranean returned 66 reports. A once-a-minute gzip cache file of all current METARs is offered for bulk use.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "latest METAR observation for any ICAO airport worldwide (temperature, wind, visibility, pressure, clouds, flight category)",
+      "TAF terminal forecasts, SIGMETs and station lists"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Worldwide"
+    ],
+    "areas": [
+      "*"
+    ],
+    "notes": "Coverage is wherever airports file METARs, so airports only, not rural stations. Seen in the call: Lagos (NG), Johannesburg (ZA), Casablanca (MA). Most METARs are hourly; some airports report half-hourly or not at all."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "per-ip",
+      "notes": "Stated on the data API page; exceeding it gets you blocked.",
+      "source_url": "https://aviationweather.gov/data/api/",
+      "requests": 100,
+      "per_seconds": 60
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: reports with reportTime 19:00 to 21:00 UTC; receiptTime within minutes of the report. The provider says most METARs update once per hour and the cache files update once a minute."
+  },
+  "latency": {
+    "typical": "Minutes after the report time (hourly cadence for most airports)",
+    "notes": "Receipt time on one sample was 0 to 70 minutes after report time."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 2 hours on 2026-11-06",
+    "notes": "One call only."
+  },
+  "licensing": {
+    "summary": "The API page at aviationweather.gov/data/api states no licence or reuse terms, only usage rules: keep requests limited in scope and frequency, set a custom user agent, no more than 100 requests per minute, most endpoints return at most 400 entries, no cross-origin browser access, and exceeding limits gets you blocked. The site is a US government information system. Resale and AI training are not addressed. Check with the provider before commercial reuse."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each report carries an observation time and report time.",
+      "unknown": "Report time is the airport's own issue time."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Airport latitude and longitude in the feed.",
+      "unknown": "Fixed airport coordinates; not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Airport observations filed in the standard METAR code, with the raw text included.",
+      "unknown": "Agency values with a QC field of unclear meaning; some airports auto-report without a human observer."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://aviationweather.gov/data/api/",
+    "base_url": "https://aviationweather.gov/api/data",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/metar",
+        "params": "ids=<ICAO list>&format=json (or bbox=<lat0,lon0,lat1,lon1>)",
+        "notes": "Latest METAR per airport. 204 when no data."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/taf",
+        "params": "ids=<ICAO list>&format=json",
+        "notes": "Terminal forecasts (from the docs page; not called)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/data/cache/metars.cache.csv.gz",
+        "params": "none",
+        "notes": "All current METARs, updated once a minute (from the docs page; not called)."
+      }
+    ],
+    "rate_limits": "100 requests per minute; most endpoints return at most 400 entries; use the cache files for bulk.",
+    "notes": "JSON, GeoJSON, XML, CSV or raw text. Set a custom user agent, as the provider asks.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "metar",
+    "taf",
+    "airport",
+    "aviation",
+    "wind",
+    "visibility",
+    "temperature",
+    "worldwide",
+    "africa",
+    "south asia",
+    "latin america",
+    "government",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, METARs for DNMM, FAOR, GMMN, HECA with reportTime 19:00-21:00 UTC",
+      "url": "https://aviationweather.gov/api/data/metar?ids=FAOR,DNMM,GMMN&format=json"
+    },
+    {
+      "claim": "Data API page: METAR and TAF worldwide, formats, 100 requests per minute, 400-entry limit, cache files updated once a minute, custom user agent requested",
+      "url": "https://aviationweather.gov/data/api/"
+    }
+  ]
+}

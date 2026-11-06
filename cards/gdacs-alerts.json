@@ -1,0 +1,165 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "gdacs-alerts",
+  "name": "GDACS (Global Disaster Alert and Coordination System)",
+  "provider_url": "https://www.gdacs.org",
+  "short": "UN/EC worldwide disaster alerts (Green/Orange/Red): quakes, cyclones, floods, volcanoes. Free, no key.",
+  "summary": "GDACS is a cooperation framework between the United Nations and the European Commission. Its keyless event list endpoint returns GeoJSON of recent and ongoing events with type, alert level and score, country, ISO3 code, dates, source and a severity text such as 'Magnitude 7M, Depth:18km', plus links to a detailed report and geometry. On 2026-11-06 UTC one call over six event types answered 200 with 82 features (20 earthquakes, 17 cyclones, 17 floods, 15 wildfires, 7 volcanoes, 6 droughts), newest end date 2026-11-04. A feed page lists RSS feeds for the last 24 hours and the last week, described as updated every 6 minutes. It covers every continent, including Africa, South Asia and Latin America.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "list of current disaster events with alert level, country and severity",
+      "earthquake, tropical cyclone, flood, volcano, drought and wildfire alerts"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Worldwide"
+    ],
+    "areas": [
+      "*"
+    ],
+    "notes": "Global event alerts, not station data. Event types in the 2026-11-06 sample: EQ, TC, FL, WF, VO, DR."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: event list with latest event dates 2026-11-04 and a modification stamp of 2026-11-04 02:04 on the first earthquake; the feed page says RSS is updated every 6 minutes."
+  },
+  "latency": {
+    "typical": "Minutes for the RSS feeds as stated; event dates are days old when quiet",
+    "notes": "Alerts are issued after an event, with updates by episode."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Hours to days depending on the event",
+    "notes": "One call only."
+  },
+  "licensing": {
+    "summary": "The GDACS pages link to the European Commission copyright notice, which says content owned by the EU is licensed under Creative Commons Attribution 4.0 (CC BY 4.0) unless otherwise indicated; credit and a note of changes are required. GDACS entries come from named sources (for example NEIC for earthquakes) that may carry their own terms. No rate limit is published. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each event has from and to dates and a modified stamp.",
+      "unknown": "Date is the event or episode date, not detection time."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Event geometry (point or polygon) and country codes.",
+      "unknown": "Centroids and modelled footprints, not on-site measurements."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "UN and EC alert scores derived from agency data such as NEIC.",
+      "unknown": "Alert levels are modelled estimates of impact, not damage reports."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.gdacs.org/feed_reference.aspx",
+    "base_url": "https://www.gdacs.org/gdacsapi/api/events",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/geteventlist/SEARCH",
+        "params": "eventlist=EQ,TC,FL,VO,DR,WF (optional alertlevel, fromdate, todate)",
+        "notes": "GeoJSON FeatureCollection of events."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/geteventdata",
+        "params": "eventtype=<type>&eventid=<id>",
+        "notes": "Detail of one event, as linked from each feature (not called)."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "The event list endpoint was found by calling it; the documented feeds page lists RSS files updated every 6 minutes.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "disaster",
+    "alerts",
+    "earthquake",
+    "cyclone",
+    "flood",
+    "volcano",
+    "drought",
+    "wildfire",
+    "worldwide",
+    "africa",
+    "south asia",
+    "latin america",
+    "united nations",
+    "european commission",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-06: GeoJSON with 82 events (EQ, TC, FL, WF, VO, DR), fields alertlevel, country, iso3, severitydata",
+      "url": "https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventlist=EQ,TC,FL,VO,DR,WF"
+    },
+    {
+      "claim": "Feed reference page: RSS feeds for the last 24 hours and week, updated every 6 minutes",
+      "url": "https://www.gdacs.org/feed_reference.aspx"
+    },
+    {
+      "claim": "European Commission legal notice: EU-owned content licensed under CC BY 4.0 unless otherwise indicated (linked from GDACS pages as the copyright notice)",
+      "url": "https://commission.europa.eu/legal-notice_en#copyright-notice"
+    }
+  ]
+}

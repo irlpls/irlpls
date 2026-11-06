@@ -1,0 +1,153 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "seoul-realtime-city-air",
+  "name": "Seoul Open Data Plaza realtime air quality by district",
+  "provider_url": "https://data.seoul.go.kr/dataList/OA-2219/S/1/datasetView.do",
+  "short": "Seoul's hourly air quality by district (PM10, PM2.5, ozone, NO2, CO, SO2) as JSON. Free key; sample key gives 5 rows.",
+  "summary": "Seoul Metropolitan Government's Open Data Plaza serves the RealtimeCityAir service: one row per monitoring district (25 rows on 2026-11-06) with PM10, PM2.5, ozone, nitrogen dioxide, carbon monoxide, sulphur dioxide, a 5-level air quality grade and index, and the dominant pollutant. A free key from the portal is needed for full use. The portal's shared 'sample' key returned HTTP 200 with data but is limited to 5 rows per call. Field names are Korean-style codes; the grade text is in Korean.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest PM10 and PM2.5 per Seoul district",
+      "ozone, NO2, CO and SO2 readings",
+      "air quality index and grade by district"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Seoul, South Korea"
+    ],
+    "areas": [
+      "KR"
+    ],
+    "notes": "Seoul only, 25 district-level rows on 2026-11-06 (the dataset page says 25 records). For nationwide Korean air quality the AirKorea service was not usable keyless (see research note)."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": true,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC with the sample key: MSRMT_DT 202611070500 (KST, 05:00 on 7 Nov) on 5 rows requested, list_total_count 25. Dataset page: refresh 'real time', data updated 2026.11.06."
+  },
+  "latency": {
+    "typical": "Hourly",
+    "notes": "Dataset page says time range is real time in hourly units and update cycle 'real time'; measurement timestamp is on the hour."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Within about an hour",
+    "notes": "MSRMT_DT gives the measurement hour in KST."
+  },
+  "licensing": {
+    "summary": "Dataset page lists the usage scope as Korea Open Government License (KOGL) Type 1: attribution required, commercial use and modification allowed. Copyright holder is Seoul Metropolitan Government, no third-party copyright. Portal terms of use were not read in full. Sample-key calls are rate-limited by the portal; the full key terms were not read."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "MSRMT_DT measurement time field.",
+      "unknown": "Timezone is not stated in the response; KST assumed from local time."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "District and station names in the rows (SAREA_NM, MSRSTN_NM).",
+      "unknown": "No coordinates in the response read."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Official municipal monitoring values; units not stated in the response.",
+      "unknown": "Units and QA are described on the portal's long description, not read here."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.seoul.go.kr/together/guide/useGuide.do",
+    "base_url": "http://openapi.seoul.go.kr:8088",
+    "auth": [
+      {
+        "type": "api_key_query",
+        "how_to_get": "Register on data.seoul.go.kr and request an Open API key; the portal's 'sample' key works for tests with limits."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/{key}/json/RealtimeCityAir/{start}/{end}/",
+        "params": "key, start and end row index",
+        "notes": "Also xml. With key 'sample' at most 5 rows per call (ERROR-335 otherwise)."
+      }
+    ],
+    "rate_limits": "Not read for full keys; sample key limited to 5 rows per call.",
+    "notes": "HTTP only on this host as tested.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "air quality",
+    "pm2.5",
+    "pm10",
+    "ozone",
+    "seoul",
+    "south korea",
+    "east asia",
+    "government",
+    "open data",
+    "free key",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Dataset page: Seoul realtime regional air quality, KOGL Type 1, hourly real time, 25 records, owner Seoul Metropolitan Government",
+      "url": "https://data.seoul.go.kr/dataList/OA-2219/S/1/datasetView.do"
+    },
+    {
+      "claim": "API guide: key required; 'sample' key is limited",
+      "url": "https://data.seoul.go.kr/together/guide/useGuide.do"
+    },
+    {
+      "claim": "Live GET 2026-11-06 of http://openapi.seoul.go.kr:8088/sample/json/RealtimeCityAir/1/2/ with the sample key: HTTP 200, list_total_count 25, MSRMT_DT 202611070500, Jung-gu PM 21 FPM 14 (the host serves plain HTTP only; this page is the dataset record)",
+      "url": "https://data.seoul.go.kr/dataList/OA-2219/S/1/datasetView.do"
+    }
+  ]
+}

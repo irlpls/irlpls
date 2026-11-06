@@ -1,0 +1,165 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "bom-anon-ftp-observations",
+  "name": "Bureau of Meteorology anonymous FTP observations",
+  "provider_url": "https://www.bom.gov.au/catalogue/data-feeds.shtml",
+  "short": "Australia's official station observations as XML on the Bureau's anonymous FTP. Free, no key, non-commercial use.",
+  "summary": "The Bureau of Meteorology publishes state and territory observation products on its anonymous FTP (ftp.bom.gov.au/anon/gen/fwo/). On 2026-11-06 (UTC) the New South Wales observation file IDN60920.xml was modified minutes before the fetch and held per-station readings (air temperature, apparent temperature, dew point, pressure, humidity, wind, gust, rain, visibility, cloud) with station WMO id, name and coordinates. The Bureau's Data Services page lists these as free to access and not for commercial use, with no availability guarantee. The Bureau's website blocks automated access to its web JSON paths, so use the FTP route.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest observation per station in a state or territory: temperature, humidity, wind, gust, pressure, rain, visibility, cloud",
+      "station list with WMO id, name, height and coordinates",
+      "state forecasts, warnings and radar products from the same FTP directory (not read here)"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Australia"
+    ],
+    "areas": [
+      "AU"
+    ],
+    "notes": "Per-state files in /anon/gen/fwo/ (IDN New South Wales and ACT, IDV Victoria, IDQ Queensland, IDS South Australia, IDW Western Australia, IDT Tasmania, IDD Northern Territory, per the Bureau's FTP guide). Only IDN60920.xml was fetched and parsed here."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live FTP fetch 2026-11-06 UTC: IDN60920.xml Last-Modified 21:13:58 GMT, issue-time-utc 21:11:02, observation period 21:10 UTC."
+  },
+  "latency": {
+    "typical": "About 10 minutes",
+    "notes": "Observation period time 21:10 UTC against issue time 21:11 UTC in one fetch; the Bureau's guide names these '10-minute updates' products. Not independently measured over time."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "Each station carries a period time-utc; the file carries issue-time-utc."
+  },
+  "licensing": {
+    "summary": "Bureau Data Services page: products on the anonymous FTP are free to access and not for commercial use; the Bureau does not guarantee availability; use follows the default Copyright Notice. That notice permits personal use or use within your organisation, not supplying content to others or commercial use, unless a page states otherwise (some content is CC BY 4.0). It also forbids using automated or manual techniques to scrape or extract material from the website. Registered User services (charges apply to most products) exist for uses outside the default terms. Not for redistribution or commercial agent services without permission."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "issue-time-utc and per-period time-utc in the XML.",
+      "unknown": "Clock handling at stations is not documented on pages read."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station WMO id, name and lat/lon in the XML.",
+      "unknown": "Survey or siting quality not stated on pages read."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Official Bureau observations with units in each element.",
+      "unknown": "Quality control process not read."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.bom.gov.au/catalogue/data-feeds.shtml",
+    "base_url": "ftp://ftp.bom.gov.au/anon/gen/fwo",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "Anonymous FTP, no key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/",
+        "params": "none",
+        "notes": "Directory listing of all forecast, warning and observation products."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/IDN60920.xml",
+        "params": "product id",
+        "notes": "New South Wales observations XML; other states use their own IDx prefix."
+      }
+    ],
+    "rate_limits": "Not stated. The Bureau says it cannot track anonymous usage or guarantee availability.",
+    "notes": "The Bureau's anonymous FTP user guide covers use. Its website returned a block message to an automated request for HTTP JSON observation paths on 2026-11-06; an unofficial api.weather.bom.gov.au service carries a notice that it must not be used, copied or shared and is not covered here.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "observations",
+    "temperature",
+    "wind",
+    "rainfall",
+    "australia",
+    "sydney",
+    "oceania",
+    "government",
+    "free",
+    "non-commercial",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Data Services: anonymous FTP products free, not for commercial use, no availability guarantee, 72-hour station observations in xml/axf/json, default Copyright Notice applies",
+      "url": "https://www.bom.gov.au/catalogue/data-feeds.shtml"
+    },
+    {
+      "claim": "Copyright notice: personal or in-organisation use unless stated; no supplying to others or commercial use; scraping not allowed; some content CC BY",
+      "url": "https://www.bom.gov.au/other/copyright.shtml"
+    },
+    {
+      "claim": "FTP directory layout and state prefixes",
+      "url": "https://www.bom.gov.au/catalogue/anon-ftp.shtml"
+    },
+    {
+      "claim": "Live anonymous FTP fetch 2026-11-06 of ftp://ftp.bom.gov.au/anon/gen/fwo/IDN60920.xml: NSW observations, issued 21:11:02 UTC, Sydney Observatory Hill 17.7 C, humidity 83 percent (the FTP file itself has no https address; this page lists the products)",
+      "url": "https://www.bom.gov.au/catalogue/data-feeds.shtml"
+    }
+  ]
+}

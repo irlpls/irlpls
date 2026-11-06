@@ -145,7 +145,7 @@ BENCH = [
     ("qualidade do ar em Maputo", {"open-meteo", "sensor-community", "openaq"}, {"nws", "airnow", "usgs-water"}),  # round 3: Portuguese
     ("any fires near Kelowna BC?", {"nasa-firms"}, {"proxypics", "caltrans-cctv", "skyfi"}),  # round 3: a live read, not a commission
     ("東京の今の空気質を教えて", {"open-meteo", "sensor-community", "openaq"}, {"nws", "airnow", "usgs-water"}),
-    ("какая погода сейчас в Москве", {"weatherxm-agent", "open-meteo"}, {"nws", "usgs-water", "noaa-tides"}),
+    ("какая погода сейчас в Москве", {"weatherxm-agent", "open-meteo", "noaa-awc-metar-taf"}, {"nws", "usgs-water", "noaa-tides"}),
     # ---- a person on site for a spot's own state (not a satellite, not a dataset vendor) ----
     ("send a human to Kathmandu, Nepal to count people in Durbar Square this afternoon", {"execution-market", "human-for-ai", "rentahuman"},
      {"toloka", "satellogic", "prolific", "kled"}),

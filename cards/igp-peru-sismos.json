@@ -1,0 +1,147 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "igp-peru-sismos",
+  "name": "IGP Peru (Instituto Geofisico del Peru latest earthquakes)",
+  "provider_url": "https://ultimosismo.igp.gob.pe",
+  "short": "Peru's geophysical institute's earthquake list: magnitude, depth, place, intensity. Free, no key; undocumented.",
+  "summary": "The Instituto Geofisico del Peru runs the public latest-earthquake site ultimosismo.igp.gob.pe, whose backend returns JSON for a year of reported events. Each row has a report code, local and UTC date and time, latitude, longitude, magnitude, depth, a place reference such as '2 km al E de Huambo, Caylloma - Arequipa', felt intensity and a link to an accelerograph PDF. On 2026-11-06 UTC a keyless GET of the 2026 list answered 200 with 766 events, the newest at 18:07:54 UTC that day (record created 18:13:11 UTC). No documentation, licence or terms could be found, so this is the website's own backend and may change.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "list of earthquakes reported in Peru in a given year with magnitude, depth, location and intensity"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Peru"
+    ],
+    "areas": [
+      "PE"
+    ],
+    "notes": "Peru and its surroundings; the list covers events IGP reports. 766 events for 2026 up to 2026-11-06."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: newest event 18:07:54 UTC, record created 18:13:11 UTC, about 5 minutes after the event; the call was made later that day."
+  },
+  "latency": {
+    "typical": "About 5 minutes from event to record on the newest row",
+    "notes": "One sample; cadence depends on seismic activity."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 1 day on 2026-11-06 (newest event the same day)",
+    "notes": "One sample only."
+  },
+  "licensing": {
+    "summary": "Not stated. No terms, licence or open-data page could be found for the site or the endpoint (guessed terms URLs on igp.gob.pe returned 404). The endpoint is undocumented. Automated access, AI training and resale are not addressed. Ask IGP before relying on it commercially."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each row has local and UTC date and time.",
+      "unknown": "Time zone handling in the JSON is odd (time stored with a 1970 date); use the UTC time-of-day field with the date field."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Epicentre latitude and longitude as strings.",
+      "unknown": "Agency location; uncertainty not given."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Official IGP magnitude, depth and felt intensity per event.",
+      "unknown": "Initial values may be revised; magnitude type is empty on the sampled row."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://ultimosismo.igp.gob.pe",
+    "base_url": "https://ultimosismo.igp.gob.pe/api",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the call made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/ultimo-sismo/ajaxb/{year}",
+        "params": "year, e.g. 2026",
+        "notes": "JSON array of the year's earthquakes, oldest first."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "JSON. No official API documentation found; the path is used by the public website.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "earthquake",
+    "seismic",
+    "sismo",
+    "peru",
+    "lima",
+    "south america",
+    "andes",
+    "government",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, 766 events, newest codigo 2026-0766 with magnitude, profundidad, latitud, longitud, referencia, intensidad",
+      "url": "https://ultimosismo.igp.gob.pe/api/ultimo-sismo/ajaxb/2026"
+    },
+    {
+      "claim": "IGP public latest earthquake site",
+      "url": "https://ultimosismo.igp.gob.pe"
+    }
+  ]
+}
