@@ -404,6 +404,18 @@ You call each provider yourself, from your own process and IP, so its limits are
 
 Every tool returns its result as `structuredContent` (and as JSON text) and declares an `outputSchema`: a Job for the job tools, `{results, verdict}` for `irlpls_find_providers`, the protocol bodies for the protocol tools. An error is a result with `isError: true` and one shape everywhere: `{code, message, hint}` (protocol problems add their RFC 9457 `type`, `title`, `status`, `detail`). `hint` names the tool to call next. Arguments of the wrong type come back as `code: invalid_arguments` with `errors[].path`.
 
+### Operator limits (environment, not arguments)
+
+Whoever runs the process sets these. A tool argument or a policy can only be stricter, never looser, and `auto_submit` cannot lift them. `--read-only` is unchanged.
+
+| Variable | Effect |
+|---|---|
+| `IRLPLS_ALLOW_SUBMIT=1` | The MCP server may place orders (`irlpls_submit` with `confirm`), approve prices and cancel. Unset: those calls return `submit_disabled` and nothing is sent, even in full mode. |
+| `IRLPLS_MAX_ORDER_USD=<amount>` | Most any one order may cost, in USD. On the MCP server unset means `0`: no orders. `0` or an invalid value means no orders. In the Python library and CLI, unset means no operator ceiling. The smaller of this and `policy.max_order_usd` applies, and the confirmed total is checked against it again just before the order is sent. |
+| `IRLPLS_ENABLE_WALLET_SIGNING=1` | Read once when `irlpls-mcp` starts. Off by default; nothing a tool receives can turn it on. |
+
+irlpls plans and quotes. `confirm=true` is for the moment your person has approved this exact order in their own client; never set it on your own judgment. Job files under `~/.irlpls/jobs` are private to the user (mode 0600), written atomically, capped in size, and pruned after 30 days or beyond 200 files; they hold no credentials.
+
 ### Ordering through the protocol
 
 Some providers will speak the irlpls wire protocol: their card has a `protocol` block, and you can order from them with the same six calls everywhere (the standard, Section 14). No listed provider speaks it yet; the reference provider shows how it works (see the quickstart).

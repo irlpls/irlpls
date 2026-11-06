@@ -93,9 +93,13 @@ def test_homoglyph_person_targeting_still_detected(text):
 def test_huge_need_is_fast_and_safe():
     for text in ("photo " * 200_000, "a" * 2_000_000, "Austin " * 100_000 + ", TX", "1 " * 300_000 + "days"):
         t = time.time()
-        r = req(text, cards=[])
+        try:
+            r = req(text, cards=[])
+        except ValueError as e:   # need.parse rejects past MAX_NEED_CHARS before any regex work
+            assert "characters" in str(e)
+            r = None
         assert time.time() - t < 10, "parse is not linear on hostile size"
-        assert isinstance(r.terms, list)
+        assert r is None or isinstance(r.terms, list)
 
 
 def test_catastrophic_backtracking_probes():
@@ -117,7 +121,7 @@ def test_huge_card_text_scores_fast():
 
 
 def test_absurd_numbers_are_clamped_not_crashing():
-    r = req("photo within " + "9" * 5000 + " days of the shop in Austin, TX", cards=[])
+    r = req("photo within " + "9" * 3500 + " days of the shop in Austin, TX", cards=[])
     assert r.within_minutes is None or r.within_minutes < 10 ** 9
 
 

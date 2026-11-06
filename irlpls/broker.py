@@ -66,6 +66,162 @@ def _key_needed(what="placing a real order"):
 HOME = pathlib.Path(os.environ.get("IRLPLS_HOME", pathlib.Path.home() / ".irlpls"))
 _JOBS = {}
 
+
+# -- operator ceiling -----------------------------------------------------------------------------------------------
+# Set by whoever runs the process (environment variables), read once at import, never by a tool argument or a policy.
+#   IRLPLS_MAX_ORDER_USD   most any single order may cost. Unset: no operator ceiling for the library, 0 for the MCP server.
+#                          0 (or a bad value) means no order at all.
+#   IRLPLS_ALLOW_SUBMIT    1/true/yes/on lets the MCP server place orders, approve prices and cancel. Unset: it cannot.
+# A job's own policy can only be stricter: the effective ceiling is the smaller of the two, and auto_submit never lifts it.
+def _truthy(v):
+    return str(v or "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def _env_ceiling(raw):
+    """The operator's ceiling as a Decimal, None when unset; anything that is not a finite non-negative number is 0."""
+    if raw is None or not str(raw).strip():
+        return None
+    from decimal import Decimal
+    try:
+        d = Decimal(str(raw).strip())
+    except Exception:
+        return 0
+    return d if valid_money(d) else 0
+
+
+OPERATOR_ALLOW_SUBMIT = _truthy(os.environ.get("IRLPLS_ALLOW_SUBMIT"))
+OPERATOR_MAX_ORDER_USD = _env_ceiling(os.environ.get("IRLPLS_MAX_ORDER_USD"))
+
+
+def operator_limits(strict=False):
+    """(may_order, ceiling): strict is the MCP server (orders off unless IRLPLS_ALLOW_SUBMIT; ceiling defaults to 0)."""
+    ceiling = OPERATOR_MAX_ORDER_USD
+    if strict and ceiling is None:
+        ceiling = 0
+    ok = (OPERATOR_ALLOW_SUBMIT or not strict) and (ceiling is None or ceiling > 0)
+    return ok, ceiling
+
+
+def operator_refusal(strict=False, what="placing an order"):
+    ok, ceiling = operator_limits(strict)
+    if ok:
+        return None
+    if strict and not OPERATOR_ALLOW_SUBMIT:
+        return (f"{what} is disabled on this server: the operator has not set IRLPLS_ALLOW_SUBMIT. irlpls plans and quotes; the "
+                "person approves and pays in their own client or at the provider")
+    return f"{what} is disabled: the operator's IRLPLS_MAX_ORDER_USD is {ceiling or 0}; set it above 0 to allow orders"
+
+
+# -- private, atomic, bounded state ---------------------------------------------------------------------------------
+JOB_MAX_AGE_DAYS = 30      # saved job files older than this are pruned
+JOB_MAX_COUNT = 200        # ... and at most this many are kept (the newest)
+STATE_MAX_BYTES = 1_000_000  # a saved file over this is trimmed (log, ruled_out, plan) before it is written
+_last_prune = [0.0]
+
+
+def _private_dir(p):
+    p = pathlib.Path(p)
+    p.mkdir(parents=True, exist_ok=True, mode=0o700)
+    try:
+        os.chmod(p, 0o700)
+    except OSError:
+        pass
+    return p
+
+
+def _atomic_write(path, text):
+    """Write text to path through a temp file in the same directory (mode 0600), then rename over it."""
+    path = pathlib.Path(path)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.{uuid.uuid4().hex[:6]}.tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(fd, "w") as f:
+            f.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+def _prune_jobs(keep=None):
+    now = time.time()
+    if now - _last_prune[0] < 60:
+        return
+    _last_prune[0] = now
+    try:
+        files = sorted(((f.stat().st_mtime, f) for f in (HOME / "jobs").iterdir() if f.is_file() and f.name.endswith((".json", ".lock"))),
+                       key=lambda t: t[0], reverse=True)
+    except OSError:
+        return
+    for i, (mt, f) in enumerate(files):
+        if f.name.split(".")[0] == keep:
+            continue
+        if i >= JOB_MAX_COUNT or now - mt > JOB_MAX_AGE_DAYS * 86400:
+            try:
+                f.unlink()
+            except OSError:
+                pass
+
+
+class _NoLock:
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+class _OrderLock:
+    """Serialises check-then-act on a job's orders: a process-wide re-entrant lock, plus an flock on <job>.lock so two
+    processes sharing ~/.irlpls cannot both pass the check. Falls back to the in-process lock where no file lock exists."""
+    _mem = __import__("threading").RLock()
+
+    def __init__(self, job_id):
+        self.path = HOME / "jobs" / f"{job_id}.lock"
+        self.fd = None
+
+    def __enter__(self):
+        self._mem.acquire()
+        try:
+            _private_dir(HOME / "jobs")
+            self.fd = os.open(self.path, os.O_RDWR | os.O_CREAT, 0o600)
+            try:
+                import fcntl
+                fcntl.flock(self.fd, fcntl.LOCK_EX)
+            except ImportError:
+                try:
+                    import msvcrt
+                    msvcrt.locking(self.fd, msvcrt.LK_LOCK, 1)
+                except (ImportError, OSError):
+                    pass
+        except OSError:
+            self.fd = None
+        return self
+
+    def __exit__(self, *exc):
+        try:
+            if self.fd is not None:
+                os.close(self.fd)   # closing drops the flock
+        finally:
+            self._mem.release()
+        return False
+
+
+def _fingerprint(card_id, spec):
+    import hashlib
+    body = {k: v for k, v in (spec or {}).items() if k != "idempotency_key"}
+    return hashlib.sha256(json.dumps([card_id, body], sort_keys=True, default=str).encode()).hexdigest()
+
+
+def _reused(key):
+    return JobError("idempotency_key_reused", f"the idempotency key {key!r} was already used for a different order",
+                    mcp="use a new idempotency_key for a different order", cli="use a new --idempotency-key",
+                    python="use a new idempotency_key")
+
+
 # Protocol client settings. `client` is passed to irlpls.protocol.client.Client: HTTPS and public hosts only unless a
 # test (or a deliberate local setup) opts out explicitly with {"allow_http": True, "allow_private": True}. `auth` maps a
 # card id to the headers carrying the person's own credentials for that provider (they never leave this process).
@@ -483,6 +639,8 @@ class Job:
         self.status_response, self.provider_status = None, None
         self.approvals = []   # a placed order's second, paid step waiting for the person (adapter.pending_approvals)
         self.orders = {}  # idempotency key -> the provider's response: a replay returns this and never orders again
+        self.fps = {}     # idempotency key -> fingerprint of the order it was first used for (a different spec is refused)
+        self.operator_strict = False  # set by the MCP server on its jobs: orders need IRLPLS_ALLOW_SUBMIT
         self.error, self.reason_code, self.protocol = None, None, None  # protocol: quote/order/delivery as exchanged
         self._pclients = {}
         if self.request is not None and not self.request.targets_person:
@@ -951,17 +1109,29 @@ class Job:
                 _save(self)
                 return self
             # a standing mandate only counts with a spending ceiling; without one, orders always stop at a quote
-            auto = bool(self.policy and getattr(self.policy, "auto_submit", False) is True and valid_money(self.policy.max_order_usd))
+            auto = self._may_auto()
             if confirm and not idempotency_key:
                 raise _key_needed()
+            if confirm:
+                self._operator_check()
             if idempotency_key is not None:
                 _check_key(idempotency_key)
             self._confirm_requested = bool(confirm)
+            guard = _OrderLock(self.id) if (confirm or auto) else _NoLock()
+            with guard:   # check-then-act is atomic: two callers with one key cannot both order
+                return self._submit_commission(opt, spec, confirm, idempotency_key, auto, commission, get_card, r)
+        return self._finish(opt)
+
+    def _submit_commission(self, opt, spec, confirm, idempotency_key, auto, commission, get_card, r):
+        if True:
             if confirm or auto:
                 key = idempotency_key or f"irlpls-{self.id}-{opt['card_id']}"
                 spec.setdefault("idempotency_key", key)
+                fp = _fingerprint(opt["card_id"], spec)
                 self._load_orders()
                 if key in self.orders:  # replay: return what the first call got, never order twice
+                    if self.fps.get(key, fp) != fp:
+                        raise _reused(key)
                     self._note(f"replayed key {key!r}: order already placed with {opt['card_id']}")
                     return self
                 if self.state in ("submitted", "in_flight", "delivered"):
@@ -975,6 +1145,7 @@ class Job:
                 out = {"dry_run": True, "missing": e.missing, "note": "Not sent: " + "; ".join(e.missing)}
             if (confirm or auto) and isinstance(out, dict) and not out.get("dry_run"):
                 self.orders[spec["idempotency_key"]] = out
+                self.fps[spec["idempotency_key"]] = fp
                 self._save_orders()
             self.provider_response = out
             if isinstance(out, dict) and out.get("dry_run"):
@@ -998,14 +1169,46 @@ class Job:
             else:
                 self.state = "submitted"
                 self._note(f"order placed with {opt['card_id']}")
+        return self._finish(opt)
+
+    def _finish(self, opt):
         self.choice = opt
         _save(self)
         return self
 
+    def _operator_check(self, what="placing an order"):
+        msg = operator_refusal(self.operator_strict, what)
+        if msg:
+            raise JobError("submit_disabled", msg, mcp="Nothing was sent. Tell the person to place the order themselves, in their own "
+                           "client or at the provider; this server only plans and quotes.",
+                           cli="set IRLPLS_ALLOW_SUBMIT=1 and IRLPLS_MAX_ORDER_USD to allow orders",
+                           python="set IRLPLS_ALLOW_SUBMIT=1 and IRLPLS_MAX_ORDER_USD to allow orders")
+
+    def _eff_policy(self):
+        """The policy the broker enforces: the job's own, with max_order_usd no looser than the operator's ceiling."""
+        _, ceiling = operator_limits(self.operator_strict)
+        pol = self.policy
+        if ceiling is None:
+            return pol
+        if pol is None:
+            return Policy(max_order_usd=ceiling)
+        if pol.max_order_usd is not None and not valid_money(pol.max_order_usd):
+            return pol   # invalid: fails closed downstream
+        mine = as_decimal(pol.max_order_usd)
+        if mine is not None and mine <= ceiling:
+            return pol
+        import dataclasses
+        return dataclasses.replace(pol, max_order_usd=ceiling)
+
+    def _may_auto(self):
+        """A standing mandate needs a spending ceiling in the policy AND an operator who allows orders; it never lifts either."""
+        return bool(self.policy and getattr(self.policy, "auto_submit", False) is True and valid_money(self.policy.max_order_usd)
+                    and operator_limits(self.operator_strict)[0])
+
     def _commission(self, commission, card_id, spec, place):
         """Place (or quote) an order. Before anything is confirmed the broker reads a dry-run quote itself and fails closed:
         the total must be a real, finite, non-negative number within max_order_usd; NaN, negatives and booleans never pass."""
-        pol = self.policy
+        pol = self._eff_policy()
         if place:   # read the dry run first: an order missing details the person must give is never sent
             dry = commission(card_id, spec, confirm=False, policy=pol)
             if isinstance(dry, dict) and dry.get("missing"):
@@ -1027,21 +1230,39 @@ class Job:
                 out = dict(dry) if isinstance(dry, dict) else {"dry_run": True}
                 out["blocked_by_policy"] = bad
                 return out
-        return commission(card_id, spec, confirm=place, policy=pol)
+        if place:   # the confirmed call must not cost more than the quote the person was shown
+            shown = _quoted_total(self.quote) if isinstance(self.quote, dict) else None
+            now = _quoted_total(dry) if isinstance(dry, dict) else None
+            if shown is not None and now is not None and now > shown:
+                raise PolicyViolation(card_id, [f"price rose from ${shown:g} to ${now:g} since the quote; ask the person again"])
+        out = commission(card_id, spec, confirm=place, policy=pol)
+        if place and isinstance(out, dict) and not out.get("dry_run") and pol is not None and valid_money(pol.max_order_usd):
+            total = _quoted_total(out)   # re-check what the provider says it confirmed
+            if total is not None and total > as_decimal(pol.max_order_usd):
+                msg = f"the confirmed total ${total:g} is over the ceiling ${as_decimal(pol.max_order_usd):g}: check with the provider"
+                self.warnings.append({"code": "over_ceiling", "card_id": card_id, "msg": msg})
+                self._note("warning: over_ceiling: " + msg)
+        return out
 
     def _orders_file(self):
         return HOME / "jobs" / f"{self.id}.orders.json"
 
     def _load_orders(self):
         try:
-            self.orders = {**json.loads(self._orders_file().read_text()), **self.orders}
+            d = json.loads(self._orders_file().read_text())
         except (OSError, ValueError):
-            pass
+            return
+        if not isinstance(d, dict):
+            return
+        fps = d.pop("__fp__", None)
+        self.orders = {**d, **self.orders}
+        if isinstance(fps, dict):
+            self.fps = {**fps, **self.fps}
 
     def _save_orders(self):
         try:
-            (HOME / "jobs").mkdir(parents=True, exist_ok=True)
-            self._orders_file().write_text(json.dumps(self.orders, default=str))
+            _private_dir(HOME / "jobs")
+            _atomic_write(self._orders_file(), json.dumps(dict(self.orders, __fp__=self.fps), default=str))
         except OSError:
             pass
 
@@ -1231,12 +1452,18 @@ class Job:
         """submit() for a provider whose card declares a protocol block. Live: a direct order with max_total 0, free.
         Commission: a quote; with confirm (or a standing mandate within budget) an order at the provider's own
         endpoint, under an Idempotency-Key derived per provider from the requester's key and reused on retry."""
-        from .protocol import client as pc
-        cid = opt["card_id"]
         if confirm and not idempotency_key:
             raise _key_needed()
+        if confirm:
+            self._operator_check()
         if idempotency_key is not None:
             _check_key(idempotency_key)
+        with (_OrderLock(self.id) if (confirm or self._may_auto()) else _NoLock()):
+            return self._submit_protocol_locked(opt, spec, confirm, idempotency_key)
+
+    def _submit_protocol_locked(self, opt, spec, confirm, idempotency_key):
+        from .protocol import client as pc
+        cid = opt["card_id"]
         if spec:
             from .need import detect_targets_person, text_fields
             if not (self.policy and self.policy.allow_person_targeting) and detect_targets_person(*text_fields(spec)):
@@ -1247,7 +1474,9 @@ class Job:
             self._note("spec ignored for a protocol provider: the request and constraints carry the brief")
         self.choice = opt
         self.protocol = self.protocol if (self.protocol or {}).get("card_id") == cid else {"card_id": cid}
-        auto = bool(self.policy and getattr(self.policy, "auto_submit", False) is True and valid_money(self.policy.max_order_usd))
+        auto = self._may_auto()
+        pol = self._eff_policy()
+        fp = _fingerprint(cid, {"request": _req_dict(self.request) if self.request is not None else None, "spec": spec})
         try:
             if opt["route"] == "live":
                 base = idempotency_key or f"irlpls-{self.id}-live"
@@ -1269,6 +1498,8 @@ class Job:
                 key = pc.derive_key(base, cid)
                 self._load_orders()
                 if key in self.orders:  # replay: return what the first call got, never order twice
+                    if self.fps.get(key, fp) != fp:
+                        raise _reused(base)
                     self._note(f"replayed key {base!r}: order already placed with {cid}")
                     return self
                 if self.state in ("submitted", "in_flight", "delivered"):
@@ -1297,6 +1528,8 @@ class Job:
                 if place and confirm and prior and pc.amount(offer.get("total")) is not None and pc.amount(prior) is not None \
                         and pc.amount(offer["total"]) > pc.amount(prior):
                     bad = bad + [f"price rose from {prior['amount']} to {offer['total']['amount']} {offer['total'].get('currency', '')}; ask again"]
+            if place and not bad:
+                bad = self._operator_offer_violations(offer, pol)
             self.protocol.update(quote=q, offer=offer, request=req, exact=bool(exact), request_sha256=pc.request_sha256(req))
             self.quote = {"dry_run": True, "protocol": True, "quote_id": q.get("id"), "offer": offer,
                           "blocked_by_policy": bad or None}
@@ -1306,13 +1539,13 @@ class Job:
                 _save(self)
                 return self
             if not offer.get("firm"):
-                if not (self.policy and valid_money(self.policy.max_order_usd)):
+                if not (pol and valid_money(pol.max_order_usd)):
                     self.quote["blocked_by_policy"] = ["the offer is indicative (not firm) and no max_order_usd caps the order"]
                     self.state = "quoted"
                     self._note(f"not sent: {cid}'s offer is not firm and there is no spending ceiling")
                     _save(self)
                     return self
-                body = {"request": req, "constraints": {"max_total": pc.money(self.policy.max_order_usd)}}
+                body = {"request": req, "constraints": {"max_total": pc.money(pol.max_order_usd)}}
                 approved = body["constraints"]["max_total"]
             else:
                 body = {"quote_id": q["id"], "offer_id": offer["id"]}
@@ -1324,12 +1557,28 @@ class Job:
             self.protocol.update(nonce=nonce, key=key, approved_total=approved["amount"])
             order = self._pclient(cid).order(body, idempotency_key=key)
             self.orders[key] = {"order_id": order["id"], "card_id": cid}
+            self.fps[key] = fp
             self._save_orders()
             self.provider_response = order
             self._note(f"order {order['id']} placed at {cid}'s protocol endpoint")
             return self._take_order(order)
         except pc.ProtocolError as e:
             return self._problem(e, "order" if (opt["route"] == "live" or confirm or auto) and self.protocol.get("key") else "quote")
+
+    def _operator_offer_violations(self, offer, pol):
+        """An offer's total against the ceiling in force (the policy's, or the operator's if lower), in USD only."""
+        if pol is None or not valid_money(pol.max_order_usd):
+            return []
+        t = (offer or {}).get("total") or {}
+        if t.get("currency") != "USD":
+            return [f"policy:max_order_usd: the offer is in {t.get('currency') or 'no stated currency'}, not USD"]
+        try:
+            amt = __import__("decimal").Decimal(str(t["amount"]))
+        except Exception:
+            return ["policy:max_order_usd: the offer has no valid total"]
+        if not valid_money(amt) or amt > as_decimal(pol.max_order_usd):
+            return [f"policy:max_order_usd: {t.get('amount')} over {pol.max_order_usd}"]
+        return []
 
     def _take_order(self, order):
         """Order state -> job state, one to one (failed keeps the provider's reason_code)."""
@@ -1468,6 +1717,7 @@ class Job:
         a = adapters.get(self.choice["card_id"])
         if not confirm:
             return a.approve(self.provider_response, approval_id=opt.get("id"), confirm=False)
+        self._operator_check("approving a price")
         _check_key(idempotency_key) if idempotency_key is not None else None
         if not idempotency_key:
             raise _key_needed("approving a price (it spends money)")
@@ -1475,20 +1725,25 @@ class Job:
             raise JobError("total_required", f"repeat the price the person approved: total={opt['amount']} ({opt.get('currency')})",
                            mcp=f"pass total=\"{opt['amount']}\" exactly as listed in approvals", cli=f"add --total {opt['amount']}",
                            python=f"job.approve(..., total='{opt['amount']}')")
-        pol = self.policy
+        pol = self._eff_policy()
         if pol and pol.max_order_usd is not None:
             if opt.get("currency") != "USD" or opt.get("amount") is None:
                 raise PolicyViolation(self.choice["card_id"], [f"policy:max_order_usd: the price is in {opt.get('currency') or 'no stated currency'}, not USD"])
             if _dec(opt["amount"]) > as_decimal(pol.max_order_usd):
                 raise PolicyViolation(self.choice["card_id"], [f"policy:max_order_usd: {opt['amount']} over {pol.max_order_usd}"])
         slot = "approve:" + idempotency_key
-        self._load_orders()
-        if slot in self.orders:
-            self._note(f"replayed key {idempotency_key!r}: approval already sent")
-            return self
-        resp = a.approve(self.provider_response, approval_id=opt.get("id"), confirm=True)
-        self.orders[slot] = resp
-        self._save_orders()
+        fp = _fingerprint(self.choice["card_id"], {"approval_id": opt.get("id"), "amount": opt.get("amount")})
+        with _OrderLock(self.id):
+            self._load_orders()
+            if slot in self.orders:
+                if self.fps.get(slot, fp) != fp:
+                    raise _reused(idempotency_key)
+                self._note(f"replayed key {idempotency_key!r}: approval already sent")
+                return self
+            resp = a.approve(self.provider_response, approval_id=opt.get("id"), confirm=True)
+            self.orders[slot] = resp
+            self.fps[slot] = fp
+            self._save_orders()
         self.approvals = []
         self.state = "in_flight"
         self._note(f"approved {opt.get('id') or 'the estimate'} at {opt.get('amount')} {opt.get('currency') or ''} with "
@@ -1600,12 +1855,25 @@ def _sensor_kind(card):
     return "human" if by in ("people", "contributors", "subject") else "device"
 
 
+def _bounded(d):
+    """A job's dict as JSON text under STATE_MAX_BYTES: the log, then ruled_out, then plan are trimmed before a write."""
+    txt = json.dumps(d, indent=1, default=str)
+    for k, keep in (("log", 40), ("ruled_out", 20), ("plan", 10), ("log", 5), ("ruled_out", 0)):
+        if len(txt) <= STATE_MAX_BYTES:
+            break
+        if isinstance(d.get(k), list):
+            d = dict(d, **{k: d[k][-keep:] if k == "log" else d[k][:keep]})
+            txt = json.dumps(d, indent=1, default=str)
+    return txt
+
+
 def _save(job):
     _JOBS[job.id] = job
     try:
-        HOME.mkdir(parents=True, exist_ok=True)
-        (HOME / "jobs").mkdir(exist_ok=True)
-        (HOME / "jobs" / f"{job.id}.json").write_text(json.dumps(job.to_dict(), indent=1, default=str))
+        _private_dir(HOME)
+        _private_dir(HOME / "jobs")
+        _atomic_write(HOME / "jobs" / f"{job.id}.json", _bounded(job.to_dict()))
+        _prune_jobs(keep=job.id)
     except OSError:
         pass
 

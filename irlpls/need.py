@@ -368,7 +368,7 @@ def _where(text, r):
     """Offline place hints: a US state ("Austin, TX", "in Iowa") or a country ("Lisbon, Portugal")."""
     # A two-letter code is a US state only in capitals after a comma ("Austin, TX"): "in" is a word, never India or Indiana,
     # and a non-US gazetteer city before it ("Delhi, IN") keeps its own country.
-    m = re.search(r"(?:([A-Z][\w.'-]*)\s*)?,\s*([A-Z]{2})\b", text)
+    m = re.search(r"(?:([A-Z][\w.'-]{0,40})\s*)?,\s*([A-Z]{2})\b", text)
     if m and m.group(2).lower() in STATES and not (m.group(1) in CITIES and CITIES[m.group(1)][0] != "us"):
         r.state, r.country_code = STATES[m.group(2).lower()], "us"
         r.subdivision = subdivision_code("us", r.state)
@@ -457,7 +457,10 @@ HINTS = ("place", "lat", "lon", "country_code", "state", "subdivision", "within_
 
 def _number(x):
     import math
-    return type(x) in (int, float) and math.isfinite(x)
+    try:
+        return type(x) in (int, float) and math.isfinite(x)
+    except OverflowError:   # an int too big for a float (10**400) is not a usable number
+        return False
 
 
 def check_hints(hints):
@@ -516,7 +519,9 @@ def split_parts(text):
     A piece needs two content words of its own, so "bakery and cafe" or "Austin and Dallas" stay one ask.
     Returns the pieces when there are two or more, else []. A hint only: matching is not split."""
     pieces = []
-    for p in re.split(r"\s*(?:;|,?\s*\band\b|,?\s*\bplus\b|,?\s*\bas well as\b)\s*", text):
+    text = re.sub(r"\s+", " ", text[:MAX_NEED_CHARS])   # whitespace runs and long inputs cost nothing below
+    # no leading \s*: a whitespace run was re-scanned from every start (cubic); strip() below removes it instead
+    for p in re.split(r"(?:;|,?\s*\b(?:and|plus|as well as)\b)", text):
         p = p.strip(" ,.")
         if not p:
             continue
@@ -617,6 +622,12 @@ PROBLEM_MSG = {"rephrase": REPHRASE, "not_an_ask": NOT_AN_ASK_MSG, "delivery": D
 
 
 def parse(text, cards=()):
+    if not isinstance(text, str):
+        raise ValueError("need must be text: say what to observe or capture, with the place and the time")
+    if len(text) > MAX_NEED_CHARS:   # before any regex: a long input must cost nothing
+        raise ValueError(f"need is {len(text):,} characters: keep it to a sentence or two (at most {MAX_NEED_CHARS:,}); "
+                         "put the place and time in it and details in the spec")
+    text = re.sub(r"\s+", " ", text).strip()
     original = text
     text = localise(text)
     t = text.lower()

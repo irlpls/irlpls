@@ -104,8 +104,11 @@ def daily_stats(sites, days=None, headers=None):
         tok = data.get("next") or data.get("nextToken")
         if not tok:
             break
-        if str(tok).startswith("https://"):
-            url, params = tok, None
+        if str(tok).startswith(("https://", "http://", "//")):
+            try:
+                url, params = http.same_origin_or_raise(STATS, str(tok)), None   # the key never leaves the USGS host
+            except http.UnsafeURL:
+                break
         else:
             params = dict(params, next_token=tok)
     return out
@@ -213,7 +216,10 @@ class USGSWater(Adapter):
                 nxt = next((l.get("href") for l in data.get("links", []) if l.get("rel") == "next" and l.get("href")), None)
                 if not nxt:
                     break
-                url, params = nxt, None
+                try:
+                    url, params = http.same_origin_or_raise(BASE, nxt), None   # the key never leaves the USGS host
+                except http.UnsafeURL:
+                    break
         return out
 
     def _add_stats(self, out, headers=None):

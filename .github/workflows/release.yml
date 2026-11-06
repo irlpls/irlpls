@@ -15,8 +15,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
       - name: tag matches both package versions
         run: |
           v="${GITHUB_REF_NAME#v}"
@@ -42,7 +42,7 @@ jobs:
           /tmp/v/bin/python -c "import irlpls; assert irlpls.request('river level at Comfort, TX now', geocode=False, lat=29.97, lon=-98.9).best()['card_id'] == 'usgs-water'"
           /tmp/v/bin/irlpls-mcp --help
           cd /tmp && /tmp/v/bin/python "$GITHUB_WORKSPACE/deploy/mcp_smoke.py" --stdio /tmp/v/bin/irlpls-mcp
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: dist
           path: dist/
@@ -56,12 +56,12 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: dist
           path: dist/
       - run: mkdir pkg && mv dist/irlpls-* pkg/
-      - uses: pypa/gh-action-pypi-publish@release/v1
+      - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # release/v1
         with:
           packages-dir: pkg/
 
@@ -74,11 +74,11 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: dist
           path: dist/
       - run: mkdir pkg && mv dist/irlpls_mcp-* pkg/
-      - uses: pypa/gh-action-pypi-publish@release/v1
+      - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # release/v1
         with:
           packages-dir: pkg/

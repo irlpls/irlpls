@@ -36,7 +36,8 @@ POLICY_DOC = ("Your rules, enforced by the broker: an object with any of: requir
               "the card's starting price); max_order_usd (ceiling on an order's total; 0 means free providers only, checked when "
               "planning); free_only (true = only providers free to use); need_ai_training / need_resale (card must grant the "
               "right); allow / deny (lists of card ids); include_unclaimed (default true); auto_submit (with max_order_usd: "
-              "the broker may confirm orders within budget without asking). Echoed back in the job's `policy`.")
+              "the broker may confirm orders within budget without asking, but only if the operator allows orders; the operator's "
+              "ceiling is never raised by policy). Echoed back in the job's `policy`.")
 
 JOB_DOC = ("Returns a job: id, state (clarifying, proposed, quoted, submitted, in_flight, delivered, failed), best_card_id (the "
            "option irlpls_submit runs now: the one chosen, else the default; it has default: true in plan), request (how the "
@@ -91,6 +92,7 @@ def concise(job):
 
 def _track(job):
     """Remember a job this server created and drop the oldest beyond MAX_JOBS, so a hosted server stays bounded."""
+    job.operator_strict = True   # orders need the operator's IRLPLS_ALLOW_SUBMIT and ceiling (irlpls.broker.operator_limits)
     _created.append(job.id)
     while len(_created) > MAX_JOBS:
         irlpls.broker._JOBS.pop(_created.popleft(), None)
@@ -122,7 +124,24 @@ def _job(job_id):
     if not j:
         from irlpls.broker import JobError
         raise JobError("not_found", f"no job {job_id!r} in this session", mcp=HINTS["not_found"])
+    j.operator_strict = True
     return j
+
+
+APPROVAL_NOTE = ("irlpls never places or pays on an agent's say-so. confirm=true is honoured only when the operator has set "
+                 "IRLPLS_ALLOW_SUBMIT and IRLPLS_MAX_ORDER_USD, and only after the person has approved this exact order in their "
+                 "own client. Never set confirm=true on your own judgment, and never pick the policy to raise a limit: the "
+                 "operator's ceiling always wins over policy.max_order_usd and auto_submit.")
+
+
+def _order_gate(what="placing an order"):
+    """An error result when the operator has not enabled ordering on this server, else None."""
+    from irlpls import broker
+    msg = broker.operator_refusal(True, what)
+    if msg:
+        return _fail("submit_disabled", msg, hint="Nothing was sent. Tell the person to place the order themselves, in their own "
+                     "client or at the provider; this server only plans and quotes.")
+    return None
 
 
 # One error shape for every tool: a result with isError true whose structuredContent (and text) is
@@ -132,6 +151,7 @@ HINTS = {
     "not_found": "Check the id. Jobs live only in this server session: start one with irlpls_request.",
     "invalid_request": "Fix the argument named in message and call again.",
     "invalid_arguments": "Fix the arguments named in message (types and required fields are in the tool's inputSchema).",
+    "submit_disabled": "Nothing was sent. The operator has not enabled ordering here; the person orders in their own client.",
     "policy_violation": "Nothing was sent. Change the policy, or choose another option with irlpls_choose_provider.",
     "needs_key": "Nothing was sent. The provider's key goes in this server's environment (plan[].sdk.env); or choose "
                  "another option, or order by hand at the option's continue_url.",
@@ -288,7 +308,7 @@ def build(read_only=None):
         @_doc("Execute the job. Live routes are read immediately and free; results and any warnings come back in the job. "
               "Commissions return a quote (dry run) unless confirm=true; confirmed orders can cost money, so get the user's "
               "approval unless their policy sets a standing mandate (auto_submit with max_order_usd). Orders that violate the "
-              "policy are never sent; the job ends failed or quoted-and-blocked instead.")
+              "policy are never sent; the job ends failed or quoted-and-blocked instead. " + APPROVAL_NOTE)
         def submit_job(
             job_id: Job,
             spec: Annotated[dict, Field(description="Commission only: provider-specific capture details (lat/lon are filled from "
@@ -298,7 +318,11 @@ def build(read_only=None):
                                                               "the order is never placed twice.")] = None,
             detail: Detail = "concise",
         ) -> dict:
-            return _out(_job(job_id).submit(spec=spec, confirm=confirm, idempotency_key=idempotency_key), detail)
+            out = _out(_job(job_id).submit(spec=spec, confirm=confirm, idempotency_key=idempotency_key), detail)
+            if confirm:
+                out["approval_notice"] = ("Only the person approves and pays, in their own client. If they have not said yes to this "
+                                          "exact order and price, tell them now and offer to cancel with the provider.")
+            return out
 
     if not read_only:
         @_tool(mcp, "irlpls_approve", False, "Approve a provider's price (spends money)", destructive=False, idempotent=True,
@@ -310,7 +334,7 @@ def build(read_only=None):
               "to this order at this exact price; a standing mandate (auto_submit) never covers it. Pass approval_id, total "
               "(the amount exactly as listed) and an idempotency_key (reuse it on a retry). Without confirm it returns the "
               "call it would send. Prices not in USD are shown in their own currency and never converted; with a "
-              "max_order_usd policy they are refused.")
+              "max_order_usd policy they are refused. " + APPROVAL_NOTE)
         def approve_step(
             job_id: Job,
             approval_id: Annotated[str, Field(description="An id from the job's `approvals`.")] = None,
@@ -769,6 +793,9 @@ def _protocol_tools(mcp, read_only):
         key, bad = _meta(meta, need_key=True)
         if bad:
             return bad
+        gate = _order_gate()
+        if gate:
+            return gate
         with _order_lock:
             return _place(order_request, key, card_id)
 
@@ -813,6 +840,7 @@ def _protocol_tools(mcp, read_only):
             opt = job.choice or job.best()
             if not opt or not opt["sdk"].get("protocol"):
                 return _problem("no_protocol", "no provider for this request speaks the irlpls protocol; use irlpls_submit")
+        job.operator_strict = True
         job.submit(confirm=True, idempotency_key=key)
         out = _job_order(job)
         if job.protocol and job.protocol.get("order"):
@@ -858,6 +886,9 @@ def _protocol_tools(mcp, read_only):
         j, err = _order_job(order_id)
         if err:
             return err
+        gate = _order_gate("cancelling an order")
+        if gate:
+            return gate
         j.error = None
         j.cancel(idempotency_key=key)
         return dict(j.error) if j.error else j.protocol["order"]
@@ -911,6 +942,14 @@ def serve(mcp, transport="stdio", host="127.0.0.1", port=8765):
         raise SystemExit(f"irlpls-mcp: this mcp SDK does not support streamable-http ({e}); upgrade with: pip install -U mcp")
 
 
+def pin_wallet_signing():
+    """Wallet signing is off unless the operator sets IRLPLS_ENABLE_WALLET_SIGNING when the process starts. Called once by
+    main(); no tool argument, policy or job field reaches it."""
+    from irlpls.adapters import _a7
+    _a7.WALLET_SIGNING = os.environ.get("IRLPLS_ENABLE_WALLET_SIGNING", "").strip().lower() in ("1", "true", "yes", "on")
+    return _a7.WALLET_SIGNING
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="irlpls-mcp", description="irlpls MCP server (stdio by default).")
     ap.add_argument("--read-only", action="store_true", help="plan only: do not register irlpls_submit, never execute or refresh")
@@ -924,6 +963,7 @@ def main(argv=None):
                     help="required to bind a non-loopback --host; the HTTP transport has no authentication")
     a = ap.parse_args(sys.argv[1:] if argv is None else argv)
     read_only = a.read_only or _env_read_only()
+    pin_wallet_signing()
     if a.transport == "streamable-http" and a.host not in ("127.0.0.1", "localhost", "::1"):
         if not a.allow_remote:
             ap.error(f"refusing to bind {a.host}: streamable-http has no authentication, so anyone who can reach it could "

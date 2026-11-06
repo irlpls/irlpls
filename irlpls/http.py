@@ -17,6 +17,7 @@ import ipaddress
 import json
 import os
 import socket
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -39,6 +40,10 @@ class UnsafeURL(ValueError):
     """The URL was refused before any request was made (scheme, host or address)."""
 
 
+class DeadlineExceeded(OSError):
+    """The whole fetch took longer than the wall-clock deadline (a slow-drip body)."""
+
+
 class TooLarge(RuntimeError):
     """The response was larger than MAX_BYTES (before or after decompression)."""
 
@@ -47,10 +52,32 @@ def _resolve(host):
     return [ai[4][0] for ai in socket.getaddrinfo(host, None, type=socket.SOCK_STREAM)]
 
 
+_NAT64 = ipaddress.ip_network("64:ff9b::/96")
+_NAT64_LOCAL = ipaddress.ip_network("64:ff9b:1::/48")
+_V4_COMPAT = ipaddress.ip_network("::/96")
+_SIXTOFOUR = ipaddress.ip_network("2002::/16")
+_TEREDO = ipaddress.ip_network("2001::/32")
+ALLOWED_PORTS = (80, 443)
+
+
 def is_public_ip(addr):
+    """Public unicast only. IPv4 forms embedded in IPv6 (mapped, NAT64 64:ff9b::/96, 6to4, Teredo, IPv4-compatible) are
+    judged by the IPv4 address they carry; the NAT64 local-use prefix is refused outright."""
     ip = ipaddress.ip_address(addr.split("%")[0])
-    if getattr(ip, "ipv4_mapped", None):
-        ip = ip.ipv4_mapped
+    if ip.version == 6:
+        emb = ip.ipv4_mapped
+        if emb is None and ip in _NAT64:
+            emb = ipaddress.IPv4Address(int(ip) & 0xFFFFFFFF)
+        elif emb is None and ip in _V4_COMPAT and int(ip) > 1:
+            emb = ipaddress.IPv4Address(int(ip) & 0xFFFFFFFF)
+        elif emb is None and ip in _SIXTOFOUR:
+            emb = ipaddress.IPv4Address((int(ip) >> 80) & 0xFFFFFFFF)
+        elif emb is None and ip in _TEREDO:
+            return False  # Teredo is a tunnel; never needed for a provider
+        elif emb is None and ip in _NAT64_LOCAL:
+            return False
+        if emb is not None:
+            return is_public_ip(str(emb))
     return ip.is_global and not ip.is_multicast
 
 
@@ -62,7 +89,13 @@ def check_url(url, allow_private=False, allow_http=True):
     if u.scheme == "http" and not allow_http:
         raise UnsafeURL(f"https required: {url[:100]!r}")
     if allow_private or os.environ.get("IRLPLS_ALLOW_PRIVATE_HOSTS") == "1":
-        return u
+        return u   # test-only override (local harness servers on arbitrary ports); off by default
+    try:
+        port = u.port
+    except ValueError:
+        raise UnsafeURL(f"bad port in {url[:100]!r}") from None
+    if port is not None and port not in ALLOWED_PORTS:
+        raise UnsafeURL(f"port {port} refused; only {ALLOWED_PORTS[0]} and {ALLOWED_PORTS[1]} are allowed")
     try:
         ipaddress.ip_address(u.hostname.split("%")[0])
         addrs = [u.hostname]
@@ -92,6 +125,14 @@ def _origin(url):
     return (u.scheme.lower(), (u.hostname or "").lower(), port)
 
 
+def same_origin_or_raise(base, url):
+    """Raise UnsafeURL unless `url` (e.g. a provider-supplied next/media link) has the same scheme, host and port as
+    `base`. Call before sending any credential header to a URL taken from a response."""
+    if _origin(base) != _origin(url) or urllib.parse.urlsplit(url).username:
+        raise UnsafeURL(f"link {str(url)[:100]!r} is not on {base[:100]!r}; credentials are not sent to it")
+    return url
+
+
 class _Redirects(urllib.request.HTTPRedirectHandler):
     max_redirections = MAX_REDIRECTS
 
@@ -115,6 +156,9 @@ class _Redirects(urllib.request.HTTPRedirectHandler):
         return out
 
 
+TOTAL_TIMEOUT = 30.0   # wall-clock seconds for the whole body read, whatever the per-socket timeout
+
+
 _timeout_cap = contextvars.ContextVar("irlpls_timeout_cap", default=None)
 
 
@@ -136,14 +180,31 @@ def _open(req, timeout, allow_private=False):
     return urllib.request.build_opener(_Redirects(allow_private)).open(req, timeout=timeout)
 
 
-def _read_capped(r, limit):
+def _read_capped(r, limit, deadline=None):
     declared = r.headers.get("Content-Length")
     if declared and declared.isdigit() and int(declared) > limit:
         raise TooLarge(f"response is {declared} bytes; the limit is {limit}")
-    data = r.read(limit + 1)
-    if len(data) > limit:
+    if deadline is None:
+        deadline = time.monotonic() + TOTAL_TIMEOUT
+    if not hasattr(r, "read1"):   # a minimal file-like (test double): one bounded read
+        data = r.read(limit + 1)
+        if len(data) > limit:
+            raise TooLarge(f"response is larger than {limit} bytes")
+        return data
+    buf = bytearray()
+    while len(buf) <= limit:
+        if time.monotonic() > deadline:
+            raise DeadlineExceeded("response took longer than the total time allowed")
+        n = min(16384, limit + 1 - len(buf))
+        chunk = r.read1(n)   # read1 returns what has arrived, so the clock is checked
+        if not chunk:
+            break
+        buf += chunk
+    if time.monotonic() > deadline:
+        raise DeadlineExceeded("response took longer than the total time allowed")
+    if len(buf) > limit:
         raise TooLarge(f"response is larger than {limit} bytes")
-    return data
+    return bytes(buf)
 
 
 def _gunzip_capped(data, limit):
@@ -201,14 +262,15 @@ def request(method, url, params=None, headers=None, body=None, timeout=30, raw=F
 
     def send():
         req = urllib.request.Request(url, data=data, headers=h, method=method)
+        deadline = time.monotonic() + TOTAL_TIMEOUT
         try:
             with _open(req, timeout, allow_private) as r:
-                text = _decode(_read_capped(r, max_bytes), r.headers, max_bytes).decode()
+                text = _decode(_read_capped(r, max_bytes, deadline), r.headers, max_bytes).decode(errors="replace")
                 status, rh = getattr(r, "status", None), {k.lower(): v for k, v in r.headers.items()}
         except urllib.error.HTTPError as e:
             try:
-                err = _decode(_read_capped(e, min(max_bytes, 64 * 1024)), e.headers, 64 * 1024).decode(errors="replace")
-            except (TooLarge, OSError, zlib.error):
+                err = _decode(_read_capped(e, min(max_bytes, 64 * 1024), deadline), e.headers, 64 * 1024).decode(errors="replace")
+            except (TooLarge, OSError, zlib.error):  # DeadlineExceeded is an OSError
                 err = "(error body too large or unreadable)"
             raise HTTPError(e.code, url, err, headers=dict(e.headers.items()) if e.headers else None) from None
         out = text if raw else (json.loads(text) if text.strip() else None)

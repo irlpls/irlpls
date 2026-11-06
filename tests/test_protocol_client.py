@@ -428,7 +428,10 @@ def test_mcp_protocol_tools_and_read_only():
     assert c.destructive_hint and "money" in rw["irlpls_order"].description.lower()
 
 
-def test_mcp_quote_order_status_deliver_cancel(provider):
+def test_mcp_quote_order_status_deliver_cancel(provider, monkeypatch):
+    # deliberate (security review 2026-11): the MCP server orders and cancels only when the operator allows it
+    monkeypatch.setattr(broker, "OPERATOR_ALLOW_SUBMIT", True)
+    monkeypatch.setattr(broker, "OPERATOR_MAX_ORDER_USD", __import__("decimal").Decimal(1000))
     f = provider()
     srv = _mcp(False)
     req = {"need": SHOP, "lat": 39.80168, "lon": -89.64357, "country_code": "US", "within_minutes": 480}

@@ -14,8 +14,11 @@ LEVELS = {"none": 0, "claimed": 1, "evidenced": 2}
 def valid_money(x):
     """A real, finite, non-negative number (int, float or Decimal). NaN, inf, negatives, booleans and strings are never money."""
     if type(x) is Decimal:
-        return x.is_finite() and x >= 0
-    return type(x) in (int, float) and math.isfinite(x) and x >= 0
+        return x.is_finite() and x >= 0 and abs(x.adjusted()) < 15   # Decimal("1e999999") would allocate when shown
+    try:
+        return type(x) in (int, float) and math.isfinite(x) and x >= 0
+    except OverflowError:   # an int too big for a float
+        return False
 
 
 def as_decimal(x):

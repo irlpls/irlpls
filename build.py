@@ -11,6 +11,7 @@ import sys  # noqa: E402
 sys.path.insert(0, str(ROOT))
 from irlpls import health  # noqa: E402  (the daily read check, tools/healthcheck.py)
 from irlpls.readiness import readiness_for, self_registers  # noqa: E402  (stdlib only; one rule for card pages, catalog and broker)
+from irlpls.safe_text import safe_href, strip_controls, sanitize_card  # noqa: E402
 from irlpls.match import in_scope  # noqa: E402
 from irlpls.catalog import adapters as _adapters  # noqa: E402  (the same adapter facts catalog.json uses)
 from irlpls import published, review, standing  # noqa: E402  (provider-published cards: tools/fetch_published.py; ranks: tools/bench_asks.json)
@@ -37,6 +38,13 @@ KM2 = re.compile(r"(?<![\w/.:#=?&-])km2\b|(?<=\d/)km2\b")  # card text writes "k
 
 def e(s, quote=True):
     return KM2.sub("km²", html.escape(s, quote))
+
+
+def alink(url, label, rest=' target="_blank" rel="noopener"'):
+    """<a href> only for a plain http(s) URL (security review H3); anything else is shown as escaped text, never a link."""
+    if safe_href(url):
+        return f'<a href="{e(url)}"{rest}>{label}</a>'
+    return f'<span class="nolink">{label}</span>'
 
 GL = {"evidenced": '<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 8.4 2.9 2.8 6.1-6.4"/></svg>', "claimed": '<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 9.2c1.2-1.6 2.4-1.6 3.6 0s2.4 1.6 3.6 0 1.6-1.4 2.8-1"/></svg>', "none": '<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5.5 8h5"/></svg>'}
 
@@ -201,7 +209,7 @@ def api_block(c):
     if pay.get("methods"):
         rows.append(("pay", e(", ".join(PAY.get(x, x) for x in pay["methods"]) + (" · an agent can pay" if pay.get("agent_can_pay") else ""))))
     if a.get("docs_url"):
-        rows.append(("docs", f'<a href="{e(a["docs_url"])}" target="_blank" rel="noopener">{e(host(a["docs_url"]).split("/")[0])}</a>'))
+        rows.append(("docs", f'{alink(a["docs_url"], e(host(a["docs_url"]).split("/")[0]))}'))
     h = '<div class="api"><dl>' + "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in rows) + "</dl>"
     ep = a.get("endpoints") or []
     if ep:
@@ -225,7 +233,7 @@ def use_line(c):
                 "no key" if kr is False else "key required" if kr else "key not stated"]
         if c.get("adapter"):
             bits.append("irlpls adapter")
-        h = ", ".join(bits) + (f' · <a href="{e(a["docs_url"])}" target="_blank" rel="noopener">docs</a>' if a.get("docs_url") else "")
+        h = ", ".join(bits) + (f' · {alink(a["docs_url"], "docs")}' if a.get("docs_url") else "")
     else:
         h = "No public API listed"
     return f'<p class="use">{h}</p>'
@@ -252,12 +260,12 @@ def card_article(c, p="../"):
         h += evidence_line(ent) + changed_block(ent)
     if c.get("attestations"):
         h += '<h2 class="sec">Independent checks</h2><ul class="srcl">' + "".join(
-            f'<li>{e(x.get("verifier", ""))}: {e(x.get("scope", ""))} <a href="{e(x.get("url", ""))}" target="_blank" rel="noopener">source</a></li>' for x in c["attestations"]) + "</ul>"
+            f'<li>{e(x.get("verifier", ""))}: {e(x.get("scope", ""))} {alink(x.get("url", ""), "source")}</li>' for x in c["attestations"]) + "</ul>"
     h += '<h2 class="sec">API</h2>' + ready_line(c) + api_block(c) + rate_limit_line(c) + read_check_line(c)
     src = c.get("sources") or []
     h += '<h2 class="sec">Sources</h2>'
     h += (f'<details class="dt"><summary>{len(src)} {"source" if len(src) == 1 else "sources"}</summary><ol class="srcl">' + "".join(
-        f'<li>{e(x.get("claim", ""))} <a href="{e(x["url"])}" target="_blank" rel="noopener">{e(host(x["url"]).split("/")[0])}</a></li>' for x in src) + "</ol></details>") if src else '<p class="none-api">No sources listed.</p>'
+        f'<li>{e(x.get("claim", ""))} {alink(x.get("url", ""), e(host(x.get("url", "")).split("/")[0]))}</li>' for x in src) + "</ol></details>") if src else '<p class="none-api">No sources listed.</p>'
     notes = [("About", c.get("summary")), ("Price", (c.get("pricing") or {}).get("notes")), ("Coverage", (c.get("coverage") or {}).get("notes")),
              ("Timing", (c.get("delivery") or {}).get("basis") or (c.get("latency") or {}).get("notes")), ("Licence", lic.get("summary"))]
     h += '<details class="dt"><summary>Notes</summary>' + "".join(f"<p><b>{k}.</b> {e(t)}</p>" for k, t in notes if t) + "</details>"
@@ -268,7 +276,7 @@ def card_article(c, p="../"):
         h += (f'<p class="claim">Compiled from public sources. Is this your company? '
               f'<a href="{p}check.html?id={e(c["id"])}">Publish your card&nbsp;›</a></p>')
     h += (f'<p class="foot"><span>{who} · updated {e(c.get("updated") or "date not stated")}</span><span class="links"><a href="{p}cards/{c["id"]}.json">JSON</a>'
-          + (f'<a href="{e(c["provider_url"])}" target="_blank" rel="noopener">Site</a>' if c.get("provider_url") else "")
+          + (f'{alink(c["provider_url"], "Site")}' if c.get("provider_url") else "")
           + f'<a href="{p}compare.html?ids={c["id"]}">Compare</a>'
           + f'<a class="fix" href="{e(correction_mail(c))}">Report a correction</a></span></p>'
           + (f'<p class="readfrom">Read from <span class="u">{wb(ent["url"])}</span> · sha256 <code title="{e(ent.get("sha256") or "")}">{e((ent.get("sha256") or "")[:12])}…</code></p>' if mine and ent.get("url") else "")
@@ -365,7 +373,7 @@ def badge_svg(name, ent, st):
                "gone": "Card withdrawn"}.get(st, "Card not current")
         ink, fill, edge = "#6b7480", "#eef1f5", "#d5dae1"
     w = 54 + int(len(txt) * 6.6) + 12
-    lab = html.escape(f"{name} on irlpls: {txt}")
+    lab = html.escape(strip_controls(f"{name} on irlpls: {txt}"))
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="28" viewBox="0 0 {w} 28" role="img" aria-label="{lab}">'
             f'<title>{lab}</title><rect x=".5" y=".5" width="{w - 1}" height="27" rx="13.5" fill="{fill}" stroke="{edge}"/>'
             f'<text x="12" y="18.5" font-family="Inter,system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#101418" letter-spacing="-.4">irl<tspan fill="#5b6574">pls</tspan></text>'
@@ -460,7 +468,7 @@ def rate_limit_line(c):
     if r.get("cache_seconds"):
         bits.append(f'updates about every {max(1, r["cache_seconds"] // 60)} min, so a newer ask reuses the last reading')
     text = "; ".join(bits) + (". " if bits else "") + (r.get("notes") or "")
-    src = f' <a href="{e(r["source_url"])}" target="_blank" rel="noopener">source</a>' if r.get("source_url") else ""
+    src = f' {alink(r["source_url"], "source")}' if r.get("source_url") else ""
     text = text.strip()
     return f'<p class="rl"><b>Rate limit.</b> {e(text[:1].upper() + text[1:])}{src}</p>'
 
@@ -535,7 +543,7 @@ def stage_detail(c, i, lv):
         gl = g.get("level") or "none"
         h += (f'<p><b>{e(name)}</b> · {LEVEL[gl]}' + (f' <span class="rvw">({review.NOTE})</span>' if g.get("review") == "awaiting" else "")
               + (f'. {e(g["method"])}' if g.get("method") else "")
-              + (f' <a href="{e(g["evidence_url"])}" target="_blank" rel="noopener">public evidence</a>' if g.get("evidence_url") else "") + "</p>"
+              + (f' {alink(g["evidence_url"], "public evidence")}' if g.get("evidence_url") else "") + "</p>"
               + (f'<p class="unk">Still open: {e(g["unknown"])}</p>' if g.get("unknown") else ""))
     best = max((RANK[g.get("level") or "none"] for _, g in parts), default=0)
     if RANK[lv] < best or (i == 4 and lv == "reported"):
@@ -869,7 +877,15 @@ def lite(c):
 
 
 def _dump(o):
-    return json.dumps(o, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    """JSON that is also safe inside an inline <script>: no </script, <!-- or JS line separators can survive."""
+    return (json.dumps(o, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c").replace("\u2028", "\\u2028")
+            .replace("\u2029", "\\u2029"))
+
+
+def llms_lines(cards):
+    """One list line per card for llms.txt. Single-line, control-free text only: a newline in a name must not forge a section."""
+    t = lambda v, n: strip_controls(v, limit=n).replace("[", "(").replace("]", ")")
+    return "\n".join(f"- [{t(c['name'], 200)}](/cards/{re.sub('[^a-z0-9-]', '', str(c['id']))}.json): {t(c.get('short') or c['summary'], 400)}" for c in cards)
 
 
 def write_lite(cards):
@@ -938,7 +954,7 @@ def fresh_published():
 def main(public=False):
     if public:
         fresh_published()
-    all_cards = [json.loads(p.read_text()) for p in sorted((ROOT / "cards").glob("*.json"))]
+    all_cards = [sanitize_card(json.loads(p.read_text())) for p in sorted((ROOT / "cards").glob("*.json"))]
     # The site lists only providers that deliver NEW data (live feeds or commissioned capture).
     cards = [c for c in all_cards if c.get("status") != "defunct" and (c.get("delivery") or {}).get("modes")]
     # a provider's own card, read daily from its domain, replaces the compiled one while it is live (or stale, kept 7 days)
@@ -947,7 +963,7 @@ def main(public=False):
     # Evidenced only via an independent reviewer irlpls recognises (irlpls/review.py; none yet): a provider's own
     # "evidenced" shows as Claimed everywhere the site reads (pages, cards.json, cards/<id>.json, catalog.json, the browser)
     REV = review.reviewers()
-    cards = [review.displayed(c, REV) for c in cards]
+    cards = [sanitize_card(review.displayed(c, REV)) for c in cards]  # published cards are third-party text: no controls, no unsafe URLs
     for c in cards:
         if c.get("status") == "provider-maintained" and PUB["eff"].get(c["id"]) in published.SHOWN:
             try:
@@ -1014,7 +1030,7 @@ def main(public=False):
     import subprocess, sys
     subprocess.run([sys.executable, str(ROOT / "tools" / "build_catalog.py"), "--out", str(SITE), "--cards-json", str(SITE / "cards.json")], check=True)  # catalog.index.json + catalog.json for agents
     add_ready_calls(cards)  # + each provider's ready call (Find data shows it for the top match)
-    (SITE / "llms.txt").write_text(LLMS.format(ids="\n".join(f"- [{c['name']}](/cards/{c['id']}.json): {c.get('short') or c['summary']}" for c in cards)))
+    (SITE / "llms.txt").write_text(LLMS.format(ids=llms_lines(cards)))
     md = agents_md(cards)
     (SITE / "agents.md").write_text(md)
     (SITE / "agents.html").write_text(agents_page(md))

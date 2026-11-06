@@ -25,13 +25,19 @@
       "pattern": "^[a-z0-9-]+$"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+      "maxLength": 200
     },
     "provider_url": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+      "maxLength": 2000
     },
     "summary": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+      "maxLength": 4000
     },
     "status": {
       "enum": [
@@ -45,7 +51,9 @@
     "tags": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+        "maxLength": 4000
       }
     },
     "capabilities": {
@@ -71,13 +79,17 @@
         "tasks": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           }
         },
         "capture_types": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           },
           "description": "Finer kinds of capture, e.g. egocentric, depth, mocap, teleoperation, tactile, multispectral, sar, thermal"
         }
@@ -92,7 +104,9 @@
       ],
       "properties": {
         "model": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "from_usd": {
           "type": "number",
@@ -100,10 +114,14 @@
           "description": "Starting price in USD. 0 means the price is not published (not free; see access.cost)"
         },
         "unit": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "notes": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         }
       }
     },
@@ -115,10 +133,14 @@
       ],
       "properties": {
         "typical": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "notes": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         }
       }
     },
@@ -132,11 +154,15 @@
         "regions": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           }
         },
         "notes": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "areas": {
           "type": "array",
@@ -155,7 +181,9 @@
       ],
       "properties": {
         "summary": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "resale": {
           "enum": [
@@ -233,14 +261,20 @@
             ]
           },
           "method": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           },
           "evidence_url": {
             "type": "string",
-            "description": "Public proof anyone can check: https, public host (not an RFC 6890 special-purpose address), no login. Reachability and host class are not schema-checkable (Section 3)."
+            "description": "Public proof anyone can check: https, public host (not an RFC 6890 special-purpose address), no login. Reachability and host class are not schema-checkable (Section 3).",
+            "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+            "maxLength": 2000
           },
           "unknown": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           },
           "standard": {
             "enum": [
@@ -256,13 +290,17 @@
           "attestation_methods": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             },
             "description": "C2PA attestation strings, e.g. Android_KeyAttestation, Apple_AppAttest"
           },
           "conforming_product": {
             "type": "string",
-            "description": "Entry on the C2PA Conforming Products List"
+            "description": "Entry on the C2PA Conforming Products List",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           },
           "stated_level": {
             "const": "evidenced",
@@ -342,15 +380,21 @@
             },
             "method": {
               "type": "string",
-              "description": "What the mechanism records and who signs or keeps it"
+              "description": "What the mechanism records and who signs or keeps it",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             },
             "evidence_url": {
               "type": "string",
-              "description": "Public proof anyone can check: https, public host, no login. Required when level is evidenced (Section 3)."
+              "description": "Public proof anyone can check: https, public host, no login. Required when level is evidenced (Section 3).",
+              "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+              "maxLength": 2000
             },
             "unknown": {
               "type": "string",
-              "description": "What the mechanism does not show, in plain words"
+              "description": "What the mechanism does not show, in plain words",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             },
             "sources": {
               "type": "array",
@@ -362,10 +406,14 @@
                 ],
                 "properties": {
                   "claim": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                    "maxLength": 4000
                   },
                   "url": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+                    "maxLength": 2000
                   }
                 }
               }
@@ -430,15 +478,21 @@
             },
             "method": {
               "type": "string",
-              "description": "What the mechanism records and who signs or keeps it"
+              "description": "What the mechanism records and who signs or keeps it",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             },
             "evidence_url": {
               "type": "string",
-              "description": "Public proof anyone can check: https, public host, no login. Required when level is evidenced (Section 3)."
+              "description": "Public proof anyone can check: https, public host, no login. Required when level is evidenced (Section 3).",
+              "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+              "maxLength": 2000
             },
             "unknown": {
               "type": "string",
-              "description": "What the mechanism does not show, in plain words"
+              "description": "What the mechanism does not show, in plain words",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             },
             "sources": {
               "type": "array",
@@ -450,10 +504,14 @@
                 ],
                 "properties": {
                   "claim": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                    "maxLength": 4000
                   },
                   "url": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+                    "maxLength": 2000
                   }
                 }
               }
@@ -519,10 +577,14 @@
           ]
         },
         "typical_age": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "notes": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         }
       }
     },
@@ -534,10 +596,14 @@
           "type": "boolean"
         },
         "docs_url": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+          "maxLength": 2000
         },
         "base_url": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "auth": {
           "type": "array",
@@ -559,23 +625,33 @@
                 ]
               },
               "header": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                "maxLength": 4000
               },
               "env_var": {
                 "type": "string",
-                "description": "Env var the irlpls adapter reads, e.g. PURPLEAIR_API_KEY"
+                "description": "Env var the irlpls adapter reads, e.g. PURPLEAIR_API_KEY",
+                "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                "maxLength": 4000
               },
               "how_to_get": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                "maxLength": 4000
               },
               "resource_metadata": {
                 "type": "string",
-                "description": "oauth2: RFC 9728 protected-resource metadata URL"
+                "description": "oauth2: RFC 9728 protected-resource metadata URL",
+                "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+                "maxLength": 2000
               },
               "scopes": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "string",
+                  "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                  "maxLength": 4000
                 }
               },
               "dynamic_registration": {
@@ -624,25 +700,37 @@
                 ]
               },
               "method": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                "maxLength": 4000
               },
               "path": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                "maxLength": 4000
               },
               "params": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                "maxLength": 4000
               },
               "notes": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+                "maxLength": 4000
               }
             }
           }
         },
         "sdk": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "rate_limits": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "self_serve": {
           "type": "boolean",
@@ -666,31 +754,43 @@
               "description": "Name in the official MCP Registry"
             },
             "auth": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             },
             "first_party": {
               "type": "boolean"
             },
             "community": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             },
             "notes": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             }
           }
         },
         "notes": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "openapi_url": {
           "type": "string",
-          "description": "The provider's OpenAPI document, if published"
+          "description": "The provider's OpenAPI document, if published",
+          "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+          "maxLength": 2000
         }
       }
     },
     "adapter": {
       "type": "string",
-      "description": "Name of the irlpls SDK adapter, if one exists"
+      "description": "Name of the irlpls SDK adapter, if one exists",
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+      "maxLength": 4000
     },
     "delivery": {
       "type": "object",
@@ -722,12 +822,16 @@
         },
         "basis": {
           "type": "string",
-          "description": "The provider statement the speed is based on"
+          "description": "The provider statement the speed is based on",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "formats": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           },
           "description": "Delivery formats, e.g. jpeg, mp4, geotiff, cog, stac-item, lerobot, rlds, csv, json"
         }
@@ -745,21 +849,29 @@
         ],
         "properties": {
           "verifier": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           },
           "scope": {
             "type": "string",
-            "description": "Which guarantee(s) or claim was checked"
+            "description": "Which guarantee(s) or claim was checked",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           },
           "result": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           },
           "date": {
             "type": "string",
             "format": "date"
           },
           "url": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+            "maxLength": 2000
           }
         }
       }
@@ -771,7 +883,8 @@
     "short": {
       "type": "string",
       "maxLength": 120,
-      "description": "One plain sentence for lists and the top of the card"
+      "description": "One plain sentence for lists and the top of the card",
+      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$"
     },
     "access": {
       "type": "object",
@@ -854,12 +967,14 @@
             },
             "notes": {
               "type": "string",
-              "maxLength": 400
+              "maxLength": 400,
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$"
             },
             "source_url": {
               "type": "string",
-              "format": "uri",
-              "description": "Where the provider states this limit (required in spirit: never invent a number)"
+              "description": "Where the provider states this limit (required in spirit: never invent a number)",
+              "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+              "maxLength": 2000
             },
             "with_key": {
               "type": "object",
@@ -902,12 +1017,14 @@
                 },
                 "notes": {
                   "type": "string",
-                  "maxLength": 400
+                  "maxLength": 400,
+                  "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$"
                 },
                 "source_url": {
                   "type": "string",
-                  "format": "uri",
-                  "description": "Where the provider states this limit (required in spirit: never invent a number)"
+                  "description": "Where the provider states this limit (required in spirit: never invent a number)",
+                  "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+                  "maxLength": 2000
                 }
               },
               "dependentRequired": {
@@ -945,10 +1062,14 @@
         "properties": {
           "claim": {
             "type": "string",
-            "description": "What the source supports"
+            "description": "What the source supports",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 4000
           },
           "url": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+            "maxLength": 2000
           }
         }
       }
@@ -1004,7 +1125,9 @@
           "type": "boolean"
         },
         "notes": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         }
       }
     },
@@ -1040,17 +1163,21 @@
             },
             "source_url": {
               "type": "string",
-              "pattern": "^https://"
+              "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+              "maxLength": 2000
             },
             "quote": {
               "type": "string",
               "maxLength": 300,
-              "description": "The provider's words, short"
+              "description": "The provider's words, short",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$"
             }
           }
         },
         "notes": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         }
       }
     },
@@ -1076,14 +1203,19 @@
               "description": "The provider publishes how consent is obtained"
             },
             "method": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             },
             "evidence_url": {
               "type": "string",
-              "pattern": "^https://"
+              "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+              "maxLength": 2000
             },
             "unknown": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             }
           }
         },
@@ -1093,14 +1225,18 @@
           "properties": {
             "model": {
               "type": "string",
-              "description": "e.g. per task set by the buyer, hourly minimum, fixed rate card"
+              "description": "e.g. per task set by the buyer, hourly minimum, fixed rate card",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             },
             "disclosed": {
               "type": "boolean",
               "description": "Pay rates are published"
             },
             "notes": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+              "maxLength": 4000
             }
           }
         }
@@ -1111,10 +1247,14 @@
       "description": "What the provider checks about who is commissioning (matters when a person is sent to a place)",
       "properties": {
         "checks": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         },
         "unknown": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+          "maxLength": 4000
         }
       }
     },
@@ -1129,7 +1269,9 @@
         ],
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]*$",
+            "maxLength": 200
           },
           "roles": {
             "type": "array",
@@ -1144,7 +1286,9 @@
             }
           },
           "url": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^(https://[^\\s\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029<>\"'`\\\\]+)?$",
+            "maxLength": 2000
           }
         }
       }

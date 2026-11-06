@@ -10,7 +10,7 @@ import pathlib
 import urllib.parse
 from datetime import date, timedelta
 
-from . import paths, psl
+from . import paths, psl, safe_text
 
 VERSION = "2026-10-26"
 SCHEMA = paths.schema_dir() / "capture-card.schema.json"
@@ -39,6 +39,36 @@ def private_host(url):
     return not ip.is_global
 
 
+MAX_TEXT = 4000   # longest free-text field; the longest real card text is under 1700
+MAX_URL = 2000
+LIMITS = {"name": 200, "short": 120, "id": 100}
+
+
+def text_problems(card):
+    """[(where, message)]: control characters (a newline forges a line in llms.txt, ESC drives a terminal) or oversize
+    text in any string, and any URL field that is not a plain https URL (a javascript: link is live on a card page)."""
+    out = []
+
+    def walk(o, path, key):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                walk(v, f"{path}.{k}" if path else str(k), k)
+        elif isinstance(o, list):
+            for i, v in enumerate(o):
+                walk(v, f"{path}.{i}", key)
+        elif isinstance(o, str):
+            if key in safe_text.URL_KEYS:
+                if o and not safe_text.is_safe_url(o):  # an empty string means 'none yet' (claimed, no evidence)
+                    out.append((path, "must be a plain https URL (no javascript:, data:, http:, spaces or control characters)"))
+            elif safe_text.strip_controls(o, multiline=True) != o or "\n" in o or "\t" in o:
+                out.append((path, "contains control characters or a line break; card text is single-line"))
+            elif len(o) > LIMITS.get(path, MAX_TEXT):
+                out.append((path, f"longer than {LIMITS.get(path, MAX_TEXT)} characters"))
+
+    walk(card, "", None)
+    return out
+
+
 def problems(card, fetched_from=None):
     """[(severity, where, message)] where severity is 'error' (the card is not valid) or 'warn' (it is, but weak)."""
     out = []
@@ -53,6 +83,8 @@ def problems(card, fetched_from=None):
         warn("schema", "jsonschema is not installed, so only the standard's own rules were checked (pip install jsonschema)")
     except OSError:
         warn("schema", "schema/capture-card.schema.json not found; only the standard's own rules were checked")
+    for where, msg in text_problems(card):  # same rules as the schema, so they hold without jsonschema installed
+        err(where, msg)
     if card.get("spec_version") != VERSION:
         err("spec_version", f"must be {VERSION!r}, not {card.get('spec_version')!r}")
     if card.get("capability") != "com.irlpls.capture.card":

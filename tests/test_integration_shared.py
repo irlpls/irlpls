@@ -525,6 +525,9 @@ def test_mcp_approve_tool_is_explicit(monkeypatch):
     assert "irlpls_approve" in tools and "SPENDS MONEY" in tools["irlpls_approve"].description
     job, sent = _capella_job(monkeypatch)
     broker._JOBS[job.id] = job
+    # deliberate (security review 2026-11): the MCP server approves only when the operator allows orders
+    monkeypatch.setattr(broker, "OPERATOR_ALLOW_SUBMIT", True)
+    monkeypatch.setattr(broker, "OPERATOR_MAX_ORDER_USD", __import__("decimal").Decimal(100000))
 
     def call(args):
         return json.loads(asyncio.run(srv.call_tool("irlpls_approve", args)).content[0].text)

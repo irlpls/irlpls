@@ -193,10 +193,10 @@ function html(o){css();o=o||{};var rd=o.readiness||{},pill=PILL[rd.level||rd.sta
   if(a.key_name)m.push('<span class="ircp-nk">needs your key</span>');else if(!rc)m.push('<span class="ircp-nk">no public API</span>');
   var ck=checks(o).map(function(x){return '<span class="ircp-ck'+(x[1]?' '+x[1]:'')+'">'+E(x[0])+'</span>'}).join('');
   if(m.length)h+=step('irlpls → matched','<p class="ircp-m">'+m.join('<i aria-hidden="true">·</i>')+'</p>'+(ck?'<p class="ircp-cks">'+ck+'</p>':'')+
-    (a.get_key_url?'<a class="ircp-gk ircp-gk2" href="'+E(a.get_key_url)+'" rel="noopener">Get a key</a>':''));
+    (a.get_key_url&&/^https?:\/\//i.test(String(a.get_key_url))?'<a class="ircp-gk ircp-gk2" href="'+E(a.get_key_url)+'" rel="noopener">Get a key</a>':''));
   /* 3. what irlpls sends the provider: one line, the full request (curl) when tapped */
   /* no ready call (directory-only, or by agreement): how to order by hand, from the card (its docs, else its site) */
-  if(!rc){var d=o.order||o.docs;return h+step('irlpls → provider','<p class="ircp-q">Order by hand'+(d?': <a class="ircp-gk ircp-or" href="'+E(d)+'" rel="noopener">'+E(String(d).replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))+'</a>':' from the provider.')+'</p>')+'</ol></div>'}
+  if(!rc){var d=o.order||o.docs;if(!/^https?:\/\//i.test(String(d||'')))d='';return h+step('irlpls → provider','<p class="ircp-q">Order by hand'+(d?': <a class="ircp-gk ircp-or" href="'+E(d)+'" rel="noopener">'+E(String(d).replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))+'</a>':' from the provider.')+'</p>')+'</ol></div>'}
   var c=filled(o),cu=vCurl(c),id='ircp'+(++n),r=o.ran,ok=r&&r.status>=200&&r.status<300,bad=r&&(r.status<0||r.status>=300);
   var st=r?(r.status>0?r.status+' · '+r.ms+' ms':r.status<0?'failed':'running…'):'not sent from this page';
   var cm=o.cache?/(\d+ (?:s|min)) old/.exec(o.cache):null;

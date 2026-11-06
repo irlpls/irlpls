@@ -109,7 +109,7 @@ function customCapture(c){return ((c.delivery||{}).modes||[]).indexOf('commissio
 /* offline place hints: a US state ("Austin, TX", "in Iowa") or a country ("Lisbon, Portugal") */
 /* "Georgia" is a US state and a country: the country when a city of the country, or the Caucasus, is named with it */
 var GEORGIA_COUNTRY=/\b(?:Tbilisi|Batumi|Kutaisi|Rustavi|Zugdidi|Sukhumi|Gori|Telavi|Mtskheta|Poti|Caucasus)\b|country of Georgia|Georgia \(country\)/;
-function where(text,r){var m=text.match(/(?:([A-Z][\w.'-]*)\s*)?,\s*([A-Z]{2})\b/),k;  /* "in" the word is never India or Indiana: capitals after a comma only, and "Delhi, IN" stays Delhi */
+function where(text,r){var m=text.match(/(?:([A-Z][\w.'-]{0,40})\s*)?,\s*([A-Z]{2})\b/),k;  /* "in" the word is never India or Indiana: capitals after a comma only, and "Delhi, IN" stays Delhi */
   if(m&&STATES[m[2].toLowerCase()]&&!(m[1]&&CITIES.hasOwnProperty(m[1])&&CITIES[m[1]][0]!=='us')){r.state=STATES[m[2].toLowerCase()];r.country_code='us';r.subdivision=subCode('us',r.state);return}
   for(k in STATES)if(new RegExp('\\b'+title(STATES[k])+'\\b').test(text)){if(STATES[k]==='georgia'&&GEORGIA_COUNTRY.test(text)){r.country_code='ge';return}r.state=STATES[k];r.country_code='us';r.subdivision=subCode('us',r.state);return}
   for(k in COUNTRIES)if(text.indexOf(k)>-1&&new RegExp('(?<![\\w.])'+esc(k)+'(?![\\w])').test(text)){r.country_code=COUNTRIES[k];var sc=subCode(COUNTRIES[k],k);if(sc){r.state=k.toLowerCase();r.subdivision=sc}return}
@@ -128,7 +128,7 @@ function namedPlace(text){var k,i;for(k in STATES)if(new RegExp('\\b'+title(STAT
   return null}
 function content(p){return (p.toLowerCase().match(/[a-zà-ÿ0-9]+/g)||[]).filter(function(w){return w.length>2&&!/^\d/.test(w)&&STOP.indexOf(w)<0&&MEDIA.indexOf(w)<0&&!GWORDS.test(w)})}
 /* distinct asks joined by "and" / ";" / "plus": a piece needs two content words of its own (need.py split_parts) */
-function splitParts(text){var pieces=[];text.split(/\s*(?:;|,?\s*\band\b|,?\s*\bplus\b|,?\s*\bas well as\b)\s*/).forEach(function(p){p=p.replace(/^[ ,.]+|[ ,.]+$/g,'');if(!p)return;
+function splitParts(text){var pieces=[];String(text).slice(0,4000).replace(/\s+/g,' ').split(/(?:;|,?\s*\b(?:and|plus|as well as)\b)/).forEach(function(p){p=p.replace(/^[ ,.]+|[ ,.]+$/g,'');if(!p)return;
   if(pieces.length&&content(p).length<2)pieces[pieces.length-1]+=' and '+p;else if(pieces.length&&content(pieces[pieces.length-1]).length<2)pieces[pieces.length-1]+=' and '+p;else pieces.push(p)});
   return pieces.length>1?pieces:[]}
 /* minimal multilingual vocabulary: GENERATED from irlpls/need.py NONENGLISH (es, fr, de, ru, ja, pt, it) */
@@ -149,6 +149,7 @@ function askProblem(r){var text=String(r.need||''),t=text.toLowerCase();if(NOT_A
   var placed=r.place||r.country_code||r.lat!=null||r.anywhere;
   if(!placed&&Array.from(localise(text)).some(function(ch){var c=ch.codePointAt(0);return /\p{L}/u.test(ch)&&c>0x24F&&!(c>=0x1E00&&c<=0x1EFF)}))return 'rephrase';return null}
 function parse(text,cards){
+  text=String(text==null?'':text).slice(0,4000).replace(/\s+/g,' ').trim();  /* the 4000-char cap and whitespace runs cost nothing before any regex */
   var original=text;text=localise(text);
   var t=text.toLowerCase(),r={need:text,terms:[],specifics:[],modalities:[],regions:[],require:[],mode:'commission',within_minutes:null,quantity:1,state:null,country_code:null,subdivision:null,anywhere:false};
   Object.keys(MOD).forEach(function(m){if(MOD[m].test(t))r.modalities.push(m)});

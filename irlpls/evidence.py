@@ -21,7 +21,7 @@ Verifiers (pluggable: `VERIFIERS[type] = fn(ctx) -> (verdict, reasons)`):
   signature, messageDigest and contentType attributes, the TSA certificate's validity at genTime and its timeStamping
   EKU. Trust-list status is "unknown" unless the signer's certificate SHA-256 is on a configured list.
 - `rekor`: a Sigstore Rekor log entry. Offline only: the RFC 6962 inclusion proof from the entry's leaf to the
-  checkpoint root, the checkpoint's signature and the signed entry timestamp under the log key given as trust anchor,
+  checkpoint root, the checkpoint's signature and the signed entry timestamp under an operator-pinned Rekor key (options rekor_keys / IRLPLS_REKOR_KEYS; the pack's own trust_anchor is ignored),
   and the hashedrekord digest against the artefact. No proof in the entry: "not checkable offline".
 - `c2pa`: runs `c2patool` on the artefact when it is installed and reports its validation state; "Trusted" (C2PA Trust
   List) is the only state STANDARD Section 3 counts. No tool: "not checkable (tool missing)".
@@ -647,33 +647,43 @@ def v_rekor(ctx):
         out.append("the entry's hash is the artefact's SHA-256")
     else:
         out.append("no artefact in the pack, so the entry is not tied to a file")
-    key_pem = ctx.get("trust_anchor")
+    # The key must come from the operator (options["rekor_keys"], IRLPLS_REKOR_KEYS), never from the pack being verified:
+    # a provider could otherwise mint a key, sign its own one-leaf tree and pass. Any trust_anchor in the pack is ignored.
+    pinned = ctx.options.get("rekor_keys") or ()
+    if isinstance(pinned, (bytes, str)):
+        pinned = (pinned,)
     cp = proof.get("checkpoint")
-    if key_pem is None:
-        raise Unknown("; ".join(out) + "; but no Rekor public key was given, so the root itself is unauthenticated")
+    if not pinned:
+        raise Unknown("; ".join(out) + "; no pinned Rekor public key is configured (IRLPLS_REKOR_KEYS), and a key supplied "
+                      "by the pack itself is not trusted, so the root is unauthenticated")
     _, _, _, serialization, *_ = _crypto()
-    try:
-        key = serialization.load_pem_public_key(key_pem)
-    except ValueError:
-        raise Fail("the trust anchor is not a PEM public key") from None
+    keys = []
+    for k in pinned:
+        try:
+            keys.append(serialization.load_pem_public_key(k.encode() if isinstance(k, str) else k))
+        except ValueError:
+            raise Fail("a pinned Rekor key is not a PEM public key") from None
     if not cp:
         raise Unknown("; ".join(out) + "; no checkpoint, so the root is unauthenticated")
     text, sig_lines = _note_text(cp)
     lines = text.decode().splitlines()
     if len(lines) < 3 or lines[1] != str(proof["treeSize"]) or _b64(lines[2], "checkpoint root") != root:
         raise Fail("the checkpoint's size or root differs from the inclusion proof")
-    ok = False
-    for ln in sig_lines:
-        sig = _b64(ln.rsplit(" ", 1)[-1], "checkpoint signature")[4:]
-        try:
-            _verify_sig(key, sig, text)
-            ok = True
+    key = None
+    for k in keys:
+        for ln in sig_lines:
+            sig = _b64(ln.rsplit(" ", 1)[-1], "checkpoint signature")[4:]
+            try:
+                _verify_sig(k, sig, text)
+                key = k
+                break
+            except Fail:
+                continue
+        if key is not None:
             break
-        except Fail:
-            continue
-    if not ok:
-        raise Fail("no checkpoint signature verifies under the Rekor key")
-    out.append("checkpoint signed by the log key")
+    if key is None:
+        raise Fail("no checkpoint signature verifies under the pinned Rekor key")
+    out.append("checkpoint signed by the pinned Rekor key")
     set_b64 = (entry.get("verification") or {}).get("signedEntryTimestamp")
     if set_b64:
         from .protocol.receipts import jcs
@@ -945,8 +955,18 @@ def load_trust(path):
         return tuple(_norm_fp(ln.split("#")[0]) for ln in f if ln.split("#")[0].strip())
 
 
+def load_pem_keys(path):
+    """PEM public keys from a file (several concatenated allowed); () when unset."""
+    if not path:
+        return ()
+    with open(path, "rb") as f:
+        data = f.read()
+    return tuple(b"-----BEGIN" + c for c in data.split(b"-----BEGIN")[1:])
+
+
 def options_from_env(tsa_trust=None):
     return {"tsa_trust": load_trust(tsa_trust or os.environ.get("IRLPLS_TSA_TRUST")),
+            "rekor_keys": load_pem_keys(os.environ.get("IRLPLS_REKOR_KEYS")),
             "c2pa_trust_anchors": os.environ.get("IRLPLS_C2PA_TRUST_ANCHORS")}
 
 

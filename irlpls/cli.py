@@ -24,6 +24,13 @@ import sys
 
 import irlpls
 from .registry import ASSURANCES
+from .safe_text import strip_controls
+
+_print = print
+
+
+def print(*args, **kw):  # noqa: A001  every line the CLI prints may carry card or provider text: no ANSI or control codes reach the terminal
+    _print(*[strip_controls(a, multiline=True) if isinstance(a, str) else a for a in args], **kw)
 
 MARK = {"evidenced": "●", "claimed": "◐", "none": "·"}
 

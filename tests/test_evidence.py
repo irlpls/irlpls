@@ -229,9 +229,22 @@ def rekor(entry="entry.json", key="log.pem", artefact="../artefact.txt"):
     return url, {url: pack(type="rekor", proof=entry, trust_anchor=key, artefact=artefact)}
 
 
+def _pem(rel):
+    import pathlib
+    return (pathlib.Path(__file__).parent / "fixtures" / "evidence" / rel).read_bytes()
+
+
+def _LOG_PEM():
+    return _pem("rekor/log.pem")
+
+
+def _DETACHED_PEM():
+    return _pem("detached/publickey.pem")
+
+
 def test_rekor_inclusion_proof_verifies_offline():
     url, extra = rekor()
-    r = run(card("verification.time", url), extra)
+    r = run(card("verification.time", url), extra, rekor_keys=[_LOG_PEM()])
     assert r["verdict"] == evidence.VERIFIED, r["reasons"]
     assert any("checkpoint signed" in x for x in r["reasons"])
     assert any("signed entry timestamp verifies" in x for x in r["reasons"])
@@ -249,8 +262,8 @@ def test_rekor_entry_for_another_file_fails():
 
 
 def test_rekor_wrong_log_key_fails():
-    url, extra = rekor(key="../detached/publickey.pem")
-    r = run(card("verification.time", url), extra)
+    url, extra = rekor()
+    r = run(card("verification.time", url), extra, rekor_keys=[_DETACHED_PEM()])
     assert r["verdict"] == evidence.FAILED and "checkpoint" in r["reasons"][0]
 
 
