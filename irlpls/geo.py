@@ -1,10 +1,14 @@
 """Places: geocode a place name, and decide whether a card's coverage text includes it.
 
 Geocoding uses OpenStreetMap Nominatim (free; keep to about one request per second and identify yourself).
-Results are cached in memory for the session.
+Fallbacks: Photon, then the bundled offline gazetteer (marked approximate). Results are cached in memory and on disk.
 """
+import json
 import math
+import os
+import pathlib
 import re
+import threading
 
 from . import http
 
@@ -51,38 +55,139 @@ def _us_form(place):
     return place.strip()[:m.start()] + ", " + US_ABBR[m.group(1)].title() + ", USA"
 
 
+_DISK_MAX = 2000
+_lock = threading.Lock()
+
+
+def _disk_path():
+    return pathlib.Path(os.environ.get("IRLPLS_HOME", pathlib.Path.home() / ".irlpls")) / "geocode-cache.json"
+
+
+def _disk_get(key):
+    try:
+        v = json.loads(_disk_path().read_text()).get(key)
+        return v if isinstance(v, dict) and "lat" in v and "lon" in v else None
+    except (OSError, ValueError, AttributeError):
+        return None
+
+
+def _disk_put(key, val):
+    """Successful lookups only; best-effort (a read-only home just means no disk cache)."""
+    try:
+        p = _disk_path()
+        with _lock:
+            try:
+                d = json.loads(p.read_text())
+                d = d if isinstance(d, dict) else {}
+            except (OSError, ValueError):
+                d = {}
+            d.pop(key, None)
+            d[key] = val
+            while len(d) > _DISK_MAX:
+                d.pop(next(iter(d)))
+            p.parent.mkdir(parents=True, exist_ok=True)
+            tmp = p.with_name(p.name + f".{os.getpid()}.tmp")
+            tmp.write_text(json.dumps(d))
+            os.replace(tmp, p)
+    except OSError:
+        pass
+
+
+def _nominatim(q):
+    """(record or None, failed). One request, no retry: http.get under provider="nominatim" is paced (1 req/s) and a
+    429 pauses that provider process-wide (irlpls/ratelimit.py), so a rate-limited Nominatim is not hammered."""
+    try:
+        res = http.get("https://nominatim.openstreetmap.org/search",
+                       params={"q": q, "format": "jsonv2", "limit": 1, "addressdetails": 1, "accept-language": "en"},
+                       provider="nominatim")
+    except OSError:   # rate limit (HTTP 429), timeout or no network: the place is unknown for now, not "not found"
+        return None, True
+    if not res:
+        return None, False
+    r = res[0]
+    addr = r.get("address") or {}
+    iso = [addr[k] for k in ("ISO3166-2-lvl4", "ISO3166-2-lvl3", "ISO3166-2-lvl5", "ISO3166-2-lvl6") if addr.get(k)]
+    return {"lat": float(r["lat"]), "lon": float(r["lon"]), "name": r.get("display_name", q),
+            "country_code": addr.get("country_code", "").lower(), "state": (addr.get("state") or "").lower() or None,
+            "iso": iso}, False
+
+
+def _photon(q):
+    """Second keyless service: photon.komoot.io (OSM data; fair use, throttled when extensive, no key). (record, failed)."""
+    try:
+        res = http.get("https://photon.komoot.io/api/", params={"q": q, "limit": 1, "lang": "en"}, provider="photon")
+    except OSError:
+        return None, True
+    try:
+        f = (res.get("features") or [])[0]
+        pr, (lon, lat) = f.get("properties") or {}, f["geometry"]["coordinates"][:2]
+        cc = (pr.get("countrycode") or "").lower()
+        state = (pr.get("state") or "").lower() or None
+        iso = []
+        if cc == "us" and state in US_STATES:
+            iso = ["US-" + list(US_ABBR)[US_STATES.index(state)]]
+        name = ", ".join(x for x in (pr.get("name"), pr.get("state"), pr.get("country")) if x) or q
+        return {"lat": float(lat), "lon": float(lon), "name": name, "country_code": cc, "state": state, "iso": iso}, False
+    except (IndexError, KeyError, TypeError, ValueError, AttributeError):
+        return None, False
+
+
+def _offline(place):
+    """Last resort: the bundled GeoNames table (irlpls/places.py). Approximate: big cities only, no street level."""
+    try:
+        from . import places
+        g = places.lookup(place)
+    except Exception:   # a missing or corrupt table must never break planning
+        return None
+    if not g:
+        return None
+    g = {k: v for k, v in g.items() if k != "source"}
+    g["approximate"] = True
+    return g
+
+
 def geocode(place):
-    """Return {lat, lon, name, country_code} for a place name, or None."""
+    """Return {lat, lon, name, country_code, state, subdivision, subdivisions} for a place name, or None.
+
+    Chain: memory cache, disk cache, Nominatim, Photon, then the bundled offline gazetteer. A gazetteer answer adds
+    "approximate": True and is never cached (a live answer should replace it once a service recovers)."""
     key = place.strip().lower()
     if key in _cache:
         return _cache[key]
+    hit = _disk_get(key)
+    if hit:
+        _cache[key] = hit
+        return hit
     out, failed = None, False
     us = _us_form(place)
     qs = candidates(place)
     while qs:
         q = qs.pop(0)
-        try:
-            res = http.get("https://nominatim.openstreetmap.org/search",
-                           params={"q": q, "format": "jsonv2", "limit": 1, "addressdetails": 1, "accept-language": "en"},
-                           provider="nominatim")
-        except OSError:   # rate limit (HTTP 429), timeout or no network: the place is unknown for now, not "not found"
-            failed = True
-            continue
-        if res:
-            r = res[0]
-            addr = r.get("address") or {}
-            if us and q != us and addr.get("country_code", "").lower() != "us":
+        r, f = _nominatim(q)
+        if r is None and f:
+            r, f2 = _photon(q)
+            f = f and f2
+        failed = failed or f
+        if r:
+            if us and q != us and r["country_code"] != "us":
                 qs.insert(0, us)   # "Boston, MA" came back as Boston, England: ask again with the state spelt out
                 us = None
                 continue
-            iso = [addr[k] for k in ("ISO3166-2-lvl4", "ISO3166-2-lvl3", "ISO3166-2-lvl5", "ISO3166-2-lvl6") if addr.get(k)]
-            out = {"lat": float(r["lat"]), "lon": float(r["lon"]), "name": r.get("display_name", place),
-                   "country_code": addr.get("country_code", "").lower(), "state": (addr.get("state") or "").lower() or None,
-                   "subdivision": iso[0].upper() if iso else None, "subdivisions": [x.upper() for x in iso]}
+            iso = r["iso"]
+            out = {"lat": r["lat"], "lon": r["lon"], "name": r["name"], "country_code": r["country_code"],
+                   "state": r["state"], "subdivision": iso[0].upper() if iso else None,
+                   "subdivisions": [x.upper() for x in iso]}
             break
-    if out or not failed:   # a geocoder outage must not be remembered as "no such place"
+    if out:
         _cache[key] = out
-    return out
+        _disk_put(key, out)
+        return out
+    off = _offline(place)
+    if off:
+        return off
+    if not failed:   # a geocoder outage must not be remembered as "no such place"
+        _cache[key] = None
+    return None
 
 
 # A landmark prefix a geocoder may not know as written ("Port of Los Angeles, CA", "Gulf of Finland, Finland").

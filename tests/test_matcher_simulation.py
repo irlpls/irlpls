@@ -79,7 +79,7 @@ def test_recent_lookback_is_not_history(q):
 def test_history_job_is_redirected_not_planned():
     import irlpls
     j = irlpls.request("what was the river level in Austin, TX last year", geocode=False)
-    assert j.plan == [] and j.refusal["code"] == "web_fact" and "new observations" in j.refusal["msg"]
+    assert j.plan == [] and j.refusal["code"] == "history" and "new observations" in j.refusal["msg"]
 
 
 # ---- F6: questions about a provider are answered from its card ----

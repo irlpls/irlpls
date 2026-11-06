@@ -137,6 +137,8 @@ BENCH = [
     # ---- asks in other languages keep their place and route like their English twins (launch simulation 2026-11, F2) ----
     ("niveau de la Seine à Paris maintenant", {"hubeau-hydrometrie"}, {"usgs-water", "nws", "pegelonline"}),
     ("Wie hoch ist der Rhein bei Köln gerade?", {"pegelonline"}, {"usgs-water", "nws", "hubeau-hydrometrie"}),
+    ("qualidade do ar em Maputo", {"open-meteo", "sensor-community", "openaq"}, {"nws", "airnow", "usgs-water"}),  # round 3: Portuguese
+    ("any fires near Kelowna BC?", {"nasa-firms"}, {"proxypics", "caltrans-cctv", "skyfi"}),  # round 3: a live read, not a commission
     ("東京の今の空気質を教えて", {"open-meteo", "sensor-community", "openaq"}, {"nws", "airnow", "usgs-water"}),
     ("какая погода сейчас в Москве", {"weatherxm-agent", "open-meteo"}, {"nws", "usgs-water", "noaa-tides"}),
     # ---- a person on site for a spot's own state (not a satellite, not a dataset vendor) ----
@@ -223,6 +225,9 @@ def test_js_best_is_the_brokers_best():
     out = subprocess.run(["node", "-e", NODE_BEST, str(ROOT)], input=json.dumps(BEST_ASKS), capture_output=True, text=True, check=True)
     bad = []
     for q, j in zip(BEST_ASKS, json.loads(out.stdout)):
+        from irlpls.broker import budget_in
+        if budget_in(q) is not None:   # a budget in the ask is now the broker's max_order_usd policy (the JS matcher has no policy)
+            continue
         b = irlpls.request(q, geocode=False).best()
         if (b and b["card_id"]) != j:
             bad.append((q, b and b["card_id"], j))

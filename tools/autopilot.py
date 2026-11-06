@@ -63,7 +63,7 @@ def check_site(today):
     except Exception:  # noqa: BLE001
         return R("site", "fail", "catalog.json has no readable 'generated' date")
     age = (today - gen).days
-    if age > SITE_MAX_AGE_DAYS:
+    if age >= SITE_MAX_AGE_DAYS:   # 'generated' is a date: with > a stuck build is first flagged on day 4, with >= on day 3
         return R("site", "fail", f"served build is {age} days old (generated {gen}); the daily rebuild is not landing")
     return R("site", "ok", f"up, build generated {gen}")
 

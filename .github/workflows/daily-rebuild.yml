@@ -19,6 +19,8 @@ jobs:
         run: |
           if [ -z "$HOOK" ]; then
             echo "CF_DEPLOY_HOOK is not set: nothing to do."
+            # a silent green on the live repo hides a dead rebuild; forks have no schedule secrets, so only fail upstream
+            [ "${{ github.repository }}" = "irlpls/irlpls" ] && exit 1
             exit 0
           fi
           curl -fsS -X POST --max-time 30 "$HOOK" -o /dev/null -w "deploy hook: HTTP %{http_code}\n"

@@ -5,7 +5,7 @@ Status: describes the code as built. Anything marked **(unverified)** has not be
 ## TL;DR
 
 - **The website** is static files. It has no API and sets no cookies, analytics or third-party scripts. Some pages contact a public service straight from your browser: the home page's river reading (USGS), the home page's "Get it now" (the free provider you picked), and the card checker (the address you give it). Never irlpls.
-- **The reference library** runs on your machine. It sends place names to OpenStreetMap Nominatim to find coordinates, unless you give coordinates yourself or turn geocoding off.
+- **The reference library** runs on your machine. It sends place names to OpenStreetMap Nominatim (and, only if Nominatim fails, to the Photon geocoder run by komoot) to find coordinates, unless you give coordinates yourself or turn geocoding off.
 - **There is no hosted irlpls service.** Your agent calls each provider directly.
 - **Orders** go from your agent straight to the provider, using your own account with that provider. irlpls is not in the middle and never sees them.
 - **Quotes from a protocol provider** (a card with a `protocol` block; none is listed yet) carry coarse coordinates (about 1 km), no address, no "why" and no identity; your exact place goes only to the provider you choose, when you order. **Quotes and reads through an adapter** (all 61 today) send the place at full precision to that provider.
@@ -50,7 +50,7 @@ The static host's own access logs (IP, user agent, URL, time) depend on the host
 
 Everything runs in your process. Outbound calls use `irlpls/http.py` (user agent `irlpls/0.1 (+https://irlpls.com)`), and each host contacted sees your IP address. Nothing goes to irlpls.com except fetching its static files.
 
-**Geocoding.** When a request names a place and has no coordinates, `irlpls/geo.py` sends the place text to Nominatim over HTTPS (`nominatim.openstreetmap.org/search`). If you write a home address, Nominatim (a third party) receives it. Results are cached in memory for the session. Nominatim's logging follows the OSMF policy **(unverified here)**. To avoid it:
+**Geocoding.** When a request names a place and has no coordinates, `irlpls/geo.py` sends the place text to Nominatim over HTTPS (`nominatim.openstreetmap.org/search`). If you write a home address, Nominatim (a third party) receives it. If Nominatim is unavailable or rate-limited, the same text goes once to Photon (`photon.komoot.io`), a second third party. If both fail, a bundled list of larger places answers offline and nothing leaves your machine. Results are cached in memory and in a file on your own machine (`geocode-cache.json` in the irlpls state folder); an outage is never cached. The logging of Nominatim and Photon follows their own policies **(unverified here)**. To avoid it:
 
 - give coordinates: `irlpls.request(need, lat=..., lon=...)` or `irlpls.find(..., lat=..., lon=...)`, or
 - turn it off: `geocode=False` (`irlpls find --no-geo` on the command line).
@@ -91,7 +91,7 @@ They do not send your Policy, your `why`, or who you are. Before your first orde
 
 `irlpls-mcp` runs the same library inside your agent's MCP host, so everything above applies.
 
-- **Full mode** (default): can plan, quote and order. It geocodes place names with Nominatim, and orders with this process's provider credentials. Run it locally (stdio, or HTTP on 127.0.0.1). Binding another address needs `--allow-remote`, and then anyone who can reach the port can use the ordering tools, since the HTTP transport has no authentication.
+- **Full mode** (default): can plan, quote and order. It geocodes place names with Nominatim (Photon as a fallback), and orders with this process's provider credentials. Run it locally (stdio, or HTTP on 127.0.0.1). Binding another address needs `--allow-remote`, and then anyone who can reach the port can use the ordering tools, since the HTTP transport has no authentication.
 - **Read-only mode** (`--read-only`): plans only. `irlpls_submit` and the six protocol tools are not registered, so it makes no provider calls and cannot quote or order.
 
 ## Running a read-only server yourself
@@ -110,7 +110,7 @@ Plans are held in memory and are lost on restart. A job id is the only key to a 
 | Who | Learns |
 |---|---|
 | irlpls (project) | Nothing about your requests. Static-file fetches only. |
-| Nominatim | Each place name you geocode, and your IP. None when you give coordinates or turn geocoding off. |
+| Nominatim, and Photon only if Nominatim fails | Each place name you geocode, and your IP. None when you give coordinates or turn geocoding off. |
 | A free provider you tap "Get it now" on (website) | The map point or station it is asked about, and your IP. Not the text you typed. |
 | A protocol provider you only quote | `need` text, coarse coordinates, country, timing, your IP. |
 | The protocol provider you order from | Also: the exact place, your account, the order and its approval, your IP, any webhook host. What it keeps is up to its own policy. |

@@ -10,7 +10,7 @@ irlpls is a small public project. Today one maintainer decides. Contact: hello@i
 
 ## What irlpls will not do
 
-- Capture anything, sell data, or take a cut.
+- Capture anything or sell data.
 - Rank providers for money, or accept payment to change a card.
 - Let a compiled card outrank the provider: where a provider states something itself, its own statement wins.
 

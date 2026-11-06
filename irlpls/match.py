@@ -18,12 +18,13 @@ Mirrors src/match.js; keep them in step.
 import re
 
 from . import geo
-from .need import TONIGHT
+from .need import PROBLEM_MSG, TONIGHT, ask_problem
 
 WEIGHTS = {"description": 0.4, "guarantees": 0.4, "coverage": 0.2}
 SPECIFIC = 0.5   # weight of a term that only describes the shot or the spot
 MIN_DESCRIPTION = 0.35  # matching less than about a third of the request is no match (fit 0)
 STRONG, WEAK = 60, 30  # verdict: fit >= 60 strong, 30-59 weak, below 30 none (nothing here does what you asked)
+FLOOR = 29  # at a named place, a fit below WEAK (verdict "none") is never offered as a plan option: it names a provider for something nobody listed can do
 LATE_WEEKS = 0.7   # fit multiplier: "weeks" delivery against a deadline of 3 days or less
 LATE_DAYS = 0.85   # fit multiplier: "days" delivery against a deadline of a day or less
 GEO_ELSEWHERE = 0.3  # coverage value of a card whose explicit areas are elsewhere, when the ask's place has no known country
@@ -282,6 +283,12 @@ def describe(card, req):
     return num / den, hit + mh, partial
 
 
+def antarctic(card):
+    """The card's areas or regions name Antarctica."""
+    areas = [a.lower() for a in card["coverage"].get("areas") or []]
+    return "aq" in areas or "antarctic" in " ".join(card["coverage"]["regions"]).lower()
+
+
 def _global(card):
     return bool(re.search(r"(?<![a-z])(global|worldwide)(?![a-z])", " ".join(card["coverage"]["regions"]).lower()))
 
@@ -392,8 +399,8 @@ def score(card, req):
         parts["ai_training"] = ai or "unknown"
     # Hard rule-outs: a live question with no place can't use a live feed or a card that works only in some countries; a spot's own state can't
     # come from a dataset vendor; an on-site question can't be answered by a satellite or any card with no live feed and no people.
-    if req.mode == "live" and question(req) and not (req.place or req.country_code or getattr(req, "lat", None) is not None
-                                   or getattr(req, "anywhere", False) or req.regions) and (country_locked(card) or "live" in (dl.get("modes") or [])):
+    if question(req) and not (req.place or req.country_code or getattr(req, "lat", None) is not None
+                                   or getattr(req, "anywhere", False) or req.regions) and (country_locked(card) or (req.mode == "live" and "live" in (dl.get("modes") or []))):
         total, parts["needs_place"] = 0, True   # a live feed is read at a place: with none given, nothing can be read yet
         why.append("a live read needs a place; none given")
     if total and place_bound(req) and remote_capture(card):
@@ -402,6 +409,14 @@ def score(card, req):
     if total and on_site_ask(req) and "live" not in (dl.get("modes") or []) and (card.get("capture") or {}).get("by") == "devices":
         total, parts["no_one_on_site"] = 0, True
         why.append("no one on site and no live feed: can't tell you what is happening there")
+    if total and req.mode == "live" and (req.country_code or "").lower() == "aq" and not antarctic(card):
+        total, parts["outside_coverage"] = 0, True   # nothing listed reads sensors at the poles
+        why.append("no listed sensor or camera covers Antarctica")
+    if total and total <= FLOOR and (req.place or req.country_code or getattr(req, "lat", None) is not None) \
+            and (req.mode == "live" or not (custom_capture(card) or bulk_vendor(card))) \
+            and not (on_site_ask(req) and (card.get("capture") or {}).get("by") == "people"):   # a person on site is who answers "is it open?"   # a commission to a provider that takes custom tasks may be what its card does not list
+        total, parts["below_floor"] = 0, True
+        why.append("fit too low to offer: it matches too little of what you asked")
     if (d is not None and d < MIN_DESCRIPTION) or parts.get("outside_coverage"):
         total = 0  # does (almost) none of what you described, or not where you need it
     return {"id": card["id"], "name": card["name"], "fit": total, "verdict": verdict(total), "parts": parts, "gaps": why}
@@ -439,12 +454,16 @@ def about_answer(card, aspect):
 
 def unsupported(req, ranked):
     """NO_PROVIDER when nothing ranked fits (no result, or the best fit is below WEAK): say so instead of naming a weak default."""
+    if ask_problem(req):
+        return PROBLEM_MSG[ask_problem(req)]
     return NO_PROVIDER if not ranked or max((s["fit"] or 0) for s in ranked) < WEAK else None
 
 
 def rank(cards, req):
     if about_provider(req.need, [c for c in cards if in_scope(c)]):
         return []   # a question about a provider is answered from its card, never routed to a provider
+    if ask_problem(req):
+        return []   # not an ask irlpls can route (see need.ask_problem): unsupported() says why
     out = [score(c, req) for c in cards if in_scope(c)]
     out = [s for s in out if s["fit"] is None or s["fit"] > 0]
     by_id = {c["id"]: c for c in cards}

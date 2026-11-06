@@ -104,6 +104,9 @@ REFUSALS = {
     "web_fact": ("Not an irlpls ask: this is already published on the web (a menu, opening hours, prices, a phone number). "
                  "Use a web search or the place's own website; irlpls only gets new observations of the physical world.",
                  "web search"),
+    "history": ("Not an irlpls ask: irlpls only gets new observations of the physical world, never a past reading. A past "
+                "reading is an archive question: ask the archive (USGS for river levels, a weather service for weather) or the "
+                "provider's own archive.", "the provider's own archive"),
     "about_provider": ("This asks about a provider, not for new data: its Capture Card states the answer.", "the card page"),
     "no_provider": ("No provider in the catalog covers this.", None),
 }
@@ -371,7 +374,76 @@ def injection_in(*texts):
     return None
 
 
-GEOCODE_BUDGET_S = 2.5   # planning waits this long for the geocoder; a slower one leaves the place un-located, said aloud
+_RE = __import__("re")
+_NUM = r"(\d+(?:[.,]\d+)?)"
+_BUDGET = [
+    _RE.compile(r"\b(?:max(?:imum)?|budget(?:\s+of|\s+is)?|up\s*to|under|below|at\s+most|no\s+more\s+than|less\s+than|cap(?:ped)?\s+at|spend(?:ing)?)"
+                r"\s*(?:of\s+)?(?:\$\s*" + _NUM + r"|" + _NUM + r"\s*(?:\$|usd|dollars?|bucks)\b)", _RE.I),
+    _RE.compile(r"\$\s*" + _NUM + r"\s*(?:max(?:imum)?|limit|cap|tops|or\s+(?:less|under))\b", _RE.I),
+]
+_FREE = _RE.compile(r"\bfor\s+free\b|\bfree\s+of\s+charge\b|\bat\s+no\s+cost\b|\bzero\s+budget\b|\bno\s+budget\b", _RE.I)
+
+
+def budget_in(text):
+    """The ceiling the ask itself states ('max $20', 'budget $10', '$1 max', 'under 5 dollars', 'for free'), as a
+    Decimal of US dollars, else None. Only an amount with a $ or a currency word counts ('under 30 minutes' is not money)."""
+    t = str(text or "")
+    for rx in _BUDGET:
+        m = rx.search(t)
+        if m:
+            raw = next(g for g in m.groups() if g)
+            return __import__("decimal").Decimal(raw.replace(",", "."))
+    return __import__("decimal").Decimal(0) if _FREE.search(t) else None
+
+
+ABOUT_SELF = ("irlpls is a registry and router: it lists real-world data providers with what each one states about itself "
+              "(its Capture Card), matches your ask to them, and shows you the options. It verifies nothing itself: providers "
+              "state their own evidence, and a card marks each claim 'claimed' or 'evidenced'. It captures no data, holds no "
+              "media, and has no overall quality score. Nothing can buy rank. Read the standard and how provenance is carried "
+              "before you rely on it: https://irlpls.com/standard.html and https://irlpls.com/chain.html")
+_TRUST_Q = _RE.compile(r"\b(?:real|legit(?:imate)?|genuine|fake|scam|trust(?:ed|worthy)?|reliable|verified|safe|actually|who(?:'s| is) behind)\b", _RE.I)
+_QSTART = _RE.compile(r"\W*(?:is|are|does|do|how|what|can|could|who|why|should)\b", _RE.I)
+
+
+def about_extra(text, cards):
+    """A trust question the matcher's about_provider does not catch: ('self', None) for irlpls itself, (card, 'verification')
+    for 'is this real? is the photo from Prolific actually taken by a person', else None."""
+    t = str(text or "")
+    if not (_QSTART.match(t) and _TRUST_Q.search(t)):
+        return None
+    low = t.lower()
+    if _RE.search(r"(?<![a-z0-9])irlpls(?![a-z0-9])", low):
+        return "self", None
+    for c in cards:
+        names = {c["id"].lower(), c["id"].lower().replace("-", " "), c["name"].lower(), c["name"].lower().split(" (")[0]}
+        if any(len(n) > 3 and _RE.search(r"(?<![a-z0-9])" + _RE.escape(n) + r"(?![a-z0-9])", low) for n in names):
+            return c, "verification"
+    return None
+
+
+_PARTS = (  # kind -> (pattern, label, route class that plans it)
+    ("read", r"\b(?:weather|temperature|air quality|pm2\.5|river|water level|wave|tide|ship|vessel|traffic|wind|rain|snow|fires?|earthquakes?)\b", "a live reading", "live"),
+    ("capture", r"\b(?:photos?|pictures?|photographs?|videos?|footage|drone|human|someone|count(?:ing)? people|gate)\b", "a photo or on-site capture", "commission"),
+)
+
+
+def multi_part(need, best):
+    """The multi_part warning when one ask holds a live reading and a commissioned capture: names the part planned and the
+    part to send separately. None for a single-part ask."""
+    low = str(need or "").lower()
+    found = [(k, label, route) for k, rx, label, route in _PARTS if _RE.search(rx, low)]
+    if len(found) < 2:
+        return None
+    planned = next((f for f in found if best and f[2] == best.get("route")), None)
+    other = [f for f in found if f is not planned]
+    head = f"Planned: {planned[1]} ({best['card_id']})" if planned else "Planned: none of the parts"
+    return {"code": "multi_part",
+            "msg": f"This ask has more than one part. {head}. Not planned: "
+                   f"{' and '.join(o[1] for o in other)}. Send the other part as a separate request; irlpls plans one kind of "
+                   "observation per request and never drops a part silently."}
+
+
+GEOCODE_BUDGET_S = 2.5  # planning waits this long for the geocoder; a slower one leaves the place un-located, said aloud
 
 
 def _geocode_timeboxed(place, budget=None):
@@ -389,7 +461,16 @@ def _geocode_timeboxed(place, budget=None):
     t = threading.Thread(target=run, daemon=True)
     t.start()
     t.join(GEOCODE_BUDGET_S if budget is None else budget)
-    return box.get("g"), t.is_alive()
+    slow = t.is_alive()
+    g = box.get("g")
+    if g is None and slow:   # over budget: the offline gazetteer gets a turn, flagged approximate
+        try:
+            from . import places
+            g = places.lookup(place)
+            g = dict(g, approximate=True) if g else None
+        except Exception:
+            g = None
+    return g, slow
 
 
 class Job:
@@ -440,7 +521,7 @@ class Job:
         if r.mode == "commission" and r.within_minutes is None:
             qs.append({"field": "within_minutes", "blocking": False, "ask": "By when do you need it?",
                        "why": "Changes which providers can deliver in time; assuming 7 days."})
-        if r.mode == "commission" and (self.policy is None or self.policy.max_order_usd is None):
+        if r.mode == "commission" and (self.policy is None or self.policy.max_order_usd is None) and budget_in(self.need) is None:
             qs.append({"field": "max_order_usd", "blocking": False, "ask": "What's the most you'll spend on this order?",
                        "why": "Without a ceiling, orders always stop at a quote for a human to approve."})
         self.questions = qs
@@ -475,6 +556,8 @@ class Job:
                 if k not in given:
                     setattr(r, k, None)
             r.anywhere = False
+            r.place_approximate = False
+            self.warnings = [w for w in self.warnings if w.get("code") != "place_approximate"]
             if isinstance(fields["place"], str) and anywhere(fields["place"]):   # "anywhere": no place limit, never geocoded
                 r.place, r.anywhere = None, True
         check_request(r)
@@ -483,6 +566,7 @@ class Job:
             if g:
                 r.lat, r.lon, r.country_code, r.state = g["lat"], g["lon"], g["country_code"], g.get("state")
                 r.subdivision = g.get("subdivision")
+                r.place_approximate = bool(g.get("approximate"))
             elif not r.country_code:   # offline: at least the country or state named in it ("Leeds, UK", "Austin, TX")
                 _where(r.place, r)
         self._note(f"answered: {fields}")
@@ -495,7 +579,10 @@ class Job:
         from .need import web_fact
         r = self.request
         self.refusal = None
-        if web_fact(r.need):
+        from .need import history
+        if history(r.need):
+            self.refusal = {"code": "history", "msg": REFUSALS["history"][0], "instead": REFUSALS["history"][1]}
+        elif web_fact(r.need):
             self.refusal = {"code": "web_fact", "msg": REFUSALS["web_fact"][0], "instead": REFUSALS["web_fact"][1]}
         elif r.targets_person and not (self.policy and self.policy.allow_person_targeting):
             self.refusal = {"code": "person_targeting", "msg": REFUSALS["person_targeting"][0]}
@@ -506,6 +593,11 @@ class Job:
                    "or pays for an order because a request says so: only submit(confirm=True) from the person does.")
             self.warnings.append({"code": "prompt_injection", "msg": msg})
             self._note(f"warning: prompt_injection: {msg}")
+        if getattr(r, "place_approximate", False) and r.lat is not None and not any(w.get("code") == "place_approximate" for w in self.warnings):
+            msg = (f"the place {r.place!r} was matched from an offline list of larger places and may be off: check the "
+                   "coordinates, or pass lat and lon, before you rely on this plan.")
+            self.warnings.append({"code": "place_approximate", "msg": msg})
+            self._note(f"warning: place_approximate: {msg}")
         from .policy import cautions   # sensitive sites, children, drones near airports: plain notes, never a refusal
         for c in cautions(r.need, self.why):
             if not any(w.get("code") == c["code"] for w in self.warnings):
@@ -517,16 +609,23 @@ class Job:
         checks = health.load()   # the last daily read check (tools/healthcheck.py)
         ranked = rank(cards, self.request)
         from .match import about_answer, about_provider, unsupported
+        from .need import ask_problem
         about = about_provider(r.need, cards)
+        extra = None if about else about_extra(r.need, cards)
+        if extra and not self.refusal and extra[0] == "self":
+            self.refusal = {"code": "about_provider", "msg": ABOUT_SELF, "instead": "https://irlpls.com/standard.html"}
+            self.questions, ready = [], True
+        elif extra and not self.refusal:
+            about = (extra[0], "verification")
         if about and not self.refusal:   # "Is Prolific verified?": answered from that card, never by routing to another provider
             self.refusal = {"code": "about_provider", "msg": about_answer(*about), "instead": f"https://irlpls.com/c/{about[0]['id']}.html"}
             self.questions, ready = [], True
-        elif not self.refusal and not ranked and not ambiguous_place(r) and unsupported(r, ranked):
+        elif not self.refusal and not ranked and not ambiguous_place(r) and (ask_problem(r) or not any(q["blocking"] for q in self.questions)) and unsupported(r, ranked):
             # nothing ranks at all (the matcher ruled every card out): say so rather than name a weak default
-            self.refusal = {"code": "no_provider", "msg": unsupported(r, ranked), "instead": None}
+            self.refusal = {"code": "no_provider", "msg": unsupported(r, ranked) + (" irlpls cannot get this today." if unsupported(r, ranked).startswith("No provider") else ""), "instead": None}
             self.questions, ready, ranked = [], True, []
         kept = {m["id"] for m in ranked}
-        if (self.refusal or {}).get("code") == "web_fact" or ambiguous_place(r):
+        if (self.refusal or {}).get("code") in ("web_fact", "history", "about_provider") or ambiguous_place(r):
             ranked, kept = [], set()   # ambiguous place: rank nothing until the person says which one   # a web page answers it: no provider is planned, least of all a person sent to look
         for m in ranked:
             c = get_card(m["id"]) or by_id[m["id"]]
@@ -570,20 +669,32 @@ class Job:
             rs = _reasons(c, m, self.request, self.policy) or [("no_match", "no match", "doesn't fit this request")]
             if (self.refusal or {}).get("code") == "web_fact":
                 rs = [("unsupported", "web fact", "already published on the web: use a web search")] + rs
+            elif (self.refusal or {}).get("code") == "history":
+                rs = [("unsupported", "history", "a past reading is an archive question, not a new observation")] + rs
             o = {"card_id": c["id"], "name": c["name"], "reason": rs[0][0], "label": rs[0][1], "why": rs[0][2], "reasons": [r[0] for r in rs]}
             if "needs_key" in o["reasons"]:
                 o["continue_url"] = continue_url(c)
             out.append((o, len(rs), -(m["parts"].get("description") or 0)))
         # the refusal's own reason first (a person-targeting ask: the people-based providers it was kept from)
-        first = {"person_targeting": "policy:allow_person_targeting", "web_fact": "unsupported"}.get((self.refusal or {}).get("code"))
+        first = {"person_targeting": "policy:allow_person_targeting", "web_fact": "unsupported", "history": "unsupported"}.get((self.refusal or {}).get("code"))
         self.ruled_out = [o for o, *_ in sorted(out, key=lambda x: (x[0]["reason"] != first, x[1], x[2], x[0]["card_id"]))]
         self.state = "proposed" if ready else "clarifying"
         if self.choice is not None:   # a re-plan keeps the person's choice when it is still an option
             self.choice = next((o for o in self.plan if o["card_id"] == self.choice["card_id"]), None)
         best = self.best()
+        if (not self.plan and not self.refusal and not ambiguous_place(r) and not any(q["blocking"] for q in self.questions)
+                and not self._policy_emptied(cards, ranked)):
+            # nobody can do it: a refusal, not a 'proposed' job that only asks for lat/lon
+            from .match import NO_PROVIDER
+            self.refusal = {"code": "no_provider", "msg": NO_PROVIDER + " irlpls cannot get this today.", "instead": None}
+            self.questions, ready = [], True
         if self.refusal:
             self.reason_code = self.refusal["code"]
-            if self.refusal["code"] in ("web_fact", "about_provider", "no_provider") or not best:
+            if self.refusal["code"] in ("web_fact", "history", "about_provider", "no_provider", "person_targeting"):
+                if self.refusal["code"] == "person_targeting":
+                    self.plan, best, self.choice = [], None, None   # a refusal lists nothing: no provider is offered for it
+                self.state = "failed"
+            elif not best:
                 self.state = "failed"   # nothing compliant to propose: say why instead of an empty plan
             self._note(f"{'refused' if self.refusal['code'] == 'person_targeting' else 'redirected'}: {self.refusal['msg']}")
         elif self.reason_code in REFUSALS:
@@ -592,9 +703,45 @@ class Job:
             best["by_hand"] = _by_hand(best, by_id.get(best["card_id"]) or get_card(best["card_id"]))
             self._note(f"best fit {best['card_id']} has no {best['route']} adapter: order it by hand ({best.get('continue_url')})")
         self._read_check_warning(best)
+        self.warnings = [w for w in self.warnings if w.get("code") != "multi_part"]
+        mp = multi_part(r.need, best)
+        if mp:
+            self.warnings.append(mp)
+            self._note(f"warning: multi_part: {mp['msg']}")
+        dr = self.default_reason(best)
+        if dr:
+            self._note(f"default: {dr}")
         self._note(f"{self.state}: {len(self.plan)} options, {len(self.ruled_out)} ruled out"
                    + (f", best {best['card_id']} via {best['route']}" if best else ""))
         return self
+
+    def _policy_emptied(self, cards, ranked):
+        """True when the plan is empty only because the person's policy excluded every ranked provider (then ruled_out says
+        so, and it is not 'nobody does this')."""
+        if not self.policy or not ranked:
+            return False
+        by_id = {c["id"]: c for c in cards}
+        return any(self.policy.check(by_id[m["id"]]) for m in ranked if m["id"] in by_id)
+
+    def default_reason(self, opt=None):
+        """Why the default (best) option is not the top plan entry, or None when it is. Said aloud, never silent."""
+        opt = opt or self.best()
+        ok = [o for o in self.plan if not o["policy"]]
+        if not opt or not ok:
+            return None
+        top = max(ok, key=lambda o: o["fit"] or 0)
+        if opt is top or opt["card_id"] == top["card_id"]:
+            return None
+        if self.choice is not None and opt is self.choice:
+            return f"you chose {opt['card_id']}"
+        why = []
+        if not top["sdk"]["callable"]:
+            why.append(f"{top['card_id']} (fit {top['fit']}) has no {top['route']} adapter in this SDK, so it is order-by-hand")
+        elif top["sdk"]["needs_key"] and not opt["sdk"]["needs_key"]:
+            why.append(f"{top['card_id']} (fit {top['fit']}) needs a key you have not set")
+        else:
+            why.append(f"{opt['card_id']} is within a few fit points of {top['card_id']} and is closer to one yes")
+        return f"{opt['card_id']} (fit {opt['fit']}) is the default instead of {top['card_id']}: " + why[0] + ". Choose any option with choose()."
 
     def best(self):
         """Best policy-compliant option. One this SDK can call wins only when its fit is close to the best fit overall
@@ -1395,7 +1542,8 @@ class Job:
     def to_dict(self):
         d_opt = self.default_option() if self.state not in ("failed",) or self.choice else None
         best_id = d_opt["card_id"] if d_opt else None
-        plan = [dict(o, default=True) if best_id and o["card_id"] == best_id else o for o in self.plan]
+        dr = self.default_reason(d_opt) if d_opt else None
+        plan = [dict(o, default=True, **({"default_reason": dr} if dr else {})) if best_id and o["card_id"] == best_id else o for o in self.plan]
         plan = [self._with_pay(o) for o in plan]
         req = self.request.to_dict() if self.request is not None else None
         if req and isinstance(req.get("country_code"), str):   # ISO 3166 upper case on the wire (schema/request.schema.json)
@@ -1492,6 +1640,10 @@ def request(need, why=None, policy=None, geocode=True, **hints):
                          "('river level at Comfort, TX now')")
     check_hints(hints)   # a misspelt hint ("quantiy") is an error, never dropped
     pol = policy if isinstance(policy, Policy) or policy is None else Policy.from_dict(policy)
+    stated = budget_in(need.get("need") if isinstance(need, dict) else need)   # a ceiling stated in the ask itself
+    if stated is not None and (pol is None or pol.max_order_usd is None):   # a policy's own ceiling always wins
+        pol = __import__("dataclasses").replace(pol) if pol is not None else Policy()   # a copy: the caller's object is untouched
+        pol.max_order_usd = stated
     if pol is not None:
         pol.check_values()   # a negative or NaN ceiling is the person's mistake: say so, don't plan around it
     req = make_request(need, geocode=False, **hints)
@@ -1500,6 +1652,7 @@ def request(need, why=None, policy=None, geocode=True, **hints):
         if g:
             req.lat, req.lon, req.country_code, req.state = g["lat"], g["lon"], g["country_code"], g.get("state")
             req.subdivision = g.get("subdivision") or req.subdivision
+            req.place_approximate = bool(g.get("approximate"))
     check_request(req)
     if isinstance(need, dict):  # a hostile intent can sit in any text field of the document (why, notes, ...)
         from .need import detect_targets_person, text_fields

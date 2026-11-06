@@ -71,13 +71,13 @@ CAPTURE = r"\b(photo|picture|image|snap|shot|video|footage|film|clip|recording|p
 TODAY = r"\btoday\b"
 # A question about conditions (a reading, a tide, a quake) with nothing to capture, no dataset and no deadline: what is
 # reporting now answers it ("tide at Santa Monica", "earthquake Alaska", "air quality London").
-CONDITION = r"\b(tides?|earthquakes?|quakes?|waves?|swell|surf|air|ships?|vessels?|web ?cams?|cctv|jam ?cams?|cameras?)\b"
+CONDITION = r"\b(tides?|earthquakes?|quakes?|waves?|swell|surf|air|ships?|vessels?|web ?cams?|cctv|jam ?cams?|cameras?|fires?|wildfires?|hotspots?)\b"
 LOOKBACK = r"\b(?:last|past)\s+(?:(?:\d+|few|couple of)\s+)?(?:minute|min|hour|hr|day|week)s?\b|\bago\b|\bthis (?:morning|afternoon|evening)\b|\byesterday\b|\bearlier today\b"  # "in the last hour": recent reports
 # a visit asked for "this afternoon": the part of the day is the deadline
 THIS_PART = r"this (?:morning|afternoon|evening)"
 SEND = r"\b(?:send|take|capture|shoot|visit|count|photograph|film)\b"
 # "7 days" on its own, as in "500 clips, 7 days"; not a lookback, a repeat, a lag or a duration of footage
-BARE_DEADLINE = r"(?<![\w.$-])(?<!last )(?<!past )(?<!every )(\d{1,6})[\s-]*(minute|min|hour|hr|day|week)s?\b(?!\s+(?:ago|after|of|old|later|earlier|before|long)\b)"
+BARE_DEADLINE = r"(?<![\w.$-])(?<!last )(?<!past )(?<!every )(?<!for )(\d{1,6})[\s-]*(minute|min|hour|hr|day|week)s?\b(?!\s+(?:ago|after|of|old|later|earlier|before|long)\b)"
 # A road scene: a road user, a manoeuvre, road works; or a street or road under some condition (ROAD + CONDITIONS).
 ROAD_SCENE = r"\b(cyclists?|bicycl\w*|bikes?|pedestrians?|turns?|merg(?:e|es|ing)|intersections?|crosswalks?|roundabouts?|roadworks?|work zones?)\b"
 ROAD = r"\b(streets?|roads?|highways?|freeways?)\b"
@@ -89,8 +89,9 @@ UNIT_MIN = {"minute": 1, "min": 1, "hour": 60, "hr": 60, "day": 1440, "week": 10
 # Rotterdam, Netherlands", "in the Gulf of Finland, Finland". A name runs over capitalised words, commas and the small
 # words inside names ("Port of Los Angeles", "Rio de Janeiro"); "the" may come first.
 _NAME = r"[A-Z][\w'.-]*\.?"
+_NOT_I = r"(?!I(?:\s|,|'|\u2019|$))"   # the pronoun "I" is no part of a name: "Chandigarh, India, I am abroad"
 PLACE = re.compile(r"\b(?:in|at|near|around|on|off|of)\s+(?:the\s+)?(" + _NAME
-                   + r"(?:(?:,\s*|\s+(?:of(?:\s+the)?|de|del|da|di|la|le|du|am|upon|sur)\s+|\s+)" + _NAME + r")*)")
+                   + r"(?:(?:,\s*|\s+(?:of(?:\s+the)?|de|del|da|di|la|le|du|am|upon|sur)\s+|\s+)" + _NOT_I + _NAME + r")*)")
 # Languages are not places ("in Spanish", "5000 voice recordings in Swahili"): a place made only of these words is dropped.
 LANGUAGES = set("""afrikaans albanian amharic arabic armenian azerbaijani basque belarusian bengali bosnian bulgarian burmese
 cantonese catalan cebuano chinese croatian czech danish dari dutch english estonian farsi filipino finnish flemish french
@@ -166,6 +167,7 @@ CITIES = {"Los Angeles": ("us", "california"), "San Francisco": ("us", "californ
           "Odessa": ("ua", None), "Moscow": ("ru", None), "Bangkok": ("th", None), "Prague": ("cz", None),
           "Budapest": ("hu", None), "Beirut": ("lb", None), "Gaza": ("ps", None), "Tel Aviv": ("il", None),
           "Jerusalem": ("il", None), "South Pole": ("aq", None), "Seine": ("fr", None), "Seville": ("es", None),
+          "Tbilisi": ("ge", None), "Cortina": ("it", None), "Batumi": ("ge", None), "Kutaisi": ("ge", None), "Maputo": ("mz", None),
           # landmarks and US cities named without a state ("traffic cam on the Golden Gate Bridge", "Tampa after the storm")
           "Golden Gate Bridge": ("us", "california"), "Golden Gate": ("us", "california"), "Bay Bridge": ("us", "california"),
           "Hollywood": ("us", "california"), "Yosemite": ("us", "california"), "San Diego": ("us", "california"),
@@ -358,6 +360,10 @@ class Request:
         return cls(**{k: v for k, v in d.items() if k in cls.__dataclass_fields__})
 
 
+# "Georgia" is a US state and a country: the country when a city of the country, or the Caucasus, is named with it
+GEORGIA_COUNTRY = re.compile(r"\b(?:Tbilisi|Batumi|Kutaisi|Rustavi|Zugdidi|Sukhumi|Gori|Telavi|Mtskheta|Poti|Caucasus)\b|country of Georgia|Georgia \(country\)")
+
+
 def _where(text, r):
     """Offline place hints: a US state ("Austin, TX", "in Iowa") or a country ("Lisbon, Portugal")."""
     # A two-letter code is a US state only in capitals after a comma ("Austin, TX"): "in" is a word, never India or Indiana,
@@ -369,6 +375,9 @@ def _where(text, r):
         return
     for name in STATES.values():
         if re.search(r"\b" + name.title() + r"\b", text):
+            if name == "georgia" and GEORGIA_COUNTRY.search(text):
+                r.country_code = "ge"   # "Tbilisi, Georgia" is the country, not the US state
+                return
             r.state, r.country_code = name, "us"
             r.subdivision = subdivision_code("us", name)
             return
@@ -394,7 +403,7 @@ def _where(text, r):
 def _named_place(text):
     """The first city, landmark or country the offline gazetteer finds in the text, as written there; or None."""
     for name in STATES.values():
-        if re.search(r"\b" + name.title() + r"\b", text):
+        if re.search(r"\b" + name.title() + r"\b", text) and not (name == "georgia" and GEORGIA_COUNTRY.search(text)):
             return name.title()
     for table in (CITIES, COUNTRIES):
         for name in table:
@@ -519,7 +528,7 @@ def split_parts(text):
             pieces.append(p)
     return pieces if len(pieces) > 1 else []
 
-# Minimal multilingual vocabulary (Spanish, French, German, Russian, Japanese): the words that say what is read, where and
+# Minimal multilingual vocabulary (Spanish, French, German, Russian, Japanese, Portuguese, Italian): the words that say what is read, where and
 # when, rewritten into the English the matcher knows, so "nivel del río en Sevilla ahora" routes like "river level in Seville
 # now". Names of places become the gazetteer's English name. The request keeps the original text as `need`. Mirrored in
 # src/match.js (generated from this table; tests/test_matcher_simulation.py checks they agree).
@@ -530,6 +539,16 @@ NONENGLISH = [
     ("calidad del aire", "air quality"), ("qualité de l'air", "air quality"), ("luftqualität", "air quality"),
     ("качество воздуха", "air quality"), ("уровень воды", "water level"), ("уровень реки", "river level"),
     ("wie hoch ist", "water level"), ("pegelstand", "water level"), ("wasserstand", "water level"),
+    # Portuguese and Italian
+    ("qual é o", "what is the"), ("qual é a", "what is the"), ("qual é", "what is"), ("nível do rio", "river level"),
+    ("nível da água", "water level"), ("nível", "water level"), ("qualidade do ar", "air quality"),
+    ("qualità dell'aria", "air quality"), ("qualita dell'aria", "air quality"), ("livello del fiume", "river level"),
+    ("livello dell'acqua", "water level"), ("livello", "water level"), ("tempo em", "weather in"), ("meteo a", "weather in"),
+    ("meteo", "weather"), ("neve a", "snow in"), ("piove a", "raining in"), ("pioggia a", "rain in"), ("temperatura a", "temperature in"),
+    ("c'è", "is there"), ("agora", "now"), ("adesso", "now"), ("neve", "snow"), ("chuva", "rain"), ("piove", "raining"),
+    ("pioggia", "rain"), ("fiume", "river"), ("maré", "tide"), ("poluição", "pollution"), ("inquinamento", "pollution"),
+    ("incêndios", "fires"), ("incendi", "fires"), ("incêndio", "fire"), ("incendio", "fire"), ("em", "in"),
+    ("foto de", "photo of"), ("foto di", "photo of"), ("foto", "photo"),
     ("cerca de", "near"), ("près de", "near"), ("tiempo en", "weather in"),
     # words
     ("ahora", "now"), ("ahora mismo", "now"), ("maintenant", "now"), ("actuellement", "now"), ("gerade", "now"), ("jetzt", "now"),
@@ -563,6 +582,38 @@ def localise(text):
     text when it has none. The place stays in the ask: "東京の今の空気質" reads as "in Tokyo now air quality"."""
     t = _NE_CJK_RX.sub(lambda m: " " + _NE_CJK[m.group(0)] + " ", text)
     return _NE_RX.sub(lambda m: _NE[m.group(0).lower()], t)
+
+
+# Asks that are not a request to observe anything: said in a script or language the matcher has no vocabulary for (and no
+# place found), a greeting or "help", or moving a thing from one place to another. rank() returns nothing for them and
+# unsupported() says which. Mirrored in src/match.js (IRLMatch.askProblem).
+NOT_AN_ASK = r"^\W*(?:help|hi|hello|hey|thanks|thank you|test|menu|what can you do|how does (?:this|it) work|how do i use (?:this|it))\W*$"
+DELIVERY = (r"\b(?:deliver|courier|ship|mail|carry|transport)\b[^?.]{0,40}\b(?:packages?|parcels?|letters?|groceries|food|flowers?|gifts?|goods|cargo)\b|"
+            r"\bpick up (?:a |my |the )?(?:package|parcel)\b")
+REPHRASE = ("irlpls reads English asks (plus Spanish, French, German, Russian, Japanese, Portuguese and Italian words): "
+            "rephrase in English with the place and country, e.g. 'air quality in Cairo, Egypt now'.")
+NOT_AN_ASK_MSG = ("That is not something to observe. Say what to read or capture, where and when, e.g. "
+                  "'river level at Comfort, TX now' or 'photo of the bakery on Elm St, Springfield, IL today'.")
+DELIVERY_MSG = ("irlpls finds observations of the world (a reading, a photo, a count); it does not move things or run errands, "
+                "so no provider is listed for a delivery.")
+
+
+def ask_problem(r):
+    """None, or why this ask cannot be routed: "rephrase" (a script or language with no vocabulary here and no place found),
+    "not_an_ask" (help, a greeting) or "delivery" (moving a parcel)."""
+    text = str(r.need or "")
+    t = text.lower()
+    if re.search(NOT_AN_ASK, t):
+        return "not_an_ask"
+    if re.search(DELIVERY, t):
+        return "delivery"
+    placed = r.place or r.country_code or getattr(r, "lat", None) is not None or getattr(r, "anywhere", False)
+    if not placed and any(ch.isalpha() and ord(ch) > 0x24F and not 0x1E00 <= ord(ch) <= 0x1EFF for ch in localise(text)):
+        return "rephrase"
+    return None
+
+
+PROBLEM_MSG = {"rephrase": REPHRASE, "not_an_ask": NOT_AN_ASK_MSG, "delivery": DELIVERY_MSG}
 
 
 def parse(text, cards=()):
@@ -629,6 +680,10 @@ def parse(text, cards=()):
     places = addresses + [p for p in (m.group(1).strip(" ,.") for m in PLACE.finditer(rest)) if not _language(p)]
     if places:
         r.place = ", ".join(places)
+        if r.country_code and not r.anywhere and _named_place(r.place) is None:
+            named = _named_place(text)   # "Durbar Square" alone geocodes to the wrong country: keep the one the ask names
+            if named and named.lower() not in r.place.lower():
+                r.place += ", " + named
     elif r.country_code and not r.anywhere:
         named = _named_place(text)   # "air, Delhi", "kharkiv drone photos": the gazetteer's name is the place
         if named:

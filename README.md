@@ -74,7 +74,7 @@ The exact gate commands are in `docs/DEVELOPING.md`. The full suite needs `jsons
 
 ## What irlpls will not do
 
-Capture anything, sell data, take a cut, verify anything itself, search archives, or run a model. See `GOVERNANCE.md`.
+Capture anything, sell data, verify anything itself, search archives, or run a model. See `GOVERNANCE.md`.
 
 ## Licence
 
