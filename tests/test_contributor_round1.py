@@ -161,4 +161,6 @@ def test_docs_exist_and_are_neutral():
         assert "github.com" not in t.lower()
     assert "add-a-card.html" in (ROOT / "docs" / "PROVIDERS.md").read_text()
     assert "ADD-A-CARD" in (ROOT / "CONTRIBUTING.md").read_text()
-    assert "claim steps" not in (ROOT / "docs" / "OPS.md").read_text()
+    ops = ROOT / "docs" / "OPS.md"   # private: absent from the public repo
+    if ops.exists():
+        assert "claim steps" not in ops.read_text()
