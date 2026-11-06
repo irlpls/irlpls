@@ -202,6 +202,8 @@ function parse(text,cards){
 /* true / false if the card's coverage clearly does / doesn't include the place, null if unclear (irlpls/geo.py covers) */
 /* subdivisions (ISO 3166-2 "GB-ENG", "US-GA", "KR-11") match the geocoder's code or state name, in any country */
 function covers(c,cc,state,sub){var ar=(c.coverage.areas||[]).map(function(x){return x.toLowerCase()});
+  /* Global / Worldwide regions cover everywhere, even beside a partial areas list (match.py covers) */
+  if(isGlobal(c))return true;
   if(ar.length&&cc){cc=cc.toLowerCase();if(ar.indexOf('*')>-1||ar.indexOf(cc)>-1)return true;var subs=ar.filter(function(x){return x.indexOf(cc+'-')===0});
     if(subs.length){var sc=(sub||subCode(cc,state)||'').toLowerCase();if(sc)return subs.indexOf(sc)>-1;
       return state?subs.some(function(x){return SUBDIVISIONS[x.toUpperCase()]===state.toLowerCase()}):null}return false}
