@@ -279,7 +279,7 @@ def build(cards, top=None, strict=True):
             fam_of.setdefault(pid, []).append(fid)
     orphans = sorted(set(by) - set(fam_of))
     if orphans and strict:
-        raise ValueError("cards in no family (add them to FAMILIES): " + ", ".join(orphans))
+        raise ValueError("cards in no family: " + ", ".join(orphans) + ". Fix: add each id to the provider list of the closest family in FAMILIES (irlpls/catalog.py)")
     fams = []
     for fid, typ, title, ex, pids in FAMILIES:
         pids = [p for p in pids if p in by]

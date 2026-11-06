@@ -48,7 +48,7 @@ The static host's own access logs (IP, user agent, URL, time) depend on the host
 
 ## The reference library
 
-Everything runs in your process. Outbound calls use `irlpls/http.py` (user agent `irlpls/0.1 (+https://irlpls.com)`), and each host contacted sees your IP address. Nothing goes to irlpls.com except fetching its static files.
+Everything runs in your process. Outbound calls use `irlpls/http.py` (user agent `irlpls/0.1 (+https://irlpls.com; hello@irlpls.com)`), and each host contacted sees your IP address. Nothing goes to irlpls.com except fetching its static files.
 
 **Geocoding.** When a request names a place and has no coordinates, `irlpls/geo.py` sends the place text to Nominatim over HTTPS (`nominatim.openstreetmap.org/search`). If you write a home address, Nominatim (a third party) receives it. If Nominatim is unavailable or rate-limited, the same text goes once to Photon (`photon.komoot.io`), a second third party. If both fail, a bundled list of larger places answers offline and nothing leaves your machine. Results are cached in memory and in a file on your own machine (`geocode-cache.json` in the irlpls state folder); an outage is never cached. The logging of Nominatim and Photon follows their own policies **(unverified here)**. To avoid it:
 
@@ -92,7 +92,7 @@ They do not send your Policy, your `why`, or who you are. Before your first orde
 `irlpls-mcp` runs the same library inside your agent's MCP host, so everything above applies.
 
 - **Full mode** (default): can plan, quote and order. It geocodes place names with Nominatim (Photon as a fallback), and orders with this process's provider credentials. Run it locally (stdio, or HTTP on 127.0.0.1). Binding another address needs `--allow-remote`, and then anyone who can reach the port can use the ordering tools, since the HTTP transport has no authentication.
-- **Read-only mode** (`--read-only`): plans only. `irlpls_submit` and the six protocol tools are not registered, so it makes no provider calls and cannot quote or order.
+- **Read-only mode** (`--read-only`): plans only. `irlpls_submit`, `irlpls_approve` and the six protocol tools are not registered, so it makes no provider calls and cannot quote or order.
 
 ## Running a read-only server yourself
 

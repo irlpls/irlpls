@@ -167,3 +167,15 @@ def test_an_off_world_ask_offers_no_earth_provider_while_it_asks_where():
     assert any("Earth" in q["ask"] and q["blocking"] for q in j.questions)
     ok = irlpls.request("weather in Moon, PA", geocode=False, lat=40.5061, lon=-80.2082, country_code="us")
     assert ok.plan, "a real Earth place that shares a name must still plan"
+
+
+def test_answer_is_saved_so_the_next_cli_process_sees_it(monkeypatch, tmp_path):
+    """DOCS-DRILL finding: `irlpls answer JOB --place ...` left the saved job 'clarifying'; the documented
+    request -> answer -> choose -> submit flow broke across processes."""
+    monkeypatch.setenv("IRLPLS_HOME", str(tmp_path))
+    monkeypatch.setattr(geo, "geocode", lambda place: {"lat": 51.45, "lon": -2.58, "name": place, "country_code": "gb"})
+    j = irlpls.request("river level now", geocode=False)
+    assert j.state == "clarifying"
+    j.answer(place="Bristol")
+    again = broker.load_job(j.id)
+    assert again.state != "clarifying" and again.request.place == "Bristol"

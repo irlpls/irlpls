@@ -4,9 +4,12 @@ schema can't state (docs/STANDARD.md, Sections 2.4, 3 and 8).
     irlpls validate cards/skyfi.json
     irlpls validate https://provider.example/.well-known/irlpls
 """
+import difflib
 import ipaddress
 import json
+import os
 import pathlib
+import re
 import urllib.parse
 from datetime import date, timedelta
 
@@ -69,6 +72,112 @@ def text_problems(card):
     return out
 
 
+def _found(v, n=40):
+    """A short, safe rendering of a found value: never the whole of an oversized value."""
+    if isinstance(v, str):
+        return repr(v if len(v) <= n else v[:n] + "...") + (f" ({len(v)} characters)" if len(v) > n else "")
+    if isinstance(v, (dict, list)):
+        return f"a {type(v).__name__} with {len(v)} entries"
+    return repr(v)[:n]
+
+
+REQUIRED_HINT = {
+    "pricing": "the block needs model, from_usd, unit", "latency": "the block needs typical, notes",
+    "delivery": "the block needs modes, speed, basis", "coverage": "the block needs regions, notes",
+    "licensing": "the block needs summary (state ai_training and resale too)",
+    "capabilities": "the block needs modalities, tasks", "verification": "the block needs the seven guarantees, each {level, unknown}",
+    "short": "one line, up to 120 characters; needed to be listed", "access": "needed to be listed; see examples/card-template.md",
+    "api": "needed to be listed; see examples/card-template.md",
+}
+PATTERN_HINT = {
+    "id": "lowercase letters, digits and hyphens only",
+    "areas": "ISO 3166-1 alpha-2 (US) or ISO 3166-2 (US-OH) codes, or *",
+}
+
+
+def schema_message(e):
+    """(where, short actionable message) for one jsonschema error: field path, expected, found; never a raw regex."""
+    path = [str(p) for p in e.path]
+    last = path[-1] if path else ""
+    where = ".".join(path) or "card"
+    v = e.validator
+    if v == "required":
+        missing = re.findall(r"'([^']+)' is a required property", e.message)
+        name = missing[0] if missing else "field"
+        w = ".".join(path + [name])
+        sub = path[-1] if path else ""
+        hint = REQUIRED_HINT.get(name) or ("{level, unknown}" if sub == "verification" else "")
+        return w, "missing required field" + (f": {hint}" if hint else "")
+    if v == "enum":
+        return where, f"expected one of {', '.join(map(str, e.validator_value))}; found {_found(e.instance)}"
+    if v == "const":
+        return where, f"expected {_found(e.validator_value)}; found {_found(e.instance)}"
+    if v == "type":
+        t = e.validator_value
+        t = "/".join(t) if isinstance(t, list) else t
+        return where, f"expected {t}; found {type(e.instance).__name__}" + (" (0 means not published)" if last == "from_usd" else "")
+    if v == "pattern":
+        hint = PATTERN_HINT.get(last) or PATTERN_HINT.get(path[-2] if len(path) > 1 else "")
+        if not hint:
+            hint = "a plain https:// URL" if last.endswith(("url", "uri")) or last in safe_text.URL_KEYS else "a different format"
+        return where, f"expected {hint}; found {_found(e.instance)}"
+    if v in ("maxLength", "maxItems"):
+        n = len(e.instance)
+        return where, f"too long: {n} {'characters' if v == 'maxLength' else 'items'}, at most {e.validator_value}"
+    if v in ("minLength", "minItems"):
+        return where, "must not be empty"
+    if v == "additionalProperties":
+        extra = [k for k in (e.instance if isinstance(e.instance, dict) else {}) if k not in (e.schema.get("properties") or {})]
+        return where, "unknown key " + ", ".join(repr(k[:40]) for k in extra[:3]) + _suggest(extra[0], list((e.schema.get("properties") or {}))) if extra else "unknown key"
+    msg = re.sub(r"'(?:[^'\\]|\\.){41,}'", "'...'", e.message)  # never echo a long value
+    return where, msg[:140]
+
+
+def _suggest(key, known):
+    m = difflib.get_close_matches(str(key), known, n=1, cutoff=0.7)
+    return f"; did you mean {m[0]!r}?" if m else ""
+
+
+def unknown_keys(card):
+    """[(where, message)]: keys the schema does not define, where the schema does not already forbid them.
+    Warnings only: an extra key is dropped by readers, a typo in an optional key is silently lost."""
+    out = []
+    try:
+        schema = json.loads(SCHEMA.read_text())
+    except (OSError, ValueError):
+        return out
+
+    def walk(o, sc, path):
+        if isinstance(o, dict) and isinstance(sc, dict):
+            props = sc.get("properties")
+            if props is not None and sc.get("additionalProperties") is not False:
+                for k in o:
+                    if k not in props and not str(k).startswith("x-"):
+                        out.append((".".join(path + [str(k)[:40]]), f"unknown key{_suggest(k, list(props))}; not in the standard's schema"))
+            for k, v in o.items():
+                sub = (props or {}).get(k)
+                if sub is None and isinstance(sc.get("additionalProperties"), dict):
+                    sub = sc["additionalProperties"]
+                if sub is not None:
+                    walk(v, sub, path + [str(k)])
+        elif isinstance(o, list) and isinstance(sc, dict) and isinstance(sc.get("items"), dict):
+            for i, v in enumerate(o):
+                walk(v, sc["items"], path + [str(i)])
+
+    walk(card, schema, [])
+    return out
+
+
+DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
+def _bad_date(v):
+    try:
+        return not (isinstance(v, str) and DATE.fullmatch(v) and date.fromisoformat(v))
+    except ValueError:
+        return True
+
+
 def problems(card, fetched_from=None):
     """[(severity, where, message)] where severity is 'error' (the card is not valid) or 'warn' (it is, but weak)."""
     out = []
@@ -77,8 +186,12 @@ def problems(card, fetched_from=None):
     try:
         import jsonschema
         schema = json.loads(SCHEMA.read_text())
+        seen = set()
         for e in sorted(jsonschema.Draft202012Validator(schema).iter_errors(card), key=lambda e: list(map(str, e.path))):
-            err(".".join(map(str, e.path)) or "card", e.message[:160])
+            where, msg = schema_message(e)
+            if (where, msg) not in seen:
+                seen.add((where, msg))
+                err(where, msg)
     except ImportError:
         warn("schema", "jsonschema is not installed, so only the standard's own rules were checked (pip install jsonschema)")
     except OSError:
@@ -150,14 +263,21 @@ def problems(card, fetched_from=None):
             warn("payment.agent_rails", f"{r} is an agent rail but not in payment.methods")
     if card.get("status") == "unclaimed" and not card.get("sources"):
         err("sources", "an unclaimed card must cite a source for its claims")
-    try:
+    dates_ok = True
+    for k in ("updated", "expires"):
+        if k in card and _bad_date(card[k]):
+            warn(k, f"expected a date as YYYY-MM-DD; found {_found(card[k])}")
+            dates_ok = False
+        elif k not in card:
+            dates_ok = False
+    if dates_ok:
         upd, exp = date.fromisoformat(card["updated"]), date.fromisoformat(card["expires"])
         if exp > upd + timedelta(days=366):
             err("expires", "must be at most a year after updated")
         if exp < date.today():
             warn("expires", "this card has expired; brokers will skip it")
-    except (KeyError, ValueError):
-        warn("expires", "updated and expires should both be dates so brokers can tell a card is stale")
+    elif "updated" not in card or "expires" not in card:
+        warn("expires", "updated and expires should both be dates (YYYY-MM-DD) so brokers can tell a card is stale")
     if (card.get("pricing") or {}).get("from_usd") == 0 and (card.get("access") or {}).get("cost") not in ("free", "free with key", "freemium"):
         pass  # 0 means "not published" for paid providers; that is stated in the standard, not an error
     lic = card.get("licensing") or {}
@@ -167,6 +287,19 @@ def problems(card, fetched_from=None):
     areas = (card.get("coverage") or {}).get("areas")
     if areas is None:
         warn("coverage.areas", "no ISO country codes: brokers must guess coverage from the text")
+    for k in ("short", "access", "api"):  # not in the schema's required list, but a card is not listed without them
+        if not card.get(k):
+            warn(k, f"needed to be listed: {REQUIRED_HINT[k]}")
+    for group, keys in (("verification", GUARANTEES), ("provenance", PROVENANCE)):
+        for k in keys:
+            g = (card.get(group) or {}).get(k) if isinstance(card.get(group), dict) else None
+            if isinstance(g, dict) and g.get("level") in ("none", "claimed") and not str(g.get("unknown") or "").strip():
+                warn(f"{group}.{k}.unknown", f"empty: say in one line what remains uncertain (level is {g['level']})")
+    for where, msg in unknown_keys(card):
+        warn(where, msg)
+    if card.get("status") == "provider-maintained" and not fetched_from:
+        warn("status", "provider-maintained applies only to a card served from the provider's own domain; "
+             "a file you submit is unclaimed")
     if fetched_from:
         host = urllib.parse.urlparse(fetched_from).hostname or ""
         own = urllib.parse.urlparse(card.get("provider_url") or "").hostname or ""
@@ -179,6 +312,8 @@ def load(target):
     """A card from a file path or an https URL. Returns (card, url or None)."""
     if target.startswith(("http://", "https://")):
         from . import http
+        if target.startswith("http://") and os.environ.get("IRLPLS_ALLOW_PRIVATE_HOSTS") != "1":
+            raise ValueError("cards are read over HTTPS only. To rehearse on localhost, set IRLPLS_ALLOW_PRIVATE_HOSTS=1 (validate only)")
         return http.get(target), target
     return json.loads(pathlib.Path(target).read_text()), None
 
@@ -253,3 +388,39 @@ def to_provider_file(card):
     todo.append("Then serve the file at https://<your domain>/.well-known/irlpls (HTTPS, no redirects, Cache-Control: public, max-age >= 60). "
                 "It counts as provider-maintained only when served from the domain in provider_url.")
     return doc, todo
+
+
+def family_fix(card_id):
+    """The plain, one-line fix for a card that is in no family (shared by build.py and tools/check_cards.py)."""
+    from .catalog import FAMILIES
+    ex = FAMILIES[0]
+    ids = ", ".join(f[0] for f in FAMILIES[:6])
+    return (f"{card_id}: not in any family. Fix: add \"{card_id}\" to FAMILIES in irlpls/catalog.py, in the last list of the closest "
+            f"family, for example: [{', '.join(repr(x).replace(chr(39), chr(34)) for x in ex[4][:2])}, \"{card_id}\"]),   "
+            f"(family ids: {ids}, ...)")
+
+
+def repo_problems(cards_dir):
+    """[str]: what the repo gate and build.py both refuse, in plain words, naming the card.
+    Not valid JSON, id != file name, duplicate id, and a listed card that belongs to no family."""
+    from .catalog import FAMILIES, usable
+    out, seen, cards = [], {}, []
+    for f in sorted(pathlib.Path(cards_dir).glob("*.json")):
+        try:
+            c = json.loads(f.read_text())
+        except ValueError as e:
+            out.append(f"{f.stem}: not valid JSON ({str(e)[:80]})")
+            continue
+        cid = c.get("id") if isinstance(c, dict) else None
+        if cid != f.stem:
+            out.append(f"{f.stem}: id {str(cid)[:60]!r} must equal the file name; rename the file to {str(cid)[:60]}.json or fix the id")
+        if cid in seen:
+            out.append(f"{f.stem}: duplicate id {str(cid)[:60]!r}, already used by cards/{seen[cid]}.json; ids are unique")
+        seen[cid] = f.stem
+        if isinstance(c, dict):
+            cards.append(c)
+    in_family = {p for f in FAMILIES for p in f[4]}
+    for c in usable(cards):
+        if c.get("id") not in in_family:
+            out.append(family_fix(c.get("id")))
+    return out

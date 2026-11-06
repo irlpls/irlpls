@@ -2,7 +2,7 @@
 
     uv run python examples/quickstart_agent.py "river level at Comfort, TX now"
 
-Network: the free USGS water API (no key). Nothing is ordered; live reads cost nothing.
+Network: the free USGS water API (no key), and Nominatim to find the place (pass geocode=False with lat/lon to skip it). Nothing is ordered; live reads cost nothing.
 """
 import sys
 import irlpls

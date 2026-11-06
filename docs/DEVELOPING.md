@@ -9,7 +9,7 @@ Private repo, one maintainer. All commands run from the repo root with `uv run`;
 uv run python tools/snapshot_media.py      # optional
 uv run python build.py
 
-# 2. Tests (~215; tests needing node, playwright or mcp>=2 skip when missing)
+# 2. Tests (about 2,000; tests needing node, playwright or mcp>=2 skip when missing)
 uv run --with pytest --with jsonschema --with playwright --with 'mcp>=2' pytest -q tests
 
 # 3. Cards against the schema, and JS syntax

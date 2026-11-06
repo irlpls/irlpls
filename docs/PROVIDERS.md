@@ -8,7 +8,7 @@ A card for your company may already exist. It was compiled from your public page
 
 ## 1. Get your card
 
-If a compiled card exists, download it at `/cards/<your-id>.json` and save it as `.well-known/irlpls`. If none exists, copy the closest card and edit it. The format is `schema/capture-card.schema.json`; the field tables are in the [standard](standard.html), Section 2. You can [check your card in a browser](check.html); the reference validator and conformance checker are part of the reference tools.
+If a compiled card exists, download it at `/cards/<your-id>.json` and save it as `.well-known/irlpls`. If none exists, start from the [starter card](card-template.json) (a fictional provider, every field explained in `examples/card-template.md`) and edit it. Adding a card for someone else's company? See [Add a card](add-a-card.html). The format is `schema/capture-card.schema.json`; the field tables are in the [standard](standard.html), Section 2. You can [check your card in a browser](check.html), or on your machine with `irlpls validate card.json` (checks the card) and `python -m irlpls.conformance <your-domain>` (checks how it is served). To change `status`: leave it `unclaimed`; a card served from the domain in its `provider_url` is shown as provider-maintained.
 
 ## 2. Correct it
 
@@ -42,6 +42,29 @@ Serve the file at `https://<your-domain>/.well-known/irlpls` with:
 If you also run the Universal Commerce Protocol, list the capability `com.irlpls.capture.card` in your `/.well-known/ucp` profile, with `config.card` pointing at that URL.
 
 ## 5. Check it
+
+### Rehearse on your machine first
+
+`irlpls validate` can read a card from a local server, so you can try the path before it is on your domain. Save your card in a file named `my-card`. Plain `http://` and `localhost` are refused unless you opt in, and the opt-in is for `validate` only:
+
+```python
+import http.server, pathlib, socket
+class H(http.server.BaseHTTPRequestHandler):
+    def do_GET(s):
+        ok = s.path == "/.well-known/irlpls"; s.send_response(200 if ok else 404)
+        s.send_header("Content-Type", "application/json"); s.send_header("Cache-Control", "public, max-age=3600"); s.end_headers()
+        s.wfile.write(pathlib.Path("my-card").read_bytes() if ok else b"{}")
+http.server.HTTPServer.address_family = socket.AF_INET6
+http.server.HTTPServer(("::1", 8765), H).serve_forever()
+```
+
+```
+IRLPLS_ALLOW_PRIVATE_HOSTS=1 irlpls validate 'http://[::1]:8765/.well-known/irlpls'
+```
+
+`python -m http.server` serves a file with no extension as `application/octet-stream`; set `Content-Type: application/json` yourself, as above. What the rehearsal shows: the card is valid and reads as JSON. What it cannot show: HTTPS, redirects, the domain match. [check.html](check.html) reads a pasted card or, for a domain, fetches it from your browser (your server must allow that with CORS, `Access-Control-Allow-Origin: *`); it runs the same rules as `validate` and says which checks a browser cannot make. Do the last check on your real domain with the conformance checker.
+
+### Check the live card
 
 The conformance checker makes one read-only request for your card (and one for `/.well-known/ucp` if you list it). It never calls your API. It checks redirects, content type, cache headers, expiry and domain, and exits 0 only when nothing fails.
 
@@ -96,6 +119,11 @@ It fetches every `evidence_url`, runs the verifier for its type and says verifie
 A sample pack is a small public JSON file (named `*irlpls-sample.json`) that links one sample file, its proof, your key or trust anchor and a README. The [card checker](check.html) only checks a pack's signature against its stated key, in the browser. Nothing else.
 
 Sealed capture (`camera`) is the costly one: C2PA signing with `c2patool` is free, but `evidenced` needs a product on the C2PA Conforming Products List, a signer's certificate that chains to the C2PA Trust List and an RFC 3161 time-stamp from a TSA on the C2PA TSA Trust List (Section 3). A self-made certificate stays `claimed`.
+
+## Claim, correct or remove your card
+
+- **Claim** the compiled card: publish yours at `/.well-known/irlpls` (sections 1 to 5 above). When it passes, it replaces the compiled one.
+- **Correct** or **remove** a card: email hello@irlpls.com with the card id and the public source. The details, and what irlpls does with a message, are in [Add a card](add-a-card.html).
 
 ## 8. What happens next
 

@@ -2,7 +2,7 @@
 """Repo-level card gate for CI; stdlib + jsonschema (already in CI).
 
 Catches what the schema step cannot: duplicate ids, id != filename, promo/ranking keys, evidenced without evidence_url
-(via irlpls.validate.problems errors), and ids missing from build.py FAMILIES (build fails anyway, but say it plainly).
+(via irlpls.validate.problems errors), and ids missing from FAMILIES in irlpls/catalog.py (build fails anyway, but say it plainly).
 Exit 1 on any finding.   python tools/check_cards.py
 """
 import glob
@@ -18,26 +18,26 @@ PROMO_KEYS = {"sponsored", "promoted", "featured", "rank", "ranking", "boost", "
 
 
 def main():
-    bad, seen = [], {}
+    bad = validate.repo_problems(ROOT / "cards")  # not JSON, id != file name, duplicate id, no family (same text as build.py)
+    seen = set()
     for f in sorted(glob.glob(str(ROOT / "cards" / "*.json"))):
         name = Path(f).stem
         try:
             c = json.loads(Path(f).read_text())
-        except ValueError as e:
-            bad.append(f"{name}: not valid JSON ({e})")
+        except ValueError:
             continue
-        cid = c.get("id")
-        if cid != name:
-            bad.append(f"{name}: id {cid!r} does not match the file name")
-        if cid in seen:
-            bad.append(f"{name}: duplicate id {cid!r} (also {seen[cid]})")
-        seen[cid] = name
+        seen.add(name)
         hit = PROMO_KEYS & set(c)
         if hit:
             bad.append(f"{name}: promo/ranking keys {sorted(hit)} (CONTRIBUTING: no ranking for money)")
         for sev, where, msg in validate.problems(c):
             if sev == "error":
                 bad.append(f"{name}: {where}: {msg}")
+    tpl = ROOT / "examples" / "card-template.json"  # the starter card must stay valid
+    if tpl.exists():
+        for sev, where, msg in validate.problems(json.loads(tpl.read_text())):
+            if sev == "error":
+                bad.append(f"examples/card-template.json: {where}: {msg}")
     print("\n".join(bad) or f"all {len(seen)} cards pass the repo gate")
     return 1 if bad else 0
 

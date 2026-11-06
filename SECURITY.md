@@ -32,3 +32,6 @@ correction request, not a feature. Report it the same way, with a public source
 if you have one. On a confirmed report we correct or downgrade the claim, or
 withdraw the card, and record the change in the changelog. We do not keep a card
 live while we know it overclaims.
+
+To claim, correct or remove a card, email hello@irlpls.com with the card id and a public
+source; the steps are in `docs/ADD-A-CARD.md`. We read every message.

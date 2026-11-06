@@ -40,10 +40,10 @@ The MCP server is a separate package, so any MCP client can start it with `uvx`:
 
 ```bash
 uvx irlpls-mcp --read-only     # plan only: never orders, never calls a provider
-uvx irlpls-mcp                 # full: also runs live reads; orders only after your explicit approval
+uvx irlpls-mcp                 # full: also runs live reads; orders only if you set IRLPLS_ALLOW_SUBMIT=1 and a ceiling, and then only after your explicit approval
 ```
 
-Setup for Claude, Cursor and other clients, and the hosted read-only endpoint: https://irlpls.com/agents
+Setup for Claude, Cursor and other clients: https://irlpls.com/agents
 
 ## Data in the package
 

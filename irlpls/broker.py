@@ -728,7 +728,9 @@ class Job:
             elif not r.country_code:   # offline: at least the country or state named in it ("Leeds, UK", "Austin, TX")
                 _where(r.place, r)
         self._note(f"answered: {fields}")
-        return self._plan()
+        out = self._plan()
+        _save(self)   # the CLI answers in its own process: the answered state must survive for choose and submit
+        return out
 
     # -- propose ---------------------------------------------------------------------------------
     def _plan(self, cards=None):

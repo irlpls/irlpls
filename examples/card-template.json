@@ -1,0 +1,75 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "example-weather-co",
+  "name": "Example Weather Co",
+  "status": "unclaimed",
+  "provider_url": "https://example.com/",
+  "short": "Example Weather Co: current temperature and rain readings from its own stations in Ohio.",
+  "summary": "Fictional provider used as a template. Example Weather Co runs 40 weather stations in Ohio and serves the latest temperature, humidity and rainfall for each through a keyed JSON API. Replace every value with what your own public pages say.",
+  "tags": ["weather", "temperature", "rain", "sensor", "ohio"],
+  "capabilities": {
+    "modalities": ["sensor"],
+    "tasks": ["current temperature at a station", "rainfall in the last hour"]
+  },
+  "pricing": {
+    "model": "free with an API key",
+    "from_usd": 0,
+    "unit": "per request",
+    "notes": "0 means the price is not published, or the service is free; the note says which."
+  },
+  "latency": {
+    "typical": "Readings update every 10 minutes",
+    "notes": "Docs page: stations report every 10 minutes; the API answers from the latest report."
+  },
+  "delivery": {
+    "modes": ["live"],
+    "speed": "minutes",
+    "basis": "Docs page: stations report every 10 minutes."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 10 minutes"
+  },
+  "coverage": {
+    "regions": ["Ohio, USA"],
+    "notes": "40 stations; dense around Columbus and Cleveland, sparse in the south east.",
+    "areas": ["US-OH"]
+  },
+  "licensing": {
+    "summary": "Terms page: free for any use with attribution. Training AI models on the data is not mentioned.",
+    "ai_training": "allowed",
+    "resale": "forbidden"
+  },
+  "access": {
+    "cost": "free with key",
+    "key_required": true,
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://example.com/docs",
+    "auth": [
+      {"type": "api_key_header", "header": "X-Api-Key", "how_to_get": "Sign up on the developer page; the key is shown at once."}
+    ]
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {"level": "none", "unknown": "No person is involved in a reading; stations are unattended."},
+    "application": {"level": "none", "unknown": "Nothing is stated about the station software."},
+    "camera": {"level": "none", "unknown": "Not applicable to a temperature sensor; no signing is described."},
+    "time": {"level": "claimed", "unknown": "Each reading has a timestamp from the station; how the clock is kept right is not stated."},
+    "location": {"level": "claimed", "unknown": "Station coordinates are published; nothing proves a station has not been moved."},
+    "content": {"level": "none", "unknown": "No check of a reading against a second sensor is described."},
+    "corroboration": {"level": "none", "unknown": "No independent review of the network is described."}
+  },
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "sources": [
+    {"claim": "40 stations in Ohio, readings every 10 minutes, keyed JSON API", "url": "https://example.com/docs"},
+    {"claim": "Free with attribution; resale not allowed", "url": "https://example.com/terms"}
+  ]
+}

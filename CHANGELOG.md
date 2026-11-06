@@ -4,7 +4,7 @@ irlpls versions are dates. Cards carry `spec_version`; each version's schemas ar
 
 ## Unreleased (reference library)
 
-Adapter waves A1–A10: 61 of the 86 listed providers now have an adapter (22 need no key, 37 take a key or account, 2 are paid from the person's own wallet); 25 stay directory-only.
+Adapter waves A1–A10: 61 of the 94 listed providers now have an adapter (22 need no key, 37 take a key or account, 2 are paid from the person's own wallet); 33 stay directory-only.
 
 - **Ready calls per operation:** each plan item keeps `prepared_call` (the route's default step) and adds `prepared_calls` `{read, quote, order, status}` for every step the adapter builds. `schema/job.schema.json` and `docs/AGENTS.md` ("Ready calls") describe them.
 - **Money:** a provider price is firm only in USD. EUR, KRW, GBP, credits and USDC are shown as `{amount, currency}` (job `quote.price`, shim offer `total` or `x-com.irlpls.indicative_price`), never converted, and fail every USD ceiling. One reader (`adapters.base.quote_price`) serves the broker, `irlpls.commission` and the shim.

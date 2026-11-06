@@ -833,8 +833,8 @@ Use it when the answer depends on the world as it is now, or when someone goes a
 
 ## Start here
 - [Agent manual](/agents.md): read first. When to use irlpls, the loop, how to report where a result came from, and what is usually missing.
-- [Catalog index](/catalog.index.json): read before any card. Five question types, 25 ask families with their providers, and what irlpls cannot serve. About 29 KB.
-- [All Capture Cards](/cards.json): every provider, as JSON. About 1 MB: fetch single cards at /cards/<id>.json instead.
+- [Catalog index](/catalog.index.json): read before any card. Five question types, the ask families with their providers, and what irlpls cannot serve. About 35 KB.
+- [All Capture Cards](/cards.json): every provider, as JSON. About 1.2 MB: fetch single cards at /cards/<id>.json instead.
 - [Reference matcher](/match.js): ranks cards for a need (`IRLMatch.parse`, `IRLMatch.score`).
 - [Glossary](/glossary.html): the eight provenance links, from capture to delivery.
 
@@ -954,6 +954,10 @@ def fresh_published():
 def main(public=False):
     if public:
         fresh_published()
+    from irlpls import validate as _validate
+    bad = _validate.repo_problems(ROOT / "cards")  # plain failures, not a traceback: bad JSON, id != file name, duplicate id, no family
+    if bad:
+        sys.exit("build stopped, fix the card(s) below:\n  " + "\n  ".join(bad))
     all_cards = [sanitize_card(json.loads(p.read_text())) for p in sorted((ROOT / "cards").glob("*.json"))]
     # The site lists only providers that deliver NEW data (live feeds or commissioned capture).
     cards = [c for c in all_cards if c.get("status") != "defunct" and (c.get("delivery") or {}).get("modes")]
@@ -1010,7 +1014,7 @@ def main(public=False):
     (SITE / "cards.json").write_text(json.dumps({"assurances": [list(a) for a in ASSURANCES], "cards": cards, **({"health": flagged} if flagged else {})}))
     shutil.copy(ROOT / "schema" / "request.schema.json", SITE / "request.schema.json")
     (SITE / "reviewers.json").write_text(json.dumps({"reviewers": REV, "note": review.NOTE}, indent=1) + "\n")  # IRLMatch.REVIEWERS must match
-    pages = ["", "find.html", "compare.html", "docs.html", "agents.html", "standard.html", "changelog.html", "governance.html", "providers.html", "privacy.html", "glossary.html"] + [f'c/{c["id"]}.html' for c in cards]
+    pages = ["", "find.html", "compare.html", "docs.html", "agents.html", "standard.html", "changelog.html", "governance.html", "providers.html", "add-a-card.html", "privacy.html", "glossary.html"] + [f'c/{c["id"]}.html' for c in cards]
     (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"<url><loc>https://irlpls.com/{u}</loc></url>\n" for u in pages) + "</urlset>\n")
     (SITE / "published.json").write_text(json.dumps(published.public(PUB["state"]), indent=1) + "\n")  # check.html ?d= reads it
     if PUB["state"].get("cards"):
@@ -1027,8 +1031,10 @@ def main(public=False):
     data.mkdir(exist_ok=True)
     (data / "cards.json").write_text(json.dumps({"assurances": [list(a) for a in ASSURANCES], "cards": all_cards}, indent=1))
     (SITE / "index.html").write_text(landing((SITE / "index.html").read_text(), cards))
-    import subprocess, sys
-    subprocess.run([sys.executable, str(ROOT / "tools" / "build_catalog.py"), "--out", str(SITE), "--cards-json", str(SITE / "cards.json")], check=True)  # catalog.index.json + catalog.json for agents
+    r = subprocess.run([sys.executable, str(ROOT / "tools" / "build_catalog.py"), "--out", str(SITE), "--cards-json", str(SITE / "cards.json")], capture_output=True, text=True)
+    if r.returncode:
+        sys.exit("catalog build failed: " + ((r.stderr or r.stdout).strip().splitlines() or ["no output"])[-1][:300])
+    sys.stdout.write(r.stdout)  # catalog.index.json + catalog.json for agents
     add_ready_calls(cards)  # + each provider's ready call (Find data shows it for the top match)
     (SITE / "llms.txt").write_text(LLMS.format(ids=llms_lines(cards)))
     md = agents_md(cards)
@@ -1044,6 +1050,8 @@ def main(public=False):
     (SITE / "changelog.html").write_text(doc_page((ROOT / "CHANGELOG.md").read_text(), "Changelog · irlpls", "changelog.html", "Every version of the irlpls standard, newest first."))
     (SITE / "governance.html").write_text(doc_page((ROOT / "GOVERNANCE.md").read_text(), "Governance · irlpls", "governance.html", "Who decides what at irlpls, what it will not do, and when that changes."))
     (SITE / "providers.html").write_text(doc_page((ROOT / "docs" / "PROVIDERS.md").read_text(), "For providers · irlpls", "providers.html", "How a provider publishes its own Capture Card at /.well-known/irlpls.", aud="For companies that capture real-world data."))
+    (SITE / "add-a-card.html").write_text(doc_page((ROOT / "docs" / "ADD-A-CARD.md").read_text(), "Add a card · irlpls", "add-a-card.html", "Add a Capture Card in ten minutes, and how to claim, correct or remove one.", aud="For anyone adding or fixing a card."))
+    shutil.copy(ROOT / "examples" / "card-template.json", SITE / "card-template.json")
     (SITE / "privacy.html").write_text(doc_page((ROOT / "docs" / "PRIVACY.md").read_text(), "Privacy · irlpls", "privacy.html", "What irlpls sees, logs and sends: there is no hosted irlpls service, only static files with no request endpoint."))
     (SITE / "glossary.html").write_text(doc_page((ROOT / "docs" / "GLOSSARY.md").read_text(), "Glossary · irlpls", "glossary.html", "The field's terms for provenance, from capture to delivery: what each link shows, and what it cannot."))
     for f in [*(ROOT / "schema").glob("*.schema.json"), *(ROOT / "schema" / "protocol").glob("*.schema.json")]:  # each version's schemas at the address their $id names

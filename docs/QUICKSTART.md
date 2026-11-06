@@ -64,7 +64,7 @@ The adapter alone: `uv run irlpls live usgs-water --at "Comfort, TX"`. Which ada
 
 ## 4. Wire the MCP server into Claude Desktop or Claude Code
 
-The MCP server is `irlpls.mcp_server` (stdio; packaged as `irlpls-mcp`, not on PyPI yet). Verified here with `uv run --with "mcp>=2" python -m irlpls.mcp_server --read-only`: it reports server `irlpls` and lists `irlpls_request`, `irlpls_answer`, `irlpls_choose_provider`, `irlpls_get_job`, `irlpls_find_providers`, `irlpls_get_card`. `--read-only` plans only and leaves out `irlpls_submit`; drop it to let the agent run live reads.
+The MCP server is `irlpls.mcp_server` (stdio; packaged as `irlpls-mcp`, not on PyPI yet). Verified here with `uv run --with "mcp>=2" python -m irlpls.mcp_server --read-only`: it reports server `irlpls` and lists `irlpls_request`, `irlpls_answer`, `irlpls_choose_provider`, `irlpls_get_job`, `irlpls_find_providers`, `irlpls_get_card`, `irlpls_list_capabilities`. `--read-only` plans only and leaves out `irlpls_submit`; drop it to let the agent run live reads.
 
 Use an absolute path to your checkout (`/path/to/irlpls`).
 
