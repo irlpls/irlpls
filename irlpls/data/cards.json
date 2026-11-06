@@ -7143,7 +7143,7 @@
     "escrow",
     "crypto"
    ],
-   "summary": "Small freelance marketplace (operated by Design 3D Solutions Ltd, founder Tom Carr) for physical and digital tasks, where people and AI agents post tasks with a budget and Veriff-verified freelancers bid on them. Agents post through a REST API with a scoped x-api-key, issued only after the operator passes Veriff KYC; an MCP server is advertised but its URL is not published. Payment is held in escrow and released when the client confirms the work. Published headline numbers conflict (142 vs 56+ countries; 3,275+ vs 1,200+ tasks completed).",
+   "summary": "Small freelance marketplace (operated by Design 3D Solutions Ltd, founder Tom Carr) for physical and digital tasks, where people and AI agents post tasks with a budget and freelancers it says are Veriff-verified bid on them. Agents post through a REST API with a scoped x-api-key, issued only after the operator passes Veriff KYC; an MCP server is advertised but its URL is not published. Payment is held in escrow and released when the client confirms the work. Published headline numbers conflict (142 vs 56+ countries; 3,275+ vs 1,200+ tasks completed).",
    "short": "A freelance marketplace where AI agents post tasks by API and Veriff-verified people bid to do them.",
    "capabilities": {
     "modalities": [
@@ -15139,7 +15139,7 @@
     "API",
     "MCP"
    ],
-   "summary": "Online platform that recruits ID-verified adult participants in about 50 countries for paid studies and human-data collection, run through a web app, REST API, CLI or a first-party MCP server. Its AI Task Builder Collections let participants upload their own photos, recordings and files. Prolific prohibits in-person studies, including asking participants to visit specific locations, so it cannot send anyone to a place, and it does not verify where or when an uploaded file was captured.",
+   "summary": "Online platform that recruits adult participants it describes as ID-verified in about 50 countries for paid studies and human-data collection, run through a web app, REST API, CLI or a first-party MCP server. Its AI Task Builder Collections let participants upload their own photos, recordings and files. Prolific prohibits in-person studies, including asking participants to visit specific locations, so it cannot send anyone to a place, and it does not verify where or when an uploaded file was captured.",
    "short": "ID-verified people in about 50 countries for paid online studies and uploads; no in-person or on-site tasks.",
    "capabilities": {
     "modalities": [
@@ -19970,7 +19970,7 @@
     "custom collection",
     "API"
    ],
-   "summary": "Self-serve data platform: a requester describes a collection task, an AI assistant builds the pipeline (instructions, contributor audience by country and language, price, quality criteria), and ID-verified contributors record and upload the data, checked by an LLM reviewer and optionally by human reviewers. The documented collection template is egocentric (first-person, head-mounted) household-activity video; other collection (images, audio, in-the-field capture) is built from a description. Funded from a prepaid balance topped up by card; projects, runs and exports can also be driven through a beta REST API, a TypeScript SDK and a CLI. Toloka's older mobile field-task app (geotagged photos of places) is no longer documented and is not described here.",
+   "summary": "Self-serve data platform: a requester describes a collection task, an AI assistant builds the pipeline (instructions, contributor audience by country and language, price, quality criteria), and contributors it describes as ID-verified record and upload the data, checked by an LLM reviewer and optionally by human reviewers. The documented collection template is egocentric (first-person, head-mounted) household-activity video; other collection (images, audio, in-the-field capture) is built from a description. Funded from a prepaid balance topped up by card; projects, runs and exports can also be driven through a beta REST API, a TypeScript SDK and a CLI. Toloka's older mobile field-task app (geotagged photos of places) is no longer documented and is not described here.",
    "short": "A self-serve platform where vetted contributors record first-person task video to your brief.",
    "capabilities": {
     "modalities": [

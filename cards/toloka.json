@@ -17,7 +17,7 @@
     "custom collection",
     "API"
   ],
-  "summary": "Self-serve data platform: a requester describes a collection task, an AI assistant builds the pipeline (instructions, contributor audience by country and language, price, quality criteria), and ID-verified contributors record and upload the data, checked by an LLM reviewer and optionally by human reviewers. The documented collection template is egocentric (first-person, head-mounted) household-activity video; other collection (images, audio, in-the-field capture) is built from a description. Funded from a prepaid balance topped up by card; projects, runs and exports can also be driven through a beta REST API, a TypeScript SDK and a CLI. Toloka's older mobile field-task app (geotagged photos of places) is no longer documented and is not described here.",
+  "summary": "Self-serve data platform: a requester describes a collection task, an AI assistant builds the pipeline (instructions, contributor audience by country and language, price, quality criteria), and contributors it describes as ID-verified record and upload the data, checked by an LLM reviewer and optionally by human reviewers. The documented collection template is egocentric (first-person, head-mounted) household-activity video; other collection (images, audio, in-the-field capture) is built from a description. Funded from a prepaid balance topped up by card; projects, runs and exports can also be driven through a beta REST API, a TypeScript SDK and a CLI. Toloka's older mobile field-task app (geotagged photos of places) is no longer documented and is not described here.",
   "short": "A self-serve platform where vetted contributors record first-person task video to your brief.",
   "capabilities": {
     "modalities": [

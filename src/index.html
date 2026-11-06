@@ -19,7 +19,7 @@
          <script>, so an alternative screen 1 can be swapped in whole)
     #how the provenance standard: eight links on one rail, each opens a sheet (compact src/chain.html)
     #try type anything -> which providers state what, per stage
-  Cards: build.py embeds a current snapshot in <script id="cards">; when served, cards.json replaces it.
+  Cards: build.py embeds screen 1's example cards in <script id="cards">; when served, cards-lite.json (all providers) follows first paint.
   Nothing typed on #try leaves the browser: the matcher (match.js) runs locally; no request carries the text.
 -->
 <style>
@@ -125,7 +125,7 @@ h2{margin:4px 0 0;font:700 clamp(25px,7vw,34px)/1.08 var(--head);letter-spacing:
 <script src="places.js"></script>
 <script src="match.js"></script>
 <script src="labels.js"></script>
-<!-- a snapshot of the in-scope cards, written by build.py; cards.json replaces it when the page is served -->
+<!-- screen 1's example cards and the provider count, written by build.py; cards-lite.json (all providers, matcher fields only) follows first paint -->
 <script id="cards" type="application/json">{"cards":[]}</script>
 <script>
 /* Shared by every screen: escaping, the eight chain stages, what a card states per stage, and the current cards.
@@ -192,9 +192,19 @@ var api={E:E,$:$,PVI:PVI,TITLES:TITLES,STAGES:STAGES,LW:LW,says:says,who:who,lev
   card:function(id){return api.cards.filter(function(c){return c.id===id})[0]},
   on:function(f){fs.push(f);f()}},fs=[];
 function set(list){api.cards=(list||[]).filter(function(c){return c&&c.verification&&IRLMatch.inScope(c)})}
-try{set(JSON.parse($('cards').textContent).cards)}catch(e){}
-if(location.protocol!=='file:')fetch('cards.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(x){
-  if(x&&x.cards&&x.cards.length){set(x.cards);fs.forEach(function(f){f(true)})}}).catch(function(){});
+/* the page embeds only screen 1's example cards (and the provider count); the whole registry (cards-lite.json: just the fields the
+   matcher and these screens read) arrives after first paint, or at once when the field is used. api.ready settles when it has (or has not). */
+api.n=function(){return api.full?api.cards.length:N};
+var N=0,loading=null;
+try{var D0=JSON.parse($('cards').textContent);N=D0.n||0;set(D0.cards)}catch(e){}
+api.ready=new Promise(function(done){
+  api.load=function(){if(loading)return loading;loading=new Promise(function(ok){
+    if(location.protocol==='file:'){ok();return}
+    fetch('cards-lite.json').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(x){
+      if(x&&x.cards&&x.cards.length){set(x.cards);api.full=true;fs.forEach(function(f){f(true)})}}).catch(function(){}).then(ok)});
+    loading.then(done);return loading};
+  if(document.readyState==='complete')setTimeout(api.load,0);else addEventListener('load',function(){setTimeout(api.load,0)});
+});
 return api})();
 </script>
 
@@ -427,7 +437,7 @@ var XX='<span><svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke
 function prov(x){return U.pane(U.card(x.id),x.pick,x.id)}
 function steps(x){
   return '<li class="k"><i aria-hidden="true">→</i><span>'+E('irlpls_request(need="'+x.call+'")')+'</span></li>'+
-    '<li><i aria-hidden="true">·</i><span>Searched '+U.cards.length+' providers</span></li>'+
+    '<li><i aria-hidden="true">·</i><span>Searched '+U.n()+' providers</span></li>'+
     '<li class="ok"><i aria-hidden="true">✓</i><span>Picked <b>'+E(x.pick)+'</b> · '+E(x.how)+'</span></li>'+
     '<li class="ok"><i aria-hidden="true">✓</i><span>Got '+E(x.got)+'</span></li>'}
 function done(x){return 'Asked irlpls · <b>'+E(x.pick)+'</b>'}
@@ -483,14 +493,14 @@ var ANIM=!RM&&'IntersectionObserver' in window,seen=[],vis=[],s1in=false;
 function prep(i){var tool=q(i,'.tool'),tl=q(i,'.tl'),tt=q(i,'.tt'),ans=q(i,'.ans');
   ans.innerHTML=words(X[i].say(),true);ans.classList.add('wait');
   q(i,'.you').classList.add('pre-you','rise');ans.classList.add('pre');tool.classList.add('hide');q(i,'.att').classList.add('hide');q(i,'.cites').classList.add('hide');tl.classList.add('run');
-  tt.textContent='Asking irlpls · searching '+U.cards.length+' providers';tl.disabled=true}
+  tt.textContent='Asking irlpls · searching '+U.n()+' providers';tl.disabled=true}
 /* the photo shows only once it has loaded (a still decoded, a clip's first frame); until then its place stays white */
 function ready(att,f){var m=att.querySelector('img,video');if(!m||(m.tagName==='IMG'?m.complete&&m.naturalWidth:m.readyState>=2||m.poster))return f();
   m.addEventListener(m.tagName==='IMG'?'load':'loadeddata',function(){f()},{once:true})}
 function arrive(i){var tool=q(i,'.tool'),tl=q(i,'.tl'),tt=q(i,'.tt'),ans=q(i,'.ans'),att=q(i,'.att'),cs=q(i,'.cites'),x=X[i];
   if(!ANIM)return;
   ans.innerHTML=words(x.say(),true);ans.classList.add('wait');
-  tt.textContent='Asking irlpls · searching '+U.cards.length+' providers';tl.classList.add('run');
+  tt.textContent='Asking irlpls · searching '+U.n()+' providers';tl.classList.add('run');
   var n=Math.min(MAXANS,ans.querySelectorAll('.w').length*WORD),you=q(i,'.you'),A=ASK;
   later(function(){you.classList.remove('pre-you')},LEAD);  /* the question is 'sent': it rises in like a chat message */
   later(function(){you.classList.remove('rise')},LEAD+RISE+50);
@@ -541,7 +551,7 @@ $('track').addEventListener('keydown',function(e){if(e.target!==this)return;if(e
 /* fresher cards: rewrite in place (no replay) */
 function paint(){
   slides.forEach(function(s,i){var x=X[i];q(i,'.tp').innerHTML=steps(x);q(i,'.chip').innerHTML=chip(x);q(i,'.cite').setAttribute('aria-label',chipLabel(x));q(i,'.pv').innerHTML=prov(x);if(s.classList.contains('pvo'))fromChip(i);
-    if(q(i,'.tl').disabled)q(i,'.tt').textContent='Asking irlpls · searching '+U.cards.length+' providers'})}
+    if(q(i,'.tl').disabled)q(i,'.tt').textContent='Asking irlpls · searching '+U.n()+' providers'})}
 var m=/[?&]ex=(\d)/.exec(location.search),i0=m&&+m[1]<X.length?+m[1]:0;  /* ?ex=N opens example N (tools/qa.py) */
 setCur(i0);if(i0)go(i0,true);seen=X.map(function(){return 0});if(ANIM)X.forEach(function(x,i){prep(i)});watch();
 U.on(function(fresh){if(fresh)paint()});
@@ -611,7 +621,7 @@ function bench(cards){var n=cards.length,c=0,e=0;cards.forEach(function(x){var l
   return n?'Of '+n+' providers, '+c+' claim at least one link.'+(e?' '+e+' prove at least one.':' None prove one yet.'):''}
 U.bench=bench;
 /* two clean lines on a phone: a break after the first sentence (hidden on wider screens, where it fits one line) */
-U.on(function(){var t=bench(U.cards);$('bm').hidden=!t;$('bm').innerHTML=E(t).replace(/link\. /,'link.<br> ')});
+U.on(function(){var t=U.full?bench(U.cards):'';$('bm').hidden=!t;$('bm').innerHTML=E(t).replace(/link\. /,'link.<br> ')});
 /* the rail draws down once, link by link, when screen 2 is about half in view; still with reduced motion and ?still=1 */
 var root=document.documentElement,lis=ol.querySelectorAll('li');
 if(matchMedia('(prefers-reduced-motion: reduce)').matches||/[?&]still=1/.test(location.search)||!('IntersectionObserver' in window))return;
@@ -720,7 +730,7 @@ qa.addEventListener('input',function(){if(!touched){touched=true;hint()}if(shown
   clearTimeout(hsT);if(!qa.value.trim()){hs=null;hint();return}hsT=setTimeout(rehint,250)});
 /* the hint follows the typed ask's routing (the same decision go1 makes, nothing fetched or sent) */
 function rehint(){var q=qa.value.trim();if(!q){hs=null;hint();return}
-  L.ready().then(function(){if(qa.value.trim()!==q)return;hs=routeOf(q);hint()})}
+  Promise.all([L.ready(),U.load()]).then(function(){if(qa.value.trim()!==q)return;hs=routeOf(q);hint()})}
 function routeOf(q){var r=IRLMatch.parse(q,U.cards);if(r.targets_person||NEAR.test(q))return null;
   var p=L.place(q,r),t=topic(q),f=function(k){return S.filter(function(x){return x.t===k})[0]||sel};
   if(p.missing==='known')return t&&t!==sel.t?f(t):sel;
@@ -742,7 +752,7 @@ function nm(c){return c.name.replace(/\s*\(.*\)/,'')}
 var seq=0;
 function go(){var q=qa.value.trim();if(!q){qa.value=sel.q;fit();q=sel.q}clearInterval(tick);var n=++seq;if(shown){shown=false;hint()}
   shell(q);lstat(tx('Reading your ask…'));impl('<p class="rt">Reading your ask in this browser. Nothing has been sent.</p>',tx('Reading your ask…'));
-  L.ready().then(function(){if(n===seq)go1(q)})}
+  Promise.all([L.ready(),U.load()]).then(function(){if(n===seq)go1(q)})}
 function go1(q){var r=IRLMatch.parse(q,U.cards);
   if(r.targets_person||NEAR.test(q)){shell(q);msg('irlpls won’t route this.','Requests that watch or follow a person are refused.',{stop:true});
     impl('<p class="rt">Nothing was called: irlpls refuses asks that watch or follow a person.</p>',tx('Nothing called'));return}
@@ -851,14 +861,14 @@ function say(t){var a=$('ann');a.textContent='';setTimeout(function(){a.textCont
 $('ask').onsubmit=function(e){e.preventDefault();go()};
 /* the world place table loads only when screen 3 comes near (or the field is used) */
 if('IntersectionObserver' in window)new IntersectionObserver(function(es,o){if(es[0].isIntersecting){o.disconnect();L.ready()}},{rootMargin:'400px'}).observe($('try'));else L.ready();
-qa.addEventListener('focus',function(){L.ready()},{once:true});
+qa.addEventListener('focus',function(){L.ready();U.load()},{once:true});
 /* ?svc=<id> picks a service (any free route, not only the examples), ?q= fills the question, &go=1 asks at once (links from Find data and the docs) */
 var P=new URLSearchParams(location.search),s0=byId(P.get('svc'));
 if(s0)touched=true;pick(s0||sel,true);if(P.get('q')){qa.value=P.get('q').slice(0,200);fit();rehint()}
 /* tests and links: choose any free route as the picked service */
 window.IRLTry={use:function(id){var s=byId(id);if(s){touched=true;pick(s,false)}return !!s}};
 addEventListener('resize',fit);
-if(P.get('go')==='1')U.on(function(){if(!$('lv'))go()});
+if(P.get('go')==='1')U.ready.then(function(){if(!$('lv'))go()});
 })();
 </script>
 </section>

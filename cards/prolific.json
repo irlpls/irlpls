@@ -15,7 +15,7 @@
     "API",
     "MCP"
   ],
-  "summary": "Online platform that recruits ID-verified adult participants in about 50 countries for paid studies and human-data collection, run through a web app, REST API, CLI or a first-party MCP server. Its AI Task Builder Collections let participants upload their own photos, recordings and files. Prolific prohibits in-person studies, including asking participants to visit specific locations, so it cannot send anyone to a place, and it does not verify where or when an uploaded file was captured.",
+  "summary": "Online platform that recruits adult participants it describes as ID-verified in about 50 countries for paid studies and human-data collection, run through a web app, REST API, CLI or a first-party MCP server. Its AI Task Builder Collections let participants upload their own photos, recordings and files. Prolific prohibits in-person studies, including asking participants to visit specific locations, so it cannot send anyone to a place, and it does not verify where or when an uploaded file was captured.",
   "short": "ID-verified people in about 50 countries for paid online studies and uploads; no in-person or on-site tasks.",
   "capabilities": {
     "modalities": [

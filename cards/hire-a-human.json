@@ -16,7 +16,7 @@
     "escrow",
     "crypto"
   ],
-  "summary": "Small freelance marketplace (operated by Design 3D Solutions Ltd, founder Tom Carr) for physical and digital tasks, where people and AI agents post tasks with a budget and Veriff-verified freelancers bid on them. Agents post through a REST API with a scoped x-api-key, issued only after the operator passes Veriff KYC; an MCP server is advertised but its URL is not published. Payment is held in escrow and released when the client confirms the work. Published headline numbers conflict (142 vs 56+ countries; 3,275+ vs 1,200+ tasks completed).",
+  "summary": "Small freelance marketplace (operated by Design 3D Solutions Ltd, founder Tom Carr) for physical and digital tasks, where people and AI agents post tasks with a budget and freelancers it says are Veriff-verified bid on them. Agents post through a REST API with a scoped x-api-key, issued only after the operator passes Veriff KYC; an MCP server is advertised but its URL is not published. Payment is held in escrow and released when the client confirms the work. Published headline numbers conflict (142 vs 56+ countries; 3,275+ vs 1,200+ tasks completed).",
   "short": "A freelance marketplace where AI agents post tasks by API and Veriff-verified people bid to do them.",
   "capabilities": {
     "modalities": [

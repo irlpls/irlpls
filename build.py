@@ -11,6 +11,7 @@ import sys  # noqa: E402
 sys.path.insert(0, str(ROOT))
 from irlpls import health  # noqa: E402  (the daily read check, tools/healthcheck.py)
 from irlpls.readiness import readiness_for, self_registers  # noqa: E402  (stdlib only; one rule for card pages, catalog and broker)
+from irlpls.match import in_scope  # noqa: E402
 from irlpls.catalog import adapters as _adapters  # noqa: E402  (the same adapter facts catalog.json uses)
 from irlpls import published, review, standing  # noqa: E402  (provider-published cards: tools/fetch_published.py; ranks: tools/bench_asks.json)
 import os  # noqa: E402
@@ -186,6 +187,8 @@ def api_block(c):
     if not a or not a.get("available"):
         return '<p class="none-api">No public API listed.</p>'
     access = "Self-serve" if a.get("self_serve") else "By agreement" if a.get("self_serve") is False else "Not stated"
+    if a.get("self_serve") and (c.get("access") or {}).get("gate") in ("approval", "contract"):
+        access = "Self-serve sign-up, then an approval step"   # one line, so the card never says both "self-serve" and "needs approval"
     rows = [("base", wb(a["base_url"]) if a.get("base_url") else "Not stated"), ("auth", e(auth_text(c))), ("access", access)]
     if c.get("adapter"):
         rows.append(("adapter", f'<code>{e(c["adapter"])}</code>'))
@@ -218,7 +221,7 @@ def use_line(c):
     a, ac = c.get("api") or {}, c.get("access") or {}
     if a.get("available"):
         kr = ac.get("key_required")
-        bits = ["Self-serve API" if a.get("self_serve") else "API by agreement" if a.get("self_serve") is False else "API",
+        bits = ["Self-serve sign-up, then approval" if a.get("self_serve") and ac.get("gate") in ("approval", "contract") else "Self-serve API" if a.get("self_serve") else "API by agreement" if a.get("self_serve") is False else "API",
                 "no key" if kr is False else "key required" if kr else "key not stated"]
         if c.get("adapter"):
             bits.append("irlpls adapter")
@@ -842,24 +845,44 @@ Use it when the answer depends on the world as it is now, or when someone goes a
 {ids}
 """
 
-LANDING_KEYS = ("id", "name", "status", "tags", "summary", "short", "capabilities", "coverage", "delivery", "pricing", "access", "expires", "verification")
+# cards-lite.json: the fields the browser matcher and pages read (src/match.js, labels.js, callpane.js, app.js, index), nothing else.
+# tests/test_page_weight.py pins that ranking over it equals ranking over the full cards. /cards.json stays the full contract.
+LITE_KEYS = ("id", "name", "status", "tags", "summary", "short", "expires", "provider_url", "attestations")
+LITE_SUB = {"capabilities": ("modalities", "tasks"), "coverage": ("regions", "areas", "notes"), "delivery": ("modes", "speed"),
+            "pricing": ("from_usd", "unit"), "access": ("cost", "key_required", "automation_allowed"), "licensing": ("resale", "ai_training"),
+            "capture": ("by",), "protocol": ("endpoint", "versions")}
+
+
+def lite(c):
+    t = {k: c[k] for k in LITE_KEYS if k in c}
+    for g, fs in LITE_SUB.items():
+        if isinstance(c.get(g), dict):
+            t[g] = {f: c[g][f] for f in fs if f in c[g]}
+    if isinstance(c.get("api"), dict) and c["api"].get("auth"):  # only the sign-in kinds (keyText)
+        t["api"] = {"auth": [{k: m[k] for k in ("type", "cimd", "dynamic_registration") if k in m} for m in c["api"]["auth"] if isinstance(m, dict)]}
+    # the level, plus what the stage mapping reads: a camera standard, and the camera/content/time methods (a seal, an attested time)
+    t["verification"] = {k: {"level": v.get("level", "none"), **{f: v[f] for f in STAGE_FIELDS.get(k, ()) if v.get(f)}}
+                         for k, v in (c.get("verification") or {}).items()}
+    if c.get("provenance"):  # stages 6 and 8 read only the levels
+        t["provenance"] = {k: {"level": g.get("level")} for k, g in c["provenance"].items() if isinstance(g, dict)}
+    return t
+
+
+def _dump(o):
+    return json.dumps(o, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+
+
+def write_lite(cards):
+    (SITE / "cards-lite.json").write_text(_dump({"cards": [lite(c) for c in cards]}))
 
 
 def landing(h, cards):
-    """src/index.html, made current: the embedded card snapshot (what the matcher and stage dots need, used until
-    cards.json arrives or if it never does). Screen 1's examples are samples with committed media: nothing live here."""
-    def trim(c):  # only the fields match.js and the stage dots read
-        t = {k: c[k] for k in LANDING_KEYS if k in c}
-        # the level, plus what the stage mapping reads: a camera standard, and the camera/content/time methods (a seal, an attested time)
-        t["verification"] = {k: {"level": v.get("level", "none"), **{f: v[f] for f in STAGE_FIELDS.get(k, ()) if v.get(f)}}
-                             for k, v in (c.get("verification") or {}).items()}
-        if c.get("provenance"):  # stages 6 and 8 read only the levels
-            t["provenance"] = {k: {"level": g.get("level")} for k, g in c["provenance"].items() if isinstance(g, dict)}
-        t["delivery"] = {k: v for k, v in (c.get("delivery") or {}).items() if k in ("modes", "speed")}
-        t["pricing"] = {k: v for k, v in (c.get("pricing") or {}).items() if k == "from_usd"}
-        t["access"] = {k: v for k, v in (c.get("access") or {}).items() if k == "cost"}
-        return t
-    snap = json.dumps({"cards": [trim(c) for c in cards]}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    """src/index.html, made current: the first screen's data only. Screen 1's five example answers need just their own cards
+    (stage dots, tally), so those are embedded (with the provider count); the rest arrives as cards-lite.json after first paint.
+    Screen 1's examples are samples with committed media: nothing live here."""
+    ex = set(re.findall(r"\bid:'([a-z0-9-]+)',pick:", h))
+    n = sum(1 for c in cards if c.get("verification") and in_scope(c))
+    snap = _dump({"n": n, "cards": [lite(c) for c in cards if c["id"] in ex]})
     h, n = re.subn(r'(<script id="cards" type="application/json">).*?(</script>)', lambda m: m.group(1) + snap + m.group(2), h, count=1, flags=re.S)
     if not n:
         raise SystemExit("src/index.html: no <script id=\"cards\"> to fill")
@@ -967,6 +990,7 @@ def main(public=False):
     flagged = {k: v for k, v in PUBLIC_HEALTH.items() if v.get("status") in ("degraded", "failing")}
     if PUBLIC_HEALTH:   # site/health.json: card_id, status, last_checked only; never a reason to rank (see docs/research/ops/HEALTH-PUBLIC-DESIGN.md)
         (SITE / "health.json").write_text(json.dumps({"irlpls_public_health": 1, "cards": PUBLIC_HEALTH}, indent=1) + "\n")
+    write_lite(cards)
     (SITE / "cards.json").write_text(json.dumps({"assurances": [list(a) for a in ASSURANCES], "cards": cards, **({"health": flagged} if flagged else {})}))
     shutil.copy(ROOT / "schema" / "request.schema.json", SITE / "request.schema.json")
     (SITE / "reviewers.json").write_text(json.dumps({"reviewers": REV, "note": review.NOTE}, indent=1) + "\n")  # IRLMatch.REVIEWERS must match

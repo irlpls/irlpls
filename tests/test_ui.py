@@ -243,14 +243,14 @@ HEAD = "Real-world data on demand, with provenance."
 
 
 def landing(browser, base, w=390, h=709, q="", usgs=None, cards=None, **kw):
-    """The landing with USGS answered by `usgs` (None: never answers) and cards.json by `cards` (None: the real file)."""
+    """The landing with USGS answered by `usgs` (None: never answers) and cards-lite.json by `cards` (None: the real file)."""
     p = page(browser, w, h, **kw)
     if usgs is None:
         p.route("**/*usgs.gov/**", lambda r: None)
     else:
         p.route("**/*usgs.gov/**", lambda r: r.fulfill(status=200, body=usgs, headers={"content-type": "application/json", "access-control-allow-origin": "*"}))
     if cards is not None:
-        p.route("**/cards.json", cards)
+        p.route("**/cards-lite.json", cards)
     p.goto(base + "/" + q)
     p.wait_for_timeout(400)
     return p
@@ -550,7 +550,7 @@ def test_reduced_motion_shows_everything_at_once(browser, base):
     assert s.evaluate("[...document.querySelectorAll('#track .hide, #track .wait, #track .run, #track .pre-you')].length") == 0
 
 
-def test_cards_come_from_cards_json_with_the_embedded_copy_as_fallback(browser, base):
+def test_cards_come_from_cards_lite_with_the_first_screens_embedded_copy_as_fallback(browser, base):
     import json
     full = json.loads((SITE / "cards.json").read_text())
     few = {"cards": [c for c in full["cards"] if c["id"] in ("usgs-water", "rentahuman", "proxypics", "skyfi", "kled")]}
@@ -558,9 +558,8 @@ def test_cards_come_from_cards_json_with_the_embedded_copy_as_fallback(browser, 
     p.wait_for_function("IRL3.cards.length===5", timeout=4000)
     p.wait_for_function("document.getElementById('bm').textContent.indexOf('Of 5 providers')===0", timeout=2000)  # the counts re-ran on them
     p = landing(browser, base, q="?still=1", cards=lambda r: r.abort())
-    n = p.evaluate("IRL3.cards.length")
-    assert n >= 50, n  # the snapshot build.py embeds
-    assert p.inner_text("#bm").startswith(f"Of {n} providers, ")
+    assert 1 <= p.evaluate("IRL3.cards.length") <= 8  # offline: just screen 1's example cards build.py embeds
+    assert p.evaluate("IRL3.n()") >= 50  # and the provider count, so "Searched N providers" stays right
 
 
 def test_screen2_links_are_static_rows_with_one_benchmark_line(browser, base):

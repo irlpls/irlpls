@@ -69,7 +69,7 @@ var label=document.getElementById('label'),qx=new URLSearchParams(location.searc
 var needData=document.getElementById('grid')||document.getElementById('cmp')||(root.dataset.card&&qx);
 if(!needData)return;  /* a card page with no request is complete as built */
 
-fetch(base+'cards.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(D){
+fetch(base+'cards-lite.json').then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(D){
   var C=D.cards.filter(function(c){return IRLMatch.inScope(c)});
   function byId(i){return C.filter(function(c){return c.id===i})[0]}
   function scored(c,text){if(!text)return null;var r=IRLMatch.parse(text,C),s=IRLMatch.score(c,r);s.req=r;return s}
