@@ -6,6 +6,12 @@ irlpls lets you request new real-world data with one call and tell your person w
 
 Standard: version 2026-10-26, draft, private preview.
 
+**Today, in short.**
+- **Install:** nothing to install. Use the catalog and the cards below by hand. The Python library and the MCP server are built but not published yet.
+- **Cost:** reading the catalog is free and irlpls charges nothing today. Free public feeds need no key; paid providers need your person's account.
+- **Safety:** irlpls plans and quotes. It does not place or pay for an order; that happens at the provider, with your person's approval.
+- **Proof:** every level on a card is the provider's own statement. No card is independently evidenced yet.
+
 ## Start here: can you get it for your person today?
 
 Your person wants something from the physical world. Find out whether you can get it now, and tell them plainly either way.
