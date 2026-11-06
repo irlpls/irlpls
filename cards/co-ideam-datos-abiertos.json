@@ -1,0 +1,153 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "co-ideam-datos-abiertos",
+  "name": "Colombia IDEAM hydrometeorological stations (datos.gov.co)",
+  "provider_url": "https://www.datos.gov.co/Ambiente-y-Desarrollo-Sostenible/Temperatura-Ambiente-del-Aire/sbwg-7ju4",
+  "short": "IDEAM station air temperature across Colombia, hourly records via the national open-data portal. Free, no key.",
+  "summary": "Colombia's national weather and environment institute (IDEAM) publishes hourly air temperature from stations across the country as an open dataset on datos.gov.co (Socrata, SODA JSON API). Each record has station code and name, department, municipality, latitude, longitude, sensor description, unit and the observed value with its time. The dataset metadata says it gets basic WMO-recommended quality control, with values corrected or removed that fail, and that the update frequency is daily. A keyless GET sorted by time on 2026-11-06 UTC returned an observation stamped 2026-11-05 23:58 local time. Sibling IDEAM datasets on the portal (other variables) were not checked.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "hourly air temperature at 2 m by station",
+      "station metadata with coordinates, department and municipality"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Colombia"
+    ],
+    "areas": [
+      "CO"
+    ],
+    "notes": "Colombia only. Other IDEAM variables (rain, level, wind) are separate datasets on the portal and were not checked."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "Socrata platform; no number checked. Unauthenticated Socrata calls can be throttled; an app token is optional and was not used.",
+      "source_url": "https://www.datos.gov.co/api/views/sbwg-7ju4"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-06 UTC with order by fechaobservacion desc: newest record 2026-11-05T23:58 local, about 14 hours before the call. Metadata says the dataset updates daily; rowsUpdatedAt 2026-11-06 14:43 UTC."
+  },
+  "latency": {
+    "typical": "Up to about a day",
+    "notes": "Dataset update frequency is stated as daily in the metadata, so this is near-real-time, not minutes."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "About 14 hours on 2026-11-06",
+    "notes": "One sample only."
+  },
+  "licensing": {
+    "summary": "Dataset metadata on datos.gov.co: Creative Commons Attribution Share-Alike 4.0 International (credit IDEAM; derivative datasets must carry the same licence). Provenance flagged official. The portal's own terms of use were not read. Automated access, AI training and resale are not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each record has an observation timestamp (local, no offset shown).",
+      "unknown": "Time zone is not stated in the records."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station latitude and longitude in each record.",
+      "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Metadata states basic WMO-recommended quality control, with failing values corrected or removed.",
+      "unknown": "Quality control is described only in general terms; metadata advises extra validation for specific uses."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://dev.socrata.com/",
+    "base_url": "https://www.datos.gov.co/resource/sbwg-7ju4.json",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent; Socrata app tokens are optional."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/resource/sbwg-7ju4.json",
+        "params": "$limit, $order, $where (SoQL)",
+        "notes": "Hourly air temperature observations; order by fechaobservacion DESC for the newest."
+      }
+    ],
+    "rate_limits": "Not checked.",
+    "notes": "JSON via SODA.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "temperature",
+    "colombia",
+    "ideam",
+    "stations",
+    "latin america",
+    "government",
+    "open data",
+    "free",
+    "hourly",
+    "bogota"
+  ],
+  "sources": [
+    {
+      "claim": "Dataset: air temperature recorded hourly at IDEAM stations; basic WMO QC; frequency of update daily; attribution IDEAM; licence CC BY-SA 4.0; provenance official",
+      "url": "https://www.datos.gov.co/api/views/sbwg-7ju4"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, newest record fechaobservacion 2026-11-05T23:58:00 value 25.9 C at Aeropuerto Los Garzones, Cerete",
+      "url": "https://www.datos.gov.co/resource/sbwg-7ju4.json?$order=fechaobservacion%20DESC&$limit=1"
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "air4thai-pcd",
+  "name": "Air4Thai (Thailand Pollution Control Department air quality)",
+  "provider_url": "https://air4thai.pcd.go.th",
+  "short": "Thailand's official hourly air quality (PM2.5, PM10, O3, CO, NO2, SO2, AQI) from about 170 stations. Free, no key seen.",
+  "summary": "Air4Thai is the Pollution Control Department's public air quality site. Its JSON feed (getNewAQI_JSON.php, also referenced in the official Envilink catalog as an XML twin) lists every station with Thai and English names, area, coordinates, station type and the last hourly reading of PM2.5, PM10, O3, CO, NO2, SO2 and an overall AQI. On 2026-11-06 UTC a keyless GET returned 173 stations, the newest reading stamped 02:00 on 2026-11-07 local time (about 20 minutes old). No terms, licence or rate limit could be read, since the site is a JavaScript app and the services directory is not browsable.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "hourly PM2.5, PM10, O3, CO, NO2 and SO2 readings with an AQI per station",
+      "station list with names, areas and coordinates (GROUND, BKK and MOBILE types)"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Thailand"
+    ],
+    "areas": [
+      "TH"
+    ],
+    "notes": "Thailand only. 173 stations on 2026-11-06 (104 ground, 68 Bangkok, 1 mobile). Some pollutants show -1 where a station does not measure them."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: newest station reading stamped 2026-11-07 02:00 local time, about 20 minutes before the call. Hourly cadence is shown by the readings, not stated by the provider."
+  },
+  "latency": {
+    "typical": "About 20 minutes on one call",
+    "notes": "Update interval is not stated on any page read; the official Envilink catalog describes the data as hourly."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 1 hour on 2026-11-06",
+    "notes": "One sample only."
+  },
+  "licensing": {
+    "summary": "Not stated. The Air4Thai site is a JavaScript app and no terms, licence or usage conditions page could be read; the official Envilink catalog resource page returned HTTP 403. Check with the Pollution Control Department before relying on it commercially. Automated access, AI training and resale are not addressed on any page read."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each station reading carries a local date and time.",
+      "unknown": "Local time zone is not stated in the feed."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station latitude and longitude in the feed.",
+      "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Official PCD station measurements with a colour band and AQI.",
+      "unknown": "Agency values with no per-reading quality flag; -1 marks no data."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://air4thai.pcd.go.th",
+    "base_url": "https://air4thai.pcd.go.th/services",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the call made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/getNewAQI_JSON.php",
+        "params": "none",
+        "notes": "All stations, latest hourly reading. The http address redirects to https."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "JSON. No official API documentation was found.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "air quality",
+    "pm2.5",
+    "pm10",
+    "aqi",
+    "haze",
+    "thailand",
+    "bangkok",
+    "chiang mai",
+    "smoke",
+    "pollution",
+    "southeast asia",
+    "government",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, 173 stations, AQILast date 2026-11-07 time 02:00 with PM25, PM10, O3, CO, NO2, SO2, AQI",
+      "url": "https://air4thai.pcd.go.th/services/getNewAQI_JSON.php"
+    },
+    {
+      "claim": "Air4Thai is the Pollution Control Department's air quality site",
+      "url": "https://air4thai.pcd.go.th"
+    },
+    {
+      "claim": "Search results point to the official Envilink catalog listing an Air4Thai XML API with hourly and daily PM2.5 (page itself returned 403 when fetched)",
+      "url": "https://envilink.go.th/en/dataset/air-quality-pm2point5/resource/a6832796-379e-4fb3-9101-0a4ccda73ce6"
+    }
+  ]
+}

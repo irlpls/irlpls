@@ -48,6 +48,8 @@ BENCH = [
     ("river level in Paris, France", {"hubeau-hydrometrie"}, {"usgs-water", "pegelonline", "uk-ea-flood"}),
     # ---- live: Asia-Pacific official feeds (added 2026-11-06 with the coverage-gap cards) ----
     ("air quality in Singapore right now", {"sg-data-gov-realtime", "openaq", "sensor-community"}, {"airnow", "nws", "usgs-water"}),
+    ("air quality in Bangkok right now", {"air4thai-pcd", "openaq", "sensor-community"}, {"airnow", "nws", "usgs-water"}),
+    ("earthquakes in Turkey in the last day", {"tr-afad-earthquakes", "emsc-seismicportal", "usgs-earthquakes"}, {"proxypics", "airnow", "caltrans-cctv"}),
     ("temperature and rainfall in Hong Kong right now", {"hko-open-data", "open-meteo", "windy-webcams"}, {"nws", "usgs-water", "noaa-tides"}),
     ("weather in London, UK right now", {"windy-webcams", "openaq", "sensor-community", "ndbc-buoys"}, {"nws", "noaa-tides", "usgs-water"}),
     # ---- live: cameras ----

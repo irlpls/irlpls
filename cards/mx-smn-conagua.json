@@ -1,0 +1,166 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "mx-smn-conagua",
+  "name": "Mexico SMN web services (Servicio Meteorologico Nacional, Conagua)",
+  "provider_url": "https://smn.conagua.gob.mx",
+  "short": "Mexico's national weather service forecasts by municipality: 3-day daily and 48-hour hourly. Free, no key seen.",
+  "summary": "The Servicio Meteorologico Nacional (SMN, part of Conagua) publishes web services returning gzip-compressed JSON of forecasts for every municipality: method 1 is a daily forecast for 3 days, method 3 an hourly forecast for 48 hours. Rows carry state, municipality, coordinates, sky description, min and max temperature, rain amount and probability, wind speed, gusts and direction. A keyless GET of method 1 on 2026-11-06 UTC answered 200 with a file last modified 12:30 UTC that day (about 5 MB uncompressed). SMN's terms treat the data as public domain under an open data framework with explicit attribution, and forbid exact reproduction of the original material for direct commercial gain.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "daily forecast for 3 days per municipality (min and max temperature, rain, wind, sky)",
+      "hourly forecast for 48 hours per municipality"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Mexico"
+    ],
+    "areas": [
+      "MX"
+    ],
+    "notes": "Mexico only, by municipality. The files are forecasts, not station observations."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "No number published. Terms ask automated users to respect data refresh cycles and avoid mass or disproportionate requests; the page says information updates every hour at 15 minutes (wording incomplete).",
+      "source_url": "https://smn.conagua.gob.mx/es/terminos-y-condiciones"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-06 UTC: method 1 file last modified 12:30 UTC, about 7 hours before the call. The service page says information is updated every hour at 15 minutes; the daily file's own cadence was not confirmed."
+  },
+  "latency": {
+    "typical": "Hourly update stated (wording incomplete); sample about 7 hours old",
+    "notes": "Forecast product, so freshness means issue time."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "About 7 hours on one call",
+    "notes": "One call only."
+  },
+  "licensing": {
+    "summary": "SMN terms and conditions: information, data, maps and services are deemed public domain and provided under an open data framework; use and sharing require explicit attribution to the institution. Exact reproduction of the original material for direct commercial gain is strictly prohibited; derived products with added value may be sold, citing the source and not presenting as an official channel. Automated systems are permitted if they respect refresh cycles and avoid mass or disproportionate requests. No warranty of continuous availability; product builders are solely responsible for their own product's quality. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Forecast rows carry a local date-hour code (dloc) and the file has a modification time.",
+      "unknown": "Forecast issue time inside the rows was not separated from the file time."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Municipality latitude and longitude in each row.",
+      "unknown": "Municipality centroids, not stations."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Official SMN forecast model output.",
+      "unknown": "Forecast values, not observations; no accuracy score."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://smn.conagua.gob.mx/es/web-service-api",
+    "base_url": "https://smn.conagua.gob.mx/tools/GUI/webservices/",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "The page does not mention a key; none was sent."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/?method=1",
+        "params": "none",
+        "notes": "3-day daily forecast per municipality, gzip file of JSON."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/?method=3",
+        "params": "none",
+        "notes": "48-hour hourly forecast per municipality (from the docs page; not called)."
+      }
+    ],
+    "rate_limits": "Not published as a number.",
+    "notes": "Responses are gzip files; decompress before parsing.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "forecast",
+    "mexico",
+    "municipality",
+    "temperature",
+    "rain",
+    "wind",
+    "latin america",
+    "government",
+    "free",
+    "hourly",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Web services: method 1 daily forecast per municipality for 3 days, method 3 hourly forecast for 48 hours, JSON (compressed); information updated every hour at 15 minutes",
+      "url": "https://smn.conagua.gob.mx/es/web-service-api"
+    },
+    {
+      "claim": "Terms: public domain under an open data framework, explicit attribution, exact reproduction for direct commercial gain prohibited, automated systems allowed if they respect refresh cycles",
+      "url": "https://smn.conagua.gob.mx/es/terminos-y-condiciones"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200 gzip file DailyForecast_MX last modified Fri 6 Nov 12:30 UTC, rows with nes, nmun, lat, lon, tmax, tmin, prec, velvien",
+      "url": "https://smn.conagua.gob.mx/tools/GUI/webservices/index.php?method=1"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "my-data-gov-weather",
+  "name": "Malaysia data.gov.my weather API (MET Malaysia forecasts, warnings)",
+  "provider_url": "https://developer.data.gov.my/realtime-api/weather",
+  "short": "MET Malaysia 7-day forecasts, weather warnings and quake notices via data.gov.my. Free, no key.",
+  "summary": "data.gov.my, the Malaysian government open-data portal, serves MET Malaysia (Malaysian Meteorological Department) weather feeds over HTTP: a 7-day general forecast per location, current weather warnings with English and Malay text, and an earthquake warning feed. The docs state all weather feeds are licensed CC BY 4.0. A keyless call to the forecast and warning endpoints answered with JSON on 2026-11-06. Rate limit is 4 requests per minute. Forecast text is Bahasa Melayu only. The earthquake endpoint's first record returned was dated 2023, so it is not confirmed to hold recent events.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "7-day general forecast per district or state (daily min and max temperature, morning, afternoon, night)",
+      "weather warnings with issue time, validity and English text, updated when required",
+      "earthquake warnings (a recent-event guarantee was not confirmed)"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Malaysia"
+    ],
+    "areas": [
+      "MY"
+    ],
+    "notes": "Malaysia only. Locations are district (Ds) and state (St) forecast areas, not stations. Marine forecast data is stated as unavailable."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 4,
+      "per_seconds": 60,
+      "scope": "unknown",
+      "notes": "Stated for each API on the rate-limit page; excess requests get HTTP 429.",
+      "source_url": "https://developer.data.gov.my/rate-limit"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: warning issued 2026-11-07T00:40 local time (about 40 minutes before the call); forecast dated up to 2026-11-13. Docs say forecast is updated daily and warnings when required."
+  },
+  "latency": {
+    "typical": "Forecast daily; warnings when required",
+    "notes": "Update cadence from the docs page; one call only."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Warning about 40 minutes old on 2026-11-06 UTC",
+    "notes": "Forecasts are daily. Earthquake endpoint first record was from 2023."
+  },
+  "licensing": {
+    "summary": "The docs page states: all weather feeds are licensed under CC BY 4.0 (attribution required, reuse and redistribution allowed with credit). Terms of use beyond the licence were not readable; the page links to the portal's guiding principles. Automated access is not addressed, but a published rate limit exists. AI training and resale are not addressed.",
+    "resale": "allowed"
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Warnings carry issued and validity timestamps; forecasts carry a date.",
+      "unknown": "Local-time timestamps with no stated time zone in the sample."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Forecast location ids and names (district codes); warnings name regions in text.",
+      "unknown": "Forecast areas are districts and states; no coordinates in the sample."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Official MET Malaysia forecasts and warnings.",
+      "unknown": "Forecasts and warnings are agency products; no quality flags."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://developer.data.gov.my/realtime-api/weather",
+    "base_url": "https://api.data.gov.my/weather",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key needed in the calls made; docs do not mention a key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/forecast",
+        "params": "limit, contains, filter by Ds or St prefix",
+        "notes": "7-day general forecast."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/warning",
+        "params": "limit, timestamp_start",
+        "notes": "Weather and marine warnings."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/warning/earthquake",
+        "params": "limit",
+        "notes": "Earthquake warnings."
+      }
+    ],
+    "rate_limits": "4 requests per minute per API.",
+    "notes": "JSON.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "forecast",
+    "malaysia",
+    "warning",
+    "rain",
+    "temperature",
+    "marine",
+    "southeast asia",
+    "government",
+    "open data",
+    "free",
+    "kuala lumpur",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Weather feeds from MET Malaysia: 7-day forecast updated daily, warnings and earthquake warnings updated when required; all weather feeds licensed CC BY 4.0; forecast text Bahasa Melayu only",
+      "url": "https://developer.data.gov.my/realtime-api/weather"
+    },
+    {
+      "claim": "Rate limit 4 requests per minute per API; excess returns HTTP 429",
+      "url": "https://developer.data.gov.my/rate-limit"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, forecast rows with location_id, date, morning/afternoon/night forecast, min_temp, max_temp (Langkawi, 2026-11-13)",
+      "url": "https://api.data.gov.my/weather/forecast?limit=2"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, warning issued 2026-11-07T00:40 titled Strong Winds and Rough Seas Warning, valid 2026-11-08 to 2026-11-10",
+      "url": "https://api.data.gov.my/weather/warning?limit=1"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, earthquake warning first record dated 2023-10-09",
+      "url": "https://api.data.gov.my/weather/warning/earthquake?limit=1"
+    }
+  ]
+}

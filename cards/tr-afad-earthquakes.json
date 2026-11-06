@@ -1,0 +1,148 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "tr-afad-earthquakes",
+  "name": "AFAD earthquake event service (Turkey)",
+  "provider_url": "https://deprem.afad.gov.tr",
+  "short": "Turkey's disaster agency AFAD earthquake catalogue: recent events with magnitude, depth, province. Free, no key.",
+  "summary": "AFAD, Turkey's Disaster and Emergency Management Authority, runs an earthquake event service. Its apiv2 event/filter endpoint returns JSON events with ID, time, latitude, longitude, depth, magnitude and type, and Turkish province and district names. Filters include time range, magnitude, bounding box, radius, event id and paging; csv, kml and geojson output are also offered per the agency's event-service page. A keyless GET for 2026-11-05 to 2026-11-07 answered 200 with an event stamped 2026-11-06 18:34:53 local time. The agency page could not be read as text (it is a JavaScript app), so terms, licence and rate limits are Not stated here.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "recent earthquake events with magnitude, depth, location and province",
+      "filter by time, magnitude, bounding box or radius"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Turkey and nearby areas"
+    ],
+    "areas": [
+      "TR"
+    ],
+    "notes": "Turkey and its surroundings; the sample event was in Sivas province. A developer report says the endpoint holds only roughly the last 11 days; unverified."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: the newest event returned was stamped 2026-11-06T18:34:53 local time (UTC+3), about 4 hours before the call, and was a small ML 1.3 quake. Lag after an event was not measured."
+  },
+  "latency": {
+    "typical": "Not stated",
+    "notes": "No latency published."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "About 4 hours since the last small event on one call",
+    "notes": "Event times depend on seismicity, not a fixed schedule."
+  },
+  "licensing": {
+    "summary": "Not stated. The AFAD event-service page could not be read as text, so no licence, terms or attribution rules are known. Check with AFAD before commercial or redistributed use. Automated access, AI training and resale are not addressed on any page read."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each event has an origin time in local time (no offset shown).",
+      "unknown": "Time zone not stated in records; assumed local Turkish time."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Event latitude, longitude and province in the record.",
+      "unknown": "Epicentres as determined by AFAD; location error is not given."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Agency catalogue values: magnitude with type, depth, rms.",
+      "unknown": "Magnitudes are agency estimates; event updates are flagged (isEventUpdate) but revisions are not documented."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://deprem.afad.gov.tr/event-service",
+    "base_url": "https://servisnet.afad.gov.tr/apigateway/deprem/apiv2",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the call made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/event/filter",
+        "params": "start, end, minmag, minlat, maxlat, minlon, maxlon, lat, lon, minrad, maxrad, depth, limit, offset, format",
+        "notes": "Earthquake events; parameter list from the agency's event-service page via a search summary, only start, end and limit were called."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "JSON. The old deprem.afad.gov.tr/apiv2 address redirects to the servisnet gateway.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "earthquake",
+    "turkey",
+    "seismic",
+    "afad",
+    "magnitude",
+    "tremor",
+    "istanbul",
+    "middle east",
+    "government",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Event service page: current base URL servisnet.afad.gov.tr/apigateway/deprem/apiv2/event/filter; filters for time, magnitude, bbox, radius, depth, paging, event id, csv/kml/geojson output (page text itself not readable; read via search summary)",
+      "url": "https://deprem.afad.gov.tr/event-service"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, event 598454 ML 1.3 at Imranli (Sivas), date 2026-11-06T18:34:53",
+      "url": "https://servisnet.afad.gov.tr/apigateway/deprem/apiv2/event/filter?start=2026-11-05&end=2026-11-07&limit=1"
+    }
+  ]
+}

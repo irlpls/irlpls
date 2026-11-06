@@ -38,6 +38,161 @@
  ],
  "cards": [
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "air4thai-pcd",
+   "name": "Air4Thai (Thailand Pollution Control Department air quality)",
+   "provider_url": "https://air4thai.pcd.go.th",
+   "short": "Thailand's official hourly air quality (PM2.5, PM10, O3, CO, NO2, SO2, AQI) from about 170 stations. Free, no key seen.",
+   "summary": "Air4Thai is the Pollution Control Department's public air quality site. Its JSON feed (getNewAQI_JSON.php, also referenced in the official Envilink catalog as an XML twin) lists every station with Thai and English names, area, coordinates, station type and the last hourly reading of PM2.5, PM10, O3, CO, NO2, SO2 and an overall AQI. On 2026-11-06 UTC a keyless GET returned 173 stations, the newest reading stamped 02:00 on 2026-11-07 local time (about 20 minutes old). No terms, licence or rate limit could be read, since the site is a JavaScript app and the services directory is not browsable.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "hourly PM2.5, PM10, O3, CO, NO2 and SO2 readings with an AQI per station",
+     "station list with names, areas and coordinates (GROUND, BKK and MOBILE types)"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Thailand"
+    ],
+    "areas": [
+     "TH"
+    ],
+    "notes": "Thailand only. 173 stations on 2026-11-06 (104 ground, 68 Bangkok, 1 mobile). Some pollutants show -1 where a station does not measure them."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: newest station reading stamped 2026-11-07 02:00 local time, about 20 minutes before the call. Hourly cadence is shown by the readings, not stated by the provider."
+   },
+   "latency": {
+    "typical": "About 20 minutes on one call",
+    "notes": "Update interval is not stated on any page read; the official Envilink catalog describes the data as hourly."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 1 hour on 2026-11-06",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "Not stated. The Air4Thai site is a JavaScript app and no terms, licence or usage conditions page could be read; the official Envilink catalog resource page returned HTTP 403. Check with the Pollution Control Department before relying on it commercially. Automated access, AI training and resale are not addressed on any page read."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each station reading carries a local date and time.",
+     "unknown": "Local time zone is not stated in the feed."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station latitude and longitude in the feed.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Official PCD station measurements with a colour band and AQI.",
+     "unknown": "Agency values with no per-reading quality flag; -1 marks no data."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://air4thai.pcd.go.th",
+    "base_url": "https://air4thai.pcd.go.th/services",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the call made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/getNewAQI_JSON.php",
+      "params": "none",
+      "notes": "All stations, latest hourly reading. The http address redirects to https."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "JSON. No official API documentation was found.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "air quality",
+    "pm2.5",
+    "pm10",
+    "aqi",
+    "haze",
+    "thailand",
+    "bangkok",
+    "chiang mai",
+    "smoke",
+    "pollution",
+    "southeast asia",
+    "government",
+    "free",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, 173 stations, AQILast date 2026-11-07 time 02:00 with PM25, PM10, O3, CO, NO2, SO2, AQI",
+     "url": "https://air4thai.pcd.go.th/services/getNewAQI_JSON.php"
+    },
+    {
+     "claim": "Air4Thai is the Pollution Control Department's air quality site",
+     "url": "https://air4thai.pcd.go.th"
+    },
+    {
+     "claim": "Search results point to the official Envilink catalog listing an Air4Thai XML API with hourly and daily PM2.5 (page itself returned 403 when fetched)",
+     "url": "https://envilink.go.th/en/dataset/air-quality-pm2point5/resource/a6832796-379e-4fb3-9101-0a4ccda73ce6"
+    }
+   ]
+  },
+  {
    "id": "airnow",
    "name": "EPA AirNow",
    "status": "unclaimed",
@@ -2029,6 +2184,159 @@
     {
      "claim": "Upload-time validation of resolution, duration, orientation and file integrity, then same-day human QA",
      "url": "https://claru.ai/solutions/egocentric-video-data"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "co-ideam-datos-abiertos",
+   "name": "Colombia IDEAM hydrometeorological stations (datos.gov.co)",
+   "provider_url": "https://www.datos.gov.co/Ambiente-y-Desarrollo-Sostenible/Temperatura-Ambiente-del-Aire/sbwg-7ju4",
+   "short": "IDEAM station air temperature across Colombia, hourly records via the national open-data portal. Free, no key.",
+   "summary": "Colombia's national weather and environment institute (IDEAM) publishes hourly air temperature from stations across the country as an open dataset on datos.gov.co (Socrata, SODA JSON API). Each record has station code and name, department, municipality, latitude, longitude, sensor description, unit and the observed value with its time. The dataset metadata says it gets basic WMO-recommended quality control, with values corrected or removed that fail, and that the update frequency is daily. A keyless GET sorted by time on 2026-11-06 UTC returned an observation stamped 2026-11-05 23:58 local time. Sibling IDEAM datasets on the portal (other variables) were not checked.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "hourly air temperature at 2 m by station",
+     "station metadata with coordinates, department and municipality"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Colombia"
+    ],
+    "areas": [
+     "CO"
+    ],
+    "notes": "Colombia only. Other IDEAM variables (rain, level, wind) are separate datasets on the portal and were not checked."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "Socrata platform; no number checked. Unauthenticated Socrata calls can be throttled; an app token is optional and was not used.",
+     "source_url": "https://www.datos.gov.co/api/views/sbwg-7ju4"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-06 UTC with order by fechaobservacion desc: newest record 2026-11-05T23:58 local, about 14 hours before the call. Metadata says the dataset updates daily; rowsUpdatedAt 2026-11-06 14:43 UTC."
+   },
+   "latency": {
+    "typical": "Up to about a day",
+    "notes": "Dataset update frequency is stated as daily in the metadata, so this is near-real-time, not minutes."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About 14 hours on 2026-11-06",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "Dataset metadata on datos.gov.co: Creative Commons Attribution Share-Alike 4.0 International (credit IDEAM; derivative datasets must carry the same licence). Provenance flagged official. The portal's own terms of use were not read. Automated access, AI training and resale are not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record has an observation timestamp (local, no offset shown).",
+     "unknown": "Time zone is not stated in the records."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station latitude and longitude in each record.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Metadata states basic WMO-recommended quality control, with failing values corrected or removed.",
+     "unknown": "Quality control is described only in general terms; metadata advises extra validation for specific uses."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://dev.socrata.com/",
+    "base_url": "https://www.datos.gov.co/resource/sbwg-7ju4.json",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; Socrata app tokens are optional."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/resource/sbwg-7ju4.json",
+      "params": "$limit, $order, $where (SoQL)",
+      "notes": "Hourly air temperature observations; order by fechaobservacion DESC for the newest."
+     }
+    ],
+    "rate_limits": "Not checked.",
+    "notes": "JSON via SODA.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "temperature",
+    "colombia",
+    "ideam",
+    "stations",
+    "latin america",
+    "government",
+    "open data",
+    "free",
+    "hourly",
+    "bogota"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset: air temperature recorded hourly at IDEAM stations; basic WMO QC; frequency of update daily; attribution IDEAM; licence CC BY-SA 4.0; provenance official",
+     "url": "https://www.datos.gov.co/api/views/sbwg-7ju4"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, newest record fechaobservacion 2026-11-05T23:58:00 value 25.9 C at Aeropuerto Los Garzones, Cerete",
+     "url": "https://www.datos.gov.co/resource/sbwg-7ju4.json?$order=fechaobservacion%20DESC&$limit=1"
     }
    ]
   },
@@ -12120,6 +12428,358 @@
    ]
   },
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "mx-smn-conagua",
+   "name": "Mexico SMN web services (Servicio Meteorologico Nacional, Conagua)",
+   "provider_url": "https://smn.conagua.gob.mx",
+   "short": "Mexico's national weather service forecasts by municipality: 3-day daily and 48-hour hourly. Free, no key seen.",
+   "summary": "The Servicio Meteorologico Nacional (SMN, part of Conagua) publishes web services returning gzip-compressed JSON of forecasts for every municipality: method 1 is a daily forecast for 3 days, method 3 an hourly forecast for 48 hours. Rows carry state, municipality, coordinates, sky description, min and max temperature, rain amount and probability, wind speed, gusts and direction. A keyless GET of method 1 on 2026-11-06 UTC answered 200 with a file last modified 12:30 UTC that day (about 5 MB uncompressed). SMN's terms treat the data as public domain under an open data framework with explicit attribution, and forbid exact reproduction of the original material for direct commercial gain.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "daily forecast for 3 days per municipality (min and max temperature, rain, wind, sky)",
+     "hourly forecast for 48 hours per municipality"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Mexico"
+    ],
+    "areas": [
+     "MX"
+    ],
+    "notes": "Mexico only, by municipality. The files are forecasts, not station observations."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No number published. Terms ask automated users to respect data refresh cycles and avoid mass or disproportionate requests; the page says information updates every hour at 15 minutes (wording incomplete).",
+     "source_url": "https://smn.conagua.gob.mx/es/terminos-y-condiciones"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-06 UTC: method 1 file last modified 12:30 UTC, about 7 hours before the call. The service page says information is updated every hour at 15 minutes; the daily file's own cadence was not confirmed."
+   },
+   "latency": {
+    "typical": "Hourly update stated (wording incomplete); sample about 7 hours old",
+    "notes": "Forecast product, so freshness means issue time."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About 7 hours on one call",
+    "notes": "One call only."
+   },
+   "licensing": {
+    "summary": "SMN terms and conditions: information, data, maps and services are deemed public domain and provided under an open data framework; use and sharing require explicit attribution to the institution. Exact reproduction of the original material for direct commercial gain is strictly prohibited; derived products with added value may be sold, citing the source and not presenting as an official channel. Automated systems are permitted if they respect refresh cycles and avoid mass or disproportionate requests. No warranty of continuous availability; product builders are solely responsible for their own product's quality. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Forecast rows carry a local date-hour code (dloc) and the file has a modification time.",
+     "unknown": "Forecast issue time inside the rows was not separated from the file time."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Municipality latitude and longitude in each row.",
+     "unknown": "Municipality centroids, not stations."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Official SMN forecast model output.",
+     "unknown": "Forecast values, not observations; no accuracy score."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://smn.conagua.gob.mx/es/web-service-api",
+    "base_url": "https://smn.conagua.gob.mx/tools/GUI/webservices/",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "The page does not mention a key; none was sent."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/?method=1",
+      "params": "none",
+      "notes": "3-day daily forecast per municipality, gzip file of JSON."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/?method=3",
+      "params": "none",
+      "notes": "48-hour hourly forecast per municipality (from the docs page; not called)."
+     }
+    ],
+    "rate_limits": "Not published as a number.",
+    "notes": "Responses are gzip files; decompress before parsing.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "forecast",
+    "mexico",
+    "municipality",
+    "temperature",
+    "rain",
+    "wind",
+    "latin america",
+    "government",
+    "free",
+    "hourly",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Web services: method 1 daily forecast per municipality for 3 days, method 3 hourly forecast for 48 hours, JSON (compressed); information updated every hour at 15 minutes",
+     "url": "https://smn.conagua.gob.mx/es/web-service-api"
+    },
+    {
+     "claim": "Terms: public domain under an open data framework, explicit attribution, exact reproduction for direct commercial gain prohibited, automated systems allowed if they respect refresh cycles",
+     "url": "https://smn.conagua.gob.mx/es/terminos-y-condiciones"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200 gzip file DailyForecast_MX last modified Fri 6 Nov 12:30 UTC, rows with nes, nmun, lat, lon, tmax, tmin, prec, velvien",
+     "url": "https://smn.conagua.gob.mx/tools/GUI/webservices/index.php?method=1"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "my-data-gov-weather",
+   "name": "Malaysia data.gov.my weather API (MET Malaysia forecasts, warnings)",
+   "provider_url": "https://developer.data.gov.my/realtime-api/weather",
+   "short": "MET Malaysia 7-day forecasts, weather warnings and quake notices via data.gov.my. Free, no key.",
+   "summary": "data.gov.my, the Malaysian government open-data portal, serves MET Malaysia (Malaysian Meteorological Department) weather feeds over HTTP: a 7-day general forecast per location, current weather warnings with English and Malay text, and an earthquake warning feed. The docs state all weather feeds are licensed CC BY 4.0. A keyless call to the forecast and warning endpoints answered with JSON on 2026-11-06. Rate limit is 4 requests per minute. Forecast text is Bahasa Melayu only. The earthquake endpoint's first record returned was dated 2023, so it is not confirmed to hold recent events.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "7-day general forecast per district or state (daily min and max temperature, morning, afternoon, night)",
+     "weather warnings with issue time, validity and English text, updated when required",
+     "earthquake warnings (a recent-event guarantee was not confirmed)"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Malaysia"
+    ],
+    "areas": [
+     "MY"
+    ],
+    "notes": "Malaysia only. Locations are district (Ds) and state (St) forecast areas, not stations. Marine forecast data is stated as unavailable."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "requests": 4,
+     "per_seconds": 60,
+     "scope": "unknown",
+     "notes": "Stated for each API on the rate-limit page; excess requests get HTTP 429.",
+     "source_url": "https://developer.data.gov.my/rate-limit"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: warning issued 2026-11-07T00:40 local time (about 40 minutes before the call); forecast dated up to 2026-11-13. Docs say forecast is updated daily and warnings when required."
+   },
+   "latency": {
+    "typical": "Forecast daily; warnings when required",
+    "notes": "Update cadence from the docs page; one call only."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Warning about 40 minutes old on 2026-11-06 UTC",
+    "notes": "Forecasts are daily. Earthquake endpoint first record was from 2023."
+   },
+   "licensing": {
+    "summary": "The docs page states: all weather feeds are licensed under CC BY 4.0 (attribution required, reuse and redistribution allowed with credit). Terms of use beyond the licence were not readable; the page links to the portal's guiding principles. Automated access is not addressed, but a published rate limit exists. AI training and resale are not addressed.",
+    "resale": "allowed"
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Warnings carry issued and validity timestamps; forecasts carry a date.",
+     "unknown": "Local-time timestamps with no stated time zone in the sample."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Forecast location ids and names (district codes); warnings name regions in text.",
+     "unknown": "Forecast areas are districts and states; no coordinates in the sample."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Official MET Malaysia forecasts and warnings.",
+     "unknown": "Forecasts and warnings are agency products; no quality flags."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://developer.data.gov.my/realtime-api/weather",
+    "base_url": "https://api.data.gov.my/weather",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key needed in the calls made; docs do not mention a key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/forecast",
+      "params": "limit, contains, filter by Ds or St prefix",
+      "notes": "7-day general forecast."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/warning",
+      "params": "limit, timestamp_start",
+      "notes": "Weather and marine warnings."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/warning/earthquake",
+      "params": "limit",
+      "notes": "Earthquake warnings."
+     }
+    ],
+    "rate_limits": "4 requests per minute per API.",
+    "notes": "JSON.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "forecast",
+    "malaysia",
+    "warning",
+    "rain",
+    "temperature",
+    "marine",
+    "southeast asia",
+    "government",
+    "open data",
+    "free",
+    "kuala lumpur",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Weather feeds from MET Malaysia: 7-day forecast updated daily, warnings and earthquake warnings updated when required; all weather feeds licensed CC BY 4.0; forecast text Bahasa Melayu only",
+     "url": "https://developer.data.gov.my/realtime-api/weather"
+    },
+    {
+     "claim": "Rate limit 4 requests per minute per API; excess returns HTTP 429",
+     "url": "https://developer.data.gov.my/rate-limit"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, forecast rows with location_id, date, morning/afternoon/night forecast, min_temp, max_temp (Langkawi, 2026-11-13)",
+     "url": "https://api.data.gov.my/weather/forecast?limit=2"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, warning issued 2026-11-07T00:40 titled Strong Winds and Rough Seas Warning, valid 2026-11-08 to 2026-11-10",
+     "url": "https://api.data.gov.my/weather/warning?limit=1"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, earthquake warning first record dated 2023-10-09",
+     "url": "https://api.data.gov.my/weather/warning/earthquake?limit=1"
+    }
+   ]
+  },
+  {
    "id": "nasa-firms",
    "name": "NASA FIRMS active fires",
    "status": "unclaimed",
@@ -21190,6 +21850,154 @@
    "updated": "2026-10-28",
    "expires": "2027-10-27",
    "adapter": "toloka"
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "tr-afad-earthquakes",
+   "name": "AFAD earthquake event service (Turkey)",
+   "provider_url": "https://deprem.afad.gov.tr",
+   "short": "Turkey's disaster agency AFAD earthquake catalogue: recent events with magnitude, depth, province. Free, no key.",
+   "summary": "AFAD, Turkey's Disaster and Emergency Management Authority, runs an earthquake event service. Its apiv2 event/filter endpoint returns JSON events with ID, time, latitude, longitude, depth, magnitude and type, and Turkish province and district names. Filters include time range, magnitude, bounding box, radius, event id and paging; csv, kml and geojson output are also offered per the agency's event-service page. A keyless GET for 2026-11-05 to 2026-11-07 answered 200 with an event stamped 2026-11-06 18:34:53 local time. The agency page could not be read as text (it is a JavaScript app), so terms, licence and rate limits are Not stated here.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "recent earthquake events with magnitude, depth, location and province",
+     "filter by time, magnitude, bounding box or radius"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Turkey and nearby areas"
+    ],
+    "areas": [
+     "TR"
+    ],
+    "notes": "Turkey and its surroundings; the sample event was in Sivas province. A developer report says the endpoint holds only roughly the last 11 days; unverified."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: the newest event returned was stamped 2026-11-06T18:34:53 local time (UTC+3), about 4 hours before the call, and was a small ML 1.3 quake. Lag after an event was not measured."
+   },
+   "latency": {
+    "typical": "Not stated",
+    "notes": "No latency published."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About 4 hours since the last small event on one call",
+    "notes": "Event times depend on seismicity, not a fixed schedule."
+   },
+   "licensing": {
+    "summary": "Not stated. The AFAD event-service page could not be read as text, so no licence, terms or attribution rules are known. Check with AFAD before commercial or redistributed use. Automated access, AI training and resale are not addressed on any page read."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each event has an origin time in local time (no offset shown).",
+     "unknown": "Time zone not stated in records; assumed local Turkish time."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Event latitude, longitude and province in the record.",
+     "unknown": "Epicentres as determined by AFAD; location error is not given."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Agency catalogue values: magnitude with type, depth, rms.",
+     "unknown": "Magnitudes are agency estimates; event updates are flagged (isEventUpdate) but revisions are not documented."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://deprem.afad.gov.tr/event-service",
+    "base_url": "https://servisnet.afad.gov.tr/apigateway/deprem/apiv2",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the call made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/event/filter",
+      "params": "start, end, minmag, minlat, maxlat, minlon, maxlon, lat, lon, minrad, maxrad, depth, limit, offset, format",
+      "notes": "Earthquake events; parameter list from the agency's event-service page via a search summary, only start, end and limit were called."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "JSON. The old deprem.afad.gov.tr/apiv2 address redirects to the servisnet gateway.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "earthquake",
+    "turkey",
+    "seismic",
+    "afad",
+    "magnitude",
+    "tremor",
+    "istanbul",
+    "middle east",
+    "government",
+    "free",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Event service page: current base URL servisnet.afad.gov.tr/apigateway/deprem/apiv2/event/filter; filters for time, magnitude, bbox, radius, depth, paging, event id, csv/kml/geojson output (page text itself not readable; read via search summary)",
+     "url": "https://deprem.afad.gov.tr/event-service"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, event 598454 ML 1.3 at Imranli (Sivas), date 2026-11-06T18:34:53",
+     "url": "https://servisnet.afad.gov.tr/apigateway/deprem/apiv2/event/filter?start=2026-11-05&end=2026-11-07&limit=1"
+    }
+   ]
   },
   {
    "id": "truelabel",
