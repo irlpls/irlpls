@@ -1,0 +1,190 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "bmkg-open-data",
+  "name": "BMKG Indonesia open weather and earthquake data",
+  "provider_url": "https://data.bmkg.go.id/",
+  "short": "Indonesia's official 3-day village weather forecast, weather nowcast alerts and latest earthquakes. Free, no key.",
+  "summary": "BMKG, Indonesia's meteorology, climatology and geophysics agency, publishes open JSON: a 3-day forecast at 3-hour steps for any administrative level-IV area (kelurahan or village) via api.bmkg.go.id, the latest earthquake and lists of felt and M5+ quakes via data.bmkg.go.id, and an RSS feed of nowcast weather alerts. The pages state a limit of 60 requests per minute per IP and require showing BMKG as the source. The forecast is produced twice a day, so it is a forecast, not a live reading; the earthquake files update with each event (the newest sampled was under 8 hours old at the call).",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "3-day weather forecast per village: temperature, humidity, cloud cover, wind, visibility",
+      "latest earthquake with magnitude, depth, region, tsunami potential and felt report (autogempa)",
+      "15 latest M5.0+ and 15 latest felt earthquakes",
+      "current weather alerts feed (nowcast RSS)"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Indonesia"
+    ],
+    "areas": [
+      "ID"
+    ],
+    "notes": "Forecast is addressed by Ministry of Home Affairs level-IV administrative codes (adm4); the example is Kemayoran, Jakarta (31.71.03.1001). Weather text fields are Indonesian with an English field. Quake data covers Indonesia and its surrounding seas."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 60,
+      "per_seconds": 60,
+      "scope": "per-ip",
+      "notes": "Stated on the forecast and earthquake documentation pages.",
+      "source_url": "https://data.bmkg.go.id/prakiraan-cuaca/"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "Earthquake files update on each event (earthquake page); the latest sampled event was 17:38 UTC on 2026-11-06 and the call was 18:2x UTC. The forecast updates 2 times a day (forecast page), so it is a forecast rather than a reading."
+  },
+  "latency": {
+    "typical": "minutes for quakes, 12 hours for forecasts",
+    "notes": "Quake page gives no fixed interval. Forecast: 2 updates per day, 8 points per day at 3-hour steps."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes after a quake; forecasts up to half a day",
+    "notes": "Each forecast carries analysis_date; each quake a UTC DateTime."
+  },
+  "licensing": {
+    "summary": "BMKG's documentation pages require BMKG to be credited as the data source and shown in your app or system. They state no licence and no other terms; the earthquake page tells users to write to support[at]bmkg.go.id for certainty about terms of use. Redistribution, resale and AI use are therefore Not stated. Rate limit 60 requests per minute per IP."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Quake DateTime in UTC; forecast utc_datetime.",
+      "unknown": "UTC DateTime fields in earthquake files, analysis_date on forecasts; clock handling not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Quake Coordinates field; forecast lokasi lat/lon.",
+      "unknown": "Quake coordinates are BMKG's computed epicentres; forecast areas carry lat/lon of the village."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Magnitude, depth, region, tsunami potential, MMI felt scale.",
+      "unknown": "Preliminary automatic quake solutions (the sampled one is M3.3 with felt report); forecasts are model output, not observations."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.bmkg.go.id/prakiraan-cuaca/",
+    "base_url": "https://api.bmkg.go.id/publik",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/prakiraan-cuaca",
+        "params": "adm4 (level-IV area code)",
+        "notes": "3-day forecast at 3-hour steps."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+        "params": "none",
+        "notes": "Latest earthquake; also gempaterkini.json (15 M5+) and gempadirasakan.json (15 felt)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "https://www.bmkg.go.id/alerts/nowcast/en",
+        "params": "none",
+        "notes": "RSS of weather alerts (CAP)."
+      }
+    ],
+    "rate_limits": "60 requests per minute per IP.",
+    "notes": "JSON and XML.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "forecast",
+    "earthquake",
+    "tsunami",
+    "nowcast",
+    "indonesia",
+    "jakarta",
+    "southeast asia",
+    "government",
+    "open data",
+    "free",
+    "real-time",
+    "temperature",
+    "rainfall"
+  ],
+  "sources": [
+    {
+      "claim": "Forecast API: endpoint, adm4 parameter, 3-day 3-hour fields, 2 updates per day, 60 requests/min/IP, BMKG attribution required, no licence stated, no key mentioned",
+      "url": "https://data.bmkg.go.id/prakiraan-cuaca/"
+    },
+    {
+      "claim": "Earthquake files autogempa/gempaterkini/gempadirasakan, update on each event, 60 requests/min/IP, attribution required, contact support[at]bmkg.go.id for terms",
+      "url": "https://data.bmkg.go.id/gempabumi/"
+    },
+    {
+      "claim": "Data sections listed: forecast, earthquakes, nowcast; contact support[at]bmkg.go.id",
+      "url": "https://data.bmkg.go.id/"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, forecast for Kemayoran, Jakarta Pusat",
+      "url": "https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=31.71.03.1001"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, latest quake M3.3 5 km depth 54 km SE of Morowali, 2026-11-06T17:38:52Z",
+      "url": "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200 application/xml RSS of BMKG weather alerts",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/en"
+    }
+  ]
+}

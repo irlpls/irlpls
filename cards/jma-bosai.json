@@ -1,0 +1,195 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "jma-bosai",
+  "name": "Japan Meteorological Agency bosai data feeds",
+  "provider_url": "https://www.jma.go.jp/bosai/",
+  "short": "Japan's official station observations, warnings and quake reports as JSON. Free, no key, no API docs.",
+  "summary": "The JMA disaster-prevention site (bosai) serves the data behind its pages as JSON with no key: AMeDAS observations for about 1,290 stations every 10 minutes (temperature, humidity, wind, pressure, precipitation, sunshine), regional forecast overviews, warnings and advisories by prefecture, and earthquake information lists. On 2026-11-06 (UTC) the latest AMeDAS time was within minutes of the call. JMA publishes these as website content under its general terms rather than as a documented API; the files can change or move without notice.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest AMeDAS observation per station: temperature, humidity, wind, pressure, 10-minute and hourly precipitation",
+      "forecast overview text by prefecture area",
+      "warnings and advisories by prefecture",
+      "recent earthquake list with magnitude, maximum intensity and epicentre"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Japan"
+    ],
+    "areas": [
+      "JP"
+    ],
+    "notes": "All of Japan. The AMeDAS map file returned 1,286 station entries on 2026-11-06. Text fields in forecast and warning files are in Japanese; English forecasts are not in these files. Stations are identified by numeric code; names come from a separate station table."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: amedas/data/latest_time.txt returned 2026-11-07T03:10:00+09:00 and the matching map file returned 1,286 stations; quake list top entry 03:02 JST."
+  },
+  "latency": {
+    "typical": "10 minutes for AMeDAS",
+    "notes": "AMeDAS 10-minute cadence is from the file naming (YYYYMMDDHHMM00) and one live check; JMA's page read does not state a cadence. Warnings and quakes update when issued."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "About 10 minutes",
+    "notes": "latest_time.txt gives the newest AMeDAS slot; warning files carry a reportDatetime (the Tokyo warning file sampled had reportDatetime 2026-05-28, so it only changes when a warning is issued)."
+  },
+  "licensing": {
+    "summary": "JMA website terms: content may be used under the Public Data License (Version 1.0), which the page says is compatible with Creative Commons Attribution 4.0. The user must cite the source (for example 'Source: Japan Meteorological Agency website (URL)') and say if the content was edited. Some content is restricted under the Meteorological Service Act (forecasting and warning services need a licence), logos are excluded, and content may be changed or removed without notice. The terms do not address automated access, resale or AI. Republishing forecasts or warnings as your own service may need a JMA forecasting licence; the page points to the Act."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "AMeDAS slot time with +09:00 offset.",
+      "unknown": "Observation slot time is in the file name and response; clock handling not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station codes with a station table (amedastable.json), not fetched here.",
+      "unknown": "Stations by numeric code; coordinates come from a separate station table not read."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Values in [value, flag] pairs; units not documented on the pages read.",
+      "unknown": "Official measurements; each value carries a quality flag (second array element: 0 in the sample) whose meaning was not read from documentation."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.jma.go.jp/jma/en/copyright.html",
+    "base_url": "https://www.jma.go.jp/bosai",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/amedas/data/latest_time.txt",
+        "params": "none",
+        "notes": "Newest observation slot."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/amedas/data/map/{YYYYMMDDHHMM00}.json",
+        "params": "slot time",
+        "notes": "All stations for the slot."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/forecast/data/overview_forecast/{areaCode}.json",
+        "params": "area code, e.g. 130000 Tokyo",
+        "notes": "Forecast overview (Japanese)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/warning/data/warning/{areaCode}.json",
+        "params": "area code",
+        "notes": "Warnings and advisories."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/quake/data/list.json",
+        "params": "none",
+        "notes": "Recent earthquake information."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "These JSON files back JMA's own web pages; no API documentation or stability guarantee was found. Paths were observed live, not from a spec.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "amedas",
+    "temperature",
+    "wind",
+    "rainfall",
+    "precipitation",
+    "warning",
+    "typhoon",
+    "earthquake",
+    "japan",
+    "tokyo",
+    "east asia",
+    "government",
+    "open data",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "JMA terms: Public Data License v1.0 compatible with CC BY 4.0; cite source; edited-content notice; Meteorological Service Act restrictions; changeable without notice; no rules on automated access",
+      "url": "https://www.jma.go.jp/jma/en/copyright.html"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: latest AMeDAS slot 2026-11-07T03:10:00+09:00",
+      "url": "https://www.jma.go.jp/bosai/amedas/data/latest_time.txt"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: AMeDAS map for the slot, 1,286 entries, station 44132 temp 15.8 humidity 51 wind 3.4",
+      "url": "https://www.jma.go.jp/bosai/amedas/data/map/20261107031000.json"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200 Tokyo forecast overview reportDatetime 2026-11-06T16:38 JST",
+      "url": "https://www.jma.go.jp/bosai/forecast/data/overview_forecast/130000.json"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200 quake list, newest entry 2026-11-07T03:02 JST magnitude 3.5 Wakayama",
+      "url": "https://www.jma.go.jp/bosai/quake/data/list.json"
+    }
+  ]
+}

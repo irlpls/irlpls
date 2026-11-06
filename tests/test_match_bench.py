@@ -46,6 +46,9 @@ BENCH = [
     ("earthquakes near Anchorage, Alaska today", {"usgs-earthquakes", "emsc-seismicportal"}, {"nws", "noaa-tides", "usgs-water"}),
     ("river level in Vienna, Austria", {"pegelonline"}, {"usgs-water", "hubeau-hydrometrie", "uk-ea-flood"}),  # viadonau gauges on PEGELONLINE
     ("river level in Paris, France", {"hubeau-hydrometrie"}, {"usgs-water", "pegelonline", "uk-ea-flood"}),
+    # ---- live: Asia-Pacific official feeds (added 2026-11-06 with the coverage-gap cards) ----
+    ("air quality in Singapore right now", {"sg-data-gov-realtime", "openaq", "sensor-community"}, {"airnow", "nws", "usgs-water"}),
+    ("temperature and rainfall in Hong Kong right now", {"hko-open-data", "open-meteo", "windy-webcams"}, {"nws", "usgs-water", "noaa-tides"}),
     ("weather in London, UK right now", {"windy-webcams", "openaq", "sensor-community", "ndbc-buoys"}, {"nws", "noaa-tides", "usgs-water"}),
     # ---- live: cameras ----
     ("is traffic backed up on the Bay Bridge in San Francisco, CA right now", {"caltrans-cctv", "empiric-earth"}, {"usgs-water", "noaa-tides", "nws"}),

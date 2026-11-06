@@ -1,0 +1,216 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "sg-data-gov-realtime",
+  "name": "Singapore data.gov.sg real-time APIs (PSI, weather, traffic cameras)",
+  "provider_url": "https://data.gov.sg",
+  "short": "Singapore's official PSI air quality, rainfall, temperature, 2-hour forecast and expressway camera images. Free, no key.",
+  "summary": "Data.gov.sg, run by the Singapore government, serves real-time datasets over HTTP without an API key for testing: the Pollutant Standards Index (PSI) with PM2.5, PM10, NO2, O3, CO and SO2 by region, station rainfall, air temperature, a 2-hour area weather forecast, and a snapshot from each traffic camera in its feed. On 2026-11-06 (UTC) every endpoint tried answered with readings less than 20 minutes old. Keyless calls have a lower rate limit; a free key raises it.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "photo"
+    ],
+    "tasks": [
+      "PSI and pollutant readings (PM2.5, PM10, NO2, O3, CO, SO2) for five Singapore regions, hourly",
+      "station rainfall and air temperature (update interval not stated on the pages read)",
+      "2-hour weather forecast per area",
+      "traffic camera images with camera id, position and timestamp,"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Singapore"
+    ],
+    "areas": [
+      "SG"
+    ],
+    "notes": "Singapore only. PSI is reported for five regions (north, south, east, west, central), not per street. The traffic-image feed returned cameras with latitude/longitude; the camera count was not counted. Station lists are in each response."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 6,
+      "per_seconds": 10,
+      "scope": "unknown",
+      "notes": "Keyless limit for the v2 Real-time API as published. Development key tier 12 calls and production tier 30 calls per 10 seconds, both need a key.",
+      "source_url": "https://guide.data.gov.sg/developer-guide/api-overview/api-rate-limits"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GETs on 2026-11-06 UTC: PSI updatedTimestamp 02:15 SGT (about 5 minutes before the call), air-temperature reading 02:13 SGT, two-hr-forecast updated 02:06 SGT, traffic-images camera timestamps 02:15 SGT."
+  },
+  "latency": {
+    "typical": "1 to 20 minutes",
+    "notes": "PSI is an hourly-updated index (24-hour averages and 1-hour maxima); rainfall and temperature are station readings with their own timestamps. Update intervals are not stated on the pages read; ages measured from one call only."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 20 minutes on 2026-11-06",
+    "notes": "One sample only; no history sampled."
+  },
+  "licensing": {
+    "summary": "Singapore Open Data Licence v1.0: use, adapt, distribute and sub-license the datasets commercially or non-commercially, with a conspicuous source acknowledgement and a link to the licence. Datasets are provided as is, with no warranty of accuracy, completeness or timeliness. The licence does not mention automated access or AI. Some datasets on the site carry their own terms; check each dataset page.",
+    "resale": "allowed"
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each reading carries an ISO 8601 timestamp with +08:00 offset.",
+      "unknown": "Timestamps are the agency's own; clock handling is not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station and camera coordinates in the response.",
+      "unknown": "Fixed stations and cameras with published coordinates; not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "PSI per region and pollutant; station values in stated units.",
+      "unknown": "Values are agency measurements with no per-reading quality flag in the responses sampled; the licence disclaims accuracy."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Camera frames carry an agency timestamp and an md5 in image_metadata; nothing signs the frame or proves the view is current beyond that timestamp."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://guide.data.gov.sg/developer-guide/api-overview",
+    "base_url": "https://api-open.data.gov.sg/v2/real-time/api",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key for testing; an optional free key raises rate limits."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/psi",
+        "params": "date or paginationToken (optional)",
+        "notes": "Latest PSI and pollutant readings by region."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/rainfall",
+        "params": "optional date",
+        "notes": "Station rainfall readings."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/air-temperature",
+        "params": "optional date",
+        "notes": "Station air temperature."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/two-hr-forecast",
+        "params": "optional date",
+        "notes": "Forecast per area for the next two hours."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "https://api.data.gov.sg/v1/transport/traffic-images",
+        "params": "optional date_time",
+        "notes": "Camera snapshots on the v1 host; image URLs point at images.data.gov.sg."
+      }
+    ],
+    "rate_limits": "Keyless 6 calls per 10 seconds for v2 real-time; see rate_limit.",
+    "notes": "JSON.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "air quality",
+    "psi",
+    "pm2.5",
+    "haze",
+    "singapore",
+    "weather",
+    "rainfall",
+    "temperature",
+    "traffic camera",
+    "traffic",
+    "expressway",
+    "southeast asia",
+    "government",
+    "open data",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Singapore Open Data Licence v1.0: commercial and non-commercial use, distribute, sub-license; conspicuous attribution; as is, no warranty; no mention of automated access or AI",
+      "url": "https://data.gov.sg/open-data-licence"
+    },
+    {
+      "claim": "All Data.gov.sg APIs are public and can be accessed without an API key for testing; a key gives higher limits",
+      "url": "https://guide.data.gov.sg/developer-guide/api-overview"
+    },
+    {
+      "claim": "Rate limits: keyless 6 calls per 10 seconds on v2 real-time; development 12; production 30",
+      "url": "https://guide.data.gov.sg/developer-guide/api-overview/api-rate-limits"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, PSI by region with updatedTimestamp 2026-11-07T02:15:47+08:00, pm25_twenty_four_hourly north 14 south 18 west 15 east 15 central 14",
+      "url": "https://api-open.data.gov.sg/v2/real-time/api/psi"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, 2-hour forecast updated 02:06 SGT, e.g. Bedok Light Rain",
+      "url": "https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, air temperature stations, e.g. S109 25.2 at 02:13 SGT",
+      "url": "https://api-open.data.gov.sg/v2/real-time/api/air-temperature"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, station rainfall list",
+      "url": "https://api-open.data.gov.sg/v2/real-time/api/rainfall"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, camera items with timestamp 02:15 SGT, camera_id, lat/long, 1920x1080 image and md5",
+      "url": "https://api.data.gov.sg/v1/transport/traffic-images"
+    }
+  ]
+}

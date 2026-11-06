@@ -1,0 +1,173 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "hko-open-data",
+  "name": "Hong Kong Observatory open data API",
+  "provider_url": "https://data.gov.hk/en-data/dataset/hk-hko-rss-current-weather-report",
+  "short": "Hong Kong's official current weather, rainfall, warnings, forecasts and latest felt-quake report. Free, no key.",
+  "summary": "The Hong Kong Observatory serves its current weather report as JSON through data.weather.gov.hk with no key: temperature by place, rainfall by district, humidity, UV index, special weather tips and warning messages, plus local forecast and warning summary data types. The same host also returns the latest earthquake report in the region. The data.gov.hk listing gives the update frequency as hourly and when there is an update; on 2026-11-06 (UTC) the current report was about 20 minutes old.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current temperature by place, humidity, UV index, district rainfall (dataType=rhrread)",
+      "active weather warnings summary (dataType=warnsum)",
+      "local forecast and 9-day forecast (flw, fnd)",
+      "latest regional earthquake report (earthquake.php?dataType=qem)"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Hong Kong"
+    ],
+    "areas": [
+      "HK"
+    ],
+    "notes": "Hong Kong only; temperature is reported for named stations and rainfall by district. The earthquake endpoint reports quakes felt or relevant to the region, including events in Japan."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "data.gov.hk dataset page: update frequency 'Hourly and when there is update.' Live GET 2026-11-06: updateTime 2026-11-07T02:02:00+08:00, temperature recordTime 02:00 HKT."
+  },
+  "latency": {
+    "typical": "up to an hour",
+    "notes": "Hourly current weather report; warnings and the earthquake report update when issued. One call sampled."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under an hour",
+    "notes": "Report time is in the response (updateTime)."
+  },
+  "licensing": {
+    "summary": "Terms of data.gov.hk (v1.2): free for commercial and non-commercial use; you must identify the source clearly and credit the Government, the data owner and DATA.GOV.HK; you may distribute and reproduce under the same conditions; data is provided as is with no warranty; the Government may change or suspend data at any time. The terms do not address automated access or AI. The dataset listing itself states no licence. Observatory-site terms were not readable.",
+    "resale": "allowed"
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "updateTime and recordTime in ISO 8601 with +08:00.",
+      "unknown": "updateTime is the Observatory's own; clock handling is not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Named places only in this endpoint.",
+      "unknown": "Named stations; coordinates not provided in the current-weather response."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Temperature unit C, rainfall mm, per place.",
+      "unknown": "Official Observatory values; no quality flags in the response; the terms disclaim accuracy."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.weather.gov.hk/weatherAPI/doc/HKO_Open_Data_API_Documentation.pdf",
+    "base_url": "https://data.weather.gov.hk/weatherAPI/opendata",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/weather.php",
+        "params": "dataType=rhrread|warnsum|flw|fnd; lang=en|tc|sc",
+        "notes": "Current weather report, warnings, forecasts."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/earthquake.php",
+        "params": "dataType=qem|feltearthquake; lang",
+        "notes": "Latest quake report."
+      }
+    ],
+    "rate_limits": "Not stated on the pages read.",
+    "notes": "JSON. Documentation PDF could not be text-extracted; the endpoint list above is from live responses and the dataset page.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "temperature",
+    "rainfall",
+    "humidity",
+    "uv",
+    "warning",
+    "typhoon",
+    "hong kong",
+    "east asia",
+    "government",
+    "open data",
+    "free",
+    "real-time",
+    "earthquake"
+  ],
+  "sources": [
+    {
+      "claim": "Hong Kong Observatory, current weather report: hourly and when there is update; JSON API available in three languages; data dictionary PDF; no key mentioned",
+      "url": "https://data.gov.hk/en-data/dataset/hk-hko-rss-current-weather-report"
+    },
+    {
+      "claim": "data.gov.hk terms v1.2: commercial use free, source credit required, redistribution allowed, as is, may change or suspend; no mention of automated access or AI",
+      "url": "https://data.gov.hk/en/terms-and-conditions"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200 JSON, updateTime 2026-11-07T02:02:00+08:00, King's Park 25 C, Hong Kong Observatory 27 C",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, warnsum returned {} (no active warnings)",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200, latest quake M6.1 off east coast of Honshu, Japan, 18:39 HKT",
+      "url": "https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=qem&lang=en"
+    }
+  ]
+}

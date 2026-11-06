@@ -1165,6 +1165,196 @@
    ]
   },
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "bmkg-open-data",
+   "name": "BMKG Indonesia open weather and earthquake data",
+   "provider_url": "https://data.bmkg.go.id/",
+   "short": "Indonesia's official 3-day village weather forecast, weather nowcast alerts and latest earthquakes. Free, no key.",
+   "summary": "BMKG, Indonesia's meteorology, climatology and geophysics agency, publishes open JSON: a 3-day forecast at 3-hour steps for any administrative level-IV area (kelurahan or village) via api.bmkg.go.id, the latest earthquake and lists of felt and M5+ quakes via data.bmkg.go.id, and an RSS feed of nowcast weather alerts. The pages state a limit of 60 requests per minute per IP and require showing BMKG as the source. The forecast is produced twice a day, so it is a forecast, not a live reading; the earthquake files update with each event (the newest sampled was under 8 hours old at the call).",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "3-day weather forecast per village: temperature, humidity, cloud cover, wind, visibility",
+     "latest earthquake with magnitude, depth, region, tsunami potential and felt report (autogempa)",
+     "15 latest M5.0+ and 15 latest felt earthquakes",
+     "current weather alerts feed (nowcast RSS)"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Indonesia"
+    ],
+    "areas": [
+     "ID"
+    ],
+    "notes": "Forecast is addressed by Ministry of Home Affairs level-IV administrative codes (adm4); the example is Kemayoran, Jakarta (31.71.03.1001). Weather text fields are Indonesian with an English field. Quake data covers Indonesia and its surrounding seas."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "requests": 60,
+     "per_seconds": 60,
+     "scope": "per-ip",
+     "notes": "Stated on the forecast and earthquake documentation pages.",
+     "source_url": "https://data.bmkg.go.id/prakiraan-cuaca/"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Earthquake files update on each event (earthquake page); the latest sampled event was 17:38 UTC on 2026-11-06 and the call was 18:2x UTC. The forecast updates 2 times a day (forecast page), so it is a forecast rather than a reading."
+   },
+   "latency": {
+    "typical": "minutes for quakes, 12 hours for forecasts",
+    "notes": "Quake page gives no fixed interval. Forecast: 2 updates per day, 8 points per day at 3-hour steps."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes after a quake; forecasts up to half a day",
+    "notes": "Each forecast carries analysis_date; each quake a UTC DateTime."
+   },
+   "licensing": {
+    "summary": "BMKG's documentation pages require BMKG to be credited as the data source and shown in your app or system. They state no licence and no other terms; the earthquake page tells users to write to support[at]bmkg.go.id for certainty about terms of use. Redistribution, resale and AI use are therefore Not stated. Rate limit 60 requests per minute per IP."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Quake DateTime in UTC; forecast utc_datetime.",
+     "unknown": "UTC DateTime fields in earthquake files, analysis_date on forecasts; clock handling not documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Quake Coordinates field; forecast lokasi lat/lon.",
+     "unknown": "Quake coordinates are BMKG's computed epicentres; forecast areas carry lat/lon of the village."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Magnitude, depth, region, tsunami potential, MMI felt scale.",
+     "unknown": "Preliminary automatic quake solutions (the sampled one is M3.3 with felt report); forecasts are model output, not observations."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.bmkg.go.id/prakiraan-cuaca/",
+    "base_url": "https://api.bmkg.go.id/publik",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/prakiraan-cuaca",
+      "params": "adm4 (level-IV area code)",
+      "notes": "3-day forecast at 3-hour steps."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+      "params": "none",
+      "notes": "Latest earthquake; also gempaterkini.json (15 M5+) and gempadirasakan.json (15 felt)."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "https://www.bmkg.go.id/alerts/nowcast/en",
+      "params": "none",
+      "notes": "RSS of weather alerts (CAP)."
+     }
+    ],
+    "rate_limits": "60 requests per minute per IP.",
+    "notes": "JSON and XML.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "forecast",
+    "earthquake",
+    "tsunami",
+    "nowcast",
+    "indonesia",
+    "jakarta",
+    "southeast asia",
+    "government",
+    "open data",
+    "free",
+    "real-time",
+    "temperature",
+    "rainfall"
+   ],
+   "sources": [
+    {
+     "claim": "Forecast API: endpoint, adm4 parameter, 3-day 3-hour fields, 2 updates per day, 60 requests/min/IP, BMKG attribution required, no licence stated, no key mentioned",
+     "url": "https://data.bmkg.go.id/prakiraan-cuaca/"
+    },
+    {
+     "claim": "Earthquake files autogempa/gempaterkini/gempadirasakan, update on each event, 60 requests/min/IP, attribution required, contact support[at]bmkg.go.id for terms",
+     "url": "https://data.bmkg.go.id/gempabumi/"
+    },
+    {
+     "claim": "Data sections listed: forecast, earthquakes, nowcast; contact support[at]bmkg.go.id",
+     "url": "https://data.bmkg.go.id/"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, forecast for Kemayoran, Jakarta Pusat",
+     "url": "https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=31.71.03.1001"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, latest quake M3.3 5 km depth 54 km SE of Morowali, 2026-11-06T17:38:52Z",
+     "url": "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200 application/xml RSS of BMKG weather alerts",
+     "url": "https://www.bmkg.go.id/alerts/nowcast/en"
+    }
+   ]
+  },
+  {
    "id": "caltrans-cctv",
    "name": "Caltrans highway cameras",
    "status": "unclaimed",
@@ -7692,6 +7882,352 @@
    ]
   },
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "hk-td-traffic-snapshots",
+   "name": "Hong Kong Transport Department traffic snapshot cameras",
+   "provider_url": "https://data.gov.hk/en-data/dataset/hk-td-tis_2-traffic-snapshot-images",
+   "short": "Still images from Hong Kong road traffic cameras, refreshed every 2 minutes. Free, no key.",
+   "summary": "Hong Kong's Transport Department publishes JPEG snapshots (320 x 240) from its roadside traffic cameras at a fixed URL per camera, plus an XML or CSV list with each camera's district, description and latitude/longitude. The listing says images update every 2 minutes. On 2026-11-06 (UTC) the sampled image's Last-Modified header was about 2 minutes before the call. Low resolution; a camera that is down returns a 'No Service' image.",
+   "capabilities": {
+    "modalities": [
+     "photo"
+    ],
+    "tasks": [
+     "current still image from a named road camera",
+     "list cameras with district, description, latitude and longitude"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Hong Kong Island",
+     "Kowloon",
+     "New Territories"
+    ],
+    "areas": [
+     "HK"
+    ],
+    "notes": "Cameras grouped by region and district in the location list (for example Aberdeen Praya Road, Aberdeen Tunnel). The number of cameras was not counted."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "data.gov.hk dataset page: update frequency every 2 minutes. Live HEAD/GET 2026-11-06: image Last-Modified 18:18:58 GMT, response date 18:20:43 GMT."
+   },
+   "latency": {
+    "typical": "about 2 minutes",
+    "notes": "Dataset page says 2 minutes; one image sampled at under 2 minutes. The page warned the service might be intermittently unavailable 2026-11-06 20:00 to 2026-11-07 00:00 (HKT?) for maintenance; timezone not stated on the excerpt read."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 3 minutes in one sample",
+    "notes": "A 'No Service' image is returned when a camera is down; 301 or 302 redirects can occur."
+   },
+   "licensing": {
+    "summary": "Terms of data.gov.hk (v1.2): free for commercial and non-commercial use with clear source credit to the Government, the data owner and DATA.GOV.HK; as is, no warranty. The dataset page excerpt read states no separate licence. Images may show people and vehicles; the terms do not discuss privacy. Not stated whether AI training is allowed.",
+    "resale": "allowed"
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "HTTP Last-Modified header.",
+     "unknown": "Image carries an HTTP Last-Modified header, not an on-image timestamp; clock handling not documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "latitude and longitude per camera in Traffic_Camera_Locations_En.xml.",
+     "unknown": "Camera coordinates are listed in the location file; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "The picture itself.",
+     "unknown": "Low-resolution frame (320 x 240); no per-image quality flags."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Frames are unsigned and unwatermarked; nothing proves which camera or moment beyond the file URL and Last-Modified."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.gov.hk/en-data/dataset/hk-td-tis_2-traffic-snapshot-images",
+    "base_url": "https://tdcctv.data.one.gov.hk",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/{camera_id}.JPG",
+      "params": "camera_id from the location list",
+      "notes": "Direct JPEG."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/image?key={camera_id}",
+      "params": "key",
+      "notes": "Base64 JPEG in XML."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_En.xml",
+      "params": "language variants En, Tc, Sc; XML or CSV",
+      "notes": "Camera list."
+     }
+    ],
+    "rate_limits": "Not stated on the page read.",
+    "notes": "JPEG.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "traffic camera",
+    "road camera",
+    "traffic",
+    "hong kong",
+    "tunnel",
+    "east asia",
+    "government",
+    "open data",
+    "free",
+    "real-time",
+    "webcam"
+   ],
+   "sources": [
+    {
+     "claim": "Transport Department traffic snapshot images: JPEG 320x240, every 2 minutes, URL patterns, location list XML/CSV, No Service image, redirects",
+     "url": "https://data.gov.hk/en-data/dataset/hk-td-tis_2-traffic-snapshot-images"
+    },
+    {
+     "claim": "data.gov.hk terms v1.2: commercial use free with source credit; as is",
+     "url": "https://data.gov.hk/en/terms-and-conditions"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200 image/jpeg 28 KB, Last-Modified Fri 06 Nov 2026 18:18:58 GMT",
+     "url": "https://tdcctv.data.one.gov.hk/K109F.JPG"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: camera list with key, region, district, description, latitude, longitude, url",
+     "url": "https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_En.xml"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "hko-open-data",
+   "name": "Hong Kong Observatory open data API",
+   "provider_url": "https://data.gov.hk/en-data/dataset/hk-hko-rss-current-weather-report",
+   "short": "Hong Kong's official current weather, rainfall, warnings, forecasts and latest felt-quake report. Free, no key.",
+   "summary": "The Hong Kong Observatory serves its current weather report as JSON through data.weather.gov.hk with no key: temperature by place, rainfall by district, humidity, UV index, special weather tips and warning messages, plus local forecast and warning summary data types. The same host also returns the latest earthquake report in the region. The data.gov.hk listing gives the update frequency as hourly and when there is an update; on 2026-11-06 (UTC) the current report was about 20 minutes old.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current temperature by place, humidity, UV index, district rainfall (dataType=rhrread)",
+     "active weather warnings summary (dataType=warnsum)",
+     "local forecast and 9-day forecast (flw, fnd)",
+     "latest regional earthquake report (earthquake.php?dataType=qem)"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Hong Kong"
+    ],
+    "areas": [
+     "HK"
+    ],
+    "notes": "Hong Kong only; temperature is reported for named stations and rainfall by district. The earthquake endpoint reports quakes felt or relevant to the region, including events in Japan."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "data.gov.hk dataset page: update frequency 'Hourly and when there is update.' Live GET 2026-11-06: updateTime 2026-11-07T02:02:00+08:00, temperature recordTime 02:00 HKT."
+   },
+   "latency": {
+    "typical": "up to an hour",
+    "notes": "Hourly current weather report; warnings and the earthquake report update when issued. One call sampled."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under an hour",
+    "notes": "Report time is in the response (updateTime)."
+   },
+   "licensing": {
+    "summary": "Terms of data.gov.hk (v1.2): free for commercial and non-commercial use; you must identify the source clearly and credit the Government, the data owner and DATA.GOV.HK; you may distribute and reproduce under the same conditions; data is provided as is with no warranty; the Government may change or suspend data at any time. The terms do not address automated access or AI. The dataset listing itself states no licence. Observatory-site terms were not readable.",
+    "resale": "allowed"
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "updateTime and recordTime in ISO 8601 with +08:00.",
+     "unknown": "updateTime is the Observatory's own; clock handling is not documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Named places only in this endpoint.",
+     "unknown": "Named stations; coordinates not provided in the current-weather response."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Temperature unit C, rainfall mm, per place.",
+     "unknown": "Official Observatory values; no quality flags in the response; the terms disclaim accuracy."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.weather.gov.hk/weatherAPI/doc/HKO_Open_Data_API_Documentation.pdf",
+    "base_url": "https://data.weather.gov.hk/weatherAPI/opendata",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/weather.php",
+      "params": "dataType=rhrread|warnsum|flw|fnd; lang=en|tc|sc",
+      "notes": "Current weather report, warnings, forecasts."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/earthquake.php",
+      "params": "dataType=qem|feltearthquake; lang",
+      "notes": "Latest quake report."
+     }
+    ],
+    "rate_limits": "Not stated on the pages read.",
+    "notes": "JSON. Documentation PDF could not be text-extracted; the endpoint list above is from live responses and the dataset page.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "temperature",
+    "rainfall",
+    "humidity",
+    "uv",
+    "warning",
+    "typhoon",
+    "hong kong",
+    "east asia",
+    "government",
+    "open data",
+    "free",
+    "real-time",
+    "earthquake"
+   ],
+   "sources": [
+    {
+     "claim": "Hong Kong Observatory, current weather report: hourly and when there is update; JSON API available in three languages; data dictionary PDF; no key mentioned",
+     "url": "https://data.gov.hk/en-data/dataset/hk-hko-rss-current-weather-report"
+    },
+    {
+     "claim": "data.gov.hk terms v1.2: commercial use free, source credit required, redistribution allowed, as is, may change or suspend; no mention of automated access or AI",
+     "url": "https://data.gov.hk/en/terms-and-conditions"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200 JSON, updateTime 2026-11-07T02:02:00+08:00, King's Park 25 C, Hong Kong Observatory 27 C",
+     "url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, warnsum returned {} (no active warnings)",
+     "url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, latest quake M6.1 off east coast of Honshu, Japan, 18:39 HKT",
+     "url": "https://data.weather.gov.hk/weatherAPI/opendata/earthquake.php?dataType=qem&lang=en"
+    }
+   ]
+  },
+  {
    "id": "hover",
    "name": "Hover",
    "provider_url": "https://hover.to",
@@ -9267,6 +9803,201 @@
    "short": "Radar satellites tasked by API on a contract, with price and feasibility checks, products 1-8 hours after capture.",
    "capability": "com.irlpls.capture.card",
    "expires": "2027-10-27"
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "jma-bosai",
+   "name": "Japan Meteorological Agency bosai data feeds",
+   "provider_url": "https://www.jma.go.jp/bosai/",
+   "short": "Japan's official station observations, warnings and quake reports as JSON. Free, no key, no API docs.",
+   "summary": "The JMA disaster-prevention site (bosai) serves the data behind its pages as JSON with no key: AMeDAS observations for about 1,290 stations every 10 minutes (temperature, humidity, wind, pressure, precipitation, sunshine), regional forecast overviews, warnings and advisories by prefecture, and earthquake information lists. On 2026-11-06 (UTC) the latest AMeDAS time was within minutes of the call. JMA publishes these as website content under its general terms rather than as a documented API; the files can change or move without notice.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest AMeDAS observation per station: temperature, humidity, wind, pressure, 10-minute and hourly precipitation",
+     "forecast overview text by prefecture area",
+     "warnings and advisories by prefecture",
+     "recent earthquake list with magnitude, maximum intensity and epicentre"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Japan"
+    ],
+    "areas": [
+     "JP"
+    ],
+    "notes": "All of Japan. The AMeDAS map file returned 1,286 station entries on 2026-11-06. Text fields in forecast and warning files are in Japanese; English forecasts are not in these files. Stations are identified by numeric code; names come from a separate station table."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-06 UTC: amedas/data/latest_time.txt returned 2026-11-07T03:10:00+09:00 and the matching map file returned 1,286 stations; quake list top entry 03:02 JST."
+   },
+   "latency": {
+    "typical": "10 minutes for AMeDAS",
+    "notes": "AMeDAS 10-minute cadence is from the file naming (YYYYMMDDHHMM00) and one live check; JMA's page read does not state a cadence. Warnings and quakes update when issued."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About 10 minutes",
+    "notes": "latest_time.txt gives the newest AMeDAS slot; warning files carry a reportDatetime (the Tokyo warning file sampled had reportDatetime 2026-05-28, so it only changes when a warning is issued)."
+   },
+   "licensing": {
+    "summary": "JMA website terms: content may be used under the Public Data License (Version 1.0), which the page says is compatible with Creative Commons Attribution 4.0. The user must cite the source (for example 'Source: Japan Meteorological Agency website (URL)') and say if the content was edited. Some content is restricted under the Meteorological Service Act (forecasting and warning services need a licence), logos are excluded, and content may be changed or removed without notice. The terms do not address automated access, resale or AI. Republishing forecasts or warnings as your own service may need a JMA forecasting licence; the page points to the Act."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "AMeDAS slot time with +09:00 offset.",
+     "unknown": "Observation slot time is in the file name and response; clock handling not documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station codes with a station table (amedastable.json), not fetched here.",
+     "unknown": "Stations by numeric code; coordinates come from a separate station table not read."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values in [value, flag] pairs; units not documented on the pages read.",
+     "unknown": "Official measurements; each value carries a quality flag (second array element: 0 in the sample) whose meaning was not read from documentation."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.jma.go.jp/jma/en/copyright.html",
+    "base_url": "https://www.jma.go.jp/bosai",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/amedas/data/latest_time.txt",
+      "params": "none",
+      "notes": "Newest observation slot."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/amedas/data/map/{YYYYMMDDHHMM00}.json",
+      "params": "slot time",
+      "notes": "All stations for the slot."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/forecast/data/overview_forecast/{areaCode}.json",
+      "params": "area code, e.g. 130000 Tokyo",
+      "notes": "Forecast overview (Japanese)."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/warning/data/warning/{areaCode}.json",
+      "params": "area code",
+      "notes": "Warnings and advisories."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/quake/data/list.json",
+      "params": "none",
+      "notes": "Recent earthquake information."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "These JSON files back JMA's own web pages; no API documentation or stability guarantee was found. Paths were observed live, not from a spec.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "amedas",
+    "temperature",
+    "wind",
+    "rainfall",
+    "precipitation",
+    "warning",
+    "typhoon",
+    "earthquake",
+    "japan",
+    "tokyo",
+    "east asia",
+    "government",
+    "open data",
+    "free",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "JMA terms: Public Data License v1.0 compatible with CC BY 4.0; cite source; edited-content notice; Meteorological Service Act restrictions; changeable without notice; no rules on automated access",
+     "url": "https://www.jma.go.jp/jma/en/copyright.html"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: latest AMeDAS slot 2026-11-07T03:10:00+09:00",
+     "url": "https://www.jma.go.jp/bosai/amedas/data/latest_time.txt"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: AMeDAS map for the slot, 1,286 entries, station 44132 temp 15.8 humidity 51 wind 3.4",
+     "url": "https://www.jma.go.jp/bosai/amedas/data/map/20261107031000.json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200 Tokyo forecast overview reportDatetime 2026-11-06T16:38 JST",
+     "url": "https://www.jma.go.jp/bosai/forecast/data/overview_forecast/130000.json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200 quake list, newest entry 2026-11-07T03:02 JST magnitude 3.5 Wakayama",
+     "url": "https://www.jma.go.jp/bosai/quake/data/list.json"
+    }
+   ]
   },
   {
    "id": "kled",
@@ -17852,6 +18583,222 @@
    "capability": "com.irlpls.capture.card",
    "updated": "2026-10-27",
    "expires": "2027-10-27"
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-06",
+   "expires": "2027-11-06",
+   "id": "sg-data-gov-realtime",
+   "name": "Singapore data.gov.sg real-time APIs (PSI, weather, traffic cameras)",
+   "provider_url": "https://data.gov.sg",
+   "short": "Singapore's official PSI air quality, rainfall, temperature, 2-hour forecast and expressway camera images. Free, no key.",
+   "summary": "Data.gov.sg, run by the Singapore government, serves real-time datasets over HTTP without an API key for testing: the Pollutant Standards Index (PSI) with PM2.5, PM10, NO2, O3, CO and SO2 by region, station rainfall, air temperature, a 2-hour area weather forecast, and a snapshot from each traffic camera in its feed. On 2026-11-06 (UTC) every endpoint tried answered with readings less than 20 minutes old. Keyless calls have a lower rate limit; a free key raises it.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "photo"
+    ],
+    "tasks": [
+     "PSI and pollutant readings (PM2.5, PM10, NO2, O3, CO, SO2) for five Singapore regions, hourly",
+     "station rainfall and air temperature (update interval not stated on the pages read)",
+     "2-hour weather forecast per area",
+     "traffic camera images with camera id, position and timestamp,"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Singapore"
+    ],
+    "areas": [
+     "SG"
+    ],
+    "notes": "Singapore only. PSI is reported for five regions (north, south, east, west, central), not per street. The traffic-image feed returned cameras with latitude/longitude; the camera count was not counted. Station lists are in each response."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "requests": 6,
+     "per_seconds": 10,
+     "scope": "unknown",
+     "notes": "Keyless limit for the v2 Real-time API as published. Development key tier 12 calls and production tier 30 calls per 10 seconds, both need a key.",
+     "source_url": "https://guide.data.gov.sg/developer-guide/api-overview/api-rate-limits"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GETs on 2026-11-06 UTC: PSI updatedTimestamp 02:15 SGT (about 5 minutes before the call), air-temperature reading 02:13 SGT, two-hr-forecast updated 02:06 SGT, traffic-images camera timestamps 02:15 SGT."
+   },
+   "latency": {
+    "typical": "1 to 20 minutes",
+    "notes": "PSI is an hourly-updated index (24-hour averages and 1-hour maxima); rainfall and temperature are station readings with their own timestamps. Update intervals are not stated on the pages read; ages measured from one call only."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 20 minutes on 2026-11-06",
+    "notes": "One sample only; no history sampled."
+   },
+   "licensing": {
+    "summary": "Singapore Open Data Licence v1.0: use, adapt, distribute and sub-license the datasets commercially or non-commercially, with a conspicuous source acknowledgement and a link to the licence. Datasets are provided as is, with no warranty of accuracy, completeness or timeliness. The licence does not mention automated access or AI. Some datasets on the site carry their own terms; check each dataset page.",
+    "resale": "allowed"
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each reading carries an ISO 8601 timestamp with +08:00 offset.",
+     "unknown": "Timestamps are the agency's own; clock handling is not documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station and camera coordinates in the response.",
+     "unknown": "Fixed stations and cameras with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "PSI per region and pollutant; station values in stated units.",
+     "unknown": "Values are agency measurements with no per-reading quality flag in the responses sampled; the licence disclaims accuracy."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Camera frames carry an agency timestamp and an md5 in image_metadata; nothing signs the frame or proves the view is current beyond that timestamp."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://guide.data.gov.sg/developer-guide/api-overview",
+    "base_url": "https://api-open.data.gov.sg/v2/real-time/api",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key for testing; an optional free key raises rate limits."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/psi",
+      "params": "date or paginationToken (optional)",
+      "notes": "Latest PSI and pollutant readings by region."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/rainfall",
+      "params": "optional date",
+      "notes": "Station rainfall readings."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/air-temperature",
+      "params": "optional date",
+      "notes": "Station air temperature."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/two-hr-forecast",
+      "params": "optional date",
+      "notes": "Forecast per area for the next two hours."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "https://api.data.gov.sg/v1/transport/traffic-images",
+      "params": "optional date_time",
+      "notes": "Camera snapshots on the v1 host; image URLs point at images.data.gov.sg."
+     }
+    ],
+    "rate_limits": "Keyless 6 calls per 10 seconds for v2 real-time; see rate_limit.",
+    "notes": "JSON.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "air quality",
+    "psi",
+    "pm2.5",
+    "haze",
+    "singapore",
+    "weather",
+    "rainfall",
+    "temperature",
+    "traffic camera",
+    "traffic",
+    "expressway",
+    "southeast asia",
+    "government",
+    "open data",
+    "free",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Singapore Open Data Licence v1.0: commercial and non-commercial use, distribute, sub-license; conspicuous attribution; as is, no warranty; no mention of automated access or AI",
+     "url": "https://data.gov.sg/open-data-licence"
+    },
+    {
+     "claim": "All Data.gov.sg APIs are public and can be accessed without an API key for testing; a key gives higher limits",
+     "url": "https://guide.data.gov.sg/developer-guide/api-overview"
+    },
+    {
+     "claim": "Rate limits: keyless 6 calls per 10 seconds on v2 real-time; development 12; production 30",
+     "url": "https://guide.data.gov.sg/developer-guide/api-overview/api-rate-limits"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, PSI by region with updatedTimestamp 2026-11-07T02:15:47+08:00, pm25_twenty_four_hourly north 14 south 18 west 15 east 15 central 14",
+     "url": "https://api-open.data.gov.sg/v2/real-time/api/psi"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, 2-hour forecast updated 02:06 SGT, e.g. Bedok Light Rain",
+     "url": "https://api-open.data.gov.sg/v2/real-time/api/two-hr-forecast"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, air temperature stations, e.g. S109 25.2 at 02:13 SGT",
+     "url": "https://api-open.data.gov.sg/v2/real-time/api/air-temperature"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, station rainfall list",
+     "url": "https://api-open.data.gov.sg/v2/real-time/api/rainfall"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-06: HTTP 200, camera items with timestamp 02:15 SGT, camera_id, lat/long, 1920x1080 image and md5",
+     "url": "https://api.data.gov.sg/v1/transport/traffic-images"
+    }
+   ]
   },
   {
    "id": "shaip",

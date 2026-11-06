@@ -1,0 +1,173 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-06",
+  "expires": "2027-11-06",
+  "id": "hk-td-traffic-snapshots",
+  "name": "Hong Kong Transport Department traffic snapshot cameras",
+  "provider_url": "https://data.gov.hk/en-data/dataset/hk-td-tis_2-traffic-snapshot-images",
+  "short": "Still images from Hong Kong road traffic cameras, refreshed every 2 minutes. Free, no key.",
+  "summary": "Hong Kong's Transport Department publishes JPEG snapshots (320 x 240) from its roadside traffic cameras at a fixed URL per camera, plus an XML or CSV list with each camera's district, description and latitude/longitude. The listing says images update every 2 minutes. On 2026-11-06 (UTC) the sampled image's Last-Modified header was about 2 minutes before the call. Low resolution; a camera that is down returns a 'No Service' image.",
+  "capabilities": {
+    "modalities": [
+      "photo"
+    ],
+    "tasks": [
+      "current still image from a named road camera",
+      "list cameras with district, description, latitude and longitude"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Hong Kong Island",
+      "Kowloon",
+      "New Territories"
+    ],
+    "areas": [
+      "HK"
+    ],
+    "notes": "Cameras grouped by region and district in the location list (for example Aberdeen Praya Road, Aberdeen Tunnel). The number of cameras was not counted."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-06",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "data.gov.hk dataset page: update frequency every 2 minutes. Live HEAD/GET 2026-11-06: image Last-Modified 18:18:58 GMT, response date 18:20:43 GMT."
+  },
+  "latency": {
+    "typical": "about 2 minutes",
+    "notes": "Dataset page says 2 minutes; one image sampled at under 2 minutes. The page warned the service might be intermittently unavailable 2026-11-06 20:00 to 2026-11-07 00:00 (HKT?) for maintenance; timezone not stated on the excerpt read."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 3 minutes in one sample",
+    "notes": "A 'No Service' image is returned when a camera is down; 301 or 302 redirects can occur."
+  },
+  "licensing": {
+    "summary": "Terms of data.gov.hk (v1.2): free for commercial and non-commercial use with clear source credit to the Government, the data owner and DATA.GOV.HK; as is, no warranty. The dataset page excerpt read states no separate licence. Images may show people and vehicles; the terms do not discuss privacy. Not stated whether AI training is allowed.",
+    "resale": "allowed"
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "HTTP Last-Modified header.",
+      "unknown": "Image carries an HTTP Last-Modified header, not an on-image timestamp; clock handling not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "latitude and longitude per camera in Traffic_Camera_Locations_En.xml.",
+      "unknown": "Camera coordinates are listed in the location file; not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "The picture itself.",
+      "unknown": "Low-resolution frame (320 x 240); no per-image quality flags."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments and official forecasts, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Frames are unsigned and unwatermarked; nothing proves which camera or moment beyond the file URL and Last-Modified."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.gov.hk/en-data/dataset/hk-td-tis_2-traffic-snapshot-images",
+    "base_url": "https://tdcctv.data.one.gov.hk",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/{camera_id}.JPG",
+        "params": "camera_id from the location list",
+        "notes": "Direct JPEG."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/image?key={camera_id}",
+        "params": "key",
+        "notes": "Base64 JPEG in XML."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_En.xml",
+        "params": "language variants En, Tc, Sc; XML or CSV",
+        "notes": "Camera list."
+      }
+    ],
+    "rate_limits": "Not stated on the page read.",
+    "notes": "JPEG.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "traffic camera",
+    "road camera",
+    "traffic",
+    "hong kong",
+    "tunnel",
+    "east asia",
+    "government",
+    "open data",
+    "free",
+    "real-time",
+    "webcam"
+  ],
+  "sources": [
+    {
+      "claim": "Transport Department traffic snapshot images: JPEG 320x240, every 2 minutes, URL patterns, location list XML/CSV, No Service image, redirects",
+      "url": "https://data.gov.hk/en-data/dataset/hk-td-tis_2-traffic-snapshot-images"
+    },
+    {
+      "claim": "data.gov.hk terms v1.2: commercial use free with source credit; as is",
+      "url": "https://data.gov.hk/en/terms-and-conditions"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: HTTP 200 image/jpeg 28 KB, Last-Modified Fri 06 Nov 2026 18:18:58 GMT",
+      "url": "https://tdcctv.data.one.gov.hk/K109F.JPG"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-06: camera list with key, region, district, description, latitude, longitude, url",
+      "url": "https://static.data.gov.hk/td/traffic-snapshot-images/code/Traffic_Camera_Locations_En.xml"
+    }
+  ]
+}
