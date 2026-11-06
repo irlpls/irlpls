@@ -5,7 +5,7 @@ import pathlib
 import subprocess
 import sys
 
-LOCAL = "/Us" + "ers/someone"   # a local-path sentinel, spelled so the release privacy scan does not trip on the test itself
+PATHLEAK = "/Us" + "ers/someone"   # a local-path sentinel, spelled so the release privacy scan does not trip on the test itself
 
 import pytest
 
@@ -16,7 +16,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 LOCAL = {"checked_at": "2026-11-06T09:00:00Z", "providers": {
     "nws": {"result": "ok", "ok": True, "checked_at": "2026-11-06T09:00:00Z", "read": "live(1,2)", "reason": "answered with 1 item",
             "error": None, "status": None, "latency_ms": 12},
-    "usgs-water": {"result": "degraded", "ok": False, "checked_at": "2026-11-05T09:00:00Z", "reason": LOCAL + "/x secret=abc",
+    "usgs-water": {"result": "degraded", "ok": False, "checked_at": "2026-11-05T09:00:00Z", "reason": PATHLEAK + "/x secret=abc",
                    "read": "https://api.example/key=XYZ"},
     "noaa-tides": {"result": "failed", "ok": False, "status": 500, "error": "HTTPError", "checked_at": "2026-11-04T09:00:00Z",
                    "reason": "HTTP 500 for https://x/?token=T body {raw}"},
@@ -32,7 +32,7 @@ def test_sanitizer_keeps_only_id_status_date():
                             "noaa-tides": {"status": "failing", "last_checked": "2026-11-04"},
                             "airnow": {"status": "unknown", "last_checked": "2026-11-06"}}
     blob = json.dumps(out)
-    for leak in (LOCAL[:6], "secret", "token", "http", "XYZ", "reason", "latency", "error", "read"):
+    for leak in (PATHLEAK[:6], "secret", "token", "http", "XYZ", "reason", "latency", "error", "read"):
         assert leak not in blob
     for v in out["cards"].values():
         assert set(v) == {"status", "last_checked"} and v["status"] in health.PUBLIC_STATUS
@@ -48,7 +48,7 @@ def test_sanitizer_known_ids_and_bad_dates():
 def test_load_public_resanitizes_a_hand_edited_file(tmp_path):
     f = tmp_path / "h.json"
     f.write_text(json.dumps({"irlpls_public_health": 1, "cards": {
-        "nws": {"status": "failing", "last_checked": "2026-11-05", "path": LOCAL, "reason": "x"},
+        "nws": {"status": "failing", "last_checked": "2026-11-05", "path": PATHLEAK, "reason": "x"},
         "x y": {"status": "ok", "last_checked": "2026-11-05"}}}))
     d = health.load_public(f)
     assert d["cards"] == {"nws": {"status": "failing", "last_checked": "2026-11-05"}}
@@ -98,7 +98,7 @@ def built(tmp_path_factory):
 def test_build_includes_public_health_and_flags_only_bad(built):
     h = json.loads((built / "health.json").read_text())
     assert h["cards"]["usgs-water"] == {"status": "degraded", "last_checked": "2026-11-05"}
-    assert LOCAL[:6] not in (built / "health.json").read_text()
+    assert PATHLEAK[:6] not in (built / "health.json").read_text()
     cj = json.loads((built / "cards.json").read_text())
     assert set(cj["health"]) == {"usgs-water", "noaa-tides"}
     assert "Read check failed on 4 Nov" in (built / "c" / "noaa-tides.html").read_text()
