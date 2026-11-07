@@ -55,6 +55,7 @@ from .. import http
 from ..adapters.base import MissingCredentials, NotSupported, quote_price
 from ..need import detect_targets_person, text_fields
 from .receipts import ec_public_jwk, jcs, sign_es256, value_media
+from .. import isotime
 
 VERSION = "2026-10-26"
 VERSIONS = (VERSION,)
@@ -147,9 +148,8 @@ def _iso(t):
 
 
 def _parse_time(s):
-    try:
-        t = datetime.fromisoformat(str(s).replace("Z", "+00:00"))
-    except (TypeError, ValueError):
+    t = isotime.parse(str(s))
+    if t is None:
         return None
     return t if t.tzinfo else None
 

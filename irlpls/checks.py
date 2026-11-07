@@ -14,6 +14,7 @@ Each check is pass / fail / unknown, and carries how much to trust the metadata 
 from datetime import datetime, timedelta, timezone
 
 from . import geo
+from . import isotime
 
 
 def _ts(v):
@@ -21,9 +22,8 @@ def _ts(v):
         return None
     if isinstance(v, (int, float)):
         return datetime.fromtimestamp(v / 1000 if v > 1e12 else v, timezone.utc)
-    try:
-        d = datetime.fromisoformat(str(v).replace("Z", "+00:00"))
-    except ValueError:
+    d = isotime.parse(str(v))
+    if d is None:
         return None
     return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
 

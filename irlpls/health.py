@@ -21,6 +21,7 @@ import json
 import os
 import re
 from pathlib import Path
+from . import isotime
 
 PATH = Path(__file__).resolve().parent / "data" / "health.json"
 HISTORY_DAYS = 14
@@ -56,10 +57,7 @@ def summary(card_id, data=None):
 
 
 def _when(r):
-    try:
-        return datetime.datetime.fromisoformat(str(r.get("checked_at")).replace("Z", "+00:00"))
-    except ValueError:
-        return None
+    return isotime.parse(str(r.get("checked_at")))
 
 
 def latest(card_id, data=None, live=None):
@@ -85,6 +83,9 @@ def why(r):
     return r.get("error") or "error"
 
 
+_MONTHS = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")   # locale-independent
+
+
 def line(card_id, data=None, live=None):
     """'Read check: worked 28 Oct' / 'Read check: failed 28 Oct (404)' from the newest check of either source
     (see latest), or None when never checked."""
@@ -92,7 +93,7 @@ def line(card_id, data=None, live=None):
     if not r:
         return None
     d = _when(r)
-    when = f"{d.astimezone(datetime.timezone.utc).day} {d.astimezone(datetime.timezone.utc).strftime('%b')}" if d else "recently"  # the UTC day, like the public line
+    when = f"{d.astimezone(datetime.timezone.utc).day} {_MONTHS[d.astimezone(datetime.timezone.utc).month - 1]}" if d else "recently"  # the UTC day, like the public line
     if r.get("result") == "degraded":   # honest: we saw an answer, we cannot tell whether the provider changed or is just quiet
         return f"Read check: {when}, answered but not as expected"
     return f"Read check: worked {when}" if r.get("ok") else f"Read check: failed {when} ({why(r)})"
@@ -166,5 +167,5 @@ def public_line(entry):
         d = datetime.date.fromisoformat(str(entry.get("last_checked")))
     except ValueError:
         return None
-    when = f"{d.day} {d.strftime('%b')}"
+    when = f"{d.day} {_MONTHS[d.month - 1]}"
     return f"Read check failed on {when}" if entry["status"] == "failing" else f"Read check on {when}: answered but not as expected"

@@ -144,7 +144,7 @@ UNSUPPORTED = [
 def adapters():
     """What the reference SDK can call, read from the adapter sources (no import, no network)."""
     res = {}
-    for f in glob.glob(str(HERE / "adapters" / "*.py")):
+    for f in sorted(glob.glob(str(HERE / "adapters" / "*.py"))):
         s = Path(f).read_text()
         m = re.search(r'card_id\s*=\s*"([^"]+)"', s)
         if not m or Path(f).name == "base.py":

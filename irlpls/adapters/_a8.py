@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 
 from .. import geo, http, ratelimit
 from .base import MissingCredentials
+from .. import isotime
 
 
 def now():
@@ -40,12 +41,9 @@ def window(spec, lead_h=24, min_days=1, default_days=7):
     end = start + timedelta(days=max(int(spec.get("window_days") or default_days), min_days))
     by = spec.get("deliver_by")
     if by:
-        try:
-            t = datetime.fromisoformat(str(by).replace("Z", "+00:00"))
-            if t.tzinfo and t >= start + timedelta(days=min_days):
-                end = t.astimezone(timezone.utc)
-        except ValueError:
-            pass
+        t = isotime.parse(str(by))
+        if t is not None and t.tzinfo and t >= start + timedelta(days=min_days):
+            end = t.astimezone(timezone.utc)
     return start, end
 
 

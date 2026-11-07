@@ -6,16 +6,15 @@ from datetime import datetime
 
 from .. import geo, http
 from .base import Adapter, observation, pick_operation, prepared_call, query
+from .. import isotime
 
 FEED = "https://services8.arcgis.com/X84q166Srnyl4JMV/arcgis/rest/services/ALERTCalifornia_Camera_Feed/FeatureServer/0/query"
 
 
 def _iso(t):
     """'2026-10-25 16:38:49-07:00' -> ISO 8601."""
-    try:
-        return datetime.fromisoformat(str(t)).isoformat()
-    except ValueError:
-        return None
+    d = isotime.parse(str(t))
+    return d.isoformat() if d else None
 
 
 class ALERTCalifornia(Adapter):

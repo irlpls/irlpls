@@ -42,6 +42,7 @@ from decimal import Decimal, InvalidOperation
 from . import http as _http
 from . import paths as _paths
 from . import validate
+from . import isotime
 
 PASS, WARN, FAIL, SKIP = "pass", "warn", "fail", "skip"
 CAPABILITY = "com.irlpls.capture.card"
@@ -305,10 +306,7 @@ def _origin(url):
 
 
 def _parse_time(s):
-    try:
-        return datetime.fromisoformat(s.replace("Z", "+00:00"))
-    except (AttributeError, ValueError):
-        return None
+    return isotime.parse(s)
 
 
 def verify_receipt(receipt, jwks, expect):

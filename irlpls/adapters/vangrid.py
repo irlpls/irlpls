@@ -19,6 +19,7 @@ from decimal import Decimal
 from .. import http
 from . import _a7
 from .base import Adapter, MissingCredentials, observation, prepared_call
+from .. import isotime
 
 BASE = "https://data.vangrid.io/api/v1"
 DOCS = "https://docs.vangrid.io/api/agent-bounties"
@@ -36,9 +37,8 @@ X402_NOTES = ("x402 v2: send the request once without PAYMENT-SIGNATURE; the 402
 
 
 def _iso_utc(t):
-    try:
-        d = datetime.fromisoformat(str(t).replace("Z", "+00:00"))
-    except ValueError:
+    d = isotime.parse(str(t))
+    if d is None:
         return None
     return d if d.tzinfo else None
 

@@ -33,7 +33,7 @@ from urllib.parse import urlsplit
 
 from . import adapters
 from .policy import Policy, PolicyViolation, as_decimal, is_free, valid_money
-from . import health
+from . import health, isotime
 from .readiness import rank as readiness_rank, readiness, readiness_for
 
 def _order_identity(card):
@@ -63,7 +63,21 @@ def _key_needed(what="placing a real order"):
                     cli="add --idempotency-key KEY to --confirm", python="pass idempotency_key= with confirm=True")
 
 
-HOME = pathlib.Path(os.environ.get("IRLPLS_HOME", pathlib.Path.home() / ".irlpls"))
+def _home():
+    return pathlib.Path(os.environ.get("IRLPLS_HOME", pathlib.Path.home() / ".irlpls"))
+
+
+class _LazyHome(os.PathLike):
+    """HOME resolved from IRLPLS_HOME at use, not at import; behaves like a pathlib.Path."""
+    def __truediv__(self, o): return _home() / o
+    def __rtruediv__(self, o): return o / _home()
+    def __fspath__(self): return str(_home())
+    def __str__(self): return str(_home())
+    def __repr__(self): return repr(_home())
+    def __getattr__(self, n): return getattr(_home(), n)
+
+
+HOME = _LazyHome()
 _JOBS = {}
 
 
@@ -153,7 +167,7 @@ def _prune_jobs(keep=None):
     _last_prune[0] = now
     try:
         files = sorted(((f.stat().st_mtime, f) for f in (HOME / "jobs").iterdir() if f.is_file() and f.name.endswith((".json", ".lock"))),
-                       key=lambda t: t[0], reverse=True)
+                       key=lambda t: (t[0], t[1].name), reverse=True)
     except OSError:
         return
     for i, (mt, f) in enumerate(files):
@@ -969,9 +983,8 @@ class Job:
         from datetime import datetime, timezone
 
         def when(x):
-            try:
-                t = datetime.fromisoformat(str(x).replace("Z", "+00:00"))
-            except (TypeError, ValueError):
+            t = isotime.parse(x)
+            if t is None:
                 return None
             return t if t.tzinfo else t.replace(tzinfo=timezone.utc)
 
@@ -1836,9 +1849,8 @@ def _expired(quote):
     exp = (quote or {}).get("expires_at")
     if not exp:
         return False
-    try:
-        t = datetime.fromisoformat(str(exp).replace("Z", "+00:00"))
-    except ValueError:
+    t = isotime.parse(exp)
+    if t is None:
         return True  # unreadable: re-quote rather than trust it
     return (t if t.tzinfo else t.replace(tzinfo=timezone.utc)) <= datetime.now(timezone.utc)
 

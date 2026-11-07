@@ -11,6 +11,7 @@ from decimal import Decimal, InvalidOperation
 
 from .. import http, ratelimit
 from .base import MissingCredentials, prepared_call, warning
+from .. import isotime
 
 
 def now():
@@ -42,10 +43,7 @@ def window(ask, lead_h, min_width_h, max_end_h, default_width_h):
 
 
 def _parse(v):
-    try:
-        t = datetime.fromisoformat(str(v).replace("Z", "+00:00")) if v else None
-    except ValueError:
-        return None
+    t = isotime.parse(str(v)) if v else None
     return t if t and t.tzinfo else None
 
 

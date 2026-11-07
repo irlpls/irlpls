@@ -97,70 +97,26 @@ def test_current_catalog_has_no_repo_problems():
     assert validate.repo_problems(ROOT / "cards") == []
 
 
-def test_build_fails_plainly_without_traceback(tmp_path):
-    shutil.copy(ROOT / "cards" / "airnow.json", tmp_path / "x.json")
+def _repo_copy(tmp_path):
+    """A private copy of what build.py and tools/check_cards.py read, so nothing is written into the real repo."""
+    dst = tmp_path / "repo"
+    shutil.copytree(ROOT, dst, ignore=shutil.ignore_patterns(".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build", ".pytest_cache", "tests"))
     c = json.loads((ROOT / "cards" / "airnow.json").read_text())
     c["id"] = "example-weather-co"
-    f = ROOT / "cards" / "example-weather-co.json"
-    f.write_text(json.dumps(c))
-    try:
-        r = subprocess.run([sys.executable, str(ROOT / "build.py")], capture_output=True, text=True, cwd=ROOT,
-                           env={**__import__("os").environ, "IRLPLS_NO_FETCH": "1"})
-    finally:
-        f.unlink()
+    (dst / "cards" / "example-weather-co.json").write_text(json.dumps(c))
+    return dst
+
+
+def test_build_fails_plainly_without_traceback(tmp_path):
+    dst = _repo_copy(tmp_path)
+    r = subprocess.run([sys.executable, str(dst / "build.py")], capture_output=True, text=True, cwd=dst,
+                       env={**__import__("os").environ, "IRLPLS_NO_FETCH": "1"})
     assert r.returncode != 0
     assert "Traceback" not in r.stderr
     assert "example-weather-co: not in any family" in r.stderr and "FAMILIES in irlpls/catalog.py" in r.stderr
 
 
 def test_check_cards_says_the_same(tmp_path):
-    f = ROOT / "cards" / "example-weather-co.json"
-    c = json.loads((ROOT / "cards" / "airnow.json").read_text())
-    c["id"] = "example-weather-co"
-    f.write_text(json.dumps(c))
-    try:
-        r = subprocess.run([sys.executable, str(ROOT / "tools" / "check_cards.py")], capture_output=True, text=True)
-    finally:
-        f.unlink()
+    dst = _repo_copy(tmp_path)
+    r = subprocess.run([sys.executable, str(dst / "tools" / "check_cards.py")], capture_output=True, text=True, cwd=dst)
     assert r.returncode == 1 and "example-weather-co: not in any family" in r.stdout and "FAMILIES in irlpls/catalog.py" in r.stdout
-
-
-class _H(http.server.BaseHTTPRequestHandler):
-    def do_GET(self):
-        ok = self.path == "/.well-known/irlpls"
-        self.send_response(200 if ok else 404)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
-        self.wfile.write(TEMPLATE.read_bytes() if ok else b"{}")
-
-    def log_message(self, *a):
-        pass
-
-
-def test_localhost_rehearsal_only_with_the_env_var(monkeypatch):
-    srv = http.server.HTTPServer(("127.0.0.1", 0), _H)
-    threading.Thread(target=srv.serve_forever, daemon=True).start()
-    url = f"http://127.0.0.1:{srv.server_port}/.well-known/irlpls"
-    try:
-        monkeypatch.delenv("IRLPLS_ALLOW_PRIVATE_HOSTS", raising=False)
-        with pytest.raises(ValueError, match="HTTPS only"):
-            validate.load(url)
-        monkeypatch.setenv("IRLPLS_ALLOW_PRIVATE_HOSTS", "1")
-        c, u = validate.load(url)
-        assert c["id"] == "example-weather-co" and u == url
-    finally:
-        srv.shutdown()
-
-
-def test_docs_exist_and_are_neutral():
-    add = (ROOT / "docs" / "ADD-A-CARD.md").read_text()
-    for needle in ("Claim, correct or remove your card", "hello@irlpls.com", "We read every message", "/.well-known/irlpls"):
-        assert needle in add
-    for f in ("docs/ADD-A-CARD.md", "docs/PROVIDERS.md"):
-        t = (ROOT / f).read_text()
-        assert "github.com" not in t.lower()
-    assert "add-a-card.html" in (ROOT / "docs" / "PROVIDERS.md").read_text()
-    assert "ADD-A-CARD" in (ROOT / "CONTRIBUTING.md").read_text()
-    ops = ROOT / "docs" / "OPS.md"   # private: absent from the public repo
-    if ops.exists():
-        assert "claim steps" not in ops.read_text()

@@ -20,6 +20,7 @@ from datetime import datetime, timedelta, timezone
 
 from .. import geo, http, ratelimit
 from .base import Adapter, Results, age_s, observation, pick_operation, prepared_call, query, warning
+from .. import isotime
 
 BASE = "https://api.waterdata.usgs.gov/ogcapi/v1"
 NIMS = "https://api.waterdata.usgs.gov/nims/v0"
@@ -66,9 +67,8 @@ def _cell(lat, lon, deg):
 
 def _local_day(phenomenon_time, lon):
     """(month, day) of a reading at the site. A UTC timestamp is shifted by the site's solar offset (lon / 15 h)."""
-    try:
-        t = datetime.fromisoformat(str(phenomenon_time).replace("Z", "+00:00"))
-    except ValueError:
+    t = isotime.parse(str(phenomenon_time))
+    if t is None:
         return None
     if t.utcoffset() == timedelta(0) and lon is not None:
         t = t + timedelta(hours=round(lon / 15))

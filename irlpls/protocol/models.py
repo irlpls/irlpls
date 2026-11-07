@@ -9,6 +9,7 @@ import re
 import secrets
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
+from .. import isotime
 
 VERSION = "2026-10-26"
 SUPPORTED_VERSIONS = (VERSION,)
@@ -97,9 +98,12 @@ def iso(dt=None):
 
 
 def parse_time(s):
+    t = isotime.parse(s)
+    if t is None:
+        return None
     try:
-        return datetime.fromisoformat(s.replace("Z", "+00:00")).astimezone(timezone.utc)
-    except (AttributeError, ValueError):
+        return t.astimezone(timezone.utc)
+    except (OverflowError, ValueError, OSError):
         return None
 
 

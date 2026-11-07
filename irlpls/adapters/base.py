@@ -7,6 +7,7 @@ IRLpls does not search archives of old data.
 """
 import os
 from datetime import datetime, timezone
+from .. import isotime
 
 
 class MissingCredentials(RuntimeError):
@@ -101,9 +102,8 @@ def utc_z(t):
     without an offset, or anything unreadable, is returned unchanged (never guessed)."""
     if not isinstance(t, str) or not t or t.endswith("Z"):
         return t
-    try:
-        d = datetime.fromisoformat(t.replace("Z", "+00:00"))
-    except ValueError:
+    d = isotime.parse(t)
+    if d is None:
         return t
     if d.tzinfo is None:
         return t
@@ -137,9 +137,8 @@ def normalise(o):
 
 def age_s(phenomenon_time, now=None):
     """Seconds since an ISO 8601 timestamp (any offset, or Z), or None if it can't be read."""
-    try:
-        t = datetime.fromisoformat(str(phenomenon_time).replace("Z", "+00:00"))
-    except ValueError:
+    t = isotime.parse(str(phenomenon_time))
+    if t is None:
         return None
     if t.tzinfo is None:
         return None

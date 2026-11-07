@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 
 from .. import http, ratelimit
 from .base import MissingCredentials, warning
+from .. import isotime
 
 PHOTO = re.compile(r"\b(photo\w*|pictures?|pics?|images?|snap|shoot|storefront|shelf|menu|sign)\b", re.I)
 VERIFY = re.compile(r"\b(verify|verif\w*|confirm|check|is it open|whether|exists?|price)\b", re.I)
@@ -23,9 +24,8 @@ def iso(t):
 
 
 def parse_time(s):
-    try:
-        t = datetime.fromisoformat(str(s).replace("Z", "+00:00"))
-    except (TypeError, ValueError):
+    t = isotime.parse(str(s))
+    if t is None:
         return None
     return t if t.tzinfo else None
 

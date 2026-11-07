@@ -22,6 +22,7 @@ import json
 import math
 import time
 from datetime import datetime, timezone
+from .. import isotime
 
 RECEIPT_TYP = "irlpls-receipt+jws"
 ALLOWED_ALGS = ("ES256", "EdDSA")
@@ -275,9 +276,8 @@ def parse_rfc3339(s):
     """An RFC 3339 date-time as an aware datetime, or None. A bare date is not a date-time and gives None."""
     if not isinstance(s, str) or len(s) < 20 or "T" not in s.upper():
         return None
-    try:
-        t = datetime.fromisoformat(s.replace("Z", "+00:00").replace("z", "+00:00"))
-    except ValueError:
+    t = isotime.parse(s)
+    if t is None:
         return None
     return t if t.tzinfo else None
 

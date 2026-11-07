@@ -36,6 +36,7 @@ from datetime import datetime, timedelta, timezone
 
 from .. import http, ratelimit
 from .base import Adapter, MissingCredentials, observation, prepared_call
+from .. import isotime
 
 PROD = "https://api.fieldnation.com"
 SANDBOX = "https://api-sandbox.fndev.net"
@@ -143,10 +144,7 @@ class FieldNation(Adapter):
         tow = spec.get("type_of_work_id") or os.environ.get("FIELDNATION_TYPE_OF_WORK_ID")
         start, end = spec.get("start"), spec.get("end")
         if not end and spec.get("deliver_by"):
-            try:
-                end = datetime.fromisoformat(str(spec["deliver_by"]).replace("Z", "+00:00"))
-            except ValueError:
-                end = None
+            end = isotime.parse(str(spec["deliver_by"]))
         if end and not start:
             start = now + timedelta(hours=1)
         window = None
