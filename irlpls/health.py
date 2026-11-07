@@ -92,7 +92,7 @@ def line(card_id, data=None, live=None):
     if not r:
         return None
     d = _when(r)
-    when = f"{d.astimezone().day} {d.astimezone().strftime('%b')}" if d else "recently"  # the builder's day
+    when = f"{d.astimezone(datetime.timezone.utc).day} {d.astimezone(datetime.timezone.utc).strftime('%b')}" if d else "recently"  # the UTC day, like the public line
     if r.get("result") == "degraded":   # honest: we saw an answer, we cannot tell whether the provider changed or is just quiet
         return f"Read check: {when}, answered but not as expected"
     return f"Read check: worked {when}" if r.get("ok") else f"Read check: failed {when} ({why(r)})"

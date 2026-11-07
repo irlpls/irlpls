@@ -242,3 +242,12 @@ def test_fingerprint_ignores_the_moving_deadline():
     b = broker._fingerprint("c", {"constraints": {"deliver_by": "2026-11-07T00:00:01Z", "max_total": "5"}, "n": 1})
     c = broker._fingerprint("c", {"constraints": {"deliver_by": "2026-11-07T00:00:01Z", "max_total": "6"}, "n": 1})
     assert a == b and a != c
+
+
+def test_reloaded_job_keeps_its_fixed_deadline():
+    from irlpls.need import Request
+    r = Request.from_dict({"need": "photo of a shop", "within_minutes": 60})
+    j = broker.Job("photo of a shop", r, None, None)
+    first = broker._req_dict(j.request)["deliver_by"]
+    other = broker.Job.from_dict(json.loads(json.dumps(j.to_dict())))
+    assert broker._req_dict(other.request)["deliver_by"] == first

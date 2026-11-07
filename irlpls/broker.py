@@ -1776,6 +1776,9 @@ class Job:
         pol = Policy.from_dict(pd) if d.get("policy") else None
         j = cls(d.get("need") or rd.get("need") or "", Request.from_dict(rd), pol, d.get("why"))
         j.id = d["id"]
+        dbf = d.get("deliver_by_fixed")   # the deadline fixed on first use: a reloaded job orders the same thing
+        if isinstance(dbf, dict) and dbf.get("at") and dbf.get("for") == getattr(j.request, "within_minutes", None):
+            j.request._deadline_for, j.request._deliver_by = dbf["for"], dbf["at"]
         j.plan = [{k: v for k, v in o.items() if k != "default"} for o in d.get("plan") or []]
         ch = d.get("choice")
         j.choice = next((o for o in j.plan if ch and o["card_id"] == ch.get("card_id")), ch)
@@ -1822,7 +1825,9 @@ class Job:
                 "ruled_out": self.ruled_out, "choice": self.choice, "quote": self.quote, "provider_response": self.provider_response,
                 "status": self.status_response, "provider_status": self.provider_status, "approvals": self.approvals,
                 "reason_code": self.reason_code, "refusal": getattr(self, "refusal", None),
-                "error": self.error, "protocol": self.protocol, "results": self.results, "warnings": self.warnings, "log": self.log}
+                "error": self.error, "protocol": self.protocol, "results": self.results, "warnings": self.warnings, "log": self.log,
+                "deliver_by_fixed": ({"for": self.request._deadline_for, "at": self.request._deliver_by}
+                                     if getattr(self.request, "_deliver_by", None) else None)}
 
 
 def _expired(quote):

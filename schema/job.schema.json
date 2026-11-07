@@ -633,6 +633,11 @@
     "log": {
       "type": "array"
     },
+    "deliver_by_fixed": {
+      "description": "The delivery deadline fixed on first use (minutes asked, ISO 8601 UTC time), so a reloaded job orders the same thing.",
+      "type": ["object", "null"],
+      "properties": {"for": {"type": "number"}, "at": {"type": "string"}}
+    },
     "policy": {
       "oneOf": [
         {
