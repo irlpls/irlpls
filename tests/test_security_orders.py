@@ -235,3 +235,10 @@ def test_wallet_signing_is_off_and_only_the_operator_env_turns_it_on(monkeypatch
             continue
         assert "WALLET_SIGNING =" not in f.read_text() and "WALLET_SIGNING=" not in f.read_text(), f
     assert "wallet" not in json.dumps(irlpls.Policy().to_dict()).lower()
+
+
+def test_fingerprint_ignores_the_moving_deadline():
+    a = broker._fingerprint("c", {"constraints": {"deliver_by": "2026-11-07T00:00:00Z", "max_total": "5"}, "n": 1})
+    b = broker._fingerprint("c", {"constraints": {"deliver_by": "2026-11-07T00:00:01Z", "max_total": "5"}, "n": 1})
+    c = broker._fingerprint("c", {"constraints": {"deliver_by": "2026-11-07T00:00:01Z", "max_total": "6"}, "n": 1})
+    assert a == b and a != c

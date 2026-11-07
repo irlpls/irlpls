@@ -212,7 +212,11 @@ class _OrderLock:
 
 def _fingerprint(card_id, spec):
     import hashlib
-    body = {k: v for k, v in (spec or {}).items() if k != "idempotency_key"}
+    def clean(x):   # deliver_by is "now + within_minutes": it moves with the clock, so it is not part of what was ordered
+        if isinstance(x, dict):
+            return {k: clean(v) for k, v in x.items() if k not in ("idempotency_key", "deliver_by")}
+        return [clean(v) for v in x] if isinstance(x, list) else x
+    body = clean(spec or {})
     return hashlib.sha256(json.dumps([card_id, body], sort_keys=True, default=str).encode()).hexdigest()
 
 
