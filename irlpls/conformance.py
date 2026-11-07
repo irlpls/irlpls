@@ -88,7 +88,7 @@ def _max_age(cc):
 def check(target, fetcher=fetch, against=None, ucp=False, today=None):
     """Run every check. Returns [(status, name, detail)]. `fetcher(url)` -> (status, headers, body); `against` is an
     audited card dict."""
-    today = today or date.today()
+    today = today or isotime.today_utc()
     out = []
     add = lambda s, n, d="": out.append((s, n, d))
     domain, url = normalize(target)

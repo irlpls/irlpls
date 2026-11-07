@@ -35,6 +35,7 @@ notes), irlpls/data/published/<id>.json (the last good copy), irlpls/data/publis
 what was refused and why). All gitignored. site/published.json is the public part of state.json; build.py writes it on
 every build, and tools/fetch_published.py writes it right after a read too.
 """
+from . import isotime
 import datetime
 import hashlib
 import json
@@ -329,7 +330,7 @@ def overrides(cards, state=None, d=None, today=None):
     """[cards with each live or stale published copy in place of its compiled card], {id: effective state}. A copy is
     used only while it is shown (live, stale within KEEP_DAYS, not expired) and still parses as the same id."""
     state = state if state is not None else load_state(d)
-    today = today or datetime.date.today()
+    today = today or isotime.today_utc()
     eff, out = {}, []
     for c in cards:
         e = (state.get("cards") or {}).get(c["id"])

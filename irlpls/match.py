@@ -15,6 +15,7 @@ Description match (parts: matched, custom, specifics):
     modality is an optical camera; "through clouds" / "all-weather" on either side reads as the one word "allweather".
 Mirrors src/match.js; keep them in step.
 """
+from . import isotime
 import re
 
 from . import geo
@@ -218,7 +219,7 @@ def expired(card, today=None):
     if not isinstance(e, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", e):
         return False
     try:
-        return datetime.date.fromisoformat(e) < (today or datetime.date.today())
+        return datetime.date.fromisoformat(e) < (today or isotime.today_utc())
     except ValueError:
         return False
 

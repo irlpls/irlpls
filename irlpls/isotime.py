@@ -56,3 +56,9 @@ def parse(s):
         return datetime.fromisoformat(c) if c is not None else None
     except Exception:
         return None
+
+
+def today_utc():
+    """Today's date in UTC: the day every card, schedule and health line is dated in, on any machine's time zone."""
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).date()

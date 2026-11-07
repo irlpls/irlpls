@@ -4,6 +4,7 @@ Shared by tools/build_catalog.py (writes catalog.json / catalog.index.json) and 
 (irlpls_list_capabilities, irlpls://catalog). build() generates it in-process from Capture Cards plus the adapter
 sources; nothing here is hand-written per provider except the FAMILIES membership table. No network.
 """
+from . import isotime
 import datetime
 import glob
 import json
@@ -299,7 +300,7 @@ def build(cards, top=None, strict=True):
         })
     provs = {c["id"]: provider(c, ad, fam_of.get(c["id"], [])) for c in sorted(cards, key=lambda c: c["id"])}
     cat = {
-        "irlpls_catalog": 1, "spec_version": SPEC, "generated": datetime.date.today().isoformat(),
+        "irlpls_catalog": 1, "spec_version": SPEC, "generated": isotime.today_utc().isoformat(),
         "what_this_is": "The index of what irlpls can be asked. Read question_types, pick a family, take its providers, then fetch only those cards at /cards/<id>.json. Do not load /cards.json whole (about 1 MB).",
         "how_to_read": [
             "1. Classify the ask into one of question_types (read, watch, send, overhead, collect).",

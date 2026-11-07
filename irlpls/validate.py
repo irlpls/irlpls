@@ -4,6 +4,7 @@ schema can't state (docs/STANDARD.md, Sections 2.4, 3 and 8).
     irlpls validate cards/skyfi.json
     irlpls validate https://provider.example/.well-known/irlpls
 """
+from . import isotime
 import difflib
 import ipaddress
 import json
@@ -274,7 +275,7 @@ def problems(card, fetched_from=None):
         upd, exp = date.fromisoformat(card["updated"]), date.fromisoformat(card["expires"])
         if exp > upd + timedelta(days=366):
             err("expires", "must be at most a year after updated")
-        if exp < date.today():
+        if exp < isotime.today_utc():
             warn("expires", "this card has expired; brokers will skip it")
     elif "updated" not in card or "expires" not in card:
         warn("expires", "updated and expires should both be dates (YYYY-MM-DD) so brokers can tell a card is stale")
@@ -366,7 +367,7 @@ def to_provider_file(card):
     decides what to correct. Nothing here is a claim irlpls makes for them."""
     from datetime import date, timedelta
     doc = json.loads(json.dumps(card))
-    today = date.today()
+    today = isotime.today_utc()
     doc["updated"], doc["expires"] = today.isoformat(), (today + timedelta(days=365)).isoformat()
     todo = []
     for k in GUARANTEES:
