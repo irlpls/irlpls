@@ -1,0 +1,173 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "pe-senamhi-wis2-synop",
+  "name": "SENAMHI Peru WIS2 hourly observations",
+  "provider_url": "https://wis.senamhi.gob.pe",
+  "short": "Latest synoptic weather from Peruvian stations via the national WIS2 node: JSON and CSV, free, no key.",
+  "summary": "Peru's national weather and hydrology service (SENAMHI) runs a WIS2-in-a-box node at wis.senamhi.gob.pe that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 22:00 UTC; the collection held 433,026 features and the node's station list 31 stations. ",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest hourly surface weather observations at Peruvian stations",
+      "station list with WIGOS identifiers and coordinates",
+      "history of one station's decoded observations"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Peru"
+    ],
+    "areas": [
+      "PE"
+    ],
+    "notes": "Peruvian national network as published to WIS2; density and which stations report are set by the weather service and were not audited."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "No limit stated on the node's pages that were checked; the node is a public OGC API server, so use modest page sizes.",
+      "source_url": "https://wis.senamhi.gob.pe/oapi/openapi"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest decoded report 2026-11-07 22:00 UTC, published within about an hour of its observation time (pubtime in the messages collection)."
+  },
+  "latency": {
+    "typical": "Within about an hour of the observation hour",
+    "notes": "One sample only. WIS2 messages also announce each file on a public MQTT broker; the HTTP API was the path tested."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "About an hour",
+    "notes": "One sample only."
+  },
+  "licensing": {
+    "summary": "The node's discovery metadata for this dataset declares the WMO data policy 'core' and carries no separate licence or terms link. No national terms were found on the node pages checked. Attribution, resale and AI training are not stated by the provider."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each feature has phenomenonTime and reportTime in UTC.",
+      "unknown": "Observation time is as encoded by the station or service; clock accuracy not checked."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station coordinates in each feature and in the node's station list, keyed by WIGOS identifier.",
+      "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Values are decoded from the service's own BUFR reports.",
+      "unknown": "The node does not document quality control; decoding and plausibility checks are not described."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.wis2box.wis.wmo.int/en/latest/",
+    "base_url": "https://wis.senamhi.gob.pe/oapi",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent; none required."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/urn:wmo:md:pe-senamhi:synop-hourly/items",
+        "params": "f=json|csv, limit, offset, sortby=-reportTime, plus property filters such as wigos_station_identifier",
+        "notes": "Decoded observations, one feature per variable per report. Sort by -reportTime for the newest."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/collections/stations/items",
+        "params": "f=json, limit",
+        "notes": "Station list with WIGOS identifiers and coordinates."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/messages/items",
+        "params": "f=json, limit, sortby=-pubtime",
+        "notes": "WIS2 notification messages with links to the BUFR files under /data."
+      }
+    ],
+    "rate_limits": "Not published on the pages checked.",
+    "notes": "OpenAPI document at /oapi/openapi. Standard WIS2-in-a-box software, so the same paths work on other national nodes.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather station",
+    "weather observations",
+    "peru",
+    "senamhi",
+    "wis2",
+    "wmo",
+    "latin america",
+    "andes",
+    "government",
+    "free",
+    "hourly",
+    "synop"
+  ],
+  "sources": [
+    {
+      "claim": "Dataset discovery metadata: title, WMO data policy core, update dates",
+      "url": "https://wis.senamhi.gob.pe/oapi/collections/discovery-metadata/items/urn:wmo:md:pe-senamhi:synop-hourly?f=json"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200, newest decoded report 2026-11-07 22:00 UTC; 433,026 features matched",
+      "url": "https://wis.senamhi.gob.pe/oapi/collections/urn:wmo:md:pe-senamhi:synop-hourly/items?f=json&limit=1&sortby=-reportTime"
+    },
+    {
+      "claim": "Station list returned 31 stations",
+      "url": "https://wis.senamhi.gob.pe/oapi/collections/stations/items?f=json&limit=1"
+    }
+  ]
+}

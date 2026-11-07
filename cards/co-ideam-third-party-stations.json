@@ -1,0 +1,154 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "co-ideam-third-party-stations",
+  "name": "Colombia IDEAM third-party station data (datos.gov.co)",
+  "provider_url": "https://www.datos.gov.co/d/57sv-p2fu",
+  "short": "Rain and soil moisture from partner-agency stations (e.g. Bogota) via IDEAM open data. Free, no key.",
+  "summary": "Colombia's national weather and environment institute (IDEAM) republishes, as an open dataset on datos.gov.co (Socrata, SODA JSON API), meteorological variables recorded at stations that belong to other environmental entities. Each record has station code and name, department, municipality, hydrographic zone, latitude, longitude, sensor description, unit, the observed value with its time and an entity field naming the owner. The two newest records on 2026-11-07 came from a Bogota station owned by the district risk management institute: 10-minute accumulated rain and hourly soil moisture at 50 cm. The metadata gives a one-line description and states daily updates. Which other owners and variables the dataset contains was not enumerated.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "10-minute rainfall and soil moisture at partner stations",
+      "station metadata with owner entity, coordinates and municipality"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Colombia"
+    ],
+    "areas": [
+      "CO"
+    ],
+    "notes": "Colombia; partner networks such as Bogota's district risk institute. Which owners and regions are included was not enumerated."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "Socrata platform; no number checked. Unauthenticated Socrata calls can be throttled; an app token is optional and was not used.",
+      "source_url": "https://www.datos.gov.co/api/views/57sv-p2fu"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC with order by fechaobservacion desc: newest records stamped 2026-11-07T17:07 local, within hours of the call; rowsUpdatedAt 2026-11-07."
+  },
+  "latency": {
+    "typical": "Hours",
+    "notes": "Metadata says daily updates; the one sample was only hours old."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Hours on 2026-11-07",
+    "notes": "One sample only."
+  },
+  "licensing": {
+    "summary": "Dataset metadata on datos.gov.co: Creative Commons Attribution Share-Alike 4.0 International (credit IDEAM; derivative datasets must carry the same licence). Provenance flagged official. The portal's own terms of use were not read. Automated access, AI training and resale are not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each record has an observation timestamp (local, no offset shown).",
+      "unknown": "Time zone is not stated in the records."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station latitude and longitude in each record.",
+      "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "The metadata gives no quality-control statement for this dataset.",
+      "unknown": "Quality control is described only in general terms."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://dev.socrata.com/",
+    "base_url": "https://www.datos.gov.co/resource/57sv-p2fu.json",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent; Socrata app tokens are optional."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/resource/57sv-p2fu.json",
+        "params": "$limit, $order, $where (SoQL)",
+        "notes": "Observations from partner stations; filter on entidad or codigoestacion with $where."
+      }
+    ],
+    "rate_limits": "Not checked.",
+    "notes": "JSON via SODA.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "rain",
+    "soil moisture",
+    "weather",
+    "bogota",
+    "partner stations",
+    "colombia",
+    "ideam",
+    "stations",
+    "latin america",
+    "government",
+    "open data",
+    "free"
+  ],
+  "sources": [
+    {
+      "claim": "Dataset: variables recorded at stations of other environmental entities; frequency of update daily; attribution IDEAM; licence CC BY-SA 4.0; provenance official",
+      "url": "https://www.datos.gov.co/api/views/57sv-p2fu"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200, newest records 2026-11-07T17:07 at VITELMA (district risk institute), rain 0 mm and soil moisture 70.77 %",
+      "url": "https://www.datos.gov.co/resource/57sv-p2fu.json?$order=fechaobservacion%20DESC&$limit=2"
+    }
+  ]
+}

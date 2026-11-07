@@ -1,0 +1,154 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "co-ideam-precipitation-10min",
+  "name": "Colombia IDEAM 10-minute rainfall stations (datos.gov.co)",
+  "provider_url": "https://www.datos.gov.co/d/s54a-sgyg",
+  "short": "IDEAM rainfall totals every 10 minutes at stations across Colombia via the open-data portal. Free, no key.",
+  "summary": "Colombia's national weather and environment institute (IDEAM) publishes rain recorded every 10 minutes at stations across the country as an open dataset on datos.gov.co (Socrata, SODA JSON API). Each record has station code and name, department, municipality, hydrographic zone, latitude, longitude, sensor description, unit (mm) and the observed value with its time. The description says it has basic WMO-recommended quality control, with failing values corrected or removed, and that it can support early warning systems. Update frequency is stated as daily. A keyless GET sorted by time on 2026-11-07 UTC returned records stamped 2026-11-06 23:59 local time.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "10-minute rainfall by station",
+      "station metadata with coordinates, department and municipality"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Colombia"
+    ],
+    "areas": [
+      "CO"
+    ],
+    "notes": "Colombia only. Station count was not measured."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "Socrata platform; no number checked. Unauthenticated Socrata calls can be throttled; an app token is optional and was not used.",
+      "source_url": "https://www.datos.gov.co/api/views/s54a-sgyg"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC with order by fechaobservacion desc: newest records 2026-11-06T23:59 local, under a day old. Metadata says daily updates; rowsUpdatedAt 2026-11-07."
+  },
+  "latency": {
+    "typical": "Up to about a day",
+    "notes": "Readings are 10-minute but the dataset is refreshed daily, so this is near-real-time, not minutes."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a day on 2026-11-07",
+    "notes": "One sample only."
+  },
+  "licensing": {
+    "summary": "Dataset metadata on datos.gov.co: Creative Commons Attribution Share-Alike 4.0 International (credit IDEAM; derivative datasets must carry the same licence). Provenance flagged official. The portal's own terms of use were not read. Automated access, AI training and resale are not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each record has an observation timestamp (local, no offset shown).",
+      "unknown": "Time zone is not stated in the records."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station latitude and longitude in each record.",
+      "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Metadata states basic WMO-recommended quality control, with failing values corrected or removed.",
+      "unknown": "Quality control is described only in general terms."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://dev.socrata.com/",
+    "base_url": "https://www.datos.gov.co/resource/s54a-sgyg.json",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent; Socrata app tokens are optional."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/resource/s54a-sgyg.json",
+        "params": "$limit, $order, $where (SoQL)",
+        "notes": "10-minute rainfall observations; order by fechaobservacion DESC for the newest."
+      }
+    ],
+    "rate_limits": "Not checked.",
+    "notes": "JSON via SODA.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "rain",
+    "rainfall",
+    "precipitation",
+    "weather",
+    "10-minute",
+    "colombia",
+    "ideam",
+    "stations",
+    "latin america",
+    "government",
+    "open data",
+    "free"
+  ],
+  "sources": [
+    {
+      "claim": "Dataset: rain recorded every 10 minutes at IDEAM stations; basic WMO QC; frequency of update daily; attribution IDEAM; licence CC BY-SA 4.0; provenance official",
+      "url": "https://www.datos.gov.co/api/views/s54a-sgyg"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200, newest records fechaobservacion 2026-11-06T23:59:00, value 0 mm at El Bagre and Escuela La Union",
+      "url": "https://www.datos.gov.co/resource/s54a-sgyg.json?$order=fechaobservacion%20DESC&$limit=2"
+    }
+  ]
+}
