@@ -856,21 +856,104 @@ Use it when the answer depends on the world as it is now, or when someone goes a
 
 # cards-lite.json: the fields the browser matcher and pages read (src/match.js, labels.js, callpane.js, app.js, index), nothing else.
 # tests/test_page_weight.py pins that ranking over it equals ranking over the full cards. /cards.json stays the full contract.
-LITE_KEYS = ("id", "name", "status", "tags", "summary", "short", "expires", "provider_url", "attestations")
+LITE_KEYS = ("id", "name", "status", "tags", "expires", "provider_url", "attestations")  # no "short"; "summary" is derived (lite_summary)
 LITE_SUB = {"capabilities": ("modalities", "tasks"), "coverage": ("regions", "areas", "notes"), "delivery": ("modes", "speed"),
             "pricing": ("from_usd", "unit"), "access": ("cost", "key_required", "automation_allowed"), "licensing": ("resale", "ai_training"),
             "capture": ("by",), "protocol": ("endpoint", "versions")}
 
 
+_TOK = re.compile(r"[^a-z0-9.]+")
+_ALLWEATHER = re.compile(r"\bthrough (?:the )?clouds?\b|\ball[- ]weather\b|\bcloud[- ]penetrating\b")
+_CODE_KEYS = None
+
+
+_DEAD = None
+
+
+def _dead_words():
+    """STOP words from src/match.js that no ask term can be (content() drops them) and no CONCEPTS value mentions: vocab never probes them."""
+    global _DEAD
+    if _DEAD is None:
+        js = (ROOT / "src" / "match.js").read_text()
+        stop = set(json.loads(re.search(r"var STOP=(\[.*?\]);", js).group(1)))
+        con = {w for v in json.loads(re.search(r"var CONCEPTS=(\{.*?\});", js).group(1)).values() for w in v.split()}
+        # function words only: a verb like "show" or "want" stays, because an ask word "showing" stems to it (stem())
+        fw = set(("a an and are at by for from how i in is it its of on or our than that the their them there this to was were what when "
+                  "where who with you your me my any off over into").split())
+        _DEAD = (fw & stop - con, {w for w in con if w[:1].isdigit() or "." in w or len(w) == 1})
+    return _DEAD
+
+
+def _dead(x):
+    """A token no probe can hit: a short STOP word, or a number (ask terms never start with a digit) no CONCEPTS value lists."""
+    stop, dig = _dead_words()
+    return x in stop or (x[0].isdigit() and x not in dig) or (len(x) == 1 and x not in dig) or ("." in x and x not in dig)  # ask terms have no "."; nor does any stem of one
+
+
+def _code_keys():
+    global _CODE_KEYS
+    if _CODE_KEYS is None:
+        m = re.search(r"var REGION_CODES=(\{.*?\});", (ROOT / "src" / "match.js").read_text())
+        _CODE_KEYS = [k for k, v in json.loads(m.group(1)).items() if v != "*" and len(k) >= 5]
+    return _CODE_KEYS
+
+
+def lite_summary(c):
+    """The summary the matcher can see, in fewer bytes. src/match.js reads c.summary only as (1) vocab tokens, beside name/tags/tasks/
+    modalities, and (2) region-code phrases of 5+ chars (regional()). So keep the tokens no other field already supplies, joined by ';'
+    (no new phrase can form across them), plus each region phrase the real text contains. Ranking is unchanged (tests/test_page_weight.py)."""
+    toks = lambda t: [x for x in _TOK.split(_ALLWEATHER.sub(" allweather ", t.lower())) if x]
+    cap = c.get("capabilities") or {}
+    have = set(toks(" ".join([c.get("name", ""), " ".join(c.get("tags") or []), " ".join(cap.get("tasks") or []), " ".join(cap.get("modalities") or [])])))
+    text = (c.get("summary") or "").lower()
+    out = list(dict.fromkeys(x for x in toks(text) if x not in have and not _dead(x)))
+    out += [k for k in _code_keys() if re.search(r"(?<![a-z])" + re.escape(k) + r"(?![a-z])", text)]
+    return ";".join(out)
+
+
+_CUSTOM_WORDS = ("custom", "upload", "submission")  # customCapture() regex-tests the task text for these
+
+
+def lite_tasks(c):
+    """capabilities.tasks, as the matcher reads it: joined, tokenised (vocab) and tested for _CUSTOM_WORDS (customCapture). One string
+    of the distinct tokens (';'-joined, so no phrase forms) carries both; tokens the name/tags/modalities already supply are dropped."""
+    cap = c.get("capabilities") or {}
+    toks = lambda t: [x for x in _TOK.split(_ALLWEATHER.sub(" allweather ", t.lower())) if x]
+    have = set(toks(" ".join([c.get("name", ""), " ".join(c.get("tags") or []), " ".join(cap.get("modalities") or [])])))
+    seen = list(dict.fromkeys(x for x in toks(" ".join(cap.get("tasks") or [])) if (x not in have and not _dead(x)) or any(w in x for w in _CUSTOM_WORDS)))
+    return [";".join(seen)] if seen else []
+
+
+def _method_hits(g):
+    """Only the parts of a verification method the stage mapping's regexes (SEAL, ATTEST, REPORTS in src/match.js) can match."""
+    m = g.get("method") or ""
+    return " ; ".join(h.group(0) for rx in _stage_rx() if (h := rx.search(m)))
+
+
+_STAGE_RX = None
+
+
+def _stage_rx():
+    global _STAGE_RX
+    if _STAGE_RX is None:
+        js = (ROOT / "src" / "match.js").read_text()
+        _STAGE_RX = [re.compile(re.search(r"var %s=/(.*)/i;" % n, js).group(1), re.I) for n in ("SEAL", "ATTEST", "REPORTS")]
+    return _STAGE_RX
+
+
 def lite(c):
     t = {k: c[k] for k in LITE_KEYS if k in c}
+    t["summary"] = lite_summary(c)
     for g, fs in LITE_SUB.items():
         if isinstance(c.get(g), dict):
             t[g] = {f: c[g][f] for f in fs if f in c[g]}
+    if isinstance(c.get("capabilities"), dict) and "tasks" in t.get("capabilities", {}):
+        t["capabilities"]["tasks"] = lite_tasks(c)
     if isinstance(c.get("api"), dict) and c["api"].get("auth"):  # only the sign-in kinds (keyText)
         t["api"] = {"auth": [{k: m[k] for k in ("type", "cimd", "dynamic_registration") if k in m} for m in c["api"]["auth"] if isinstance(m, dict)]}
     # the level, plus what the stage mapping reads: a camera standard, and the camera/content/time methods (a seal, an attested time)
-    t["verification"] = {k: {"level": v.get("level", "none"), **{f: v[f] for f in STAGE_FIELDS.get(k, ()) if v.get(f)}}
+    t["verification"] = {k: {"level": v.get("level", "none"), **({"standard": v["standard"]} if v.get("standard") and "standard" in STAGE_FIELDS.get(k, ()) else {}),
+                             **({"method": mh} if "method" in STAGE_FIELDS.get(k, ()) and (mh := _method_hits(v)) else {})}
                          for k, v in (c.get("verification") or {}).items()}
     if c.get("provenance"):  # stages 6 and 8 read only the levels
         t["provenance"] = {k: {"level": g.get("level")} for k, g in c["provenance"].items() if isinstance(g, dict)}

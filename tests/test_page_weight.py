@@ -22,7 +22,7 @@ SITE = ROOT / "site"
 pytestmark = pytest.mark.skipif(not (SITE / "cards-lite.json").exists(), reason="site/ not built")
 
 INDEX_BUDGET = 1_740_000   # ~15% over the heaviest measured idle load (1.51 MB, with the hero clip)
-FIND_BUDGET = 1_250_000    # ~15% over 1.05 MB at 132 cards (was 0.89 MB at 94): grows ~2.5 KB per card; trim cards-lite before ~170 cards
+FIND_BUDGET = 1_100_000    # ~15% over 0.95 MB at 132 cards (cards-lite 233 KB, was 334 KB; grows ~1.8 KB per card, asserted in the slim-view test)
 INDEX_DOC_BUDGET = 125_000  # the HTML itself (108 KB measured): the registry is not in it
 MAX_REQUEST = 400_000
 
@@ -54,8 +54,18 @@ def test_lite_is_a_strict_slim_view():
     lite = json.loads((SITE / "cards-lite.json").read_text())["cards"]
     assert [c["id"] for c in lite] == list(full)
     assert (SITE / "cards-lite.json").stat().st_size < 0.3 * (SITE / "cards.json").stat().st_size
+    assert (SITE / "cards-lite.json").stat().st_size / len(lite) < 2_000, "cards-lite grows over 2 KB per card (1.77 KB at 132): derive or drop a field"
+
+    def checked_derived(a, b, path):  # summary/tasks/method are derived (build.py lite_summary, lite_tasks, _method_hits): only the full card's own words
+        import re
+        words = set(re.split(r"[^a-z0-9.]+", " ".join(b if isinstance(b, list) else [b]).lower()))
+        for part in (a if isinstance(a, list) else [a]):
+            for tok in re.split(r"[^a-z0-9.]+", part.lower()):
+                assert not tok or tok == "allweather" or tok in words or tok in " ".join(b if isinstance(b, list) else [b]).lower(), f"{path}: {tok!r} is not in the full card"
 
     def sub(a, b, path=""):  # every lite value is the full card's value (verification may be reduced to its level/method)
+        if path.endswith((".summary", ".capabilities.tasks")) or path.endswith(".method") and ".verification." in path:
+            return checked_derived(a, b, path)
         if isinstance(a, dict):
             assert isinstance(b, dict), path
             for k, v in a.items():
