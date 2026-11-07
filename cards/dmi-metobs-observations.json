@@ -1,0 +1,164 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "dmi-metobs-observations",
+  "name": "DMI Denmark meteorological observations (metObs open data API)",
+  "provider_url": "https://www.dmi.dk",
+  "short": "Danish and Greenland weather station readings every 10 minutes from DMI. CC BY 4.0, no key needed.",
+  "summary": "The Danish Meteorological Institute serves raw station observations through an OGC API at opendataapi.dmi.dk/v2/metObs. On 2026-11-07 keyless calls returned features stamped 19:20Z for station 06190 (humidity 83.2, pressure 1025.7 hPa) and 06180 (precipitation duration, 0.0), with created time 19:20:22Z. Each feature is one parameter value at one station and time; a stations collection lists parameters per station. DMI says the data are raw, not quality assured and may be faulty, and covers Denmark and Greenland plus tide stations owned by DMI and the Danish Coastal Authority.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest 10-minute weather observation (temperature, wind, humidity, pressure, rain) at a Danish or Greenland station",
+      "station list with the parameters each reports"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Europe",
+      "Denmark",
+      "Greenland"
+    ],
+    "areas": [
+      "DK",
+      "GL"
+    ],
+    "notes": "DMI stations in Denmark and Greenland; station ids like 06180 are WMO-style numbers."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: observed 19:20:00Z, created 19:20:22Z, answered at 19:25Z."
+  },
+  "latency": {
+    "typical": "Minutes",
+    "notes": "Two stations sampled."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 10 minutes on the stations sampled",
+    "notes": "Use datetime=<start>/.. to get the newest items; the default order showed old records."
+  },
+  "licensing": {
+    "summary": "DMI's terms of use (www.dmi.dk/friedata/dokumentation/terms-of-use) state its open data are distributed under Creative Commons Attribution 4.0: share and adapt for any purpose, commercially too, with appropriate credit, a link to the licence and a note of changes. The same page says use of the APIs is open and registration is no longer required, and that DMI may set fair-use terms including bandwidth limits per IP address. Observation data are raw, not quality assured. Applications on mobile units should not keep updating from the web service when inactive. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each record carries its own timestamp.",
+      "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed station or event coordinates in the feed.",
+      "unknown": "Not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Raw station values, stated by DMI to be not quality assured.",
+      "unknown": "DMI says measurements may be faulty; no quality flag was seen in the items."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.dmi.dk/friedata/dokumentation/terms-of-use",
+    "base_url": "https://opendataapi.dmi.dk/v2/metObs",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/observation/items",
+        "params": "limit=<n>&stationId=<id>&parameterId=<name>&datetime=<start>/..",
+        "notes": "Calls made. GeoJSON features, one parameter value each."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/station/items",
+        "params": "limit=<n>",
+        "notes": "Call made. Station metadata with parameterId list."
+      }
+    ],
+    "rate_limits": "No numeric limit; DMI reserves the right to set fair-use terms including per-IP bandwidth limits.",
+    "notes": "OGC API Features, GeoJSON.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "observations",
+    "temperature",
+    "wind",
+    "denmark",
+    "greenland",
+    "europe",
+    "station",
+    "dmi",
+    "10-minute",
+    "government",
+    "free",
+    "cc-by"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: station 06180 precipitation duration observed 19:20Z",
+      "url": "https://opendataapi.dmi.dk/v2/metObs/collections/observation/items?limit=1&stationId=06180&datetime=2026-11-07T19:00:00Z/.."
+    },
+    {
+      "claim": "Station collection with parameter lists",
+      "url": "https://opendataapi.dmi.dk/v2/metObs/collections/station/items?limit=1"
+    },
+    {
+      "claim": "DMI terms of use: CC BY 4.0, open API without registration, raw unchecked observations",
+      "url": "https://www.dmi.dk/friedata/dokumentation/terms-of-use"
+    }
+  ]
+}

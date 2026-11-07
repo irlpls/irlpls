@@ -1,0 +1,163 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "nrcan-fdsn-earthquakes",
+  "name": "Earthquakes Canada (NRCan) earthquake catalogue, FDSN event service",
+  "provider_url": "https://earthquakescanada.nrcan.gc.ca",
+  "short": "Recent earthquakes in and around Canada from Natural Resources Canada, via the standard FDSN event service. No key.",
+  "summary": "Earthquakes Canada, part of Natural Resources Canada, serves its earthquake bulletin through the FDSN event web service at earthquakescanada.nrcan.gc.ca/fdsnws/event/1/query. A call with format=text&limit=2&orderby=time on 2026-11-07 returned two events from 2026-11-06 (Mw 2.85 at 12:31 UTC and Mw 2.99 at 04:27 UTC, both off the west coast of Vancouver Island, BC), each with event id, origin time, latitude, longitude, depth, magnitude type, magnitude and a bilingual place name. Standard FDSN parameters filter by time, magnitude and area; the service describes its own usage at /fdsnws/event/1/.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "recent earthquake events with magnitude, depth and location in and around Canada"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "North America",
+      "Canada"
+    ],
+    "areas": [
+      "CA"
+    ],
+    "notes": "Canadian National Seismograph Network coverage; offshore Pacific events and small magnitudes appear. Event ids start with ca. Place names are English/French."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest of the two events returned was origin time 2026-11-06T12:31:09Z; one call only, so event cadence in quiet periods is not known."
+  },
+  "latency": {
+    "typical": "Not stated; automatic then reviewed bulletin values are not distinguished in the text output.",
+    "notes": "One call only."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Hours to a day on the one sample (Canada has few events)",
+    "notes": "Depends on the region's seismicity; a quiet day can show nothing newer than the previous day."
+  },
+  "licensing": {
+    "summary": "Earthquake data from Natural Resources Canada are listed on open.canada.ca under the Open Government Licence - Canada v2.0 (the NRCan 'Earthquakes in Canada' record names that licence, and the Earthquakes Canada data page links to open.canada.ca). The licence allows copying, publishing, distributing, adapting and commercial use, requires attribution (Contains information licensed under the Open Government Licence - Canada, or the provider's own statement) and a link to the licence where possible, excludes personal information, third-party rights and official marks, and forbids implying endorsement. The licence record read covers the published historical catalogue; the live FDSN service is from the same programme but its own page states no licence text. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each record carries its own timestamp.",
+      "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed station or event coordinates in the feed.",
+      "unknown": "Not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Agency magnitude and location solutions.",
+      "unknown": "Whether values are automatic or reviewed is not shown in the text output."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://earthquakescanada.nrcan.gc.ca/fdsnws/event/1/",
+    "base_url": "https://earthquakescanada.nrcan.gc.ca/fdsnws/event/1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/query",
+        "params": "format=text&limit=<n>&orderby=time (also starttime, endtime, minmagnitude, bounding box)",
+        "notes": "Pipe-separated text: EventID|Time|Latitude|Longitude|Depth/km|MagType|Magnitude|EventLocationName. Call made."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/",
+        "params": "none",
+        "notes": "Usage description page (the service answers 404 with a pointer to it for unknown paths)."
+      }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read.",
+    "notes": "FDSN event standard; version 1.2.5 reported by the service.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "earthquake",
+    "seismic",
+    "canada",
+    "north america",
+    "fdsn",
+    "bulletin",
+    "government",
+    "free",
+    "ogl-canada",
+    "nrcan"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200 text with ca2026vzru (2026-11-06T12:31Z) and ca2026vzbr (04:27Z)",
+      "url": "https://earthquakescanada.nrcan.gc.ca/fdsnws/event/1/query?format=text&limit=2&orderby=time"
+    },
+    {
+      "claim": "Earthquakes Canada data page lists the FDSN web service and links to open.canada.ca",
+      "url": "https://earthquakescanada.nrcan.gc.ca/stndon/index-en.php"
+    },
+    {
+      "claim": "NRCan Earthquakes in Canada record on open.canada.ca: Open Government Licence - Canada",
+      "url": "https://open.canada.ca/data/en/dataset/4cedd37e-0023-41fe-8eff-bea45385e469"
+    },
+    {
+      "claim": "Open Government Licence - Canada v2.0 text",
+      "url": "https://open.canada.ca/en/open-government-licence-canada"
+    }
+  ]
+}

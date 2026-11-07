@@ -1,0 +1,156 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "jma-tsunami-bulletins",
+  "name": "JMA tsunami warnings and forecasts",
+  "provider_url": "https://www.jma.go.jp/bosai/",
+  "short": "Japan's official tsunami warning, advisory and forecast bulletins as JSON, with area and wave detail. Free, no key.",
+  "summary": "The Japan Meteorological Agency's disaster-prevention site serves its tsunami bulletins as JSON. The list at /bosai/tsunami/data/list.json gives recent events with report time, origin time, epicentre area name (Japanese and English), magnitude, coordinates and the kind of bulletin (for example tsunami forecast, slight sea-level change). Each entry points at a detail file with the forecast areas, expected wave heights and arrival times in Japanese. On 2026-11-07 the keyless list answered 200 with two events; the newest was a Tsunami Forecast for an M6.1 quake off the east coast of Kanto on 2026-11-06 19:39 JST. The list is short because only events that triggered a bulletin appear.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "Japan tsunami warnings, advisories and forecasts with affected coastal areas",
+      "latest tsunami bulletin after an offshore earthquake near Japan"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Japan"
+    ],
+    "areas": [
+      "JP"
+    ],
+    "notes": "Japanese coasts and nearby seas; bulletins are for Japan's coastline."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest bulletin reported 2026-11-06 19:53 JST (origin 19:39 JST), about 14 minutes after the quake."
+  },
+  "latency": {
+    "typical": "About 14 minutes from origin to bulletin on the one sample",
+    "notes": "Warnings for large events are faster; one sample only."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Event-driven; the newest bulletin was about 1 day old on 2026-11-07",
+    "notes": "The list holds only bulletin-triggering events."
+  },
+  "licensing": {
+    "summary": "JMA's Legal Notice (https://www.jma.go.jp/jma/en/copyright.html) says content on the JMA website may be used under the Japanese government Public Data License (Version 1.0), unless a specific rights notice says otherwise. The user must cite the source (for example 'Source: Japan Meteorological Agency website (URL of relevant page)'), state if the content was edited, and must not present edited content so that it looks made by the Government of Japan. Third-party rights in some content remain the user's responsibility. The JSON files under /bosai/ are the website's own data, not a documented API, and can change without notice."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Origin and report times with offsets in the list, UTC in the detail file Control block.",
+      "unknown": "Time zone is JST in the list; detail Control time is UTC."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Epicentre coordinates in ISO 6709 style plus an area name and code.",
+      "unknown": "Hypocentre accuracy is not given."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Official JMA bulletin kind, magnitude and forecast areas.",
+      "unknown": "Detail text is Japanese; wave-height codes need the CodeDefine block."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.jma.go.jp/jma/en/copyright.html",
+    "base_url": "https://www.jma.go.jp/bosai",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/tsunami/data/list.json",
+        "params": "none",
+        "notes": "Recent tsunami bulletin events."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/tsunami/data/{json}",
+        "params": "file name from the list's json field",
+        "notes": "Detail for one bulletin."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "JSON. Same site as the JMA bosai earthquake and weather files; no key.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "tsunami",
+    "tsunami warning",
+    "coastal",
+    "japan",
+    "tokyo",
+    "pacific",
+    "earthquake",
+    "government",
+    "free",
+    "real-time",
+    "asia"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200, 2 events, newest Tsunami Forecast off the east coast of Kanto",
+      "url": "https://www.jma.go.jp/bosai/tsunami/data/list.json"
+    },
+    {
+      "claim": "JMA Legal Notice: Public Data License (Version 1.0) with source citation",
+      "url": "https://www.jma.go.jp/jma/en/copyright.html"
+    }
+  ]
+}

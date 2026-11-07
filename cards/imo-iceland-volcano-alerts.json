@@ -1,0 +1,177 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "imo-iceland-volcano-alerts",
+  "name": "Icelandic Met Office volcano alert levels",
+  "provider_url": "https://en.vedur.is",
+  "short": "Iceland's official volcano alert level and aviation colour notices by volcano. Free, no key, CC BY 4.0.",
+  "summary": "The Icelandic Meteorological Office's Volcanoes API at api.vedur.is/volcanoes lists volcanoes with code, name, country, height and point location, and serves the dated notices: Volcano Alert Level System entries (level 0 to 4 with English and Icelandic text), aviation colour code notices (VONA) and weekly volcano reports. On 2026-11-07 the keyless alert-level list answered 200; the newest entry was published 2026-09-09 for Hofsjokull at level 0 (green, normal background). Notices change only when a volcano's status changes, so a quiet list is normal.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "current and past volcano alert levels in Iceland",
+      "aviation colour code notice for an Icelandic volcano"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Iceland"
+    ],
+    "areas": [
+      "IS"
+    ],
+    "notes": "Icelandic volcanic systems; the list also includes a few outside Iceland such as Beerenberg on Jan Mayen."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest alert-level entry published 2026-09-09; notices are issued on status change."
+  },
+  "latency": {
+    "typical": "Hours from a status change to a published notice is not stated",
+    "notes": "Not measured in one sample."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Weeks to months in quiet periods; the newest entry on 2026-11-07 was 59 days old",
+    "notes": "Event-driven, not periodic."
+  },
+  "licensing": {
+    "summary": "Iceland Met Office (IMO): the API's OpenAPI document states licence CC BY 4.0 and links its terms of service (https://en.vedur.is/about-imo/the-web/conditions). Those terms say unless stated otherwise the data are free to use with no restrictions for private or commercial use, but reference must be made to the Icelandic Meteorological Office and the date of download; real-time data are preliminary, may change, and access may be closed without notice. AI training and resale are not specifically addressed beyond that."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "published_at timestamp per notice.",
+      "unknown": "Time of the underlying observation is in the notice text, not a field."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Volcano code and point coordinates from the volcano list.",
+      "unknown": "Per-notice plume location is only in VONA free text."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Alert level and aviation colour issued by IMO's volcano monitoring.",
+      "unknown": "Levels are expert judgements; the aviation colour code can differ from the alert level."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.vedur.is/",
+    "base_url": "https://api.vedur.is/volcanoes",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/volcanoes",
+        "params": "include_geometry",
+        "notes": "Volcano list."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/vals",
+        "params": "none",
+        "notes": "Alert level notices."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/vona",
+        "params": "none",
+        "notes": "Aviation colour code notices."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/vwr",
+        "params": "none",
+        "notes": "Weekly volcano reports."
+      }
+    ],
+    "rate_limits": "Not stated in the OpenAPI document or terms.",
+    "notes": "Official OpenAPI at https://api.vedur.is/volcanoes/openapi.json; version 2026-06-04.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "volcano",
+    "volcanic activity",
+    "eruption",
+    "alert level",
+    "aviation colour code",
+    "iceland",
+    "reykjanes",
+    "government",
+    "free",
+    "europe"
+  ],
+  "sources": [
+    {
+      "claim": "IMO API index (Swagger UI listing Quakes, Weather, Volcanoes, CAP APIs)",
+      "url": "https://api.vedur.is/"
+    },
+    {
+      "claim": "IMO terms and conditions for data use",
+      "url": "https://en.vedur.is/about-imo/the-web/conditions"
+    },
+    {
+      "claim": "Volcanoes API OpenAPI document with licence CC BY 4.0",
+      "url": "https://api.vedur.is/volcanoes/openapi.json"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200 alert level notices",
+      "url": "https://api.vedur.is/volcanoes/vals"
+    }
+  ]
+}

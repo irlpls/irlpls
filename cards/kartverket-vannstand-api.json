@@ -1,0 +1,157 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "kartverket-vannstand-api",
+  "name": "Kartverket Norway sea level and tide API (observed and predicted)",
+  "provider_url": "https://kartverket.no",
+  "short": "Norwegian coastal sea level, observed and predicted, from Kartverket's tide API. CC BY 4.0, no key.",
+  "summary": "The Norwegian Mapping Authority's Hydrographic Service (Kartverket) serves observed and predicted sea level and tide tables from its permanent tide stations through vannstand.kartverket.no/tideapi.php (the older api.sehavniva.no address is being replaced by this one, per Geonorge). A keyless GET for lat 59.9, lon 10.7 (Oslo) with datatype=obs and 10-minute interval on 2026-11-07 returned XML water-level values in cm above chart datum at 18:00, 18:10, 18:20 and so on (60.6, 58.4, 56.1 cm), each flagged obs. The same endpoint returns tide predictions, high and low waters and station lists by request type.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "observed sea level at a Norwegian coastal station (cm above chart datum), 10-minute steps",
+      "predicted tide and high and low water times for a point on the Norwegian coast",
+      "list of nearby tide stations for a latitude and longitude"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Europe",
+      "Norway",
+      "Arctic"
+    ],
+    "areas": [
+      "NO"
+    ],
+    "notes": "Permanent tide stations along the Norwegian coast and Svalbard per Kartverket's station page; the call resolves a latitude and longitude to the nearest station (Oslo in the call made)."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: observation rows at 10-minute steps for the requested window; the newest time in a window up to now was not isolated in the one call."
+  },
+  "latency": {
+    "typical": "Minutes (not measured)",
+    "notes": "Observations are labelled preliminary on the protocol; one call only."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Not measured",
+    "notes": "Request time windows explicitly; times carry a +01:00 offset."
+  },
+  "licensing": {
+    "summary": "Kartverket's tidal and water level data page says the API is open to everybody with no registration, Kartverket (the Norwegian Mapping Authority, Hydrographic Service) must be credited, and the data are licensed under Creative Commons Attribution 4.0 International. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each record carries its own timestamp.",
+      "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed station or event coordinates in the feed.",
+      "unknown": "Not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Hydrographic Service water-level values with an obs/pred flag per row.",
+      "unknown": "Quality flags are returned as numeric fields whose meaning was not checked."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://kartverket.no/en/api-and-data/tidal-and-water-level-data",
+    "base_url": "https://vannstand.kartverket.no",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/tideapi.php",
+        "params": "lat=<lat>&lon=<lon>&fromtime=<ISO>&totime=<ISO>&datatype=obs&refcode=cd&lang=en&interval=10&dst=0&tide_request=locationdata",
+        "notes": "Call made. datatype=obs for observed; other tide_request values give stations and predictions (see the protocol PDF)."
+      }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read.",
+    "notes": "XML response. Protocol document is published on the same host.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "tide",
+    "sea level",
+    "water level",
+    "coast",
+    "norway",
+    "europe",
+    "marine",
+    "harbor",
+    "kartverket",
+    "government",
+    "free",
+    "cc-by",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: Oslo observed sea level 60.6 cm at 18:00+01:00",
+      "url": "https://vannstand.kartverket.no/tideapi.php?lat=59.9&lon=10.7&fromtime=2026-11-07T18:00&totime=2026-11-07T20:00&datatype=obs&refcode=cd&place=&file=&lang=en&interval=10&dst=0&tzone=&tide_request=locationdata"
+    },
+    {
+      "claim": "Kartverket terms: open API, credit Kartverket, CC BY 4.0",
+      "url": "https://kartverket.no/en/api-and-data/tidal-and-water-level-data"
+    },
+    {
+      "claim": "API communication protocol",
+      "url": "https://vannstand.kartverket.no/tideapi_protocol.pdf"
+    }
+  ]
+}

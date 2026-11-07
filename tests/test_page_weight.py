@@ -22,7 +22,7 @@ SITE = ROOT / "site"
 pytestmark = pytest.mark.skipif(not (SITE / "cards-lite.json").exists(), reason="site/ not built")
 
 INDEX_BUDGET = 1_740_000   # ~15% over the heaviest measured idle load (1.51 MB, with the hero clip)
-FIND_BUDGET = 1_020_000    # ~15% over 0.89 MB
+FIND_BUDGET = 1_250_000    # ~15% over 1.05 MB at 132 cards (was 0.89 MB at 94): grows ~2.5 KB per card; trim cards-lite before ~170 cards
 INDEX_DOC_BUDGET = 125_000  # the HTML itself (108 KB measured): the registry is not in it
 MAX_REQUEST = 400_000
 

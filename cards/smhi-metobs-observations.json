@@ -1,0 +1,161 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "smhi-metobs-observations",
+  "name": "SMHI meteorological observations (open data, metobs)",
+  "provider_url": "https://www.smhi.se",
+  "short": "Swedish weather station observations from SMHI: temperature, wind, rain and more, hourly or better. CC BY 4.0, no key.",
+  "summary": "SMHI, the Swedish Meteorological and Hydrological Institute, serves station observations through opendata-download-metobs.smhi.se/api/version/1.0. The tree runs parameter, then station, then period (latest-hour, latest-day, latest-months, corrected-archive). On 2026-11-07 a keyless call for parameter 1 (air temperature) listed 1,006 stations of which 231 are marked active, and the latest-hour call for Arvidsjaur A (station 159880) returned 5.2 C stamped 2026-11-07T18:00Z with quality flag G. Parameters include temperature, wind, humidity, pressure, precipitation and more, each its own numeric id. The unversioned path /version/latest did not resolve in a test; use version 1.0.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest observation of a weather parameter at a Swedish station",
+      "station list per parameter with coordinates, owner, active flag and CORE or ADDITIONAL network"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Europe",
+      "Sweden"
+    ],
+    "areas": [
+      "SE"
+    ],
+    "notes": "Stations owned by SMHI and by other bodies (the owner field shows the body). measuringStations marks CORE (maintained) versus ADDITIONAL stations. Not every station measures every parameter."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: station 159880 latest-hour value stamped 18:00Z; the call was made about 19:20Z. Update cadence depends on the parameter (the temperature parameter is 'once per hour')."
+  },
+  "latency": {
+    "typical": "Up to about an hour for hourly parameters",
+    "notes": "One station sampled."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "About 1 hour on the one sample",
+    "notes": "Parameter-specific; check the parameter summary field."
+  },
+  "licensing": {
+    "summary": "SMHI's Terms of use page (updated 15 June 2026) says its open data follow Creative Commons Attribution 4.0 SE: you may copy, distribute and adapt, commercially too, naming SMHI as the source and stating any changes you made. Consequence-based weather warnings carry separate terms and are not part of this feed. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each record carries its own timestamp.",
+      "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed station or event coordinates in the feed.",
+      "unknown": "Not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Values carry a quality code (for example G) and stations are labelled CORE or ADDITIONAL.",
+      "unknown": "The meaning of each quality code was not checked; ADDITIONAL stations are not described on the pages read."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://opendata.smhi.se/",
+    "base_url": "https://opendata-download-metobs.smhi.se/api/version/1.0",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/parameter/{parameter}/station/{station}/period/latest-hour/data.json",
+        "params": "parameter=1 for air temperature",
+        "notes": "Call made. Value list with date (ms epoch), value, quality."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/parameter/{parameter}.json",
+        "params": "none",
+        "notes": "Call made. Station list with owner, height, lat/lon, active flag."
+      }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read.",
+    "notes": "JSON, XML, CSV. Station and parameter ids are SMHI's own.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "observations",
+    "temperature",
+    "wind",
+    "sweden",
+    "europe",
+    "station",
+    "smhi",
+    "hourly",
+    "government",
+    "free",
+    "cc-by"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: station 159880 temperature 5.2 at 2026-11-07T18:00Z, quality G",
+      "url": "https://opendata-download-metobs.smhi.se/api/version/1.0/parameter/1/station/159880/period/latest-hour/data.json"
+    },
+    {
+      "claim": "Station list for parameter 1: 1,006 stations, 231 active",
+      "url": "https://opendata-download-metobs.smhi.se/api/version/1.0/parameter/1.json"
+    },
+    {
+      "claim": "SMHI terms of use: CC BY 4.0 SE, name SMHI as source",
+      "url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning"
+    }
+  ]
+}

@@ -2347,6 +2347,179 @@
    }
   },
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "chs-iwls-water-levels",
+   "name": "Canadian Hydrographic Service IWLS water levels and tide predictions",
+   "provider_url": "https://tides.gc.ca",
+   "short": "Canadian coastal and St. Lawrence water level, observed and predicted, from CHS. Non-commercial licence.",
+   "summary": "The Canadian Hydrographic Service (Fisheries and Oceans Canada) serves water-level time series through the Integrated Water Level System API at api-iwls.dfo-mpo.gc.ca/api/v1. Stations list their time series (wlo observed official value, wlp predictions, wlp-hilo high and low waters). On 2026-11-07 a keyless call for Point Atkinson, BC returned 1-minute predicted values (4.095 m at 12:00Z, flagged unreviewed). The wlo observed series for that station returned reviewed values for 4 to 6 November but an empty list for the last hours of 7 November, so observed data lag the call time. The licence agreement is restrictive: it forbids commercial derivative products, navigation use and passing the data to third parties.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "predicted water level (m) and high and low waters at a Canadian tide station",
+     "official reviewed observed water level at a station, a few days behind"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "North America",
+     "Canada"
+    ],
+    "areas": [
+     "CA"
+    ],
+    "notes": "Stations on the Atlantic, Pacific, Arctic and St. Lawrence coasts; the station list carries a code, operating flag and time series. Observed official values showed a lag of under a day on the one station tested."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "requests": 30,
+     "per_seconds": 60,
+     "scope": "per-ip",
+     "notes": "Also up to 3 requests per second; data window caps per request.",
+     "source_url": "https://tides.gc.ca/en/web-services-offered-canadian-hydrographic-service"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Tested 2026-11-07 ~19:20Z: wlo had data to 6 Nov and nothing for 17:00-19:30Z on 7 Nov; wlp predictions covered the current day."
+   },
+   "latency": {
+    "typical": "Observed values: about a day (reviewed); predictions are ahead of time",
+    "notes": "One station tested."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About a day for observed values",
+    "notes": "Stations differ in series offered; Point Atkinson offers wlo, wlp, wlp-hilo."
+   },
+   "licensing": {
+    "summary": "Use is governed by the CHS Licence Agreement (tides.gc.ca/en/licence-agreement), which the API page says you accept by using the API. Key terms: CHS keeps the copyright; the data must not be used to produce derivative products for commercial purposes, sale or profit; must not be used for navigation; copyright must not be sold, licensed or given to a third party; a derivative product must carry the notice set in the agreement (not for navigation, contains CHS data, no endorsement). Treat this as non-commercial use only. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record carries its own timestamp.",
+     "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed station or event coordinates in the feed.",
+     "unknown": "Not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Series are labelled reviewed or not and carry a QC flag code.",
+     "unknown": "QC flag meanings were not checked."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://tides.gc.ca/en/web-services-offered-canadian-hydrographic-service",
+    "base_url": "https://api-iwls.dfo-mpo.gc.ca/api/v1",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/stations",
+      "params": "code=<station code>",
+      "notes": "Call made. Station id, coordinates, operating flag, time series list."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/stations/{id}/data",
+      "params": "time-series-code=wlp|wlo&from=<ISO>&to=<ISO>",
+      "notes": "Call made. Window cap is 1 week at 1-minute data."
+     }
+    ],
+    "rate_limits": "Per client IP: up to 3 requests per second and 30 per minute; 1-minute data limited to 1 week per request, 3-minute data to 3 weeks, others to 1 month. A 429 means a limit was exceeded.",
+    "notes": "JSON. Calls in this card were spaced several seconds apart.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "tide",
+    "tides",
+    "sea level",
+    "water level",
+    "coast",
+    "canada",
+    "st lawrence",
+    "marine",
+    "harbor",
+    "chs",
+    "government",
+    "free",
+    "non-commercial"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: station list entry for Halifax with time series wlo, wlp",
+     "url": "https://api-iwls.dfo-mpo.gc.ca/api/v1/stations?code=00490"
+    },
+    {
+     "claim": "Point Atkinson wlp 1-minute values, 4.095 m at 2026-11-07T12:00Z",
+     "url": "https://api-iwls.dfo-mpo.gc.ca/api/v1/stations/5cebf1de3d0f4a073c4bb94c/data?time-series-code=wlp&from=2026-11-07T12:00:00Z&to=2026-11-07T12:01:00Z"
+    },
+    {
+     "claim": "CHS web services page: rate limits and data window limits",
+     "url": "https://tides.gc.ca/en/web-services-offered-canadian-hydrographic-service"
+    },
+    {
+     "claim": "CHS licence agreement: no commercial derivatives, no navigation use",
+     "url": "https://tides.gc.ca/en/licence-agreement"
+    }
+   ]
+  },
+  {
    "id": "claru",
    "name": "Claru",
    "provider_url": "https://claru.ai",
@@ -3400,6 +3573,170 @@
     "by": "devices"
    },
    "adapter": "digitraffic-marine-ais"
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "dmi-metobs-observations",
+   "name": "DMI Denmark meteorological observations (metObs open data API)",
+   "provider_url": "https://www.dmi.dk",
+   "short": "Danish and Greenland weather station readings every 10 minutes from DMI. CC BY 4.0, no key needed.",
+   "summary": "The Danish Meteorological Institute serves raw station observations through an OGC API at opendataapi.dmi.dk/v2/metObs. On 2026-11-07 keyless calls returned features stamped 19:20Z for station 06190 (humidity 83.2, pressure 1025.7 hPa) and 06180 (precipitation duration, 0.0), with created time 19:20:22Z. Each feature is one parameter value at one station and time; a stations collection lists parameters per station. DMI says the data are raw, not quality assured and may be faulty, and covers Denmark and Greenland plus tide stations owned by DMI and the Danish Coastal Authority.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest 10-minute weather observation (temperature, wind, humidity, pressure, rain) at a Danish or Greenland station",
+     "station list with the parameters each reports"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Europe",
+     "Denmark",
+     "Greenland"
+    ],
+    "areas": [
+     "DK",
+     "GL"
+    ],
+    "notes": "DMI stations in Denmark and Greenland; station ids like 06180 are WMO-style numbers."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: observed 19:20:00Z, created 19:20:22Z, answered at 19:25Z."
+   },
+   "latency": {
+    "typical": "Minutes",
+    "notes": "Two stations sampled."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 10 minutes on the stations sampled",
+    "notes": "Use datetime=<start>/.. to get the newest items; the default order showed old records."
+   },
+   "licensing": {
+    "summary": "DMI's terms of use (www.dmi.dk/friedata/dokumentation/terms-of-use) state its open data are distributed under Creative Commons Attribution 4.0: share and adapt for any purpose, commercially too, with appropriate credit, a link to the licence and a note of changes. The same page says use of the APIs is open and registration is no longer required, and that DMI may set fair-use terms including bandwidth limits per IP address. Observation data are raw, not quality assured. Applications on mobile units should not keep updating from the web service when inactive. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record carries its own timestamp.",
+     "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed station or event coordinates in the feed.",
+     "unknown": "Not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Raw station values, stated by DMI to be not quality assured.",
+     "unknown": "DMI says measurements may be faulty; no quality flag was seen in the items."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.dmi.dk/friedata/dokumentation/terms-of-use",
+    "base_url": "https://opendataapi.dmi.dk/v2/metObs",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/observation/items",
+      "params": "limit=<n>&stationId=<id>&parameterId=<name>&datetime=<start>/..",
+      "notes": "Calls made. GeoJSON features, one parameter value each."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/station/items",
+      "params": "limit=<n>",
+      "notes": "Call made. Station metadata with parameterId list."
+     }
+    ],
+    "rate_limits": "No numeric limit; DMI reserves the right to set fair-use terms including per-IP bandwidth limits.",
+    "notes": "OGC API Features, GeoJSON.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "observations",
+    "temperature",
+    "wind",
+    "denmark",
+    "greenland",
+    "europe",
+    "station",
+    "dmi",
+    "10-minute",
+    "government",
+    "free",
+    "cc-by"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: station 06180 precipitation duration observed 19:20Z",
+     "url": "https://opendataapi.dmi.dk/v2/metObs/collections/observation/items?limit=1&stationId=06180&datetime=2026-11-07T19:00:00Z/.."
+    },
+    {
+     "claim": "Station collection with parameter lists",
+     "url": "https://opendataapi.dmi.dk/v2/metObs/collections/station/items?limit=1"
+    },
+    {
+     "claim": "DMI terms of use: CC BY 4.0, open API without registration, raw unchecked observations",
+     "url": "https://www.dmi.dk/friedata/dokumentation/terms-of-use"
+    }
+   ]
   },
   {
    "id": "dojah-scout",
@@ -7755,6 +8092,178 @@
    ]
   },
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "geosphere-at-tawes-current",
+   "name": "GeoSphere Austria TAWES station observations, 10-minute (Dataset API)",
+   "provider_url": "https://www.geosphere.at",
+   "short": "Austrian weather station readings every 10 minutes from GeoSphere Austria. CC BY 4.0, no key.",
+   "summary": "GeoSphere Austria's Dataset API serves the TAWES automatic station network at dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min. A keyless GET for station 11035 (Vienna) with parameters TL (air temperature) and FF (wind speed) on 2026-11-07 returned a GeoJSON feature stamped 2026-11-07T19:20Z with 2.1 C and 1.0 m/s. The metadata endpoint lists 288 stations and 53 parameters at 10-minute frequency, including wind direction and gusts. The same API serves other datasets (history, forecasts, grids); only this current-station product was tested.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest 10-minute weather reading at an Austrian station (temperature, wind and more)",
+     "station list and parameter list for the TAWES network"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Europe",
+     "Austria"
+    ],
+    "areas": [
+     "AT"
+    ],
+    "notes": "288 stations per the metadata call, 53 parameters. Station ids are GeoSphere's own."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "requests": 240,
+     "per_seconds": 3600,
+     "scope": "unknown",
+     "notes": "Also 5 requests per second.",
+     "source_url": "https://dataset.api.hub.geosphere.at/v1/docs/user-guide/request-limit.html"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: reading stamped 19:20Z returned in a call made at about 19:25Z."
+   },
+   "latency": {
+    "typical": "About 5 to 10 minutes",
+    "notes": "One station sampled."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 10 minutes on one sample",
+    "notes": "Network fully automatic; gaps possible."
+   },
+   "licensing": {
+    "summary": "The Dataset API documentation (License section) states that all data publicly accessible without authentication are licensed under Creative Commons Attribution 4.0; no authentication is required. Credit GeoSphere Austria. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record carries its own timestamp.",
+     "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed station or event coordinates in the feed.",
+     "unknown": "Not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Official network readings with units in the response.",
+     "unknown": "No quality flags appeared in the response; processing is not described on the pages read."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://dataset.api.hub.geosphere.at/v1/docs/",
+    "base_url": "https://dataset.api.hub.geosphere.at/v1",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/station/current/tawes-v1-10min",
+      "params": "parameters=TL,FF&station_ids=<id>",
+      "notes": "Call made. GeoJSON; omit station_ids for all."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/station/current/tawes-v1-10min/metadata",
+      "params": "none",
+      "notes": "Call made. Stations and parameters."
+     }
+    ],
+    "rate_limits": "Documented: 5 requests per second and 240 requests per hour per user; 429 when exceeded; response headers show remaining quota.",
+    "notes": "JSON GeoJSON or CSV; request size limit of 1,000,000 values.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "observations",
+    "temperature",
+    "wind",
+    "austria",
+    "europe",
+    "station",
+    "geosphere",
+    "10-minute",
+    "government",
+    "free",
+    "cc-by"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: Vienna station 11035, TL 2.1 and FF 1.0 at 19:20Z",
+     "url": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min?parameters=TL,FF&station_ids=11035"
+    },
+    {
+     "claim": "Metadata: 288 stations, 53 parameters, 10-minute frequency",
+     "url": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min/metadata"
+    },
+    {
+     "claim": "Dataset API license: CC BY 4.0, no authentication",
+     "url": "https://dataset.api.hub.geosphere.at/v1/docs/user-guide/license.html"
+    },
+    {
+     "claim": "Request limit: 5 per second, 240 per hour",
+     "url": "https://dataset.api.hub.geosphere.at/v1/docs/user-guide/request-limit.html"
+    }
+   ]
+  },
+  {
    "id": "getterdone",
    "name": "GetterDone",
    "status": "unclaimed",
@@ -11270,6 +11779,544 @@
    "capability": "com.irlpls.capture.card",
    "updated": "2026-11-07",
    "expires": "2027-11-07",
+   "id": "imo-iceland-quakes",
+   "name": "Icelandic Met Office earthquake catalogue",
+   "provider_url": "https://en.vedur.is",
+   "short": "Iceland's earthquake catalogue as GeoJSON or CSV: time, magnitude, depth, region. Free, no key, CC BY 4.0.",
+   "summary": "The Icelandic Meteorological Office publishes an official Quakes API at api.vedur.is/quakes. GET /events returns GeoJSON or CSV for a time window, with filters for depth, magnitude, polygon and event type. Each feature has an event id, UTC time, magnitude, depth, a named seismic region (for example Axarfjordur, Nordurland), evaluation mode (manual or automatic) and an updated time. Also an event count, a single-event detail call and a regions list. On 2026-11-07 a keyless GET for 2026-11-06 to 2026-11-07 with magnitude 1 and up answered 200 with 92 events, the newest updated 2026-11-07 18:35 UTC.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "list of earthquakes in Iceland and nearby waters in a time window with magnitude, depth and region",
+     "count of earthquakes in Iceland for a given period"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Iceland"
+    ],
+    "areas": [
+     "IS"
+    ],
+    "notes": "Iceland, its volcanic zones and surrounding seas; the seismic regions list is at /regions."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 19:2x UTC: newest event update 18:35 UTC; manual and automatic evaluation modes both appear."
+   },
+   "latency": {
+    "typical": "Automatic solutions within minutes to hours; manual review later",
+    "notes": "Based on one sample; updated_time shows revisions."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 1 hour for the newest automatic event on 2026-11-07",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "Iceland Met Office (IMO): the API's OpenAPI document states licence CC BY 4.0 and links its terms of service (https://en.vedur.is/about-imo/the-web/conditions). Those terms say unless stated otherwise the data are free to use with no restrictions for private or commercial use, but reference must be made to the Icelandic Meteorological Office and the date of download; real-time data are preliminary, may change, and access may be closed without notice. AI training and resale are not specifically addressed beyond that."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Event origin time in UTC per feature.",
+     "unknown": "Origin time is a model result and may be revised."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Epicentre longitude and latitude plus depth in km.",
+     "unknown": "Location uncertainty is not in the properties returned."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Magnitude and depth from the national seismic network; evaluation_mode says manual or automatic.",
+     "unknown": "Automatic events are preliminary; the terms say real-time data are not quality controlled."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.vedur.is/",
+    "base_url": "https://api.vedur.is/quakes",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/events",
+      "params": "start_time, end_time, depth_min, depth_max, size_min, size_max, polygon, type",
+      "notes": "GeoJSON by default; CSV available."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/events/count",
+      "params": "same filters",
+      "notes": "Number of matching events."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/events/{event_id}",
+      "params": "event id",
+      "notes": "Detail for one event."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/regions",
+      "params": "none",
+      "notes": "Seismic regions."
+     }
+    ],
+    "rate_limits": "Not stated in the OpenAPI document or terms.",
+    "notes": "Official OpenAPI at https://api.vedur.is/quakes/openapi.json; version 2026-08-06.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "earthquake",
+    "seismic",
+    "iceland",
+    "reykjavik",
+    "reykjanes",
+    "volcanic",
+    "geojson",
+    "government",
+    "free",
+    "real-time",
+    "europe"
+   ],
+   "sources": [
+    {
+     "claim": "IMO API index (Swagger UI listing Quakes, Weather, Volcanoes, CAP APIs)",
+     "url": "https://api.vedur.is/"
+    },
+    {
+     "claim": "IMO terms and conditions for data use",
+     "url": "https://en.vedur.is/about-imo/the-web/conditions"
+    },
+    {
+     "claim": "Quakes API OpenAPI document with licence CC BY 4.0",
+     "url": "https://api.vedur.is/quakes/openapi.json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200 GeoJSON, 92 events from 2026-11-06 to 2026-11-07",
+     "url": "https://api.vedur.is/quakes/events/count?start_time=2026-11-06%2000:00:00&end_time=2026-11-07%2023:59:59"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "imo-iceland-volcano-alerts",
+   "name": "Icelandic Met Office volcano alert levels",
+   "provider_url": "https://en.vedur.is",
+   "short": "Iceland's official volcano alert level and aviation colour notices by volcano. Free, no key, CC BY 4.0.",
+   "summary": "The Icelandic Meteorological Office's Volcanoes API at api.vedur.is/volcanoes lists volcanoes with code, name, country, height and point location, and serves the dated notices: Volcano Alert Level System entries (level 0 to 4 with English and Icelandic text), aviation colour code notices (VONA) and weekly volcano reports. On 2026-11-07 the keyless alert-level list answered 200; the newest entry was published 2026-09-09 for Hofsjokull at level 0 (green, normal background). Notices change only when a volcano's status changes, so a quiet list is normal.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "current and past volcano alert levels in Iceland",
+     "aviation colour code notice for an Icelandic volcano"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Iceland"
+    ],
+    "areas": [
+     "IS"
+    ],
+    "notes": "Icelandic volcanic systems; the list also includes a few outside Iceland such as Beerenberg on Jan Mayen."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest alert-level entry published 2026-09-09; notices are issued on status change."
+   },
+   "latency": {
+    "typical": "Hours from a status change to a published notice is not stated",
+    "notes": "Not measured in one sample."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Weeks to months in quiet periods; the newest entry on 2026-11-07 was 59 days old",
+    "notes": "Event-driven, not periodic."
+   },
+   "licensing": {
+    "summary": "Iceland Met Office (IMO): the API's OpenAPI document states licence CC BY 4.0 and links its terms of service (https://en.vedur.is/about-imo/the-web/conditions). Those terms say unless stated otherwise the data are free to use with no restrictions for private or commercial use, but reference must be made to the Icelandic Meteorological Office and the date of download; real-time data are preliminary, may change, and access may be closed without notice. AI training and resale are not specifically addressed beyond that."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "published_at timestamp per notice.",
+     "unknown": "Time of the underlying observation is in the notice text, not a field."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Volcano code and point coordinates from the volcano list.",
+     "unknown": "Per-notice plume location is only in VONA free text."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Alert level and aviation colour issued by IMO's volcano monitoring.",
+     "unknown": "Levels are expert judgements; the aviation colour code can differ from the alert level."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.vedur.is/",
+    "base_url": "https://api.vedur.is/volcanoes",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/volcanoes",
+      "params": "include_geometry",
+      "notes": "Volcano list."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/vals",
+      "params": "none",
+      "notes": "Alert level notices."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/vona",
+      "params": "none",
+      "notes": "Aviation colour code notices."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/vwr",
+      "params": "none",
+      "notes": "Weekly volcano reports."
+     }
+    ],
+    "rate_limits": "Not stated in the OpenAPI document or terms.",
+    "notes": "Official OpenAPI at https://api.vedur.is/volcanoes/openapi.json; version 2026-06-04.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "volcano",
+    "volcanic activity",
+    "eruption",
+    "alert level",
+    "aviation colour code",
+    "iceland",
+    "reykjanes",
+    "government",
+    "free",
+    "europe"
+   ],
+   "sources": [
+    {
+     "claim": "IMO API index (Swagger UI listing Quakes, Weather, Volcanoes, CAP APIs)",
+     "url": "https://api.vedur.is/"
+    },
+    {
+     "claim": "IMO terms and conditions for data use",
+     "url": "https://en.vedur.is/about-imo/the-web/conditions"
+    },
+    {
+     "claim": "Volcanoes API OpenAPI document with licence CC BY 4.0",
+     "url": "https://api.vedur.is/volcanoes/openapi.json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200 alert level notices",
+     "url": "https://api.vedur.is/volcanoes/vals"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "imo-iceland-weather-obs",
+   "name": "Icelandic Met Office weather observations",
+   "provider_url": "https://en.vedur.is",
+   "short": "Latest 10-minute weather at about 290 Icelandic stations: temperature, wind, pressure, rain. Free, no key, CC BY 4.0.",
+   "summary": "The Icelandic Meteorological Office's Weather API at api.vedur.is/weather returns automatic weather station observations as JSON or CSV. The latest 10-minute call returns every reporting station at once (290 rows at 19:20 UTC on 2026-11-07) with station id, name, time, temperature, humidity, dew point, mean wind speed, gust, direction, station and sea-level pressure and precipitation. Hourly, daily, monthly and yearly aggregations, SYNOP reports, a station list with coordinates and WIGOS ids (346 stations), and an OGC EDR interface used by the RODEO project are also served. Roughly half of the stations belong to other owners such as the road administration.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "latest weather observations at Icelandic stations",
+     "history of hourly or daily weather at an Icelandic station"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Iceland"
+    ],
+    "areas": [
+     "IS"
+    ],
+    "notes": "Iceland and coastal waters; 346 stations in the station list, active ones filterable with active=true."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 19:22 UTC returned 10-minute observations stamped 19:20 UTC for 290 stations."
+   },
+   "latency": {
+    "typical": "About 2 minutes behind the 10-minute slot in the one sample",
+    "notes": "One sample."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "Iceland Met Office (IMO): the API's OpenAPI document states licence CC BY 4.0 and links its terms of service (https://en.vedur.is/about-imo/the-web/conditions). Those terms say unless stated otherwise the data are free to use with no restrictions for private or commercial use, but reference must be made to the Icelandic Meteorological Office and the date of download; real-time data are preliminary, may change, and access may be closed without notice. AI training and resale are not specifically addressed beyond that."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Observation slot time per row.",
+     "unknown": "Time zone is not stated on each row; the sample matched UTC."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates and elevation from the /stations endpoint.",
+     "unknown": "Positions are the station list, not per-reading."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Automatic station measurements; the raw 10-minute endpoint is unprocessed.",
+     "unknown": "Real-time values are not quality controlled and may change."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.vedur.is/",
+    "base_url": "https://api.vedur.is/weather",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/observations/aws/10min/latest",
+      "params": "station_id, region_id, parameters",
+      "notes": "Latest 10-minute value for each station."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/observations/aws/{aggregation}",
+      "params": "aggregation, station_id, parameters, format, day_from, day_to",
+      "notes": "History; aggregation e.g. hour."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/stations",
+      "params": "active, station_type, region_id, keyword, polygon",
+      "notes": "Station list with coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/observations/synop/latest",
+      "params": "station_id",
+      "notes": "Latest SYNOP reports."
+     }
+    ],
+    "rate_limits": "Not stated in the OpenAPI document or terms.",
+    "notes": "Official OpenAPI at https://api.vedur.is/weather/openapi.json; version 2026-02-17. Terms of service in that document link to https://athuganir.vedur.is/disclaimer?lng=en, which could not be fetched here.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather station",
+    "weather observations",
+    "temperature",
+    "wind",
+    "iceland",
+    "reykjavik",
+    "keflavik",
+    "aws",
+    "government",
+    "free",
+    "real-time",
+    "europe"
+   ],
+   "sources": [
+    {
+     "claim": "IMO API index (Swagger UI listing Quakes, Weather, Volcanoes, CAP APIs)",
+     "url": "https://api.vedur.is/"
+    },
+    {
+     "claim": "IMO terms and conditions for data use",
+     "url": "https://en.vedur.is/about-imo/the-web/conditions"
+    },
+    {
+     "claim": "Weather API OpenAPI document with licence CC BY 4.0",
+     "url": "https://api.vedur.is/weather/openapi.json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, 290 stations, time 2026-11-07T19:20:00",
+     "url": "https://api.vedur.is/weather/observations/aws/10min/latest"
+    },
+    {
+     "claim": "Station list: 346 stations with WIGOS ids",
+     "url": "https://api.vedur.is/weather/stations?active=true"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
    "id": "ingv-fdsnws-events",
    "name": "INGV Italy earthquake catalogue (FDSN event web service)",
    "provider_url": "https://terremoti.ingv.it",
@@ -12103,6 +13150,319 @@
     {
      "claim": "Live keyless GET 2026-11-06: HTTP 200 quake list, newest entry 2026-11-07T03:02 JST magnitude 3.5 Wakayama",
      "url": "https://www.jma.go.jp/bosai/quake/data/list.json"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "jma-tsunami-bulletins",
+   "name": "JMA tsunami warnings and forecasts",
+   "provider_url": "https://www.jma.go.jp/bosai/",
+   "short": "Japan's official tsunami warning, advisory and forecast bulletins as JSON, with area and wave detail. Free, no key.",
+   "summary": "The Japan Meteorological Agency's disaster-prevention site serves its tsunami bulletins as JSON. The list at /bosai/tsunami/data/list.json gives recent events with report time, origin time, epicentre area name (Japanese and English), magnitude, coordinates and the kind of bulletin (for example tsunami forecast, slight sea-level change). Each entry points at a detail file with the forecast areas, expected wave heights and arrival times in Japanese. On 2026-11-07 the keyless list answered 200 with two events; the newest was a Tsunami Forecast for an M6.1 quake off the east coast of Kanto on 2026-11-06 19:39 JST. The list is short because only events that triggered a bulletin appear.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "Japan tsunami warnings, advisories and forecasts with affected coastal areas",
+     "latest tsunami bulletin after an offshore earthquake near Japan"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Japan"
+    ],
+    "areas": [
+     "JP"
+    ],
+    "notes": "Japanese coasts and nearby seas; bulletins are for Japan's coastline."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest bulletin reported 2026-11-06 19:53 JST (origin 19:39 JST), about 14 minutes after the quake."
+   },
+   "latency": {
+    "typical": "About 14 minutes from origin to bulletin on the one sample",
+    "notes": "Warnings for large events are faster; one sample only."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Event-driven; the newest bulletin was about 1 day old on 2026-11-07",
+    "notes": "The list holds only bulletin-triggering events."
+   },
+   "licensing": {
+    "summary": "JMA's Legal Notice (https://www.jma.go.jp/jma/en/copyright.html) says content on the JMA website may be used under the Japanese government Public Data License (Version 1.0), unless a specific rights notice says otherwise. The user must cite the source (for example 'Source: Japan Meteorological Agency website (URL of relevant page)'), state if the content was edited, and must not present edited content so that it looks made by the Government of Japan. Third-party rights in some content remain the user's responsibility. The JSON files under /bosai/ are the website's own data, not a documented API, and can change without notice."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Origin and report times with offsets in the list, UTC in the detail file Control block.",
+     "unknown": "Time zone is JST in the list; detail Control time is UTC."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Epicentre coordinates in ISO 6709 style plus an area name and code.",
+     "unknown": "Hypocentre accuracy is not given."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Official JMA bulletin kind, magnitude and forecast areas.",
+     "unknown": "Detail text is Japanese; wave-height codes need the CodeDefine block."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.jma.go.jp/jma/en/copyright.html",
+    "base_url": "https://www.jma.go.jp/bosai",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/tsunami/data/list.json",
+      "params": "none",
+      "notes": "Recent tsunami bulletin events."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/tsunami/data/{json}",
+      "params": "file name from the list's json field",
+      "notes": "Detail for one bulletin."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "JSON. Same site as the JMA bosai earthquake and weather files; no key.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "tsunami",
+    "tsunami warning",
+    "coastal",
+    "japan",
+    "tokyo",
+    "pacific",
+    "earthquake",
+    "government",
+    "free",
+    "real-time",
+    "asia"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, 2 events, newest Tsunami Forecast off the east coast of Kanto",
+     "url": "https://www.jma.go.jp/bosai/tsunami/data/list.json"
+    },
+    {
+     "claim": "JMA Legal Notice: Public Data License (Version 1.0) with source citation",
+     "url": "https://www.jma.go.jp/jma/en/copyright.html"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "kartverket-vannstand-api",
+   "name": "Kartverket Norway sea level and tide API (observed and predicted)",
+   "provider_url": "https://kartverket.no",
+   "short": "Norwegian coastal sea level, observed and predicted, from Kartverket's tide API. CC BY 4.0, no key.",
+   "summary": "The Norwegian Mapping Authority's Hydrographic Service (Kartverket) serves observed and predicted sea level and tide tables from its permanent tide stations through vannstand.kartverket.no/tideapi.php (the older api.sehavniva.no address is being replaced by this one, per Geonorge). A keyless GET for lat 59.9, lon 10.7 (Oslo) with datatype=obs and 10-minute interval on 2026-11-07 returned XML water-level values in cm above chart datum at 18:00, 18:10, 18:20 and so on (60.6, 58.4, 56.1 cm), each flagged obs. The same endpoint returns tide predictions, high and low waters and station lists by request type.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "observed sea level at a Norwegian coastal station (cm above chart datum), 10-minute steps",
+     "predicted tide and high and low water times for a point on the Norwegian coast",
+     "list of nearby tide stations for a latitude and longitude"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Europe",
+     "Norway",
+     "Arctic"
+    ],
+    "areas": [
+     "NO"
+    ],
+    "notes": "Permanent tide stations along the Norwegian coast and Svalbard per Kartverket's station page; the call resolves a latitude and longitude to the nearest station (Oslo in the call made)."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: observation rows at 10-minute steps for the requested window; the newest time in a window up to now was not isolated in the one call."
+   },
+   "latency": {
+    "typical": "Minutes (not measured)",
+    "notes": "Observations are labelled preliminary on the protocol; one call only."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Not measured",
+    "notes": "Request time windows explicitly; times carry a +01:00 offset."
+   },
+   "licensing": {
+    "summary": "Kartverket's tidal and water level data page says the API is open to everybody with no registration, Kartverket (the Norwegian Mapping Authority, Hydrographic Service) must be credited, and the data are licensed under Creative Commons Attribution 4.0 International. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record carries its own timestamp.",
+     "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed station or event coordinates in the feed.",
+     "unknown": "Not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Hydrographic Service water-level values with an obs/pred flag per row.",
+     "unknown": "Quality flags are returned as numeric fields whose meaning was not checked."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://kartverket.no/en/api-and-data/tidal-and-water-level-data",
+    "base_url": "https://vannstand.kartverket.no",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/tideapi.php",
+      "params": "lat=<lat>&lon=<lon>&fromtime=<ISO>&totime=<ISO>&datatype=obs&refcode=cd&lang=en&interval=10&dst=0&tide_request=locationdata",
+      "notes": "Call made. datatype=obs for observed; other tide_request values give stations and predictions (see the protocol PDF)."
+     }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read.",
+    "notes": "XML response. Protocol document is published on the same host.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "tide",
+    "sea level",
+    "water level",
+    "coast",
+    "norway",
+    "europe",
+    "marine",
+    "harbor",
+    "kartverket",
+    "government",
+    "free",
+    "cc-by",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: Oslo observed sea level 60.6 cm at 18:00+01:00",
+     "url": "https://vannstand.kartverket.no/tideapi.php?lat=59.9&lon=10.7&fromtime=2026-11-07T18:00&totime=2026-11-07T20:00&datatype=obs&refcode=cd&place=&file=&lang=en&interval=10&dst=0&tzone=&tide_request=locationdata"
+    },
+    {
+     "claim": "Kartverket terms: open API, credit Kartverket, CC BY 4.0",
+     "url": "https://kartverket.no/en/api-and-data/tidal-and-water-level-data"
+    },
+    {
+     "claim": "API communication protocol",
+     "url": "https://vannstand.kartverket.no/tideapi_protocol.pdf"
     }
    ]
   },
@@ -16042,6 +17402,169 @@
    "capture": {
     "by": "devices"
    }
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "nrcan-fdsn-earthquakes",
+   "name": "Earthquakes Canada (NRCan) earthquake catalogue, FDSN event service",
+   "provider_url": "https://earthquakescanada.nrcan.gc.ca",
+   "short": "Recent earthquakes in and around Canada from Natural Resources Canada, via the standard FDSN event service. No key.",
+   "summary": "Earthquakes Canada, part of Natural Resources Canada, serves its earthquake bulletin through the FDSN event web service at earthquakescanada.nrcan.gc.ca/fdsnws/event/1/query. A call with format=text&limit=2&orderby=time on 2026-11-07 returned two events from 2026-11-06 (Mw 2.85 at 12:31 UTC and Mw 2.99 at 04:27 UTC, both off the west coast of Vancouver Island, BC), each with event id, origin time, latitude, longitude, depth, magnitude type, magnitude and a bilingual place name. Standard FDSN parameters filter by time, magnitude and area; the service describes its own usage at /fdsnws/event/1/.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "recent earthquake events with magnitude, depth and location in and around Canada"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "North America",
+     "Canada"
+    ],
+    "areas": [
+     "CA"
+    ],
+    "notes": "Canadian National Seismograph Network coverage; offshore Pacific events and small magnitudes appear. Event ids start with ca. Place names are English/French."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest of the two events returned was origin time 2026-11-06T12:31:09Z; one call only, so event cadence in quiet periods is not known."
+   },
+   "latency": {
+    "typical": "Not stated; automatic then reviewed bulletin values are not distinguished in the text output.",
+    "notes": "One call only."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Hours to a day on the one sample (Canada has few events)",
+    "notes": "Depends on the region's seismicity; a quiet day can show nothing newer than the previous day."
+   },
+   "licensing": {
+    "summary": "Earthquake data from Natural Resources Canada are listed on open.canada.ca under the Open Government Licence - Canada v2.0 (the NRCan 'Earthquakes in Canada' record names that licence, and the Earthquakes Canada data page links to open.canada.ca). The licence allows copying, publishing, distributing, adapting and commercial use, requires attribution (Contains information licensed under the Open Government Licence - Canada, or the provider's own statement) and a link to the licence where possible, excludes personal information, third-party rights and official marks, and forbids implying endorsement. The licence record read covers the published historical catalogue; the live FDSN service is from the same programme but its own page states no licence text. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record carries its own timestamp.",
+     "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed station or event coordinates in the feed.",
+     "unknown": "Not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Agency magnitude and location solutions.",
+     "unknown": "Whether values are automatic or reviewed is not shown in the text output."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://earthquakescanada.nrcan.gc.ca/fdsnws/event/1/",
+    "base_url": "https://earthquakescanada.nrcan.gc.ca/fdsnws/event/1",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/query",
+      "params": "format=text&limit=<n>&orderby=time (also starttime, endtime, minmagnitude, bounding box)",
+      "notes": "Pipe-separated text: EventID|Time|Latitude|Longitude|Depth/km|MagType|Magnitude|EventLocationName. Call made."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/",
+      "params": "none",
+      "notes": "Usage description page (the service answers 404 with a pointer to it for unknown paths)."
+     }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read.",
+    "notes": "FDSN event standard; version 1.2.5 reported by the service.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "earthquake",
+    "seismic",
+    "canada",
+    "north america",
+    "fdsn",
+    "bulletin",
+    "government",
+    "free",
+    "ogl-canada",
+    "nrcan"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200 text with ca2026vzru (2026-11-06T12:31Z) and ca2026vzbr (04:27Z)",
+     "url": "https://earthquakescanada.nrcan.gc.ca/fdsnws/event/1/query?format=text&limit=2&orderby=time"
+    },
+    {
+     "claim": "Earthquakes Canada data page lists the FDSN web service and links to open.canada.ca",
+     "url": "https://earthquakescanada.nrcan.gc.ca/stndon/index-en.php"
+    },
+    {
+     "claim": "NRCan Earthquakes in Canada record on open.canada.ca: Open Government Licence - Canada",
+     "url": "https://open.canada.ca/data/en/dataset/4cedd37e-0023-41fe-8eff-bea45385e469"
+    },
+    {
+     "claim": "Open Government Licence - Canada v2.0 text",
+     "url": "https://open.canada.ca/en/open-government-licence-canada"
+    }
+   ]
   },
   {
    "id": "nws",
@@ -22910,6 +24433,167 @@
     },
     {
      "claim": "Terms of use: CC BY 4.0, commercial use allowed, attribute SMHI",
+     "url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "smhi-metobs-observations",
+   "name": "SMHI meteorological observations (open data, metobs)",
+   "provider_url": "https://www.smhi.se",
+   "short": "Swedish weather station observations from SMHI: temperature, wind, rain and more, hourly or better. CC BY 4.0, no key.",
+   "summary": "SMHI, the Swedish Meteorological and Hydrological Institute, serves station observations through opendata-download-metobs.smhi.se/api/version/1.0. The tree runs parameter, then station, then period (latest-hour, latest-day, latest-months, corrected-archive). On 2026-11-07 a keyless call for parameter 1 (air temperature) listed 1,006 stations of which 231 are marked active, and the latest-hour call for Arvidsjaur A (station 159880) returned 5.2 C stamped 2026-11-07T18:00Z with quality flag G. Parameters include temperature, wind, humidity, pressure, precipitation and more, each its own numeric id. The unversioned path /version/latest did not resolve in a test; use version 1.0.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest observation of a weather parameter at a Swedish station",
+     "station list per parameter with coordinates, owner, active flag and CORE or ADDITIONAL network"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Europe",
+     "Sweden"
+    ],
+    "areas": [
+     "SE"
+    ],
+    "notes": "Stations owned by SMHI and by other bodies (the owner field shows the body). measuringStations marks CORE (maintained) versus ADDITIONAL stations. Not every station measures every parameter."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: station 159880 latest-hour value stamped 18:00Z; the call was made about 19:20Z. Update cadence depends on the parameter (the temperature parameter is 'once per hour')."
+   },
+   "latency": {
+    "typical": "Up to about an hour for hourly parameters",
+    "notes": "One station sampled."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About 1 hour on the one sample",
+    "notes": "Parameter-specific; check the parameter summary field."
+   },
+   "licensing": {
+    "summary": "SMHI's Terms of use page (updated 15 June 2026) says its open data follow Creative Commons Attribution 4.0 SE: you may copy, distribute and adapt, commercially too, naming SMHI as the source and stating any changes you made. Consequence-based weather warnings carry separate terms and are not part of this feed. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record carries its own timestamp.",
+     "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed station or event coordinates in the feed.",
+     "unknown": "Not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values carry a quality code (for example G) and stations are labelled CORE or ADDITIONAL.",
+     "unknown": "The meaning of each quality code was not checked; ADDITIONAL stations are not described on the pages read."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://opendata.smhi.se/",
+    "base_url": "https://opendata-download-metobs.smhi.se/api/version/1.0",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/parameter/{parameter}/station/{station}/period/latest-hour/data.json",
+      "params": "parameter=1 for air temperature",
+      "notes": "Call made. Value list with date (ms epoch), value, quality."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/parameter/{parameter}.json",
+      "params": "none",
+      "notes": "Call made. Station list with owner, height, lat/lon, active flag."
+     }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read.",
+    "notes": "JSON, XML, CSV. Station and parameter ids are SMHI's own.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "observations",
+    "temperature",
+    "wind",
+    "sweden",
+    "europe",
+    "station",
+    "smhi",
+    "hourly",
+    "government",
+    "free",
+    "cc-by"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: station 159880 temperature 5.2 at 2026-11-07T18:00Z, quality G",
+     "url": "https://opendata-download-metobs.smhi.se/api/version/1.0/parameter/1/station/159880/period/latest-hour/data.json"
+    },
+    {
+     "claim": "Station list for parameter 1: 1,006 stations, 231 active",
+     "url": "https://opendata-download-metobs.smhi.se/api/version/1.0/parameter/1.json"
+    },
+    {
+     "claim": "SMHI terms of use: CC BY 4.0 SE, name SMHI as source",
      "url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning"
     }
    ]

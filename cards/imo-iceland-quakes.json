@@ -1,0 +1,178 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "imo-iceland-quakes",
+  "name": "Icelandic Met Office earthquake catalogue",
+  "provider_url": "https://en.vedur.is",
+  "short": "Iceland's earthquake catalogue as GeoJSON or CSV: time, magnitude, depth, region. Free, no key, CC BY 4.0.",
+  "summary": "The Icelandic Meteorological Office publishes an official Quakes API at api.vedur.is/quakes. GET /events returns GeoJSON or CSV for a time window, with filters for depth, magnitude, polygon and event type. Each feature has an event id, UTC time, magnitude, depth, a named seismic region (for example Axarfjordur, Nordurland), evaluation mode (manual or automatic) and an updated time. Also an event count, a single-event detail call and a regions list. On 2026-11-07 a keyless GET for 2026-11-06 to 2026-11-07 with magnitude 1 and up answered 200 with 92 events, the newest updated 2026-11-07 18:35 UTC.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "list of earthquakes in Iceland and nearby waters in a time window with magnitude, depth and region",
+      "count of earthquakes in Iceland for a given period"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Iceland"
+    ],
+    "areas": [
+      "IS"
+    ],
+    "notes": "Iceland, its volcanic zones and surrounding seas; the seismic regions list is at /regions."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 19:2x UTC: newest event update 18:35 UTC; manual and automatic evaluation modes both appear."
+  },
+  "latency": {
+    "typical": "Automatic solutions within minutes to hours; manual review later",
+    "notes": "Based on one sample; updated_time shows revisions."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 1 hour for the newest automatic event on 2026-11-07",
+    "notes": "One sample only."
+  },
+  "licensing": {
+    "summary": "Iceland Met Office (IMO): the API's OpenAPI document states licence CC BY 4.0 and links its terms of service (https://en.vedur.is/about-imo/the-web/conditions). Those terms say unless stated otherwise the data are free to use with no restrictions for private or commercial use, but reference must be made to the Icelandic Meteorological Office and the date of download; real-time data are preliminary, may change, and access may be closed without notice. AI training and resale are not specifically addressed beyond that."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Event origin time in UTC per feature.",
+      "unknown": "Origin time is a model result and may be revised."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Epicentre longitude and latitude plus depth in km.",
+      "unknown": "Location uncertainty is not in the properties returned."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Magnitude and depth from the national seismic network; evaluation_mode says manual or automatic.",
+      "unknown": "Automatic events are preliminary; the terms say real-time data are not quality controlled."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.vedur.is/",
+    "base_url": "https://api.vedur.is/quakes",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/events",
+        "params": "start_time, end_time, depth_min, depth_max, size_min, size_max, polygon, type",
+        "notes": "GeoJSON by default; CSV available."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/events/count",
+        "params": "same filters",
+        "notes": "Number of matching events."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/events/{event_id}",
+        "params": "event id",
+        "notes": "Detail for one event."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/regions",
+        "params": "none",
+        "notes": "Seismic regions."
+      }
+    ],
+    "rate_limits": "Not stated in the OpenAPI document or terms.",
+    "notes": "Official OpenAPI at https://api.vedur.is/quakes/openapi.json; version 2026-08-06.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "earthquake",
+    "seismic",
+    "iceland",
+    "reykjavik",
+    "reykjanes",
+    "volcanic",
+    "geojson",
+    "government",
+    "free",
+    "real-time",
+    "europe"
+  ],
+  "sources": [
+    {
+      "claim": "IMO API index (Swagger UI listing Quakes, Weather, Volcanoes, CAP APIs)",
+      "url": "https://api.vedur.is/"
+    },
+    {
+      "claim": "IMO terms and conditions for data use",
+      "url": "https://en.vedur.is/about-imo/the-web/conditions"
+    },
+    {
+      "claim": "Quakes API OpenAPI document with licence CC BY 4.0",
+      "url": "https://api.vedur.is/quakes/openapi.json"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200 GeoJSON, 92 events from 2026-11-06 to 2026-11-07",
+      "url": "https://api.vedur.is/quakes/events/count?start_time=2026-11-06%2000:00:00&end_time=2026-11-07%2023:59:59"
+    }
+  ]
+}

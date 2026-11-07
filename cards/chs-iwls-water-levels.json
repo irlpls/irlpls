@@ -1,0 +1,173 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "chs-iwls-water-levels",
+  "name": "Canadian Hydrographic Service IWLS water levels and tide predictions",
+  "provider_url": "https://tides.gc.ca",
+  "short": "Canadian coastal and St. Lawrence water level, observed and predicted, from CHS. Non-commercial licence.",
+  "summary": "The Canadian Hydrographic Service (Fisheries and Oceans Canada) serves water-level time series through the Integrated Water Level System API at api-iwls.dfo-mpo.gc.ca/api/v1. Stations list their time series (wlo observed official value, wlp predictions, wlp-hilo high and low waters). On 2026-11-07 a keyless call for Point Atkinson, BC returned 1-minute predicted values (4.095 m at 12:00Z, flagged unreviewed). The wlo observed series for that station returned reviewed values for 4 to 6 November but an empty list for the last hours of 7 November, so observed data lag the call time. The licence agreement is restrictive: it forbids commercial derivative products, navigation use and passing the data to third parties.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "predicted water level (m) and high and low waters at a Canadian tide station",
+      "official reviewed observed water level at a station, a few days behind"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "North America",
+      "Canada"
+    ],
+    "areas": [
+      "CA"
+    ],
+    "notes": "Stations on the Atlantic, Pacific, Arctic and St. Lawrence coasts; the station list carries a code, operating flag and time series. Observed official values showed a lag of under a day on the one station tested."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 30,
+      "per_seconds": 60,
+      "scope": "per-ip",
+      "notes": "Also up to 3 requests per second; data window caps per request.",
+      "source_url": "https://tides.gc.ca/en/web-services-offered-canadian-hydrographic-service"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "Tested 2026-11-07 ~19:20Z: wlo had data to 6 Nov and nothing for 17:00-19:30Z on 7 Nov; wlp predictions covered the current day."
+  },
+  "latency": {
+    "typical": "Observed values: about a day (reviewed); predictions are ahead of time",
+    "notes": "One station tested."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "About a day for observed values",
+    "notes": "Stations differ in series offered; Point Atkinson offers wlo, wlp, wlp-hilo."
+  },
+  "licensing": {
+    "summary": "Use is governed by the CHS Licence Agreement (tides.gc.ca/en/licence-agreement), which the API page says you accept by using the API. Key terms: CHS keeps the copyright; the data must not be used to produce derivative products for commercial purposes, sale or profit; must not be used for navigation; copyright must not be sold, licensed or given to a third party; a derivative product must carry the notice set in the agreement (not for navigation, contains CHS data, no endorsement). Treat this as non-commercial use only. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each record carries its own timestamp.",
+      "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed station or event coordinates in the feed.",
+      "unknown": "Not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Series are labelled reviewed or not and carry a QC flag code.",
+      "unknown": "QC flag meanings were not checked."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://tides.gc.ca/en/web-services-offered-canadian-hydrographic-service",
+    "base_url": "https://api-iwls.dfo-mpo.gc.ca/api/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations",
+        "params": "code=<station code>",
+        "notes": "Call made. Station id, coordinates, operating flag, time series list."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/stations/{id}/data",
+        "params": "time-series-code=wlp|wlo&from=<ISO>&to=<ISO>",
+        "notes": "Call made. Window cap is 1 week at 1-minute data."
+      }
+    ],
+    "rate_limits": "Per client IP: up to 3 requests per second and 30 per minute; 1-minute data limited to 1 week per request, 3-minute data to 3 weeks, others to 1 month. A 429 means a limit was exceeded.",
+    "notes": "JSON. Calls in this card were spaced several seconds apart.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "tide",
+    "tides",
+    "sea level",
+    "water level",
+    "coast",
+    "canada",
+    "st lawrence",
+    "marine",
+    "harbor",
+    "chs",
+    "government",
+    "free",
+    "non-commercial"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: station list entry for Halifax with time series wlo, wlp",
+      "url": "https://api-iwls.dfo-mpo.gc.ca/api/v1/stations?code=00490"
+    },
+    {
+      "claim": "Point Atkinson wlp 1-minute values, 4.095 m at 2026-11-07T12:00Z",
+      "url": "https://api-iwls.dfo-mpo.gc.ca/api/v1/stations/5cebf1de3d0f4a073c4bb94c/data?time-series-code=wlp&from=2026-11-07T12:00:00Z&to=2026-11-07T12:01:00Z"
+    },
+    {
+      "claim": "CHS web services page: rate limits and data window limits",
+      "url": "https://tides.gc.ca/en/web-services-offered-canadian-hydrographic-service"
+    },
+    {
+      "claim": "CHS licence agreement: no commercial derivatives, no navigation use",
+      "url": "https://tides.gc.ca/en/licence-agreement"
+    }
+  ]
+}

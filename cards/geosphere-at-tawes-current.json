@@ -1,0 +1,172 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "geosphere-at-tawes-current",
+  "name": "GeoSphere Austria TAWES station observations, 10-minute (Dataset API)",
+  "provider_url": "https://www.geosphere.at",
+  "short": "Austrian weather station readings every 10 minutes from GeoSphere Austria. CC BY 4.0, no key.",
+  "summary": "GeoSphere Austria's Dataset API serves the TAWES automatic station network at dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min. A keyless GET for station 11035 (Vienna) with parameters TL (air temperature) and FF (wind speed) on 2026-11-07 returned a GeoJSON feature stamped 2026-11-07T19:20Z with 2.1 C and 1.0 m/s. The metadata endpoint lists 288 stations and 53 parameters at 10-minute frequency, including wind direction and gusts. The same API serves other datasets (history, forecasts, grids); only this current-station product was tested.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest 10-minute weather reading at an Austrian station (temperature, wind and more)",
+      "station list and parameter list for the TAWES network"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Europe",
+      "Austria"
+    ],
+    "areas": [
+      "AT"
+    ],
+    "notes": "288 stations per the metadata call, 53 parameters. Station ids are GeoSphere's own."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "requests": 240,
+      "per_seconds": 3600,
+      "scope": "unknown",
+      "notes": "Also 5 requests per second.",
+      "source_url": "https://dataset.api.hub.geosphere.at/v1/docs/user-guide/request-limit.html"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: reading stamped 19:20Z returned in a call made at about 19:25Z."
+  },
+  "latency": {
+    "typical": "About 5 to 10 minutes",
+    "notes": "One station sampled."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 10 minutes on one sample",
+    "notes": "Network fully automatic; gaps possible."
+  },
+  "licensing": {
+    "summary": "The Dataset API documentation (License section) states that all data publicly accessible without authentication are licensed under Creative Commons Attribution 4.0; no authentication is required. Credit GeoSphere Austria. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each record carries its own timestamp.",
+      "unknown": "Timestamp is the provider's own stamp."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed station or event coordinates in the feed.",
+      "unknown": "Not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Official network readings with units in the response.",
+      "unknown": "No quality flags appeared in the response; processing is not described on the pages read."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://dataset.api.hub.geosphere.at/v1/docs/",
+    "base_url": "https://dataset.api.hub.geosphere.at/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/station/current/tawes-v1-10min",
+        "params": "parameters=TL,FF&station_ids=<id>",
+        "notes": "Call made. GeoJSON; omit station_ids for all."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/station/current/tawes-v1-10min/metadata",
+        "params": "none",
+        "notes": "Call made. Stations and parameters."
+      }
+    ],
+    "rate_limits": "Documented: 5 requests per second and 240 requests per hour per user; 429 when exceeded; response headers show remaining quota.",
+    "notes": "JSON GeoJSON or CSV; request size limit of 1,000,000 values.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "observations",
+    "temperature",
+    "wind",
+    "austria",
+    "europe",
+    "station",
+    "geosphere",
+    "10-minute",
+    "government",
+    "free",
+    "cc-by"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: Vienna station 11035, TL 2.1 and FF 1.0 at 19:20Z",
+      "url": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min?parameters=TL,FF&station_ids=11035"
+    },
+    {
+      "claim": "Metadata: 288 stations, 53 parameters, 10-minute frequency",
+      "url": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min/metadata"
+    },
+    {
+      "claim": "Dataset API license: CC BY 4.0, no authentication",
+      "url": "https://dataset.api.hub.geosphere.at/v1/docs/user-guide/license.html"
+    },
+    {
+      "claim": "Request limit: 5 per second, 240 per hour",
+      "url": "https://dataset.api.hub.geosphere.at/v1/docs/user-guide/request-limit.html"
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "imo-iceland-weather-obs",
+  "name": "Icelandic Met Office weather observations",
+  "provider_url": "https://en.vedur.is",
+  "short": "Latest 10-minute weather at about 290 Icelandic stations: temperature, wind, pressure, rain. Free, no key, CC BY 4.0.",
+  "summary": "The Icelandic Meteorological Office's Weather API at api.vedur.is/weather returns automatic weather station observations as JSON or CSV. The latest 10-minute call returns every reporting station at once (290 rows at 19:20 UTC on 2026-11-07) with station id, name, time, temperature, humidity, dew point, mean wind speed, gust, direction, station and sea-level pressure and precipitation. Hourly, daily, monthly and yearly aggregations, SYNOP reports, a station list with coordinates and WIGOS ids (346 stations), and an OGC EDR interface used by the RODEO project are also served. Roughly half of the stations belong to other owners such as the road administration.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "latest weather observations at Icelandic stations",
+      "history of hourly or daily weather at an Icelandic station"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Iceland"
+    ],
+    "areas": [
+      "IS"
+    ],
+    "notes": "Iceland and coastal waters; 346 stations in the station list, active ones filterable with active=true."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 19:22 UTC returned 10-minute observations stamped 19:20 UTC for 290 stations."
+  },
+  "latency": {
+    "typical": "About 2 minutes behind the 10-minute slot in the one sample",
+    "notes": "One sample."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "One sample only."
+  },
+  "licensing": {
+    "summary": "Iceland Met Office (IMO): the API's OpenAPI document states licence CC BY 4.0 and links its terms of service (https://en.vedur.is/about-imo/the-web/conditions). Those terms say unless stated otherwise the data are free to use with no restrictions for private or commercial use, but reference must be made to the Icelandic Meteorological Office and the date of download; real-time data are preliminary, may change, and access may be closed without notice. AI training and resale are not specifically addressed beyond that."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Observation slot time per row.",
+      "unknown": "Time zone is not stated on each row; the sample matched UTC."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station coordinates and elevation from the /stations endpoint.",
+      "unknown": "Positions are the station list, not per-reading."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Automatic station measurements; the raw 10-minute endpoint is unprocessed.",
+      "unknown": "Real-time values are not quality controlled and may change."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.vedur.is/",
+    "base_url": "https://api.vedur.is/weather",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/observations/aws/10min/latest",
+        "params": "station_id, region_id, parameters",
+        "notes": "Latest 10-minute value for each station."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/observations/aws/{aggregation}",
+        "params": "aggregation, station_id, parameters, format, day_from, day_to",
+        "notes": "History; aggregation e.g. hour."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/stations",
+        "params": "active, station_type, region_id, keyword, polygon",
+        "notes": "Station list with coordinates."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/observations/synop/latest",
+        "params": "station_id",
+        "notes": "Latest SYNOP reports."
+      }
+    ],
+    "rate_limits": "Not stated in the OpenAPI document or terms.",
+    "notes": "Official OpenAPI at https://api.vedur.is/weather/openapi.json; version 2026-02-17. Terms of service in that document link to https://athuganir.vedur.is/disclaimer?lng=en, which could not be fetched here.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather station",
+    "weather observations",
+    "temperature",
+    "wind",
+    "iceland",
+    "reykjavik",
+    "keflavik",
+    "aws",
+    "government",
+    "free",
+    "real-time",
+    "europe"
+  ],
+  "sources": [
+    {
+      "claim": "IMO API index (Swagger UI listing Quakes, Weather, Volcanoes, CAP APIs)",
+      "url": "https://api.vedur.is/"
+    },
+    {
+      "claim": "IMO terms and conditions for data use",
+      "url": "https://en.vedur.is/about-imo/the-web/conditions"
+    },
+    {
+      "claim": "Weather API OpenAPI document with licence CC BY 4.0",
+      "url": "https://api.vedur.is/weather/openapi.json"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200, 290 stations, time 2026-11-07T19:20:00",
+      "url": "https://api.vedur.is/weather/observations/aws/10min/latest"
+    },
+    {
+      "claim": "Station list: 346 stations with WIGOS ids",
+      "url": "https://api.vedur.is/weather/stations?active=true"
+    }
+  ]
+}
