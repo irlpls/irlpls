@@ -2,7 +2,7 @@
   "id": "windy-webcams",
   "name": "Windy Webcams",
   "status": "unclaimed",
-  "provider_url": "https://api.windy.com/webcams",
+  "provider_url": "https://api.windy.com/webcams/pricing",
   "short": "A directory of public webcams worldwide, with current images through an API.",
   "summary": "Large global directory of public webcams run by third-party operators, with a REST API (v3) to find webcams near a point or in a bounding box and get current image URLs, live/timelapse player embeds and location metadata.",
   "tags": [

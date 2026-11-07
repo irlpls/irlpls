@@ -2,7 +2,7 @@
   "id": "field-agent",
   "name": "Field Agent (now Storesight)",
   "status": "unclaimed",
-  "provider_url": "https://www.fieldagent.net",
+  "provider_url": "https://storesight.com/",
   "short": "Shoppers sent to stores for shelf photos and price checks, from $24 a response (now Storesight).",
   "tags": [
     "retail",

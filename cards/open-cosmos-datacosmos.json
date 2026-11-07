@@ -1,7 +1,7 @@
 {
   "id": "open-cosmos-datacosmos",
   "name": "Open Cosmos DataCosmos",
-  "provider_url": "https://www.open-cosmos.com/datacosmos",
+  "provider_url": "https://www.open-cosmos.com/data-ai-ready",
   "short": "Task Open Cosmos satellites or buy catalogue imagery by API.",
   "summary": "Open Cosmos (UK, Harwell) offers DataCosmos: a STAC catalogue of imagery from its own and partner satellites, an Ordering API that prices and buys catalogue items against contract credits, and a tasking tool where users create scene, coverage, recurrent or systematic tasking requests that Open Cosmos operations review before scheduling. APIs use OAuth 2.0 (Auth0) with client credentials issued by the DataCosmos team.",
   "tags": [

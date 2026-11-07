@@ -47,7 +47,7 @@
     "model": "Quote",
     "from_usd": 0,
     "unit": "dataset",
-    "notes": "No prices are published. Buyers use a contact form ('we'll send over our researcher dashboard and samples'), book a call, or email raj@humanarchive.ai."
+    "notes": "No prices are published. Buyers use a contact form ('we'll send over our researcher dashboard and samples'), book a call, or email team@humanarchive.ai."
   },
   "latency": {
     "typical": "Not published",
@@ -116,7 +116,7 @@
     "auth": [
       {
         "type": "other",
-        "how_to_get": "Fill in the contact form at humanarchive.ai/contact.html (name, email, notes), book a call through the cal.com link on the home page, or email team@humanarchive.ai or raj@humanarchive.ai."
+        "how_to_get": "Fill in the contact form at humanarchive.ai/contact.html (name, email, notes), book a call through the cal.com link on the home page, or email team@humanarchive.ai."
       }
     ],
     "mcp": {

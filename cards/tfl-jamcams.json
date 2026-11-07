@@ -2,7 +2,7 @@
   "id": "tfl-jamcams",
   "name": "TfL JamCams",
   "status": "unclaimed",
-  "provider_url": "https://api.tfl.gov.uk/",
+  "provider_url": "https://api-portal.tfl.gov.uk/",
   "adapter": "tfl_jamcams",
   "tags": [
     "traffic camera",

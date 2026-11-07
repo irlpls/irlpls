@@ -53,6 +53,7 @@ SEARCH_IC = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke=
 
 def page(title, body, depth=0, cls="", desc="Real-world data on demand, with provenance. An open protocol and router for agents.", card="", canon="", head="", prefix=None):
     p = "../" * depth if prefix is None else prefix
+    canon = canon[:-5] if canon.endswith(".html") else canon   # the clean URL is the one the host serves; .html only redirects
     return f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1015,7 +1016,7 @@ def main(public=False):
     shutil.copy(ROOT / "schema" / "request.schema.json", SITE / "request.schema.json")
     (SITE / "reviewers.json").write_text(json.dumps({"reviewers": REV, "note": review.NOTE}, indent=1) + "\n")  # IRLMatch.REVIEWERS must match
     pages = ["", "find.html", "compare.html", "docs.html", "agents.html", "standard.html", "changelog.html", "governance.html", "providers.html", "add-a-card.html", "privacy.html", "glossary.html"] + [f'c/{c["id"]}.html' for c in cards]
-    (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"<url><loc>https://irlpls.com/{u}</loc></url>\n" for u in pages) + "</urlset>\n")
+    (SITE / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"<url><loc>https://irlpls.com/{u[:-5] if u.endswith('.html') else u}</loc></url>\n" for u in pages) + "</urlset>\n")
     (SITE / "published.json").write_text(json.dumps(published.public(PUB["state"]), indent=1) + "\n")  # check.html ?d= reads it
     if PUB["state"].get("cards"):
         (SITE / "badge").mkdir(exist_ok=True)
@@ -1026,6 +1027,7 @@ def main(public=False):
     from irlpls.catalog import FAMILIES
     fam = {fid: {"title": t, "providers": provs, "asks": standing.bench().get(fid, [])} for fid, _ty, t, _ex, provs in FAMILIES}
     (SITE / "bench_asks.json").write_text(json.dumps({"max_rows": standing.MAX_ROWS, "families": fam}, separators=(",", ":")))  # check.html ranks in the browser
+    (SITE / "_headers").write_text("/*\n  Strict-Transport-Security: max-age=15552000\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()\n")
     (SITE / "robots.txt").write_text("User-agent: *\nAllow: /\nSitemap: https://irlpls.com/sitemap.xml\n")
     data = ROOT / "irlpls" / "data"
     data.mkdir(exist_ok=True)

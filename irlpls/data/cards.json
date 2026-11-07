@@ -5130,7 +5130,7 @@
    "id": "field-agent",
    "name": "Field Agent (now Storesight)",
    "status": "unclaimed",
-   "provider_url": "https://www.fieldagent.net",
+   "provider_url": "https://storesight.com/",
    "short": "Shoppers sent to stores for shelf photos and price checks, from $24 a response (now Storesight).",
    "tags": [
     "retail",
@@ -9408,7 +9408,7 @@
     "model": "Quote",
     "from_usd": 0,
     "unit": "dataset",
-    "notes": "No prices are published. Buyers use a contact form ('we'll send over our researcher dashboard and samples'), book a call, or email raj@humanarchive.ai."
+    "notes": "No prices are published. Buyers use a contact form ('we'll send over our researcher dashboard and samples'), book a call, or email team@humanarchive.ai."
    },
    "latency": {
     "typical": "Not published",
@@ -9477,7 +9477,7 @@
     "auth": [
      {
       "type": "other",
-      "how_to_get": "Fill in the contact form at humanarchive.ai/contact.html (name, email, notes), book a call through the cal.com link on the home page, or email team@humanarchive.ai or raj@humanarchive.ai."
+      "how_to_get": "Fill in the contact form at humanarchive.ai/contact.html (name, email, notes), book a call through the cal.com link on the home page, or email team@humanarchive.ai."
      }
     ],
     "mcp": {
@@ -15152,7 +15152,7 @@
   {
    "id": "open-cosmos-datacosmos",
    "name": "Open Cosmos DataCosmos",
-   "provider_url": "https://www.open-cosmos.com/datacosmos",
+   "provider_url": "https://www.open-cosmos.com/data-ai-ready",
    "short": "Task Open Cosmos satellites or buy catalogue imagery by API.",
    "summary": "Open Cosmos (UK, Harwell) offers DataCosmos: a STAC catalogue of imagery from its own and partner satellites, an Ordering API that prices and buys catalogue items against contract credits, and a tasking tool where users create scene, coverage, recurrent or systematic tasking requests that Open Cosmos operations review before scheduling. APIs use OAuth 2.0 (Auth0) with client credentials issued by the DataCosmos team.",
    "tags": [
@@ -22042,7 +22042,7 @@
    "id": "tfl-jamcams",
    "name": "TfL JamCams",
    "status": "unclaimed",
-   "provider_url": "https://api.tfl.gov.uk/",
+   "provider_url": "https://api-portal.tfl.gov.uk/",
    "adapter": "tfl_jamcams",
    "tags": [
     "traffic camera",
@@ -26379,7 +26379,7 @@
    "id": "windy-webcams",
    "name": "Windy Webcams",
    "status": "unclaimed",
-   "provider_url": "https://api.windy.com/webcams",
+   "provider_url": "https://api.windy.com/webcams/pricing",
    "short": "A directory of public webcams worldwide, with current images through an API.",
    "summary": "Large global directory of public webcams run by third-party operators, with a REST API (v3) to find webcams near a point or in a bounding box and get current image URLs, live/timelapse player embeds and location metadata.",
    "tags": [
