@@ -153,6 +153,9 @@ def test_captured_locally_is_the_weakest_of_camera_and_place():
 def test_finder_rows_stay_short(browser, base):
     p = page(browser)
     p.goto(base + "/find.html?q=river%20level%20in%20Texas%20right%20now")
+    p.wait_for_selector(".row .fit")
+    p.wait_for_function("document.querySelectorAll('.row').length > 0 && !document.querySelector('.row.loading')")
+    p.wait_for_timeout(800)   # rows are drawn in passes; measure after the last one
     counts = p.evaluate("""[...document.querySelectorAll('.row')].map(r=>{const c=r.cloneNode(true);c.querySelectorAll('.sr').forEach(x=>x.remove());
         return c.textContent.replace(/([a-z])([A-Z0-9])/g,'$1 $2').split(/\\s+/).filter(w=>/\\w/.test(w)).length})""")
     assert counts and max(counts) <= 16, counts  # round 5: the stage tally replaced three proof chips

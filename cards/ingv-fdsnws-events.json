@@ -1,0 +1,160 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "ingv-fdsnws-events",
+  "name": "INGV Italy earthquake catalogue (FDSN event web service)",
+  "provider_url": "https://terremoti.ingv.it",
+  "short": "Near-real-time Italian and Mediterranean earthquake events from INGV via standard FDSN event service. No key; CC BY 4.0.",
+  "summary": "Istituto Nazionale di Geofisica e Vulcanologia serves earthquake solutions through webservices.ingv.it/fdsnws/event/1/query with the standard FDSN parameters (starttime, endtime, minmag, bounding box, limit, orderby) and text, QuakeML, GeoJSON or KML output. A call with format=text&limit=3&orderby=time on 2026-11-07 returned events at 17:20, 16:24 and 16:20 UTC (ML 1.7 Aeolian Islands, ML 2.5 southern Tyrrhenian, ML 1.0 near Norcia), under 2 hours old. Output includes event id, origin time, latitude, longitude, depth, author, magnitude type and place name. Strong for Italy; global felt events also appear.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "recent earthquake events with magnitude, depth and location (Italy and surrounding seas)"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Europe",
+      "Italy",
+      "Mediterranean"
+    ],
+    "areas": [
+      "IT"
+    ],
+    "notes": "Dense network in Italy; small events (ML 1.0) are listed. Event ids are INGV's own."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest event origin time 17:20:13 UTC in a response at about 18:20 UTC."
+  },
+  "latency": {
+    "typical": "Minutes to tens of minutes for automatic solutions",
+    "notes": "Automatic then reviewed solutions; author field shows SURVEY-INGV."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 2 hours on 2026-11-07",
+    "notes": "One call only."
+  },
+  "licensing": {
+    "summary": "terremoti.ingv.it states that data and results published on the site by INGV are licensed under Creative Commons Attribution 4.0 International. Attribute INGV. No rate limit is stated on the pages read. Whether this licence statement covers every web-service field and AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "unknown": "Report time is the provider's own stamp.",
+      "method": "Origin time per event."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Fixed station or event coordinates; not independently checked.",
+      "method": "Latitude, longitude and depth from the solution."
+    },
+    "content": {
+      "level": "claimed",
+      "unknown": "Agency values; no independent check documented.",
+      "method": "Automatic or reviewed seismological solution by the national observatory."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://terremoti.ingv.it/en/webservices_and_software",
+    "base_url": "https://webservices.ingv.it/fdsnws/event/1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/query",
+        "params": "format=text&limit=<n>&orderby=time (also starttime, endtime, minmag, bbox, format=geojson|xml)",
+        "notes": "Pipe-separated text columns EventID|Time|Latitude|Longitude|Depth/Km|Author|Catalog|Contributor|ContributorID|MagType|Magnitude|MagAuthor|EventLocationName|EventType."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/application.wadl",
+        "params": "none",
+        "notes": "Service description."
+      }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read; use time windows and limit.",
+    "notes": "FDSN standard; GeoJSON responses arrive gzip-compressed in the call made.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "earthquake",
+    "seismic",
+    "italy",
+    "europe",
+    "mediterranean",
+    "fdsn",
+    "ingv",
+    "government",
+    "free",
+    "cc-by"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200 text with events at 17:20, 16:24, 16:20 UTC",
+      "url": "https://webservices.ingv.it/fdsnws/event/1/query?format=text&limit=3&orderby=time"
+    },
+    {
+      "claim": "INGV site states data and results are licensed CC BY 4.0",
+      "url": "https://terremoti.ingv.it/en/"
+    },
+    {
+      "claim": "Web services overview listing the FDSN event service",
+      "url": "https://terremoti.ingv.it/en/webservices_and_software"
+    }
+  ]
+}

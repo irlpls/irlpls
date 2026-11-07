@@ -1,0 +1,170 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "ana-telemetria-brazil",
+  "name": "ANA Hidro-Telemetria web service (Brazil river level, flow and rain)",
+  "provider_url": "https://www.snirh.gov.br/hidrotelemetria/",
+  "short": "Brazil ANA telemetric gauges: river level, discharge and rain every 15 minutes as XML. No key; terms unclear.",
+  "summary": "The Agencia Nacional de Aguas e Saneamento Basico (ANA) runs the Hidro-Telemetria system for near-real-time hydrometeorological data of the national water resources information system. Its public ASMX web service answers plain HTTP GET with XML. On 2026-11-07 UTC ListaEstacoesTelemetricas returned about 5,400 station rows (name, code, basin, operator, coordinates, river name, origin, status), and DadosHidrometeorologicos for station 15400000 (Porto Velho, Rio Madeira) returned 15-minute rows for 2026-11-07, the newest stamped 14:15 (level 441.10, discharge 7,287.02, rain 0.00; units and time zone are not stated in the response, and local Brazilian time is likely). Several stations returned no data for the requested period.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current river level, discharge and rainfall at a Brazilian telemetric station",
+      "telemetric station list with coordinates, basin and river",
+      "lists of basins, rivers, states and municipalities"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Brazil"
+    ],
+    "areas": [
+      "BR"
+    ],
+    "notes": "About 5,400 rows in the station list (some stations appear more than once for different origins). Many listed stations return no data for the requested days; of six tried, two returned data. Amazon-basin stations such as Porto Velho are included. Names and error text are in Portuguese."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "Not stated. The station list is about 4 MB; fetch it rarely.",
+      "source_url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: station 15400000 rows at 15-minute spacing, newest 2026-11-07 14:15 (time zone not stated)."
+  },
+  "latency": {
+    "typical": "Near real time, as the system describes itself",
+    "notes": "Not measured; time zone of timestamps is not stated, so lag cannot be computed."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Hours or less on the one station sampled",
+    "notes": "Station by station; silent stations return an error table instead of rows."
+  },
+  "licensing": {
+    "summary": "No terms are stated on the service or the Hidro-Telemetria page. ANA's open data page says open data are made available freely without restriction of licences, patents or control mechanisms, and the gov.br site content is under Creative Commons Attribution-NoDerivatives 3.0 Unported. Which of these applies to the telemetry web service is not stated; ask ANA (telemetria@ana.gov.br is given on the service page) before commercial reuse or redistribution."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each row has a date-time.",
+      "unknown": "Time zone not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station latitude and longitude in the station list.",
+      "unknown": "Fixed coordinates, not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "ANA and partner (for example SGB-CPRM) instruments; the system describes a qualification step for the data.",
+      "unknown": "Real-time rows are not guaranteed validated; the service has a general-data call without validation filters."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx",
+    "base_url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/ListaEstacoesTelemetricas",
+        "params": "statusEstacoes=&origem=",
+        "notes": "Call made. Large XML table of stations."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/DadosHidrometeorologicos",
+        "params": "codEstacao=<8 digits>&dataInicio=YYYY-MM-DD&dataFim=YYYY-MM-DD",
+        "notes": "Call made. Rows with Vazao (discharge), Nivel (level), Chuva (rain)."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "ASMX service returning XML DataSets; an ErrorTable element appears when a station has no data.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "river",
+    "water level",
+    "discharge",
+    "rain",
+    "flood",
+    "brazil",
+    "amazon",
+    "government",
+    "free",
+    "real-time",
+    "xml",
+    "soap"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07 UTC: station 15400000 rows, newest 2026-11-07 14:15, Nivel 441.10, Vazao 7287.02",
+      "url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx/DadosHidrometeorologicos?codEstacao=15400000&dataInicio=2026-11-07&dataFim=2026-11-07"
+    },
+    {
+      "claim": "Station list call, about 5,400 rows with status and origin",
+      "url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx/ListaEstacoesTelemetricas?statusEstacoes=&origem="
+    },
+    {
+      "claim": "System description: near-real-time hydrometeorological data of the national information system",
+      "url": "https://www.snirh.gov.br/hidrotelemetria/"
+    },
+    {
+      "claim": "ANA open data page: freely available without licence restriction; site content CC BY-ND 3.0",
+      "url": "https://www.gov.br/ana/pt-br/acesso-a-informacao/dados-abertos"
+    }
+  ]
+}

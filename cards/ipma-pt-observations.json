@@ -1,0 +1,165 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "ipma-pt-observations",
+  "name": "IPMA Portugal open data API (hourly station observations)",
+  "provider_url": "https://api.ipma.pt",
+  "short": "Hourly Portuguese station observations as one JSON file. No key; non-commercial use, cite source.",
+  "summary": "The Instituto Portugues do Mar e da Atmosfera runs api.ipma.pt. observation/meteorology/stations/observations.json returns about 24 hours of hourly values keyed by timestamp then station id (temperature, humidity, pressure, wind speed and direction, accumulated precipitation, radiation; -99 means missing). On 2026-11-07 it spanned 2026-11-06T18:00 to 2026-11-07T17:00 UTC. stations.json gives the id to name and coordinates (GeoJSON), e.g. Olhao. Sibling endpoints on the docs page include city forecasts, warnings and seismic observations (listed, not all called).",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "hourly observations at Portuguese stations (temperature, humidity, pressure, wind, precipitation)",
+      "station metadata with coordinates"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Europe",
+      "Portugal"
+    ],
+    "areas": [
+      "PT"
+    ],
+    "notes": "Mainland Portugal and islands; station ids join to stations.json."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: latest timestamp 2026-11-07T17:00 in a file fetched around 18:20 UTC."
+  },
+  "latency": {
+    "typical": "About one hour after observation hour",
+    "notes": "Single file covering about 24 hours."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 2 hours on 2026-11-07",
+    "notes": "One call only."
+  },
+  "licensing": {
+    "summary": "IPMA's Condicoes de Utilizacao (api.ipma.pt, in Portuguese) allow use of the site's information for personal or public use provided it does not serve profit-making or offensive aims, and the source must always be cited. Commercial reuse therefore needs IPMA's agreement. The API page asks users to read the terms and email webmaster@ipma.pt about their use and purpose. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "unknown": "Report time is the provider's own stamp.",
+      "method": "Timestamp key per observation hour."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Fixed station or event coordinates; not independently checked.",
+      "method": "Station coordinates in stations.json."
+    },
+    "content": {
+      "level": "claimed",
+      "unknown": "Agency values; no independent check documented.",
+      "method": "Official station readings; -99 marks missing values."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.ipma.pt/",
+    "base_url": "https://api.ipma.pt/open-data",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key. Provider requests an email to webmaster@ipma.pt describing use."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/observation/meteorology/stations/observations.json",
+        "params": "none",
+        "notes": "Hourly values by timestamp and station id."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/observation/meteorology/stations/stations.json",
+        "params": "none",
+        "notes": "GeoJSON station list with id and name."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/observation/seismic/",
+        "params": "area id",
+        "notes": "Seismic observations (from the docs page; not called)."
+      }
+    ],
+    "rate_limits": "No numeric limit stated; the provider asks users to email webmaster@ipma.pt describing purpose.",
+    "notes": "JSON and GeoJSON. Non-commercial reuse stated.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "observations",
+    "portugal",
+    "europe",
+    "ipma",
+    "hourly",
+    "government",
+    "free",
+    "non-commercial"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200 JSON keyed by hour 2026-11-06T18:00 to 2026-11-07T17:00",
+      "url": "https://api.ipma.pt/open-data/observation/meteorology/stations/observations.json"
+    },
+    {
+      "claim": "Station list GeoJSON with id and location name",
+      "url": "https://api.ipma.pt/open-data/observation/meteorology/stations/stations.json"
+    },
+    {
+      "claim": "Conditions of use: no profit-making use, source must be cited; request to email about use",
+      "url": "https://api.ipma.pt/"
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "syke-hydrology-finland",
+  "name": "Syke hydrology open interface (Finland water level and flow, OData)",
+  "provider_url": "https://www.syke.fi",
+  "short": "Finland Syke daily water level and discharge at about 5,000 sites via OData. CC BY 4.0, no key.",
+  "summary": "The Finnish Environment Institute (Syke) offers an OData interface for hydrology covering roughly 5,000 stations or areas, with water level, discharge, precipitation, evaporation, snow, ice and water temperature. On 2026-11-07 UTC a keyless GET on Vedenkorkeus (water level) for place 1755 sorted newest first answered 200 with daily values for 2026-11-07, -06 and -05 (75, 76, 77; the unit is not stated in the response). Places (Paikka) carry name, river system, municipality and coordinates. Values are daily, stamped at midnight, so this is a daily-fresh feed, not a minute-level one. Version 1.2 of the interface was updated 2026-05-11.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest daily water level at a Finnish lake or river site",
+      "daily discharge and other hydrological quantities",
+      "site list with coordinates and water body names"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Finland"
+    ],
+    "areas": [
+      "FI"
+    ],
+    "notes": "About 5,000 stations or areas per the provider's description. Lakes as well as rivers. Resource and field names are Finnish (Paikka = place, Vedenkorkeus = water level, Virtaama = discharge, Aika = time, Arvo = value). Unit conventions for each quantity are in the metadata, which is in Finnish."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "No numeric limit found on the pages read.",
+      "source_url": "https://www.syke.fi/en-US/Open_information/Open_web_services/Environmental_data_API"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest Vedenkorkeus row for site 1755 stamped 2026-11-07T00:00:00 (a daily value), so data are at best hours old."
+  },
+  "latency": {
+    "typical": "Daily values; today's date appeared by 18:00 UTC",
+    "notes": "One site sampled. Other quantities may update at different cadence."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under one day",
+    "notes": "Daily resolution in the sample, not sub-hourly."
+  },
+  "licensing": {
+    "summary": "Syke open data are licensed under Creative Commons Attribution 4.0 International: free use in any way if the source is named (licensor and dataset name, for example Source: Finnish Environment Institute (Syke)). Some datasets carry specific restrictions listed in their metadata. Syke asks developers to email an application built on the interfaces so it can be shown as an example. Liability is disclaimed. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each row has a timestamp (daily).",
+      "unknown": "Time zone not stated in the response."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Place records carry coordinates in several systems.",
+      "unknown": "Coordinate format (KoordLat/KoordLong as ddmmss text) not verified."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Agency observations with a flag id per value.",
+      "unknown": "Meaning of the flag codes was not checked; some values may be calculated rather than measured."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.syke.fi/en-US/Open_information/Open_web_services/Environmental_data_API",
+    "base_url": "https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.2/odata",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/Vedenkorkeus",
+        "params": "$filter=Paikka_Id eq <id>&$orderby=Aika desc&$top=<n>",
+        "notes": "Call made. Water level rows."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/Paikka",
+        "params": "$filter=Paikka_Id eq <id>&$select=Nimi,KoordLat,KoordLong",
+        "notes": "Call made. Place metadata."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/",
+        "params": "none",
+        "notes": "Service document listing all entity sets (call made on 1.1)."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "OData v3 style JSON; an OData query builder is offered by Syke. Versions 1.0 to 1.2 exist.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "river",
+    "lake",
+    "water level",
+    "discharge",
+    "finland",
+    "hydrology",
+    "government",
+    "free",
+    "odata",
+    "cc-by",
+    "daily"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07 UTC: HTTP 200, Vedenkorkeus site 1755 daily rows 2026-11-07, -06, -05 (version 1.2)",
+      "url": "https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.2/odata/Vedenkorkeus?$top=2&$filter=Paikka_Id%20eq%201755&$orderby=Aika%20desc"
+    },
+    {
+      "claim": "Interface description: hydrology, about 5,000 stations, version 1.2 updated 2026-05-11",
+      "url": "https://www.syke.fi/en-US/Open_information/Open_web_services/Environmental_data_API"
+    },
+    {
+      "claim": "Use licence: CC BY 4.0, name the source",
+      "url": "https://www.syke.fi/en/environmental-data/use-license-and-responsibilities"
+    }
+  ]
+}

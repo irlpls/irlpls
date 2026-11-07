@@ -1,0 +1,164 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "dwd-opendata-poi-observations",
+  "name": "DWD Open Data Server: hourly station observations (Germany)",
+  "provider_url": "https://opendata.dwd.de",
+  "short": "Hourly German station observations as per-station CSV files. No key; CC BY 4.0.",
+  "summary": "The Deutscher Wetterdienst Open Data Server at opendata.dwd.de lists files over plain HTTPS with no login. The folder weather/weather_reports/poi/ holds one CSV per station (974 CSV links on 2026-11-07), e.g. 10384-BEOB.csv, with a recent hourly series in UTC. A pull on 2026-11-07 returned rows stamped 15:00 to 17:00 UTC with cloud cover, 2 m temperature, visibility, wind direction, pressure and humidity; many columns are blank ('---') for stations without that sensor, and some stations (10382) were all blank. The same server carries model forecasts, radar and climate data in other folders (not called).",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "hourly station observations for Germany (temperature, wind, visibility, pressure, humidity, cloud cover)"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Europe",
+      "Germany"
+    ],
+    "areas": [
+      "DE"
+    ],
+    "notes": "Station list is large but coverage per file varies; blank '---' values are normal. Germany and nearby synoptic stations."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "No numeric limit stated on the pages read; the server is a public file index, be polite and cache by file timestamp.",
+      "source_url": "https://www.dwd.de/EN/ourservices/opendata/opendata.html"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: station file rows for 15:00, 16:00 and 17:00 UTC, directory listing timestamped 17:42 UTC."
+  },
+  "latency": {
+    "typical": "About an hour after observation time",
+    "notes": "Directory index shows file modification times so you can poll only changed files."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 2 hours on 2026-11-07",
+    "notes": "One station sampled in detail."
+  },
+  "licensing": {
+    "summary": "Per the DWD legal notice (dwd.de, rechtliche Hinweise): all freely accessible geodata and geodata services, including meteorological weather information with location, may be reused under Creative Commons BY 4.0 with a source credit. Weather and climate data are largely free of charge under the DWD Act of 2017. Check the notice for the exact source-credit wording; resale and AI training are not separately addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "unknown": "Report time is the provider's own stamp.",
+      "method": "Date and UTC time columns in each row."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Station location comes from DWD station lists, not from these files; not called here.",
+      "method": "Station number in the file name; coordinates are in the station list, not in the CSV."
+    },
+    "content": {
+      "level": "claimed",
+      "unknown": "Agency values; no independent check documented.",
+      "method": "Official instrument readings published by the national weather service."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.dwd.de/EN/ourservices/opendata/opendata.html",
+    "base_url": "https://opendata.dwd.de/weather/weather_reports/poi",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "Plain HTTPS, no key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/",
+        "params": "none",
+        "notes": "Apache index of per-station CSV files with modification times."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/<station>-BEOB.csv",
+        "params": "none",
+        "notes": "Semicolon-separated, German decimal commas, UTC times, '---' for missing."
+      }
+    ],
+    "rate_limits": "Not stated on the pages read.",
+    "notes": "CSV, German decimal comma, ISO-8859-style text. Other folders hold GRIB and radar data (not called).",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "observations",
+    "germany",
+    "europe",
+    "dwd",
+    "csv",
+    "hourly",
+    "government",
+    "free",
+    "cc-by"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: directory index and 10384-BEOB.csv with hourly rows at 15:00-17:00 UTC",
+      "url": "https://opendata.dwd.de/weather/weather_reports/poi/10384-BEOB.csv"
+    },
+    {
+      "claim": "Open data conditions: CC BY 4.0 with source credit for freely accessible geodata; mostly free of charge since 2017",
+      "url": "https://www.dwd.de/DE/service/rechtliche_hinweise/rechtliche_hinweise_node.html"
+    },
+    {
+      "claim": "DWD open data overview and DWD Act change making data free",
+      "url": "https://www.dwd.de/EN/ourservices/opendata/opendata.html"
+    }
+  ]
+}

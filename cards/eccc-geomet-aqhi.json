@@ -1,0 +1,169 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "eccc-geomet-aqhi",
+  "name": "Environment Canada MSC GeoMet-OGC-API: Air Quality Health Index (AQHI) observations",
+  "provider_url": "https://api.weather.gc.ca",
+  "short": "Hourly AQHI readings at about 124 Canadian locations as GeoJSON via OGC API Features. No key; ECCC open licence.",
+  "summary": "Environment and Climate Change Canada's MSC GeoMet-OGC-API at api.weather.gc.ca serves many collections as GeoJSON (hydrometric stations, climate, weather and more; the collection index answered 200). aqhi-observations-realtime holds hourly AQHI values per community with location id, bilingual name, observation_datetime and aqhi (for example Corner Brook 1.51 at 2026-11-06T04:00Z). The collection reported 7853 items on 2026-11-07; latest=true returned 124 current locations and sortby=-observation_datetime gave a newest stamp of 2026-11-07T18:00Z. aqhi-forecasts-realtime offers forecasts. Default ordering is oldest first, so use latest=true or sortby.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current AQHI by Canadian community",
+      "AQHI forecasts"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "North America",
+      "Canada"
+    ],
+    "areas": [
+      "CA"
+    ],
+    "notes": "About 124 current locations across Canada; the index lists many other collections not called here."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest observation_datetime 2026-11-07T18:00:00Z at about 18:20 UTC."
+  },
+  "latency": {
+    "typical": "Hourly values",
+    "notes": "latest=true returns one current value per station."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 1 hour on 2026-11-07",
+    "notes": "One call per collection."
+  },
+  "licensing": {
+    "summary": "Environment and Climate Change Canada Data Services End-use Licence v2.1.1: worldwide, royalty-free, perpetual, non-exclusive licence to use the information including for commercial purposes; copy, modify, publish, distribute for any lawful purpose; you must acknowledge the source using the attribution statement given. Weather alerts must not be altered in content or intent. AI training is not separately addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "unknown": "Report time is the provider's own stamp.",
+      "method": "observation_datetime per record."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Fixed station or event coordinates; not independently checked.",
+      "method": "Point geometry per station."
+    },
+    "content": {
+      "level": "claimed",
+      "unknown": "AQHI is a derived index, not raw pollutant concentrations.",
+      "method": "Index computed from monitoring-network pollutant readings; observation_type shows original or corrected."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.weather.gc.ca",
+    "base_url": "https://api.weather.gc.ca",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/aqhi-observations-realtime/items",
+        "params": "f=json&latest=true&limit=<n> (or sortby=-observation_datetime)",
+        "notes": "OGC API Features GeoJSON."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/aqhi-forecasts-realtime/items",
+        "params": "f=json&limit=<n>",
+        "notes": "AQHI forecasts."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/collections",
+        "params": "f=json",
+        "notes": "Index of all collections."
+      }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read; ECCC asks heavy users to use the MSC Datamart.",
+    "notes": "OGC API Features; GeoJSON, JSON-LD and HTML. Bilingual field names (en and fr).",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "air-quality",
+    "aqhi",
+    "canada",
+    "north america",
+    "ogc-api",
+    "geojson",
+    "government",
+    "free",
+    "real-time"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: AQHI observations GeoJSON, 7853 items, newest 2026-11-07T18:00Z",
+      "url": "https://api.weather.gc.ca/collections/aqhi-observations-realtime/items?f=json&limit=1&sortby=-observation_datetime"
+    },
+    {
+      "claim": "latest=true returned 124 current locations",
+      "url": "https://api.weather.gc.ca/collections/aqhi-observations-realtime/items?f=json&latest=true&limit=500"
+    },
+    {
+      "claim": "Collections index answered 200",
+      "url": "https://api.weather.gc.ca/collections?f=json"
+    },
+    {
+      "claim": "ECCC Data Services End-use Licence 2.1.1",
+      "url": "https://dd.weather.gc.ca/doc/LICENCE_GENERAL.txt"
+    }
+  ]
+}

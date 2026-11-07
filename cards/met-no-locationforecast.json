@@ -1,0 +1,162 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "met-no-locationforecast",
+  "name": "MET Norway Locationforecast (point weather forecast, worldwide)",
+  "provider_url": "https://api.met.no",
+  "short": "Hourly point forecasts for any latitude and longitude, JSON, free and keyless with a User-Agent. CC BY 4.0.",
+  "summary": "The Norwegian Meteorological Institute serves api.met.no. Locationforecast 2.0 returns a forecast timeseries for any coordinate: air temperature, pressure, humidity, cloud fraction, wind speed and direction, precipitation and a weather symbol, hourly then 6-hourly, as GeoJSON-style JSON. A call for lat 60, lon 10 on 2026-11-07 answered 200 with updated_at 17:28:51Z. Strongest for the Nordics where the model is high resolution; global elsewhere. It is a forecast model, not a station observation, so it fills coverage gaps with modelled values only.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "point forecast timeseries for any coordinate (temperature, wind, pressure, humidity, cloud, precipitation)"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Europe",
+      "Nordic",
+      "Worldwide"
+    ],
+    "areas": [
+      "*"
+    ],
+    "notes": "Model forecast, not measurements. Highest quality over Norway and the Nordic countries; global grid elsewhere."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "per-ip",
+      "notes": "Terms of service: keep total traffic below 20 requests per second; cache locally; identify with a User-Agent.",
+      "source_url": "https://api.met.no/doc/TermsOfService",
+      "requests": 20,
+      "per_seconds": 1
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: meta.updated_at 2026-11-07T17:28:51Z, response headers Last-Modified 18:19Z and Expires about 30 minutes later."
+  },
+  "latency": {
+    "typical": "Model updates roughly hourly",
+    "notes": "Response carries an Expires header; the terms ask you to respect it."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 1 hour on 2026-11-07",
+    "notes": "One call only."
+  },
+  "licensing": {
+    "summary": "CC BY 4.0 with attribution, stated on the terms of service page (api.met.no/doc/TermsOfService): give appropriate credit, link the licence, say if changed. Requests must carry an identifying User-Agent, traffic must stay under 20 requests per second, and identical requests should be cached per the Expires header; blocked otherwise. Redistribution and AI training are not separately addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "unknown": "Report time is the provider's own stamp.",
+      "method": "Forecast issue time in meta.updated_at."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Fixed station or event coordinates; not independently checked.",
+      "method": "Coordinates in the request are snapped to the model grid."
+    },
+    "content": {
+      "level": "claimed",
+      "unknown": "A forecast, not an observation; values are unverified against reality.",
+      "method": "Numerical model output."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.met.no/weatherapi/locationforecast/2.0/documentation",
+    "base_url": "https://api.met.no/weatherapi/locationforecast/2.0",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key. Send a User-Agent that identifies your app and contact, as the terms require."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/compact",
+        "params": "lat=<deg>&lon=<deg>",
+        "notes": "Main parameters only; 'complete' returns more fields (not called)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/status",
+        "params": "none",
+        "notes": "Returns last_update."
+      }
+    ],
+    "rate_limits": "Under 20 requests per second; cache and honour Expires.",
+    "notes": "JSON. Identifying User-Agent required; browsers must identify the site instead.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "weather",
+    "forecast",
+    "norway",
+    "nordic",
+    "europe",
+    "worldwide",
+    "model",
+    "government",
+    "free",
+    "cc-by"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07: HTTP 200, GeoJSON feature with timeseries and updated_at 17:28:51Z",
+      "url": "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=60&lon=10"
+    },
+    {
+      "claim": "Terms: CC BY 4.0 attribution, identify with User-Agent, under 20 requests per second, caching",
+      "url": "https://api.met.no/doc/TermsOfService"
+    }
+  ]
+}

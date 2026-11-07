@@ -1,0 +1,169 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "ioc-sealevel-monitoring",
+  "name": "IOC Sea Level Station Monitoring Facility (global real-time tide stations)",
+  "provider_url": "https://www.ioc-sealevelmonitoring.org",
+  "short": "Minute-level sea level at about 1,700 coastal stations worldwide (UNESCO IOC). Non-commercial, unchecked data.",
+  "summary": "The Sea Level Station Monitoring Facility, run by the Flanders Marine Institute (VLIZ) for UNESCO's Intergovernmental Oceanographic Commission, collects real-time sea level from national station operators (182 data providers listed) and redistributes it for tsunami and station-status monitoring. On 2026-11-07 UTC the station list showed 1,682 station codes. A keyless GET on service.php?query=data&code=abas&format=json&period=0.1 answered 200 with 1,052 one-minute rows for Abashiri, Japan (sensor rad), newest 2026-11-07 18:09:00, level about 2.04 (relative, in metres; no vertical datum). Stations send values every minute and the site updates every 5 minutes. The site also describes a registered REST service (API key) for station metadata and data; the service.php call used here is the one behind its own graphs and was open.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current sea level (relative, 1-minute) at a coastal station worldwide",
+      "tsunami-relevant station status",
+      "station list by country"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Worldwide coastlines and islands"
+    ],
+    "areas": [
+      "*"
+    ],
+    "notes": "1,682 station codes in the list, from 182 data providers; density varies by country. Levels are relative with no vertical datum, so they show change, not absolute height; the site says where available to use the linked UHSLC, PSMSL or BODC long-term data for referenced values."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "No numeric limit stated. Registration for an API key is requested for the documented REST service so VLIZ can track use and contact users.",
+      "source_url": "https://www.ioc-sealevelmonitoring.org/service.php"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: Abashiri rows to 18:09:00; the site states most stations provide values every minute and update each 5 minutes."
+  },
+  "latency": {
+    "typical": "Minutes",
+    "notes": "Varies by station and operator transmission."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes on the one station sampled",
+    "notes": "Stations differ; some are late or offline."
+  },
+  "licensing": {
+    "summary": "Data are provided as received with no quality control, for fast status assessment (disclaimer page). The data policy says data are made available under the IOC Oceanographic Data Exchange Policy and may not be used for any commercial purposes; commercial users should contact the relevant data originators. Cite: Flanders Marine Institute (VLIZ); IOC (2026): Sea level station monitoring facility, DOI 10.14284/482. Non-commercial only, so check before any commercial or agent-driven reuse."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each row has a timestamp (stime).",
+      "unknown": "Time zone not stated in the response."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station catalogue with coordinates and operator.",
+      "unknown": "Fixed station coordinates, not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "National operators' sensors (sensor code rad in the sample; meaning not checked), forwarded unchecked; the disclaimer says no quality control.",
+      "unknown": "The site says no quality control is applied; spikes may be present."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.ioc-sealevelmonitoring.org/service.php",
+    "base_url": "https://www.ioc-sealevelmonitoring.org",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "The service.php data call used here needed no key. The documented REST service asks users to register as an API user."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/service.php",
+        "params": "query=data&code=<station>&format=json&period=<days>",
+        "notes": "Call made (code=abas). Rows with slevel, stime, sensor."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/list.php",
+        "params": "showall=all",
+        "notes": "Call made. HTML station list, 1,682 codes."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "Registration is requested for the documented REST service.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "sea level",
+    "tide",
+    "tsunami",
+    "coast",
+    "worldwide",
+    "gloss",
+    "unesco",
+    "ioc",
+    "real-time",
+    "free",
+    "non-commercial"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07 UTC: 1,052 one-minute rows for Abashiri (abas), newest 2026-11-07 18:09:00",
+      "url": "https://www.ioc-sealevelmonitoring.org/service.php?query=data&code=abas&format=json&period=0.1"
+    },
+    {
+      "claim": "Station list, 1,682 station codes",
+      "url": "https://www.ioc-sealevelmonitoring.org/list.php?showall=all"
+    },
+    {
+      "claim": "Disclaimer and data policy: no quality control, non-commercial use, IOC data exchange policy",
+      "url": "https://www.ioc-sealevelmonitoring.org/disclaimer.php"
+    },
+    {
+      "claim": "Services page: REST service with registration, update every 5 minutes",
+      "url": "https://www.ioc-sealevelmonitoring.org/service.php"
+    }
+  ]
+}

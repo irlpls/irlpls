@@ -1,0 +1,168 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "wsc-hydrometric-realtime",
+  "name": "Environment Canada real-time hydrometric data (Water Survey of Canada, OGC API)",
+  "provider_url": "https://wateroffice.ec.gc.ca",
+  "short": "Canadian river level and discharge every 5 minutes from 2,100+ gauges, as GeoJSON. Free, no key.",
+  "summary": "Environment and Climate Change Canada serves real-time water level and flow (discharge) from the Water Survey of Canada network through its MSC GeoMet OGC API, collection hydrometric-realtime. It covers over 2,100 stations across Canada for the last 30 days. On 2026-11-07 UTC a keyless GET for station 05BH004 (Bow River at Calgary), sorted newest first, answered 200 with a reading stamped 2026-11-07T17:05:00Z: level 0.892 m, discharge 55.7 m3/s, at 5-minute spacing. Each record carries station number and name, province, UTC and local-standard time, level, discharge and quality symbols. A companion collection, hydrometric-stations, lists station metadata and whether a station reports in real time.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current river level (m) and discharge (m3/s) at a Canadian gauge, last 30 days",
+      "station list with coordinates, drainage area and real-time flag"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Canada"
+    ],
+    "areas": [
+      "CA"
+    ],
+    "notes": "Over 2,100 real-time stations per the collection description, on rivers, lakes and some tidal reaches in every province and territory, with a contributor named per station (federal, provincial and other agencies). Seen in the call: 05BH004 Bow River at Calgary, AB. Only the last 30 days are served here; older records are a separate archive."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "No numeric limit is stated on the pages read; be modest.",
+      "source_url": "https://dd.weather.gc.ca/doc/LICENCE_GENERAL.txt"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: newest record for 05BH004 stamped 17:05:00Z with 5-minute spacing before it."
+  },
+  "latency": {
+    "typical": "Minutes after the reading",
+    "notes": "Newest record was stamped within about 1 hour of the call time on one sample; one station only."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 1 hour on the one station sampled",
+    "notes": "Station by station; stations can be late or silent. Default item order is oldest first, so pass sortby=-DATETIME."
+  },
+  "licensing": {
+    "summary": "Environment and Climate Change Canada Data Services End-use Licence v2.1.1 (August 2026): worldwide, royalty-free, perpetual, non-exclusive, including commercial use; copy, modify, publish, distribute and adapt for any lawful purpose. You must attribute the source (for example Data Source: Environment and Climate Change Canada, or the fallback statement the licence gives), link the licence where possible, and not imply endorsement. Excludes personal information, third-party rights and official marks. Data here come from several contributing agencies, so attribute the originator where given. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Every record carries a UTC timestamp and local standard time.",
+      "unknown": "Timestamp is the sensor or telemetry time as processed by the agency."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed station coordinates in the feed geometry.",
+      "unknown": "Not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Agency instrument readings with level and discharge quality symbol fields.",
+      "unknown": "The meaning of the quality symbol codes was not checked; whether real-time values are reviewed is not stated on the pages read."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.weather.gc.ca/collections/hydrometric-realtime?f=json",
+    "base_url": "https://api.weather.gc.ca",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/hydrometric-realtime/items",
+        "params": "STATION_NUMBER=<id>&sortby=-DATETIME&limit=<n>&f=json",
+        "notes": "Calls made. Filter by STATION_NUMBER or bbox; GeoJSON features with LEVEL, DISCHARGE, DATETIME."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/collections/hydrometric-stations/items",
+        "params": "limit=<n>&f=json",
+        "notes": "Call made. Station metadata incl. REAL_TIME flag, status, contributor, drainage area."
+      }
+    ],
+    "rate_limits": "Not stated on the pages read.",
+    "notes": "OGC API Features; JSON, GeoJSON, CSV. Limit and offset paging.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "river",
+    "water level",
+    "discharge",
+    "flow",
+    "flood",
+    "canada",
+    "hydrometric",
+    "government",
+    "free",
+    "real-time",
+    "geojson"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07 UTC: HTTP 200, BOW RIVER AT CALGARY 05BH004 at 2026-11-07T17:05:00Z, LEVEL 0.892, DISCHARGE 55.7",
+      "url": "https://api.weather.gc.ca/collections/hydrometric-realtime/items?STATION_NUMBER=05BH004&limit=2&f=json&sortby=-DATETIME"
+    },
+    {
+      "claim": "Collection description: real-time level and flow at over 2,100 stations across Canada, last 30 days",
+      "url": "https://api.weather.gc.ca/collections/hydrometric-realtime?f=json"
+    },
+    {
+      "claim": "Station metadata collection with REAL_TIME flag and contributor",
+      "url": "https://api.weather.gc.ca/collections/hydrometric-stations/items?limit=1&f=json"
+    },
+    {
+      "claim": "ECCC Data Services End-use Licence v2.1.1: commercial use allowed, attribution required",
+      "url": "https://dd.weather.gc.ca/doc/LICENCE_GENERAL.txt"
+    }
+  ]
+}

@@ -51,7 +51,7 @@ BENCH = [
     ("air quality in Bangkok right now", {"air4thai-pcd", "openaq", "sensor-community"}, {"airnow", "nws", "usgs-water"}),
     ("earthquakes in Turkey in the last day", {"tr-afad-earthquakes", "emsc-seismicportal", "usgs-earthquakes"}, {"proxypics", "airnow", "caltrans-cctv"}),
     ("temperature and rainfall in Hong Kong right now", {"hko-open-data", "open-meteo", "windy-webcams"}, {"nws", "usgs-water", "noaa-tides"}),
-    ("weather in London, UK right now", {"windy-webcams", "openaq", "sensor-community", "ndbc-buoys"}, {"nws", "noaa-tides", "usgs-water"}),
+    ("weather in London, UK right now", {"windy-webcams", "openaq", "sensor-community", "ndbc-buoys", "met-no-locationforecast"}, {"nws", "noaa-tides", "usgs-water"}),
     # ---- live: cameras ----
     ("is traffic backed up on the Bay Bridge in San Francisco, CA right now", {"caltrans-cctv", "empiric-earth"}, {"usgs-water", "noaa-tides", "nws"}),
     ("snow on the road at Lake Tahoe, CA right now", {"caltrans-cctv", "empiric-earth"}, {"usgs-water", "openaq", "skyfi"}),
@@ -145,7 +145,7 @@ BENCH = [
     ("qualidade do ar em Maputo", {"open-meteo", "sensor-community", "openaq"}, {"nws", "airnow", "usgs-water"}),  # round 3: Portuguese
     ("any fires near Kelowna BC?", {"nasa-firms"}, {"proxypics", "caltrans-cctv", "skyfi"}),  # round 3: a live read, not a commission
     ("東京の今の空気質を教えて", {"open-meteo", "sensor-community", "openaq"}, {"nws", "airnow", "usgs-water"}),
-    ("какая погода сейчас в Москве", {"weatherxm-agent", "open-meteo", "noaa-awc-metar-taf"}, {"nws", "usgs-water", "noaa-tides"}),
+    ("какая погода сейчас в Москве", {"weatherxm-agent", "open-meteo", "noaa-awc-metar-taf", "met-no-locationforecast"}, {"nws", "usgs-water", "noaa-tides"}),
     # ---- a person on site for a spot's own state (not a satellite, not a dataset vendor) ----
     ("send a human to Kathmandu, Nepal to count people in Durbar Square this afternoon", {"execution-market", "human-for-ai", "rentahuman"},
      {"toloka", "satellogic", "prolific", "kled"}),

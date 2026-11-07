@@ -1,0 +1,164 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "imgw-hydro-poland",
+  "name": "IMGW-PIB public data API (Poland river gauges)",
+  "provider_url": "https://danepubliczne.imgw.pl",
+  "short": "Polish river level, flow and water temperature at 900+ gauges as one JSON. No key; business use has conditions.",
+  "summary": "Poland's Institute of Meteorology and Water Management (IMGW-PIB) serves public hydrological data at danepubliczne.imgw.pl/api/data/hydro. On 2026-11-07 UTC a keyless GET answered 200 with 913 stations in one JSON array. Each record gives station id and name, river, voivodeship, coordinates, gauge zero elevation, river kilometre, alarm and warning levels (cm), current water level in cm with measurement time (latest 2026-11-07 18:00), plus flow, water temperature and ice or vegetation phenomena where measured, each with its own timestamp. The same service offers synoptic and meteo stations, weather and hydrological warnings. Formats other than JSON (xml, csv, html) are selectable by a path suffix.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current water level (cm) at Polish river gauges with alarm and warning thresholds",
+      "flow and water temperature where measured",
+      "hydrological warnings"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Poland"
+    ],
+    "areas": [
+      "PL"
+    ],
+    "notes": "913 hydrological stations in the one call, with river name and voivodeship. Alarm and warning stage fields allow a flood-status test. Field names and warning texts are in Polish. Some stations report flow or temperature much less often than level (flow dated 2026-02-18 in one record)."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "No numeric limit stated on the pages read.",
+      "source_url": "https://danepubliczne.imgw.pl/pl/apiinfo"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: newest stan_wody_data_pomiaru 2026-11-07 18:00:00 across 913 stations."
+  },
+  "latency": {
+    "typical": "Within about 30 minutes on one sample",
+    "notes": "Time zone of the timestamps is not stated in the response; they matched UTC on one sample."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 30 minutes for the newest stations",
+    "notes": "Per-station; not all stations report each hour."
+  },
+  "licensing": {
+    "summary": "Terms are the IMGW-PIB data regulation (Regulamin udostepniania danych), based on the Polish open data act and EU implementing regulation 2023/138. Use is free for private purposes, and for high-value data for any purpose; the regulation says some business uses and some user groups (for example marine and inland navigation, agriculture, planning) need a signed agreement with cost recovery. Attribution is required: the source is IMGW-PIB, and processed data must be marked as processed. Check whether the hydrological dataset counts as high-value data and whether your use needs an agreement before commercial reuse."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each reading has a measurement timestamp.",
+      "unknown": "Time zone not stated in the response."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station coordinates in the record.",
+      "unknown": "Fixed coordinates, not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "IMGW-PIB measurement stations with stated alarm and warning thresholds.",
+      "unknown": "No quality field in the record; whether values are reviewed is not stated."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://danepubliczne.imgw.pl/pl/apiinfo",
+    "base_url": "https://danepubliczne.imgw.pl/api/data",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/hydro",
+        "params": "none",
+        "notes": "Call made. All stations; /format/{xml|csv|html} suffix per the docs page."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/warningshydro",
+        "params": "none",
+        "notes": "Hydrological warnings (from the docs page; not called)."
+      }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "Polish field names (stan_wody = water level in cm, przeplyw = flow, temperatura_wody = water temperature).",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "river",
+    "water level",
+    "flow",
+    "flood",
+    "poland",
+    "government",
+    "free",
+    "real-time",
+    "json",
+    "alarm level"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07 UTC: HTTP 200, 913 stations, newest stan_wody_data_pomiaru 2026-11-07 18:00:00",
+      "url": "https://danepubliczne.imgw.pl/api/data/hydro"
+    },
+    {
+      "claim": "API information page: hydro, meteo, synop, warnings endpoints and format suffixes",
+      "url": "https://danepubliczne.imgw.pl/pl/apiinfo"
+    },
+    {
+      "claim": "Data sharing regulation: free private use, high-value data any purpose, agreements for some business uses, attribution",
+      "url": "https://danepubliczne.imgw.pl/"
+    }
+  ]
+}

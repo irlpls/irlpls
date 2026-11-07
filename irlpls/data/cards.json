@@ -990,6 +990,176 @@
    "adapter": "alertcalifornia"
   },
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "ana-telemetria-brazil",
+   "name": "ANA Hidro-Telemetria web service (Brazil river level, flow and rain)",
+   "provider_url": "https://www.snirh.gov.br/hidrotelemetria/",
+   "short": "Brazil ANA telemetric gauges: river level, discharge and rain every 15 minutes as XML. No key; terms unclear.",
+   "summary": "The Agencia Nacional de Aguas e Saneamento Basico (ANA) runs the Hidro-Telemetria system for near-real-time hydrometeorological data of the national water resources information system. Its public ASMX web service answers plain HTTP GET with XML. On 2026-11-07 UTC ListaEstacoesTelemetricas returned about 5,400 station rows (name, code, basin, operator, coordinates, river name, origin, status), and DadosHidrometeorologicos for station 15400000 (Porto Velho, Rio Madeira) returned 15-minute rows for 2026-11-07, the newest stamped 14:15 (level 441.10, discharge 7,287.02, rain 0.00; units and time zone are not stated in the response, and local Brazilian time is likely). Several stations returned no data for the requested period.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current river level, discharge and rainfall at a Brazilian telemetric station",
+     "telemetric station list with coordinates, basin and river",
+     "lists of basins, rivers, states and municipalities"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Brazil"
+    ],
+    "areas": [
+     "BR"
+    ],
+    "notes": "About 5,400 rows in the station list (some stations appear more than once for different origins). Many listed stations return no data for the requested days; of six tried, two returned data. Amazon-basin stations such as Porto Velho are included. Names and error text are in Portuguese."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "Not stated. The station list is about 4 MB; fetch it rarely.",
+     "source_url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: station 15400000 rows at 15-minute spacing, newest 2026-11-07 14:15 (time zone not stated)."
+   },
+   "latency": {
+    "typical": "Near real time, as the system describes itself",
+    "notes": "Not measured; time zone of timestamps is not stated, so lag cannot be computed."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Hours or less on the one station sampled",
+    "notes": "Station by station; silent stations return an error table instead of rows."
+   },
+   "licensing": {
+    "summary": "No terms are stated on the service or the Hidro-Telemetria page. ANA's open data page says open data are made available freely without restriction of licences, patents or control mechanisms, and the gov.br site content is under Creative Commons Attribution-NoDerivatives 3.0 Unported. Which of these applies to the telemetry web service is not stated; ask ANA (telemetria@ana.gov.br is given on the service page) before commercial reuse or redistribution."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each row has a date-time.",
+     "unknown": "Time zone not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station latitude and longitude in the station list.",
+     "unknown": "Fixed coordinates, not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "ANA and partner (for example SGB-CPRM) instruments; the system describes a qualification step for the data.",
+     "unknown": "Real-time rows are not guaranteed validated; the service has a general-data call without validation filters."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx",
+    "base_url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/ListaEstacoesTelemetricas",
+      "params": "statusEstacoes=&origem=",
+      "notes": "Call made. Large XML table of stations."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/DadosHidrometeorologicos",
+      "params": "codEstacao=<8 digits>&dataInicio=YYYY-MM-DD&dataFim=YYYY-MM-DD",
+      "notes": "Call made. Rows with Vazao (discharge), Nivel (level), Chuva (rain)."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "ASMX service returning XML DataSets; an ErrorTable element appears when a station has no data.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "river",
+    "water level",
+    "discharge",
+    "rain",
+    "flood",
+    "brazil",
+    "amazon",
+    "government",
+    "free",
+    "real-time",
+    "xml",
+    "soap"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07 UTC: station 15400000 rows, newest 2026-11-07 14:15, Nivel 441.10, Vazao 7287.02",
+     "url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx/DadosHidrometeorologicos?codEstacao=15400000&dataInicio=2026-11-07&dataFim=2026-11-07"
+    },
+    {
+     "claim": "Station list call, about 5,400 rows with status and origin",
+     "url": "https://telemetriaws1.ana.gov.br/ServiceANA.asmx/ListaEstacoesTelemetricas?statusEstacoes=&origem="
+    },
+    {
+     "claim": "System description: near-real-time hydrometeorological data of the national information system",
+     "url": "https://www.snirh.gov.br/hidrotelemetria/"
+    },
+    {
+     "claim": "ANA open data page: freely available without licence restriction; site content CC BY-ND 3.0",
+     "url": "https://www.gov.br/ana/pt-br/acesso-a-informacao/dados-abertos"
+    }
+   ]
+  },
+  {
    "id": "appen",
    "name": "Appen",
    "provider_url": "https://www.appen.com",
@@ -3822,6 +3992,339 @@
     {
      "claim": "DroneDeploy is not on the C2PA Conforming Products List",
      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "dwd-opendata-poi-observations",
+   "name": "DWD Open Data Server: hourly station observations (Germany)",
+   "provider_url": "https://opendata.dwd.de",
+   "short": "Hourly German station observations as per-station CSV files. No key; CC BY 4.0.",
+   "summary": "The Deutscher Wetterdienst Open Data Server at opendata.dwd.de lists files over plain HTTPS with no login. The folder weather/weather_reports/poi/ holds one CSV per station (974 CSV links on 2026-11-07), e.g. 10384-BEOB.csv, with a recent hourly series in UTC. A pull on 2026-11-07 returned rows stamped 15:00 to 17:00 UTC with cloud cover, 2 m temperature, visibility, wind direction, pressure and humidity; many columns are blank ('---') for stations without that sensor, and some stations (10382) were all blank. The same server carries model forecasts, radar and climate data in other folders (not called).",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "hourly station observations for Germany (temperature, wind, visibility, pressure, humidity, cloud cover)"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Europe",
+     "Germany"
+    ],
+    "areas": [
+     "DE"
+    ],
+    "notes": "Station list is large but coverage per file varies; blank '---' values are normal. Germany and nearby synoptic stations."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No numeric limit stated on the pages read; the server is a public file index, be polite and cache by file timestamp.",
+     "source_url": "https://www.dwd.de/EN/ourservices/opendata/opendata.html"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: station file rows for 15:00, 16:00 and 17:00 UTC, directory listing timestamped 17:42 UTC."
+   },
+   "latency": {
+    "typical": "About an hour after observation time",
+    "notes": "Directory index shows file modification times so you can poll only changed files."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 2 hours on 2026-11-07",
+    "notes": "One station sampled in detail."
+   },
+   "licensing": {
+    "summary": "Per the DWD legal notice (dwd.de, rechtliche Hinweise): all freely accessible geodata and geodata services, including meteorological weather information with location, may be reused under Creative Commons BY 4.0 with a source credit. Weather and climate data are largely free of charge under the DWD Act of 2017. Check the notice for the exact source-credit wording; resale and AI training are not separately addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "unknown": "Report time is the provider's own stamp.",
+     "method": "Date and UTC time columns in each row."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Station location comes from DWD station lists, not from these files; not called here.",
+     "method": "Station number in the file name; coordinates are in the station list, not in the CSV."
+    },
+    "content": {
+     "level": "claimed",
+     "unknown": "Agency values; no independent check documented.",
+     "method": "Official instrument readings published by the national weather service."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.dwd.de/EN/ourservices/opendata/opendata.html",
+    "base_url": "https://opendata.dwd.de/weather/weather_reports/poi",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "Plain HTTPS, no key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/",
+      "params": "none",
+      "notes": "Apache index of per-station CSV files with modification times."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/<station>-BEOB.csv",
+      "params": "none",
+      "notes": "Semicolon-separated, German decimal commas, UTC times, '---' for missing."
+     }
+    ],
+    "rate_limits": "Not stated on the pages read.",
+    "notes": "CSV, German decimal comma, ISO-8859-style text. Other folders hold GRIB and radar data (not called).",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "observations",
+    "germany",
+    "europe",
+    "dwd",
+    "csv",
+    "hourly",
+    "government",
+    "free",
+    "cc-by"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: directory index and 10384-BEOB.csv with hourly rows at 15:00-17:00 UTC",
+     "url": "https://opendata.dwd.de/weather/weather_reports/poi/10384-BEOB.csv"
+    },
+    {
+     "claim": "Open data conditions: CC BY 4.0 with source credit for freely accessible geodata; mostly free of charge since 2017",
+     "url": "https://www.dwd.de/DE/service/rechtliche_hinweise/rechtliche_hinweise_node.html"
+    },
+    {
+     "claim": "DWD open data overview and DWD Act change making data free",
+     "url": "https://www.dwd.de/EN/ourservices/opendata/opendata.html"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "eccc-geomet-aqhi",
+   "name": "Environment Canada MSC GeoMet-OGC-API: Air Quality Health Index (AQHI) observations",
+   "provider_url": "https://api.weather.gc.ca",
+   "short": "Hourly AQHI readings at about 124 Canadian locations as GeoJSON via OGC API Features. No key; ECCC open licence.",
+   "summary": "Environment and Climate Change Canada's MSC GeoMet-OGC-API at api.weather.gc.ca serves many collections as GeoJSON (hydrometric stations, climate, weather and more; the collection index answered 200). aqhi-observations-realtime holds hourly AQHI values per community with location id, bilingual name, observation_datetime and aqhi (for example Corner Brook 1.51 at 2026-11-06T04:00Z). The collection reported 7853 items on 2026-11-07; latest=true returned 124 current locations and sortby=-observation_datetime gave a newest stamp of 2026-11-07T18:00Z. aqhi-forecasts-realtime offers forecasts. Default ordering is oldest first, so use latest=true or sortby.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current AQHI by Canadian community",
+     "AQHI forecasts"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "North America",
+     "Canada"
+    ],
+    "areas": [
+     "CA"
+    ],
+    "notes": "About 124 current locations across Canada; the index lists many other collections not called here."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest observation_datetime 2026-11-07T18:00:00Z at about 18:20 UTC."
+   },
+   "latency": {
+    "typical": "Hourly values",
+    "notes": "latest=true returns one current value per station."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 1 hour on 2026-11-07",
+    "notes": "One call per collection."
+   },
+   "licensing": {
+    "summary": "Environment and Climate Change Canada Data Services End-use Licence v2.1.1: worldwide, royalty-free, perpetual, non-exclusive licence to use the information including for commercial purposes; copy, modify, publish, distribute for any lawful purpose; you must acknowledge the source using the attribution statement given. Weather alerts must not be altered in content or intent. AI training is not separately addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "unknown": "Report time is the provider's own stamp.",
+     "method": "observation_datetime per record."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Fixed station or event coordinates; not independently checked.",
+     "method": "Point geometry per station."
+    },
+    "content": {
+     "level": "claimed",
+     "unknown": "AQHI is a derived index, not raw pollutant concentrations.",
+     "method": "Index computed from monitoring-network pollutant readings; observation_type shows original or corrected."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.weather.gc.ca",
+    "base_url": "https://api.weather.gc.ca",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/aqhi-observations-realtime/items",
+      "params": "f=json&latest=true&limit=<n> (or sortby=-observation_datetime)",
+      "notes": "OGC API Features GeoJSON."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/aqhi-forecasts-realtime/items",
+      "params": "f=json&limit=<n>",
+      "notes": "AQHI forecasts."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/collections",
+      "params": "f=json",
+      "notes": "Index of all collections."
+     }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read; ECCC asks heavy users to use the MSC Datamart.",
+    "notes": "OGC API Features; GeoJSON, JSON-LD and HTML. Bilingual field names (en and fr).",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "air-quality",
+    "aqhi",
+    "canada",
+    "north america",
+    "ogc-api",
+    "geojson",
+    "government",
+    "free",
+    "real-time"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: AQHI observations GeoJSON, 7853 items, newest 2026-11-07T18:00Z",
+     "url": "https://api.weather.gc.ca/collections/aqhi-observations-realtime/items?f=json&limit=1&sortby=-observation_datetime"
+    },
+    {
+     "claim": "latest=true returned 124 current locations",
+     "url": "https://api.weather.gc.ca/collections/aqhi-observations-realtime/items?f=json&latest=true&limit=500"
+    },
+    {
+     "claim": "Collections index answered 200",
+     "url": "https://api.weather.gc.ca/collections?f=json"
+    },
+    {
+     "claim": "ECCC Data Services End-use Licence 2.1.1",
+     "url": "https://dd.weather.gc.ca/doc/LICENCE_GENERAL.txt"
     }
    ]
   },
@@ -10601,6 +11104,330 @@
    },
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "imgw-hydro-poland",
+   "name": "IMGW-PIB public data API (Poland river gauges)",
+   "provider_url": "https://danepubliczne.imgw.pl",
+   "short": "Polish river level, flow and water temperature at 900+ gauges as one JSON. No key; business use has conditions.",
+   "summary": "Poland's Institute of Meteorology and Water Management (IMGW-PIB) serves public hydrological data at danepubliczne.imgw.pl/api/data/hydro. On 2026-11-07 UTC a keyless GET answered 200 with 913 stations in one JSON array. Each record gives station id and name, river, voivodeship, coordinates, gauge zero elevation, river kilometre, alarm and warning levels (cm), current water level in cm with measurement time (latest 2026-11-07 18:00), plus flow, water temperature and ice or vegetation phenomena where measured, each with its own timestamp. The same service offers synoptic and meteo stations, weather and hydrological warnings. Formats other than JSON (xml, csv, html) are selectable by a path suffix.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current water level (cm) at Polish river gauges with alarm and warning thresholds",
+     "flow and water temperature where measured",
+     "hydrological warnings"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Poland"
+    ],
+    "areas": [
+     "PL"
+    ],
+    "notes": "913 hydrological stations in the one call, with river name and voivodeship. Alarm and warning stage fields allow a flood-status test. Field names and warning texts are in Polish. Some stations report flow or temperature much less often than level (flow dated 2026-02-18 in one record)."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No numeric limit stated on the pages read.",
+     "source_url": "https://danepubliczne.imgw.pl/pl/apiinfo"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: newest stan_wody_data_pomiaru 2026-11-07 18:00:00 across 913 stations."
+   },
+   "latency": {
+    "typical": "Within about 30 minutes on one sample",
+    "notes": "Time zone of the timestamps is not stated in the response; they matched UTC on one sample."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 30 minutes for the newest stations",
+    "notes": "Per-station; not all stations report each hour."
+   },
+   "licensing": {
+    "summary": "Terms are the IMGW-PIB data regulation (Regulamin udostepniania danych), based on the Polish open data act and EU implementing regulation 2023/138. Use is free for private purposes, and for high-value data for any purpose; the regulation says some business uses and some user groups (for example marine and inland navigation, agriculture, planning) need a signed agreement with cost recovery. Attribution is required: the source is IMGW-PIB, and processed data must be marked as processed. Check whether the hydrological dataset counts as high-value data and whether your use needs an agreement before commercial reuse."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each reading has a measurement timestamp.",
+     "unknown": "Time zone not stated in the response."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in the record.",
+     "unknown": "Fixed coordinates, not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "IMGW-PIB measurement stations with stated alarm and warning thresholds.",
+     "unknown": "No quality field in the record; whether values are reviewed is not stated."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://danepubliczne.imgw.pl/pl/apiinfo",
+    "base_url": "https://danepubliczne.imgw.pl/api/data",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/hydro",
+      "params": "none",
+      "notes": "Call made. All stations; /format/{xml|csv|html} suffix per the docs page."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/warningshydro",
+      "params": "none",
+      "notes": "Hydrological warnings (from the docs page; not called)."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "Polish field names (stan_wody = water level in cm, przeplyw = flow, temperatura_wody = water temperature).",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "river",
+    "water level",
+    "flow",
+    "flood",
+    "poland",
+    "government",
+    "free",
+    "real-time",
+    "json",
+    "alarm level"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07 UTC: HTTP 200, 913 stations, newest stan_wody_data_pomiaru 2026-11-07 18:00:00",
+     "url": "https://danepubliczne.imgw.pl/api/data/hydro"
+    },
+    {
+     "claim": "API information page: hydro, meteo, synop, warnings endpoints and format suffixes",
+     "url": "https://danepubliczne.imgw.pl/pl/apiinfo"
+    },
+    {
+     "claim": "Data sharing regulation: free private use, high-value data any purpose, agreements for some business uses, attribution",
+     "url": "https://danepubliczne.imgw.pl/"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "ingv-fdsnws-events",
+   "name": "INGV Italy earthquake catalogue (FDSN event web service)",
+   "provider_url": "https://terremoti.ingv.it",
+   "short": "Near-real-time Italian and Mediterranean earthquake events from INGV via standard FDSN event service. No key; CC BY 4.0.",
+   "summary": "Istituto Nazionale di Geofisica e Vulcanologia serves earthquake solutions through webservices.ingv.it/fdsnws/event/1/query with the standard FDSN parameters (starttime, endtime, minmag, bounding box, limit, orderby) and text, QuakeML, GeoJSON or KML output. A call with format=text&limit=3&orderby=time on 2026-11-07 returned events at 17:20, 16:24 and 16:20 UTC (ML 1.7 Aeolian Islands, ML 2.5 southern Tyrrhenian, ML 1.0 near Norcia), under 2 hours old. Output includes event id, origin time, latitude, longitude, depth, author, magnitude type and place name. Strong for Italy; global felt events also appear.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "recent earthquake events with magnitude, depth and location (Italy and surrounding seas)"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Europe",
+     "Italy",
+     "Mediterranean"
+    ],
+    "areas": [
+     "IT"
+    ],
+    "notes": "Dense network in Italy; small events (ML 1.0) are listed. Event ids are INGV's own."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: newest event origin time 17:20:13 UTC in a response at about 18:20 UTC."
+   },
+   "latency": {
+    "typical": "Minutes to tens of minutes for automatic solutions",
+    "notes": "Automatic then reviewed solutions; author field shows SURVEY-INGV."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 2 hours on 2026-11-07",
+    "notes": "One call only."
+   },
+   "licensing": {
+    "summary": "terremoti.ingv.it states that data and results published on the site by INGV are licensed under Creative Commons Attribution 4.0 International. Attribute INGV. No rate limit is stated on the pages read. Whether this licence statement covers every web-service field and AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "unknown": "Report time is the provider's own stamp.",
+     "method": "Origin time per event."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Fixed station or event coordinates; not independently checked.",
+     "method": "Latitude, longitude and depth from the solution."
+    },
+    "content": {
+     "level": "claimed",
+     "unknown": "Agency values; no independent check documented.",
+     "method": "Automatic or reviewed seismological solution by the national observatory."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://terremoti.ingv.it/en/webservices_and_software",
+    "base_url": "https://webservices.ingv.it/fdsnws/event/1",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/query",
+      "params": "format=text&limit=<n>&orderby=time (also starttime, endtime, minmag, bbox, format=geojson|xml)",
+      "notes": "Pipe-separated text columns EventID|Time|Latitude|Longitude|Depth/Km|Author|Catalog|Contributor|ContributorID|MagType|Magnitude|MagAuthor|EventLocationName|EventType."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/application.wadl",
+      "params": "none",
+      "notes": "Service description."
+     }
+    ],
+    "rate_limits": "No numeric limit stated on the pages read; use time windows and limit.",
+    "notes": "FDSN standard; GeoJSON responses arrive gzip-compressed in the call made.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "earthquake",
+    "seismic",
+    "italy",
+    "europe",
+    "mediterranean",
+    "fdsn",
+    "ingv",
+    "government",
+    "free",
+    "cc-by"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200 text with events at 17:20, 16:24, 16:20 UTC",
+     "url": "https://webservices.ingv.it/fdsnws/event/1/query?format=text&limit=3&orderby=time"
+    },
+    {
+     "claim": "INGV site states data and results are licensed CC BY 4.0",
+     "url": "https://terremoti.ingv.it/en/"
+    },
+    {
+     "claim": "Web services overview listing the FDSN event service",
+     "url": "https://terremoti.ingv.it/en/webservices_and_software"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
    "updated": "2026-11-06",
    "expires": "2027-11-06",
    "id": "inpe-queimadas-focos",
@@ -10747,6 +11574,340 @@
     {
      "claim": "Programa Queimadas portal of INPE",
      "url": "https://terrabrasilis.dpi.inpe.br/queimadas/portal/"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "ioc-sealevel-monitoring",
+   "name": "IOC Sea Level Station Monitoring Facility (global real-time tide stations)",
+   "provider_url": "https://www.ioc-sealevelmonitoring.org",
+   "short": "Minute-level sea level at about 1,700 coastal stations worldwide (UNESCO IOC). Non-commercial, unchecked data.",
+   "summary": "The Sea Level Station Monitoring Facility, run by the Flanders Marine Institute (VLIZ) for UNESCO's Intergovernmental Oceanographic Commission, collects real-time sea level from national station operators (182 data providers listed) and redistributes it for tsunami and station-status monitoring. On 2026-11-07 UTC the station list showed 1,682 station codes. A keyless GET on service.php?query=data&code=abas&format=json&period=0.1 answered 200 with 1,052 one-minute rows for Abashiri, Japan (sensor rad), newest 2026-11-07 18:09:00, level about 2.04 (relative, in metres; no vertical datum). Stations send values every minute and the site updates every 5 minutes. The site also describes a registered REST service (API key) for station metadata and data; the service.php call used here is the one behind its own graphs and was open.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current sea level (relative, 1-minute) at a coastal station worldwide",
+     "tsunami-relevant station status",
+     "station list by country"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Worldwide coastlines and islands"
+    ],
+    "areas": [
+     "*"
+    ],
+    "notes": "1,682 station codes in the list, from 182 data providers; density varies by country. Levels are relative with no vertical datum, so they show change, not absolute height; the site says where available to use the linked UHSLC, PSMSL or BODC long-term data for referenced values."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No numeric limit stated. Registration for an API key is requested for the documented REST service so VLIZ can track use and contact users.",
+     "source_url": "https://www.ioc-sealevelmonitoring.org/service.php"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: Abashiri rows to 18:09:00; the site states most stations provide values every minute and update each 5 minutes."
+   },
+   "latency": {
+    "typical": "Minutes",
+    "notes": "Varies by station and operator transmission."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes on the one station sampled",
+    "notes": "Stations differ; some are late or offline."
+   },
+   "licensing": {
+    "summary": "Data are provided as received with no quality control, for fast status assessment (disclaimer page). The data policy says data are made available under the IOC Oceanographic Data Exchange Policy and may not be used for any commercial purposes; commercial users should contact the relevant data originators. Cite: Flanders Marine Institute (VLIZ); IOC (2026): Sea level station monitoring facility, DOI 10.14284/482. Non-commercial only, so check before any commercial or agent-driven reuse."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each row has a timestamp (stime).",
+     "unknown": "Time zone not stated in the response."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station catalogue with coordinates and operator.",
+     "unknown": "Fixed station coordinates, not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "National operators' sensors (sensor code rad in the sample; meaning not checked), forwarded unchecked; the disclaimer says no quality control.",
+     "unknown": "The site says no quality control is applied; spikes may be present."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.ioc-sealevelmonitoring.org/service.php",
+    "base_url": "https://www.ioc-sealevelmonitoring.org",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "The service.php data call used here needed no key. The documented REST service asks users to register as an API user."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/service.php",
+      "params": "query=data&code=<station>&format=json&period=<days>",
+      "notes": "Call made (code=abas). Rows with slevel, stime, sensor."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/list.php",
+      "params": "showall=all",
+      "notes": "Call made. HTML station list, 1,682 codes."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "Registration is requested for the documented REST service.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "sea level",
+    "tide",
+    "tsunami",
+    "coast",
+    "worldwide",
+    "gloss",
+    "unesco",
+    "ioc",
+    "real-time",
+    "free",
+    "non-commercial"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07 UTC: 1,052 one-minute rows for Abashiri (abas), newest 2026-11-07 18:09:00",
+     "url": "https://www.ioc-sealevelmonitoring.org/service.php?query=data&code=abas&format=json&period=0.1"
+    },
+    {
+     "claim": "Station list, 1,682 station codes",
+     "url": "https://www.ioc-sealevelmonitoring.org/list.php?showall=all"
+    },
+    {
+     "claim": "Disclaimer and data policy: no quality control, non-commercial use, IOC data exchange policy",
+     "url": "https://www.ioc-sealevelmonitoring.org/disclaimer.php"
+    },
+    {
+     "claim": "Services page: REST service with registration, update every 5 minutes",
+     "url": "https://www.ioc-sealevelmonitoring.org/service.php"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "ipma-pt-observations",
+   "name": "IPMA Portugal open data API (hourly station observations)",
+   "provider_url": "https://api.ipma.pt",
+   "short": "Hourly Portuguese station observations as one JSON file. No key; non-commercial use, cite source.",
+   "summary": "The Instituto Portugues do Mar e da Atmosfera runs api.ipma.pt. observation/meteorology/stations/observations.json returns about 24 hours of hourly values keyed by timestamp then station id (temperature, humidity, pressure, wind speed and direction, accumulated precipitation, radiation; -99 means missing). On 2026-11-07 it spanned 2026-11-06T18:00 to 2026-11-07T17:00 UTC. stations.json gives the id to name and coordinates (GeoJSON), e.g. Olhao. Sibling endpoints on the docs page include city forecasts, warnings and seismic observations (listed, not all called).",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "hourly observations at Portuguese stations (temperature, humidity, pressure, wind, precipitation)",
+     "station metadata with coordinates"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Europe",
+     "Portugal"
+    ],
+    "areas": [
+     "PT"
+    ],
+    "notes": "Mainland Portugal and islands; station ids join to stations.json."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: latest timestamp 2026-11-07T17:00 in a file fetched around 18:20 UTC."
+   },
+   "latency": {
+    "typical": "About one hour after observation hour",
+    "notes": "Single file covering about 24 hours."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 2 hours on 2026-11-07",
+    "notes": "One call only."
+   },
+   "licensing": {
+    "summary": "IPMA's Condicoes de Utilizacao (api.ipma.pt, in Portuguese) allow use of the site's information for personal or public use provided it does not serve profit-making or offensive aims, and the source must always be cited. Commercial reuse therefore needs IPMA's agreement. The API page asks users to read the terms and email webmaster@ipma.pt about their use and purpose. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "unknown": "Report time is the provider's own stamp.",
+     "method": "Timestamp key per observation hour."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Fixed station or event coordinates; not independently checked.",
+     "method": "Station coordinates in stations.json."
+    },
+    "content": {
+     "level": "claimed",
+     "unknown": "Agency values; no independent check documented.",
+     "method": "Official station readings; -99 marks missing values."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.ipma.pt/",
+    "base_url": "https://api.ipma.pt/open-data",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key. Provider requests an email to webmaster@ipma.pt describing use."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/observation/meteorology/stations/observations.json",
+      "params": "none",
+      "notes": "Hourly values by timestamp and station id."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/observation/meteorology/stations/stations.json",
+      "params": "none",
+      "notes": "GeoJSON station list with id and name."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/observation/seismic/",
+      "params": "area id",
+      "notes": "Seismic observations (from the docs page; not called)."
+     }
+    ],
+    "rate_limits": "No numeric limit stated; the provider asks users to email webmaster@ipma.pt describing purpose.",
+    "notes": "JSON and GeoJSON. Non-commercial reuse stated.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "observations",
+    "portugal",
+    "europe",
+    "ipma",
+    "hourly",
+    "government",
+    "free",
+    "non-commercial"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200 JSON keyed by hour 2026-11-06T18:00 to 2026-11-07T17:00",
+     "url": "https://api.ipma.pt/open-data/observation/meteorology/stations/observations.json"
+    },
+    {
+     "claim": "Station list GeoJSON with id and location name",
+     "url": "https://api.ipma.pt/open-data/observation/meteorology/stations/stations.json"
+    },
+    {
+     "claim": "Conditions of use: no profit-making use, source must be cited; request to email about use",
+     "url": "https://api.ipma.pt/"
     }
    ]
   },
@@ -12247,6 +13408,168 @@
     {
      "claim": "Mecka not on the C2PA conforming products list",
      "url": "https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json"
+    }
+   ]
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "met-no-locationforecast",
+   "name": "MET Norway Locationforecast (point weather forecast, worldwide)",
+   "provider_url": "https://api.met.no",
+   "short": "Hourly point forecasts for any latitude and longitude, JSON, free and keyless with a User-Agent. CC BY 4.0.",
+   "summary": "The Norwegian Meteorological Institute serves api.met.no. Locationforecast 2.0 returns a forecast timeseries for any coordinate: air temperature, pressure, humidity, cloud fraction, wind speed and direction, precipitation and a weather symbol, hourly then 6-hourly, as GeoJSON-style JSON. A call for lat 60, lon 10 on 2026-11-07 answered 200 with updated_at 17:28:51Z. Strongest for the Nordics where the model is high resolution; global elsewhere. It is a forecast model, not a station observation, so it fills coverage gaps with modelled values only.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "point forecast timeseries for any coordinate (temperature, wind, pressure, humidity, cloud, precipitation)"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Europe",
+     "Nordic",
+     "Worldwide"
+    ],
+    "areas": [
+     "*"
+    ],
+    "notes": "Model forecast, not measurements. Highest quality over Norway and the Nordic countries; global grid elsewhere."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "per-ip",
+     "notes": "Terms of service: keep total traffic below 20 requests per second; cache locally; identify with a User-Agent.",
+     "source_url": "https://api.met.no/doc/TermsOfService",
+     "requests": 20,
+     "per_seconds": 1
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07: meta.updated_at 2026-11-07T17:28:51Z, response headers Last-Modified 18:19Z and Expires about 30 minutes later."
+   },
+   "latency": {
+    "typical": "Model updates roughly hourly",
+    "notes": "Response carries an Expires header; the terms ask you to respect it."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 1 hour on 2026-11-07",
+    "notes": "One call only."
+   },
+   "licensing": {
+    "summary": "CC BY 4.0 with attribution, stated on the terms of service page (api.met.no/doc/TermsOfService): give appropriate credit, link the licence, say if changed. Requests must carry an identifying User-Agent, traffic must stay under 20 requests per second, and identical requests should be cached per the Expires header; blocked otherwise. Redistribution and AI training are not separately addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "unknown": "Report time is the provider's own stamp.",
+     "method": "Forecast issue time in meta.updated_at."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Fixed station or event coordinates; not independently checked.",
+     "method": "Coordinates in the request are snapped to the model grid."
+    },
+    "content": {
+     "level": "claimed",
+     "unknown": "A forecast, not an observation; values are unverified against reality.",
+     "method": "Numerical model output."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.met.no/weatherapi/locationforecast/2.0/documentation",
+    "base_url": "https://api.met.no/weatherapi/locationforecast/2.0",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key. Send a User-Agent that identifies your app and contact, as the terms require."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/compact",
+      "params": "lat=<deg>&lon=<deg>",
+      "notes": "Main parameters only; 'complete' returns more fields (not called)."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/status",
+      "params": "none",
+      "notes": "Returns last_update."
+     }
+    ],
+    "rate_limits": "Under 20 requests per second; cache and honour Expires.",
+    "notes": "JSON. Identifying User-Agent required; browsers must identify the site instead.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather",
+    "forecast",
+    "norway",
+    "nordic",
+    "europe",
+    "worldwide",
+    "model",
+    "government",
+    "free",
+    "cc-by"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, GeoJSON feature with timeseries and updated_at 17:28:51Z",
+     "url": "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=60&lon=10"
+    },
+    {
+     "claim": "Terms: CC BY 4.0 attribution, identify with User-Agent, under 20 requests per second, caching",
+     "url": "https://api.met.no/doc/TermsOfService"
     }
    ]
   },
@@ -15931,6 +17254,180 @@
    "expires": "2027-10-27",
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card"
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "opw-waterlevel-ie",
+   "name": "OPW waterlevel.ie (Ireland real-time river, lake and tidal levels)",
+   "provider_url": "https://waterlevel.ie",
+   "short": "Ireland's Office of Public Works gauges: about 2,000 level sensors as one GeoJSON, CSV history. CC BY 4.0, no key.",
+   "summary": "The Office of Public Works (OPW) runs the Irish hydrometric network and publishes real-time readings at waterlevel.ie, with pre-generated files meant for automated use. On 2026-11-07 UTC the latest-readings GeoJSON at /geojson/latest/ answered 200 with 2,032 features, the newest stamped 18:30:00Z. Each feature has station reference, name, sensor, region, UTC datetime, value (for example Sandy Mills, station 0000001041, sensor 0001, 0.346) and an error code, with coordinates. Per-station CSV files for day, week and month (35 days) are served at /data/<period>/<station>_<sensor>.csv. Sensor 0001 is water level, 0002 temperature, OD level to Ordnance Datum. The site says data refresh about every 5 minutes with new station data about every 15.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest water level at Irish river, lake and tidal gauges (all stations in one GeoJSON)",
+     "35-day station history as CSV",
+     "water temperature where measured"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Ireland (Republic)"
+    ],
+    "areas": [
+     "IE"
+    ],
+    "notes": "OPW says about 380 hydrometric stations exist and not all are shown; the latest-readings file listed 2,032 station-sensor readings. Rivers, lakes and tidal sites. Only stations with reference numbers 00001 to 41000 may be republished; others need OPW permission."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "per-ip",
+     "notes": "Stated: do not bulk-download more often than once every 15 minutes; OPW may block users who put undue load on the servers.",
+     "source_url": "https://waterlevel.ie/page/api/",
+     "requests": 1,
+     "per_seconds": 900
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: /geojson/latest/ newest datetime 18:30:00Z. Page says site data update about every 5 minutes and station data arrive about every 15 minutes."
+   },
+   "latency": {
+    "typical": "About 15 minutes (provider statement)",
+    "notes": "Some observations arrive later because of clock differences and mobile network latency, per the provider."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "One sample only. Some stations in the file are older than others."
+   },
+   "licensing": {
+    "summary": "Reusable under Creative Commons Attribution 4.0 International. Derived works must reference waterlevel.ie and the site disclaimer; suggested text: Contains Irish Public Sector Information licensed under a Creative Commons Attribution 4.0 International (CC BY 4.0) licence (source waterlevel.ie, provided by the Office of Public Works). OPW asks (as a courtesy) to be told the IP address and URL of automated clients (waterlevel@opw.ie). Only stations numbered 00001 to 41000 are cleared for republication. Data are provisional readings, subject to the site disclaimer."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each reading has a UTC datetime.",
+     "unknown": "Telemetry delay is not stated per reading."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in the GeoJSON.",
+     "unknown": "Fixed coordinates, not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "OPW instrument readings with an error code field (value 99 in the sample).",
+     "unknown": "Meaning of err_code values was not checked; readings are unvalidated real-time values per the disclaimer."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://waterlevel.ie/page/api/",
+    "base_url": "https://waterlevel.ie",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/geojson/latest/",
+      "params": "none",
+      "notes": "Call made. All latest readings with coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/data/month/<station5>_<sensor>.csv",
+      "params": "period = day, week or month",
+      "notes": "From the API page; not called. Add a changing query string to bypass caching."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/geojson/",
+      "params": "none",
+      "notes": "Station list with coordinates (from the API page; not called)."
+     }
+    ],
+    "rate_limits": "No bulk download more often than every 15 minutes.",
+    "notes": "Use only the pre-generated files, not the dynamic pages, for automation.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "river",
+    "water level",
+    "flood",
+    "ireland",
+    "lake",
+    "tidal",
+    "government",
+    "free",
+    "real-time",
+    "geojson",
+    "cc-by"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07 UTC: HTTP 200, 2,032 features, newest 18:30:00Z, Sandy Mills 0000001041 value 0.346",
+     "url": "https://waterlevel.ie/geojson/latest/"
+    },
+    {
+     "claim": "API page: CC BY 4.0, attribution text, republication limited to stations 00001-41000, files, 15-minute bulk interval, sensor codes",
+     "url": "https://waterlevel.ie/page/api/"
+    },
+    {
+     "claim": "Disclaimer: OPW network about 380 stations, not all shown",
+     "url": "https://waterlevel.ie/disclaimer/"
+    }
+   ]
   },
   {
    "id": "pegelonline",
@@ -21242,6 +22739,182 @@
    "expires": "2027-10-27"
   },
   {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "smhi-hydrological-observations",
+   "name": "SMHI open data hydrological observations (Sweden river flow)",
+   "provider_url": "https://opendata.smhi.se",
+   "short": "Swedish river discharge every 15 minutes from SMHI's gauges, JSON, CSV or XML. CC BY 4.0, no key.",
+   "summary": "The Swedish Meteorological and Hydrological Institute (SMHI) publishes hydrological observations through the Hydroobs open data service. Parameter 2 is discharge at 15-minute resolution (m3/s), with 721 stations listed, 299 flagged active on 2026-11-07. A keyless GET for station 2357 (Abisko, Torne\u00e4lven catchment) with period latest-hour answered 200 on 2026-11-07 UTC with values 58.0 and 58.2 m3/s, the newest stamped 18:00 UTC, quality flag O. Other parameters include daily and monthly discharge, water temperature, and ice and snow items. The service nests parameter, station and period (latest-hour, latest-day, latest-months, corrected-archive) and returns JSON, XML, CSV or Atom.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest river discharge (m3/s) at a Swedish gauge, 15-minute series",
+     "daily and monthly discharge, water temperature",
+     "station metadata with catchment name and size"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Sweden"
+    ],
+    "areas": [
+     "SE"
+    ],
+    "notes": "721 stations listed for the 15-minute discharge parameter, 299 active. Water level (parameter 3) listed only 10 stations when checked, so this is mainly a discharge feed. Station names are Swedish; titles are in Swedish."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No numeric limit was found on the pages read.",
+     "source_url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: station 2357 latest-hour data, newest value 18:00 UTC; service index updated 18:00 UTC."
+   },
+   "latency": {
+    "typical": "Within about an hour on one sample",
+    "notes": "Values are provisional (quality O) until corrected; the corrected-archive period holds the checked series."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About 15 to 60 minutes on one sample",
+    "notes": "The service index carries an updated timestamp. Inactive stations stop updating."
+   },
+   "licensing": {
+    "summary": "SMHI open data carry Creative Commons Attribution 4.0 (Swedish text: Erk\u00e4nnande 4.0 SE) under the terms of use page updated 2026-06-15: copy, distribute and adapt, including commercially, naming SMHI as the source and stating any change. Impact-based weather warnings have separate terms; they are not part of this feed. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each value has a millisecond epoch timestamp.",
+     "unknown": "Timestamp is the measurement time as processed by SMHI."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station latitude and longitude in the station record.",
+     "unknown": "Fixed coordinates, not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "SMHI gauge data with a quality code per value (O = provisional per the service; code meaning not checked).",
+     "unknown": "Values are flagged O in real time; the corrected-archive period holds checked series."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://opendata.smhi.se/",
+    "base_url": "https://opendata-download-hydroobs.smhi.se/api/version",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/latest/parameter/2.json",
+      "params": "none",
+      "notes": "Call made. 15-minute discharge: station list with active flag and coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/latest/parameter/2/station/{id}/period/latest-hour/data.json",
+      "params": "station id from the list",
+      "notes": "Call made (station 2357). Also latest-day, latest-months, corrected-archive; data.csv and data.xml."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/latest.json",
+      "params": "none",
+      "notes": "Parameter index."
+     }
+    ],
+    "rate_limits": "Not stated on the pages read.",
+    "notes": "JSON, XML, CSV or Atom by file extension.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "river",
+    "discharge",
+    "flow",
+    "water temperature",
+    "sweden",
+    "hydrology",
+    "government",
+    "free",
+    "real-time",
+    "cc-by",
+    "open data"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07 UTC: station 2357 Abisko, values 58.0 and 58.2 m3/s, newest at 18:00 UTC",
+     "url": "https://opendata-download-hydroobs.smhi.se/api/version/latest/parameter/2/station/2357/period/latest-hour/data.json"
+    },
+    {
+     "claim": "Parameter 2 (Vattenforing 15 min) station list, 721 stations",
+     "url": "https://opendata-download-hydroobs.smhi.se/api/version/latest/parameter/2.json"
+    },
+    {
+     "claim": "Parameter index with 10 hydrological parameters",
+     "url": "https://opendata-download-hydroobs.smhi.se/api/version/latest.json"
+    },
+    {
+     "claim": "Terms of use: CC BY 4.0, commercial use allowed, attribute SMHI",
+     "url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning"
+    }
+   ]
+  },
+  {
    "id": "snappr",
    "name": "Snappr",
    "provider_url": "https://www.snappr.com",
@@ -21863,6 +23536,178 @@
     "checks": "Tasking orders must name the customer organisation and a contact (first and last name, email); only org owners and admins, or a Developer API key, may submit. Access follows a signed Order Form. Platform users must be 18+ and not in sanctioned territories; Spexi's direct competitors are barred from the free trial.",
     "unknown": "Whether Spexi verifies the customer's identity or screens what an area is being captured for. Spexi says imagery is flown at about 80 m and cannot identify faces, but publishes no policy on requests aimed at a specific person or property."
    }
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "syke-hydrology-finland",
+   "name": "Syke hydrology open interface (Finland water level and flow, OData)",
+   "provider_url": "https://www.syke.fi",
+   "short": "Finland Syke daily water level and discharge at about 5,000 sites via OData. CC BY 4.0, no key.",
+   "summary": "The Finnish Environment Institute (Syke) offers an OData interface for hydrology covering roughly 5,000 stations or areas, with water level, discharge, precipitation, evaporation, snow, ice and water temperature. On 2026-11-07 UTC a keyless GET on Vedenkorkeus (water level) for place 1755 sorted newest first answered 200 with daily values for 2026-11-07, -06 and -05 (75, 76, 77; the unit is not stated in the response). Places (Paikka) carry name, river system, municipality and coordinates. Values are daily, stamped at midnight, so this is a daily-fresh feed, not a minute-level one. Version 1.2 of the interface was updated 2026-05-11.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest daily water level at a Finnish lake or river site",
+     "daily discharge and other hydrological quantities",
+     "site list with coordinates and water body names"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Finland"
+    ],
+    "areas": [
+     "FI"
+    ],
+    "notes": "About 5,000 stations or areas per the provider's description. Lakes as well as rivers. Resource and field names are Finnish (Paikka = place, Vedenkorkeus = water level, Virtaama = discharge, Aika = time, Arvo = value). Unit conventions for each quantity are in the metadata, which is in Finnish."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No numeric limit found on the pages read.",
+     "source_url": "https://www.syke.fi/en-US/Open_information/Open_web_services/Environmental_data_API"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest Vedenkorkeus row for site 1755 stamped 2026-11-07T00:00:00 (a daily value), so data are at best hours old."
+   },
+   "latency": {
+    "typical": "Daily values; today's date appeared by 18:00 UTC",
+    "notes": "One site sampled. Other quantities may update at different cadence."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under one day",
+    "notes": "Daily resolution in the sample, not sub-hourly."
+   },
+   "licensing": {
+    "summary": "Syke open data are licensed under Creative Commons Attribution 4.0 International: free use in any way if the source is named (licensor and dataset name, for example Source: Finnish Environment Institute (Syke)). Some datasets carry specific restrictions listed in their metadata. Syke asks developers to email an application built on the interfaces so it can be shown as an example. Liability is disclaimed. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each row has a timestamp (daily).",
+     "unknown": "Time zone not stated in the response."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Place records carry coordinates in several systems.",
+     "unknown": "Coordinate format (KoordLat/KoordLong as ddmmss text) not verified."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Agency observations with a flag id per value.",
+     "unknown": "Meaning of the flag codes was not checked; some values may be calculated rather than measured."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.syke.fi/en-US/Open_information/Open_web_services/Environmental_data_API",
+    "base_url": "https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.2/odata",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/Vedenkorkeus",
+      "params": "$filter=Paikka_Id eq <id>&$orderby=Aika desc&$top=<n>",
+      "notes": "Call made. Water level rows."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/Paikka",
+      "params": "$filter=Paikka_Id eq <id>&$select=Nimi,KoordLat,KoordLong",
+      "notes": "Call made. Place metadata."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/",
+      "params": "none",
+      "notes": "Service document listing all entity sets (call made on 1.1)."
+     }
+    ],
+    "rate_limits": "Not stated.",
+    "notes": "OData v3 style JSON; an OData query builder is offered by Syke. Versions 1.0 to 1.2 exist.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "river",
+    "lake",
+    "water level",
+    "discharge",
+    "finland",
+    "hydrology",
+    "government",
+    "free",
+    "odata",
+    "cc-by",
+    "daily"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07 UTC: HTTP 200, Vedenkorkeus site 1755 daily rows 2026-11-07, -06, -05 (version 1.2)",
+     "url": "https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.2/odata/Vedenkorkeus?$top=2&$filter=Paikka_Id%20eq%201755&$orderby=Aika%20desc"
+    },
+    {
+     "claim": "Interface description: hydrology, about 5,000 stations, version 1.2 updated 2026-05-11",
+     "url": "https://www.syke.fi/en-US/Open_information/Open_web_services/Environmental_data_API"
+    },
+    {
+     "claim": "Use licence: CC BY 4.0, name the source",
+     "url": "https://www.syke.fi/en/environmental-data/use-license-and-responsibilities"
+    }
+   ]
   },
   {
    "id": "telus-digital",
@@ -26612,6 +28457,174 @@
    "expires": "2027-10-27",
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card"
+  },
+  {
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "wsc-hydrometric-realtime",
+   "name": "Environment Canada real-time hydrometric data (Water Survey of Canada, OGC API)",
+   "provider_url": "https://wateroffice.ec.gc.ca",
+   "short": "Canadian river level and discharge every 5 minutes from 2,100+ gauges, as GeoJSON. Free, no key.",
+   "summary": "Environment and Climate Change Canada serves real-time water level and flow (discharge) from the Water Survey of Canada network through its MSC GeoMet OGC API, collection hydrometric-realtime. It covers over 2,100 stations across Canada for the last 30 days. On 2026-11-07 UTC a keyless GET for station 05BH004 (Bow River at Calgary), sorted newest first, answered 200 with a reading stamped 2026-11-07T17:05:00Z: level 0.892 m, discharge 55.7 m3/s, at 5-minute spacing. Each record carries station number and name, province, UTC and local-standard time, level, discharge and quality symbols. A companion collection, hydrometric-stations, lists station metadata and whether a station reports in real time.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current river level (m) and discharge (m3/s) at a Canadian gauge, last 30 days",
+     "station list with coordinates, drainage area and real-time flag"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Canada"
+    ],
+    "areas": [
+     "CA"
+    ],
+    "notes": "Over 2,100 real-time stations per the collection description, on rivers, lakes and some tidal reaches in every province and territory, with a contributor named per station (federal, provincial and other agencies). Seen in the call: 05BH004 Bow River at Calgary, AB. Only the last 30 days are served here; older records are a separate archive."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No numeric limit is stated on the pages read; be modest.",
+     "source_url": "https://dd.weather.gc.ca/doc/LICENCE_GENERAL.txt"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: newest record for 05BH004 stamped 17:05:00Z with 5-minute spacing before it."
+   },
+   "latency": {
+    "typical": "Minutes after the reading",
+    "notes": "Newest record was stamped within about 1 hour of the call time on one sample; one station only."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under about 1 hour on the one station sampled",
+    "notes": "Station by station; stations can be late or silent. Default item order is oldest first, so pass sortby=-DATETIME."
+   },
+   "licensing": {
+    "summary": "Environment and Climate Change Canada Data Services End-use Licence v2.1.1 (August 2026): worldwide, royalty-free, perpetual, non-exclusive, including commercial use; copy, modify, publish, distribute and adapt for any lawful purpose. You must attribute the source (for example Data Source: Environment and Climate Change Canada, or the fallback statement the licence gives), link the licence where possible, and not imply endorsement. Excludes personal information, third-party rights and official marks. Data here come from several contributing agencies, so attribute the originator where given. AI training is not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Every record carries a UTC timestamp and local standard time.",
+     "unknown": "Timestamp is the sensor or telemetry time as processed by the agency."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed station coordinates in the feed geometry.",
+     "unknown": "Not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Agency instrument readings with level and discharge quality symbol fields.",
+     "unknown": "The meaning of the quality symbol codes was not checked; whether real-time values are reviewed is not stated on the pages read."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.weather.gc.ca/collections/hydrometric-realtime?f=json",
+    "base_url": "https://api.weather.gc.ca",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/hydrometric-realtime/items",
+      "params": "STATION_NUMBER=<id>&sortby=-DATETIME&limit=<n>&f=json",
+      "notes": "Calls made. Filter by STATION_NUMBER or bbox; GeoJSON features with LEVEL, DISCHARGE, DATETIME."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/hydrometric-stations/items",
+      "params": "limit=<n>&f=json",
+      "notes": "Call made. Station metadata incl. REAL_TIME flag, status, contributor, drainage area."
+     }
+    ],
+    "rate_limits": "Not stated on the pages read.",
+    "notes": "OGC API Features; JSON, GeoJSON, CSV. Limit and offset paging.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "river",
+    "water level",
+    "discharge",
+    "flow",
+    "flood",
+    "canada",
+    "hydrometric",
+    "government",
+    "free",
+    "real-time",
+    "geojson"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-07 UTC: HTTP 200, BOW RIVER AT CALGARY 05BH004 at 2026-11-07T17:05:00Z, LEVEL 0.892, DISCHARGE 55.7",
+     "url": "https://api.weather.gc.ca/collections/hydrometric-realtime/items?STATION_NUMBER=05BH004&limit=2&f=json&sortby=-DATETIME"
+    },
+    {
+     "claim": "Collection description: real-time level and flow at over 2,100 stations across Canada, last 30 days",
+     "url": "https://api.weather.gc.ca/collections/hydrometric-realtime?f=json"
+    },
+    {
+     "claim": "Station metadata collection with REAL_TIME flag and contributor",
+     "url": "https://api.weather.gc.ca/collections/hydrometric-stations/items?limit=1&f=json"
+    },
+    {
+     "claim": "ECCC Data Services End-use Licence v2.1.1: commercial use allowed, attribution required",
+     "url": "https://dd.weather.gc.ca/doc/LICENCE_GENERAL.txt"
+    }
+   ]
   },
   {
    "id": "wsdot-cameras",

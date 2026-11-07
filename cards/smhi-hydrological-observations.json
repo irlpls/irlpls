@@ -1,0 +1,176 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "smhi-hydrological-observations",
+  "name": "SMHI open data hydrological observations (Sweden river flow)",
+  "provider_url": "https://opendata.smhi.se",
+  "short": "Swedish river discharge every 15 minutes from SMHI's gauges, JSON, CSV or XML. CC BY 4.0, no key.",
+  "summary": "The Swedish Meteorological and Hydrological Institute (SMHI) publishes hydrological observations through the Hydroobs open data service. Parameter 2 is discharge at 15-minute resolution (m3/s), with 721 stations listed, 299 flagged active on 2026-11-07. A keyless GET for station 2357 (Abisko, Torneälven catchment) with period latest-hour answered 200 on 2026-11-07 UTC with values 58.0 and 58.2 m3/s, the newest stamped 18:00 UTC, quality flag O. Other parameters include daily and monthly discharge, water temperature, and ice and snow items. The service nests parameter, station and period (latest-hour, latest-day, latest-months, corrected-archive) and returns JSON, XML, CSV or Atom.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest river discharge (m3/s) at a Swedish gauge, 15-minute series",
+      "daily and monthly discharge, water temperature",
+      "station metadata with catchment name and size"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Sweden"
+    ],
+    "areas": [
+      "SE"
+    ],
+    "notes": "721 stations listed for the 15-minute discharge parameter, 299 active. Water level (parameter 3) listed only 10 stations when checked, so this is mainly a discharge feed. Station names are Swedish; titles are in Swedish."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "unknown",
+      "notes": "No numeric limit was found on the pages read.",
+      "source_url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning"
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: station 2357 latest-hour data, newest value 18:00 UTC; service index updated 18:00 UTC."
+  },
+  "latency": {
+    "typical": "Within about an hour on one sample",
+    "notes": "Values are provisional (quality O) until corrected; the corrected-archive period holds the checked series."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "About 15 to 60 minutes on one sample",
+    "notes": "The service index carries an updated timestamp. Inactive stations stop updating."
+  },
+  "licensing": {
+    "summary": "SMHI open data carry Creative Commons Attribution 4.0 (Swedish text: Erkännande 4.0 SE) under the terms of use page updated 2026-06-15: copy, distribute and adapt, including commercially, naming SMHI as the source and stating any change. Impact-based weather warnings have separate terms; they are not part of this feed. AI training is not addressed."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each value has a millisecond epoch timestamp.",
+      "unknown": "Timestamp is the measurement time as processed by SMHI."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station latitude and longitude in the station record.",
+      "unknown": "Fixed coordinates, not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "SMHI gauge data with a quality code per value (O = provisional per the service; code meaning not checked).",
+      "unknown": "Values are flagged O in real time; the corrected-archive period holds checked series."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://opendata.smhi.se/",
+    "base_url": "https://opendata-download-hydroobs.smhi.se/api/version",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/latest/parameter/2.json",
+        "params": "none",
+        "notes": "Call made. 15-minute discharge: station list with active flag and coordinates."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/latest/parameter/2/station/{id}/period/latest-hour/data.json",
+        "params": "station id from the list",
+        "notes": "Call made (station 2357). Also latest-day, latest-months, corrected-archive; data.csv and data.xml."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/latest.json",
+        "params": "none",
+        "notes": "Parameter index."
+      }
+    ],
+    "rate_limits": "Not stated on the pages read.",
+    "notes": "JSON, XML, CSV or Atom by file extension.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "river",
+    "discharge",
+    "flow",
+    "water temperature",
+    "sweden",
+    "hydrology",
+    "government",
+    "free",
+    "real-time",
+    "cc-by",
+    "open data"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07 UTC: station 2357 Abisko, values 58.0 and 58.2 m3/s, newest at 18:00 UTC",
+      "url": "https://opendata-download-hydroobs.smhi.se/api/version/latest/parameter/2/station/2357/period/latest-hour/data.json"
+    },
+    {
+      "claim": "Parameter 2 (Vattenforing 15 min) station list, 721 stations",
+      "url": "https://opendata-download-hydroobs.smhi.se/api/version/latest/parameter/2.json"
+    },
+    {
+      "claim": "Parameter index with 10 hydrological parameters",
+      "url": "https://opendata-download-hydroobs.smhi.se/api/version/latest.json"
+    },
+    {
+      "claim": "Terms of use: CC BY 4.0, commercial use allowed, attribute SMHI",
+      "url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning"
+    }
+  ]
+}

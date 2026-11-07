@@ -1,0 +1,174 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-07",
+  "expires": "2027-11-07",
+  "id": "opw-waterlevel-ie",
+  "name": "OPW waterlevel.ie (Ireland real-time river, lake and tidal levels)",
+  "provider_url": "https://waterlevel.ie",
+  "short": "Ireland's Office of Public Works gauges: about 2,000 level sensors as one GeoJSON, CSV history. CC BY 4.0, no key.",
+  "summary": "The Office of Public Works (OPW) runs the Irish hydrometric network and publishes real-time readings at waterlevel.ie, with pre-generated files meant for automated use. On 2026-11-07 UTC the latest-readings GeoJSON at /geojson/latest/ answered 200 with 2,032 features, the newest stamped 18:30:00Z. Each feature has station reference, name, sensor, region, UTC datetime, value (for example Sandy Mills, station 0000001041, sensor 0001, 0.346) and an error code, with coordinates. Per-station CSV files for day, week and month (35 days) are served at /data/<period>/<station>_<sensor>.csv. Sensor 0001 is water level, 0002 temperature, OD level to Ordnance Datum. The site says data refresh about every 5 minutes with new station data about every 15.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "latest water level at Irish river, lake and tidal gauges (all stations in one GeoJSON)",
+      "35-day station history as CSV",
+      "water temperature where measured"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Ireland (Republic)"
+    ],
+    "areas": [
+      "IE"
+    ],
+    "notes": "OPW says about 380 hydrometric stations exist and not all are shown; the latest-readings file listed 2,032 station-sensor readings. Rivers, lakes and tidal sites. Only stations with reference numbers 00001 to 41000 may be republished; others need OPW permission."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+      "scope": "per-ip",
+      "notes": "Stated: do not bulk-download more often than once every 15 minutes; OPW may block users who put undue load on the servers.",
+      "source_url": "https://waterlevel.ie/page/api/",
+      "requests": 1,
+      "per_seconds": 900
+    }
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-07 UTC: /geojson/latest/ newest datetime 18:30:00Z. Page says site data update about every 5 minutes and station data arrive about every 15 minutes."
+  },
+  "latency": {
+    "typical": "About 15 minutes (provider statement)",
+    "notes": "Some observations arrive later because of clock differences and mobile network latency, per the provider."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "One sample only. Some stations in the file are older than others."
+  },
+  "licensing": {
+    "summary": "Reusable under Creative Commons Attribution 4.0 International. Derived works must reference waterlevel.ie and the site disclaimer; suggested text: Contains Irish Public Sector Information licensed under a Creative Commons Attribution 4.0 International (CC BY 4.0) licence (source waterlevel.ie, provided by the Office of Public Works). OPW asks (as a courtesy) to be told the IP address and URL of automated clients (waterlevel@opw.ie). Only stations numbered 00001 to 41000 are cleared for republication. Data are provisional readings, subject to the site disclaimer."
+  },
+  "verification": {
+    "time": {
+      "level": "claimed",
+      "method": "Each reading has a UTC datetime.",
+      "unknown": "Telemetry delay is not stated per reading."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Station coordinates in the GeoJSON.",
+      "unknown": "Fixed coordinates, not independently checked."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "OPW instrument readings with an error code field (value 99 in the sample).",
+      "unknown": "Meaning of err_code values was not checked; readings are unvalidated real-time values per the disclaimer."
+    },
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated instruments, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://waterlevel.ie/page/api/",
+    "base_url": "https://waterlevel.ie",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/geojson/latest/",
+        "params": "none",
+        "notes": "Call made. All latest readings with coordinates."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/data/month/<station5>_<sensor>.csv",
+        "params": "period = day, week or month",
+        "notes": "From the API page; not called. Add a changing query string to bypass caching."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/geojson/",
+        "params": "none",
+        "notes": "Station list with coordinates (from the API page; not called)."
+      }
+    ],
+    "rate_limits": "No bulk download more often than every 15 minutes.",
+    "notes": "Use only the pre-generated files, not the dynamic pages, for automation.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "river",
+    "water level",
+    "flood",
+    "ireland",
+    "lake",
+    "tidal",
+    "government",
+    "free",
+    "real-time",
+    "geojson",
+    "cc-by"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-07 UTC: HTTP 200, 2,032 features, newest 18:30:00Z, Sandy Mills 0000001041 value 0.346",
+      "url": "https://waterlevel.ie/geojson/latest/"
+    },
+    {
+      "claim": "API page: CC BY 4.0, attribution text, republication limited to stations 00001-41000, files, 15-minute bulk interval, sensor codes",
+      "url": "https://waterlevel.ie/page/api/"
+    },
+    {
+      "claim": "Disclaimer: OPW network about 380 stations, not all shown",
+      "url": "https://waterlevel.ie/disclaimer/"
+    }
+  ]
+}
