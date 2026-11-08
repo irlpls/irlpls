@@ -161,11 +161,11 @@
     "notes": "The Zeitview Partners API (formerly the DroneBase API) creates missions in bulk, server to server. The docs list only https://sandbox-api.dronebase.com (labelled 'production' in the Apiary metadata), which does not resolve. api.dronebase.com redirects (308) to sake.production.zeitview.com; that host is not documented and was not called. Download URLs are signed and time-limited since May 1, 2026. The marketing pages say Asset Insights is \"built as an API\", but no public docs for it were found. Real estate packages can also be ordered in the web Client Dashboard (clients.zeitview.com)."
   },
   "access": {
-    "cost": "quote",
+    "cost": "paid",
     "key_required": true,
     "tested_live": null,
     "automation_allowed": true,
-    "gate": "contract"
+    "gate": "approval"
   },
   "payment": {
     "methods": [
@@ -182,8 +182,8 @@
     "checks": "All orders are subject to approval by Zeitview, including credit approval (terms 1.7). Users must be 18 or older and not barred by US sanctions (OFAC), and must provide payment information (Terms of Service 3). Missions in FAA-protected airspace are rejected (Partners API).",
     "unknown": "Whether Zeitview checks the requester's authority over the property, or the purpose of a capture, is not documented."
   },
-  "updated": "2026-10-28",
-  "expires": "2027-10-27",
+  "updated": "2026-11-08",
+  "expires": "2027-11-07",
   "spec_version": "2026-10-26",
   "capability": "com.irlpls.capture.card",
   "sources": [

@@ -13901,7 +13901,7 @@
      "priority BACKGROUND or COMMERCIAL (stated >90% statistical reliability)",
      "product availability SLA: 8 h (default), 3 h, or 1 h in certain regions after acquisition",
      "product types GRD, GRD-COG, SLC, SLC-COG, QLK, SICD, SIDD, CSI, VID as the contract and mode allow",
-     "Object Detection and Identification derivative ODI (formerly Detect & Classify; replaces DC-ATR, which is removed 2026-11-15) on Dwell modes and SPOTLIGHT_FINE, where enabled",
+     "Object Detection and Identification derivative ODI (formerly Detect & Classify; replaces DC-ATR, which the changelog announces will be removed on 2026-11-15) on Dwell modes and SPOTLIGHT_FINE, where enabled",
      "planned and actual imaging time and footprint via the task scene endpoint",
      "delivery to SFTP or S3 locations, and webhook notifications on task changes"
     ]
@@ -14202,11 +14202,11 @@
      "url": "https://iceye.us/end-user-license-agreement"
     }
    ],
-   "updated": "2026-10-28",
+   "updated": "2026-11-08",
    "spec_version": "2026-10-26",
    "short": "Radar satellites tasked by API on a contract, with price and feasibility checks, products 1-8 hours after capture.",
    "capability": "com.irlpls.capture.card",
-   "expires": "2027-10-27"
+   "expires": "2027-11-07"
   },
   {
    "family": "earthquake",
@@ -25477,7 +25477,7 @@
     "san francisco"
    ],
    "summary": "Singapore-based local-task marketplace (Quest Hyphen Inc Pte. Ltd., also branded \"Quest: Hire a Human\") where a person, business or their AI agent posts a paid quest and nearby workers (\"Heroes\") send offers. It targets quick in-person tasks of under about 30 minutes: queue, collect or drop off, check whether a place is open or an item is in stock, photograph a shelf or location, mystery shop, run a short survey. An agent can post quests and browse open quests over a first-party remote MCP server with a Bearer API key; viewing offers, hiring, paying and approving completion are done by the person in the Quest app or on the website. Works in Singapore, Malaysia and the Philippines, with San Francisco as an early US market.",
-   "short": "A local-task marketplace in Singapore, Malaysia, the Philippines and San Francisco; agents post tasks over MCP.",
+   "short": "Local tasks in Singapore, Malaysia, the Philippines and San Francisco; agents post and browse, a person hires and pays.",
    "capabilities": {
     "modalities": [
      "photo",
@@ -25639,8 +25639,8 @@
     "speed": "unknown",
     "basis": "No delivery time is published. Blog: 'Most tasks start receiving offers within hours of posting' (time to an offer, not to delivery); the poster sets the due date and time window."
    },
-   "updated": "2026-10-28",
-   "expires": "2027-10-27",
+   "updated": "2026-11-08",
+   "expires": "2027-11-07",
    "sources": [
     {
      "claim": "What Quest is, task types (be there, go and look, show up for business), under about 30 minutes, MCP URL, Bearer key, no OAuth, three tools, hire/pay not over MCP, browser agents may hire with approval, no fee to post or hire, 10% from the human, Boost and Priority, coverage SG/MY/PH plus San Francisco",
@@ -26793,14 +26793,14 @@
     "global"
    ],
    "short": "Thermal infrared satellite images of heat, day or night, tasked by API under a SatVu contract.",
-   "summary": "SatVu (Global Satellite Vu Ltd, London) operates the HotSat mid-wave infrared satellites, which image heat at up to 3.5 m resolution, day and night. Contract holders use its web app, REST API or Python SDK to run a free feasibility check, get a price and place Standard tasking orders (a date window of at least 7 days) or Assured orders (a chosen pass in the next 8 days), including recurring series. SatVu states delivery within 72 hours of capture, 95% of the time. HotSat-2 has been in commercial operation since June 2026. HotSat-3 launched in October 2026 and is being commissioned. SatVu tasking is also sold through SkyFi.",
+   "summary": "SatVu (Global Satellite Vu Ltd, London) operates the HotSat mid-wave infrared satellites, which image heat at up to 3.5 m resolution, day and night. Contract holders use its web app, REST API or Python SDK to run a free feasibility check, get a price and place Standard tasking orders (a date window of at least 7 days per the Tasking Terms; the docs say at least two weeks in the web app) or Assured orders (a chosen pass in the next 8 days), including recurring series. SatVu states delivery within 72 hours of capture, 95% of the time. HotSat-2 has been in commercial operation since June 2026. HotSat-3 launched in October 2026 and is being commissioned. SatVu tasking is also sold through SkyFi.",
    "capabilities": {
     "modalities": [
      "aerial",
      "sensor"
     ],
     "tasks": [
-     "Standard tasking of a new thermal infrared capture of a point target within a date window of at least 7 days, placed at least 24 hours ahead, with off-nadir (0-45 degrees), cloud cover (25-100%) and day/night/both settings",
+     "Standard tasking of a new thermal infrared capture of a point target within a date window of at least 7 days per the Tasking Terms (the order guide says at least two weeks in the web app), placed at least 24 hours ahead, with off-nadir (0-45 degrees), cloud cover (25-100%) and day/night/both settings",
      "Assured tasking of a specific satellite pass in the next 8 days, at the highest priority, delivered regardless of cloud cover",
      "recurring order series over the same location on a repeating cadence",
      "free feasibility check before ordering (usually under a minute)",
@@ -26817,7 +26817,7 @@
     "notes": "from_usd 0 means not published, not free. Each contract has its own product prices and a credit limit. The price endpoint returns base, add-on and total amounts in minor currency units before you order. SatVu's documented example contract shows licence uplifts of 0% (Evaluation), 50% (single entity) and 100% (2-5 entities), and a 30% uplift for a 7-day catalog withhold. Contracts can carry a minimum purchase per term. SatVu says SkyFi also sells its imagery with published pricing and no long-term contract."
    },
    "latency": {
-    "typical": "Capture within your window (Standard, at least 7 days) or chosen pass (Assured, next 8 days), then delivery within 72 hours of capture, 95% of the time",
+    "typical": "Capture within your window (Standard, at least 7 days per the Tasking Terms; at least two weeks in the web app per the order guide) or chosen pass (Assured, next 8 days), then delivery within 72 hours of capture, 95% of the time",
     "notes": "Feasibility usually returns in under a minute and is not a capture guarantee. Standard orders are delivered only when their parameters are met; SatVu retries at later opportunities and guarantees no minimum capture rate. The capture-to-delivery target comes from SatVu's preliminary Tasking Terms of Service v1.0 (May 2026)."
    },
    "coverage": {
@@ -27043,7 +27043,7 @@
      "url": "https://pypi.org/pypi/satvu/json"
     },
     {
-     "claim": "Capture-to-delivery within 72 hours at 95%; Standard window at least 7 days; orders at least 24 hours before TOI; 15 m / 200 m CE90; no minimum capture rate; Assured limited during the preliminary phase",
+     "claim": "Capture-to-delivery within 72 hours at 95%; Standard window at least 7 days (Tasking Terms); the order guide says at least two weeks in the web app (checked 2026-11-08); orders at least 24 hours before TOI; 15 m / 200 m CE90; no minimum capture rate; Assured limited during the preliminary phase",
      "url": "https://cdn.prod.website-files.com/664e1cfdaf0f190ac9bb6e1e/6a0aff21befcf9b2884fd667_SatVu%20Tasking%20Terms%20of%20Service%20v1.0.pdf"
     },
     {
@@ -27099,8 +27099,8 @@
      "url": "https://docs.satellitevu.com/developers/api/assured-tasking"
     }
    ],
-   "updated": "2026-10-28",
-   "expires": "2027-10-27",
+   "updated": "2026-11-08",
+   "expires": "2027-11-07",
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card"
   },
@@ -27933,9 +27933,9 @@
    },
    "pricing": {
     "model": "pay per order, per km\u00b2 or per scene; no subscription or minimum spend",
-    "from_usd": 5,
-    "unit": "per km\u00b2 (optical archive, High resolution; smallest per-km\u00b2 imagery price stated besides $1/km\u00b2 basemaps)",
-    "notes": "From skyfi.com/pricing: optical archive from $5/km\u00b2 and new optical tasking from $8/km\u00b2 (Vantor, Planet, Satellogic; 15 cm to 1 m); optical archive tops out at $100/km\u00b2 for Ultra High 7.5 cm aerial; SAR from $450/scene archive and $675/scene tasking (e.g. Umbra); 3D products (DSM/DTM/point clouds) from $7.50/km\u00b2; basemap mosaics from $1/km\u00b2; open data free; no subscriptions, contracts or minimum spend. The same page's summary cards say single archive image from $15, single tasking image from $200, aerial from $35, analytics from $5. Minimums: SkyFi's FAQ says minimum tasking area is 25 km\u00b2 and a 25 km\u00b2 tasking request starts at $200; Planet Select orders need a 25 km\u00b2 minimum AOI (from $6/km\u00b2 archive >30 days, $12/km\u00b2 flexible tasking). Archive minimums are per scene: each search result carries minSqKm/maxSqKm, priceForOneSquareKm and priceFullScene/fullSceneOnly. Exact prices come from the API (POST /pricing, /tasking/products, the */validate endpoints; MCP validate tools return estimatedCostCents). A 'full pricing sheet' download exists but was not read. Free accounts can place 1 open-data order per day and paid orders with a card on file; Pro accounts 5 open-data orders per day plus advanced billing (Pro price not found). The MCP connector itself is free. Check: the static pricing page shows only the per-image starting prices ($15 archive, $200 tasking, SAR $450, aerial $35); the per-km2 rates, the $675 SAR tasking figure and the 25 km2 minimum were not visible on it in a later check, so confirm them in the app or the pricing sheet."
+    "from_usd": 15,
+    "unit": "per image (single archive image, 'Starting at $15' on the pricing page)",
+    "notes": "The pricing page shows (2026-11-08): single archive image from $15, single tasking image from $200, SAR from $450, aerial from $35, analytics from $5. Earlier readings recorded optical archive from $5/km\u00b2 and new optical tasking from $8/km\u00b2 (Vantor, Planet, Satellogic; 15 cm to 1 m); optical archive tops out at $100/km\u00b2 for Ultra High 7.5 cm aerial; SAR from $450/scene archive and $675/scene tasking (e.g. Umbra); 3D products (DSM/DTM/point clouds) from $7.50/km\u00b2; basemap mosaics from $1/km\u00b2; open data free; no subscriptions, contracts or minimum spend. Minimums: SkyFi's FAQ says minimum tasking area is 25 km\u00b2 and a 25 km\u00b2 tasking request starts at $200; Planet Select orders need a 25 km\u00b2 minimum AOI (from $6/km\u00b2 archive >30 days, $12/km\u00b2 flexible tasking). Archive minimums are per scene: each search result carries minSqKm/maxSqKm, priceForOneSquareKm and priceFullScene/fullSceneOnly. Exact prices come from the API (POST /pricing, /tasking/products, the */validate endpoints; MCP validate tools return estimatedCostCents). A 'full pricing sheet' download exists but was not read. Free accounts can place 1 open-data order per day and paid orders with a card on file; Pro accounts 5 open-data orders per day plus advanced billing (Pro price not found). The MCP connector itself is free. Check: the static pricing page shows only the per-image starting prices; the per-km\u00b2 rates, the $675 SAR tasking figure and the 25 km\u00b2 minimum were not visible on it on 2026-11-08, so treat them as unconfirmed and confirm them in the app or the pricing sheet."
    },
    "latency": {
     "typical": "Archive: usually within 24 hours. Tasking: within 48 hours of capture, capture timing set by your tasking window",
@@ -28134,7 +28134,7 @@
      "url": "https://app.skyfi.com/platform-api/redoc"
     },
     {
-     "claim": "Optical archive from $5/km\u00b2, tasking from $8/km\u00b2; SAR from $450/scene archive, $675/scene tasking; 3D from $7.50/km\u00b2; basemaps from $1/km\u00b2; up to $100/km\u00b2 for 7.5 cm aerial; no subscriptions or minimum spend; starting-at cards ($15 archive image, $200 tasking image, $35 aerial, $5 analytics); Planet Select 25 km\u00b2 minimum AOI and $6/$12 per km\u00b2; in-app provider list; 300+ sources; Next Available Capture within 24 hours",
+     "claim": "Starting-at cards visible 2026-11-08: $15 archive image, $200 tasking image, SAR $450, $35 aerial, $5 analytics; no subscriptions or minimum spend. Per-km\u00b2 rates (optical archive $5, tasking $8, 3D $7.50, basemaps $1, up to $100 for 7.5 cm aerial) and SAR tasking $675 were not visible on the static page that day; Planet Select 25 km\u00b2 minimum AOI and $6/$12 per km\u00b2; in-app provider list; 300+ sources; Next Available Capture within 24 hours",
      "url": "https://skyfi.com/en/pricing"
     },
     {
@@ -28198,7 +28198,7 @@
      "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration"
     }
    ],
-   "updated": "2026-10-28",
+   "updated": "2026-11-08",
    "delivery": {
     "modes": [
      "commission"
@@ -28216,7 +28216,7 @@
    },
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card",
-   "expires": "2027-10-27",
+   "expires": "2027-11-07",
    "capture": {
     "by": "devices"
    },
@@ -30820,7 +30820,7 @@
     "notes": "from_usd 0 means no unit price is published. You set the per-task price paid to each contributor; Toloka adds a fixed 33% commission, plus LLM QA per review call, human QA per sampled review (payout scaled to review time plus 10%), and a video-review charge (base rate plus per-minute rate) where the LLM reviewer watches video. The real per-task and per-call prices appear only in the in-app cost breakdown. Deploying freezes the run's prices. No minimums or contracts. HomER (63 head-mounted household videos, 17 categories) cost about $50 in total; that is one example, not a rate. New accounts get $50 credit after the first $50 of qualifying spend."
    },
    "latency": {
-    "typical": "First batch in about 3 hours; results in 24 hours (provider marketing)",
+    "typical": "Provider marketing, not an SLA: '3 hrs' to first batch, results in 24 hours",
     "notes": "The egocentric video page lists '3 hrs' to first batch and 'production-ready results in 24 hours'; HomER took 3 hours to collect. A template deploy usually takes 5 to 15 minutes before tasks are live. No SLA; real time depends on brief, volume, price and contributor availability."
    },
    "coverage": {
@@ -31068,8 +31068,8 @@
    ],
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card",
-   "updated": "2026-10-28",
-   "expires": "2027-10-27",
+   "updated": "2026-11-08",
+   "expires": "2027-11-07",
    "adapter": "toloka"
   },
   {
@@ -36390,11 +36390,11 @@
     "notes": "The Zeitview Partners API (formerly the DroneBase API) creates missions in bulk, server to server. The docs list only https://sandbox-api.dronebase.com (labelled 'production' in the Apiary metadata), which does not resolve. api.dronebase.com redirects (308) to sake.production.zeitview.com; that host is not documented and was not called. Download URLs are signed and time-limited since May 1, 2026. The marketing pages say Asset Insights is \"built as an API\", but no public docs for it were found. Real estate packages can also be ordered in the web Client Dashboard (clients.zeitview.com)."
    },
    "access": {
-    "cost": "quote",
+    "cost": "paid",
     "key_required": true,
     "tested_live": null,
     "automation_allowed": true,
-    "gate": "contract"
+    "gate": "approval"
    },
    "payment": {
     "methods": [
@@ -36411,8 +36411,8 @@
     "checks": "All orders are subject to approval by Zeitview, including credit approval (terms 1.7). Users must be 18 or older and not barred by US sanctions (OFAC), and must provide payment information (Terms of Service 3). Missions in FAA-protected airspace are rejected (Partners API).",
     "unknown": "Whether Zeitview checks the requester's authority over the property, or the purpose of a capture, is not documented."
    },
-   "updated": "2026-10-28",
-   "expires": "2027-10-27",
+   "updated": "2026-11-08",
+   "expires": "2027-11-07",
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card",
    "sources": [

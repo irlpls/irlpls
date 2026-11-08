@@ -40,7 +40,7 @@
     "notes": "from_usd 0 means no unit price is published. You set the per-task price paid to each contributor; Toloka adds a fixed 33% commission, plus LLM QA per review call, human QA per sampled review (payout scaled to review time plus 10%), and a video-review charge (base rate plus per-minute rate) where the LLM reviewer watches video. The real per-task and per-call prices appear only in the in-app cost breakdown. Deploying freezes the run's prices. No minimums or contracts. HomER (63 head-mounted household videos, 17 categories) cost about $50 in total; that is one example, not a rate. New accounts get $50 credit after the first $50 of qualifying spend."
   },
   "latency": {
-    "typical": "First batch in about 3 hours; results in 24 hours (provider marketing)",
+    "typical": "Provider marketing, not an SLA: '3 hrs' to first batch, results in 24 hours",
     "notes": "The egocentric video page lists '3 hrs' to first batch and 'production-ready results in 24 hours'; HomER took 3 hours to collect. A template deploy usually takes 5 to 15 minutes before tasks are live. No SLA; real time depends on brief, volume, price and contributor availability."
   },
   "coverage": {
@@ -288,7 +288,7 @@
   ],
   "spec_version": "2026-10-26",
   "capability": "com.irlpls.capture.card",
-  "updated": "2026-10-28",
-  "expires": "2027-10-27",
+  "updated": "2026-11-08",
+  "expires": "2027-11-07",
   "adapter": "toloka"
 }

@@ -37,7 +37,7 @@
       "priority BACKGROUND or COMMERCIAL (stated >90% statistical reliability)",
       "product availability SLA: 8 h (default), 3 h, or 1 h in certain regions after acquisition",
       "product types GRD, GRD-COG, SLC, SLC-COG, QLK, SICD, SIDD, CSI, VID as the contract and mode allow",
-      "Object Detection and Identification derivative ODI (formerly Detect & Classify; replaces DC-ATR, which is removed 2026-11-15) on Dwell modes and SPOTLIGHT_FINE, where enabled",
+      "Object Detection and Identification derivative ODI (formerly Detect & Classify; replaces DC-ATR, which the changelog announces will be removed on 2026-11-15) on Dwell modes and SPOTLIGHT_FINE, where enabled",
       "planned and actual imaging time and footprint via the task scene endpoint",
       "delivery to SFTP or S3 locations, and webhook notifications on task changes"
     ]
@@ -338,9 +338,9 @@
       "url": "https://iceye.us/end-user-license-agreement"
     }
   ],
-  "updated": "2026-10-28",
+  "updated": "2026-11-08",
   "spec_version": "2026-10-26",
   "short": "Radar satellites tasked by API on a contract, with price and feasibility checks, products 1-8 hours after capture.",
   "capability": "com.irlpls.capture.card",
-  "expires": "2027-10-27"
+  "expires": "2027-11-07"
 }

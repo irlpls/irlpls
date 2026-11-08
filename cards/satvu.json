@@ -28,14 +28,14 @@
     "global"
   ],
   "short": "Thermal infrared satellite images of heat, day or night, tasked by API under a SatVu contract.",
-  "summary": "SatVu (Global Satellite Vu Ltd, London) operates the HotSat mid-wave infrared satellites, which image heat at up to 3.5 m resolution, day and night. Contract holders use its web app, REST API or Python SDK to run a free feasibility check, get a price and place Standard tasking orders (a date window of at least 7 days) or Assured orders (a chosen pass in the next 8 days), including recurring series. SatVu states delivery within 72 hours of capture, 95% of the time. HotSat-2 has been in commercial operation since June 2026. HotSat-3 launched in October 2026 and is being commissioned. SatVu tasking is also sold through SkyFi.",
+  "summary": "SatVu (Global Satellite Vu Ltd, London) operates the HotSat mid-wave infrared satellites, which image heat at up to 3.5 m resolution, day and night. Contract holders use its web app, REST API or Python SDK to run a free feasibility check, get a price and place Standard tasking orders (a date window of at least 7 days per the Tasking Terms; the docs say at least two weeks in the web app) or Assured orders (a chosen pass in the next 8 days), including recurring series. SatVu states delivery within 72 hours of capture, 95% of the time. HotSat-2 has been in commercial operation since June 2026. HotSat-3 launched in October 2026 and is being commissioned. SatVu tasking is also sold through SkyFi.",
   "capabilities": {
     "modalities": [
       "aerial",
       "sensor"
     ],
     "tasks": [
-      "Standard tasking of a new thermal infrared capture of a point target within a date window of at least 7 days, placed at least 24 hours ahead, with off-nadir (0-45 degrees), cloud cover (25-100%) and day/night/both settings",
+      "Standard tasking of a new thermal infrared capture of a point target within a date window of at least 7 days per the Tasking Terms (the order guide says at least two weeks in the web app), placed at least 24 hours ahead, with off-nadir (0-45 degrees), cloud cover (25-100%) and day/night/both settings",
       "Assured tasking of a specific satellite pass in the next 8 days, at the highest priority, delivered regardless of cloud cover",
       "recurring order series over the same location on a repeating cadence",
       "free feasibility check before ordering (usually under a minute)",
@@ -52,7 +52,7 @@
     "notes": "from_usd 0 means not published, not free. Each contract has its own product prices and a credit limit. The price endpoint returns base, add-on and total amounts in minor currency units before you order. SatVu's documented example contract shows licence uplifts of 0% (Evaluation), 50% (single entity) and 100% (2-5 entities), and a 30% uplift for a 7-day catalog withhold. Contracts can carry a minimum purchase per term. SatVu says SkyFi also sells its imagery with published pricing and no long-term contract."
   },
   "latency": {
-    "typical": "Capture within your window (Standard, at least 7 days) or chosen pass (Assured, next 8 days), then delivery within 72 hours of capture, 95% of the time",
+    "typical": "Capture within your window (Standard, at least 7 days per the Tasking Terms; at least two weeks in the web app per the order guide) or chosen pass (Assured, next 8 days), then delivery within 72 hours of capture, 95% of the time",
     "notes": "Feasibility usually returns in under a minute and is not a capture guarantee. Standard orders are delivered only when their parameters are met; SatVu retries at later opportunities and guarantees no minimum capture rate. The capture-to-delivery target comes from SatVu's preliminary Tasking Terms of Service v1.0 (May 2026)."
   },
   "coverage": {
@@ -278,7 +278,7 @@
       "url": "https://pypi.org/pypi/satvu/json"
     },
     {
-      "claim": "Capture-to-delivery within 72 hours at 95%; Standard window at least 7 days; orders at least 24 hours before TOI; 15 m / 200 m CE90; no minimum capture rate; Assured limited during the preliminary phase",
+      "claim": "Capture-to-delivery within 72 hours at 95%; Standard window at least 7 days (Tasking Terms); the order guide says at least two weeks in the web app (checked 2026-11-08); orders at least 24 hours before TOI; 15 m / 200 m CE90; no minimum capture rate; Assured limited during the preliminary phase",
       "url": "https://cdn.prod.website-files.com/664e1cfdaf0f190ac9bb6e1e/6a0aff21befcf9b2884fd667_SatVu%20Tasking%20Terms%20of%20Service%20v1.0.pdf"
     },
     {
@@ -334,8 +334,8 @@
       "url": "https://docs.satellitevu.com/developers/api/assured-tasking"
     }
   ],
-  "updated": "2026-10-28",
-  "expires": "2027-10-27",
+  "updated": "2026-11-08",
+  "expires": "2027-11-07",
   "spec_version": "2026-10-26",
   "capability": "com.irlpls.capture.card"
 }

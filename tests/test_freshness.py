@@ -41,7 +41,7 @@ def test_copernicus_reads_recorded_new_host_response(monkeypatch):
 
 def test_iceye_card_names_odi_not_live_dc_atr():
     tasks = " ".join(card("iceye")["capabilities"]["tasks"])
-    assert "ODI" in tasks and "removed 2026-11-15" in tasks
+    assert "ODI" in tasks and "will be removed on 2026-11-15" in tasks   # announced, not yet done (card reworded 2026-11-08)
 
 
 def test_defunct_mturk_names_no_adapter():

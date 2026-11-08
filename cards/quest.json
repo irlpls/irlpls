@@ -21,7 +21,7 @@
     "san francisco"
   ],
   "summary": "Singapore-based local-task marketplace (Quest Hyphen Inc Pte. Ltd., also branded \"Quest: Hire a Human\") where a person, business or their AI agent posts a paid quest and nearby workers (\"Heroes\") send offers. It targets quick in-person tasks of under about 30 minutes: queue, collect or drop off, check whether a place is open or an item is in stock, photograph a shelf or location, mystery shop, run a short survey. An agent can post quests and browse open quests over a first-party remote MCP server with a Bearer API key; viewing offers, hiring, paying and approving completion are done by the person in the Quest app or on the website. Works in Singapore, Malaysia and the Philippines, with San Francisco as an early US market.",
-  "short": "A local-task marketplace in Singapore, Malaysia, the Philippines and San Francisco; agents post tasks over MCP.",
+  "short": "Local tasks in Singapore, Malaysia, the Philippines and San Francisco; agents post and browse, a person hires and pays.",
   "capabilities": {
     "modalities": [
       "photo",
@@ -183,8 +183,8 @@
     "speed": "unknown",
     "basis": "No delivery time is published. Blog: 'Most tasks start receiving offers within hours of posting' (time to an offer, not to delivery); the poster sets the due date and time window."
   },
-  "updated": "2026-10-28",
-  "expires": "2027-10-27",
+  "updated": "2026-11-08",
+  "expires": "2027-11-07",
   "sources": [
     {
       "claim": "What Quest is, task types (be there, go and look, show up for business), under about 30 minutes, MCP URL, Bearer key, no OAuth, three tools, hire/pay not over MCP, browser agents may hire with approval, no fee to post or hire, 10% from the human, Boost and Priority, coverage SG/MY/PH plus San Francisco",

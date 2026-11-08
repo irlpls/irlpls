@@ -53,9 +53,9 @@
   },
   "pricing": {
     "model": "pay per order, per km² or per scene; no subscription or minimum spend",
-    "from_usd": 5,
-    "unit": "per km² (optical archive, High resolution; smallest per-km² imagery price stated besides $1/km² basemaps)",
-    "notes": "From skyfi.com/pricing: optical archive from $5/km² and new optical tasking from $8/km² (Vantor, Planet, Satellogic; 15 cm to 1 m); optical archive tops out at $100/km² for Ultra High 7.5 cm aerial; SAR from $450/scene archive and $675/scene tasking (e.g. Umbra); 3D products (DSM/DTM/point clouds) from $7.50/km²; basemap mosaics from $1/km²; open data free; no subscriptions, contracts or minimum spend. The same page's summary cards say single archive image from $15, single tasking image from $200, aerial from $35, analytics from $5. Minimums: SkyFi's FAQ says minimum tasking area is 25 km² and a 25 km² tasking request starts at $200; Planet Select orders need a 25 km² minimum AOI (from $6/km² archive >30 days, $12/km² flexible tasking). Archive minimums are per scene: each search result carries minSqKm/maxSqKm, priceForOneSquareKm and priceFullScene/fullSceneOnly. Exact prices come from the API (POST /pricing, /tasking/products, the */validate endpoints; MCP validate tools return estimatedCostCents). A 'full pricing sheet' download exists but was not read. Free accounts can place 1 open-data order per day and paid orders with a card on file; Pro accounts 5 open-data orders per day plus advanced billing (Pro price not found). The MCP connector itself is free. Check: the static pricing page shows only the per-image starting prices ($15 archive, $200 tasking, SAR $450, aerial $35); the per-km2 rates, the $675 SAR tasking figure and the 25 km2 minimum were not visible on it in a later check, so confirm them in the app or the pricing sheet."
+    "from_usd": 15,
+    "unit": "per image (single archive image, 'Starting at $15' on the pricing page)",
+    "notes": "The pricing page shows (2026-11-08): single archive image from $15, single tasking image from $200, SAR from $450, aerial from $35, analytics from $5. Earlier readings recorded optical archive from $5/km² and new optical tasking from $8/km² (Vantor, Planet, Satellogic; 15 cm to 1 m); optical archive tops out at $100/km² for Ultra High 7.5 cm aerial; SAR from $450/scene archive and $675/scene tasking (e.g. Umbra); 3D products (DSM/DTM/point clouds) from $7.50/km²; basemap mosaics from $1/km²; open data free; no subscriptions, contracts or minimum spend. Minimums: SkyFi's FAQ says minimum tasking area is 25 km² and a 25 km² tasking request starts at $200; Planet Select orders need a 25 km² minimum AOI (from $6/km² archive >30 days, $12/km² flexible tasking). Archive minimums are per scene: each search result carries minSqKm/maxSqKm, priceForOneSquareKm and priceFullScene/fullSceneOnly. Exact prices come from the API (POST /pricing, /tasking/products, the */validate endpoints; MCP validate tools return estimatedCostCents). A 'full pricing sheet' download exists but was not read. Free accounts can place 1 open-data order per day and paid orders with a card on file; Pro accounts 5 open-data orders per day plus advanced billing (Pro price not found). The MCP connector itself is free. Check: the static pricing page shows only the per-image starting prices; the per-km² rates, the $675 SAR tasking figure and the 25 km² minimum were not visible on it on 2026-11-08, so treat them as unconfirmed and confirm them in the app or the pricing sheet."
   },
   "latency": {
     "typical": "Archive: usually within 24 hours. Tasking: within 48 hours of capture, capture timing set by your tasking window",
@@ -254,7 +254,7 @@
       "url": "https://app.skyfi.com/platform-api/redoc"
     },
     {
-      "claim": "Optical archive from $5/km², tasking from $8/km²; SAR from $450/scene archive, $675/scene tasking; 3D from $7.50/km²; basemaps from $1/km²; up to $100/km² for 7.5 cm aerial; no subscriptions or minimum spend; starting-at cards ($15 archive image, $200 tasking image, $35 aerial, $5 analytics); Planet Select 25 km² minimum AOI and $6/$12 per km²; in-app provider list; 300+ sources; Next Available Capture within 24 hours",
+      "claim": "Starting-at cards visible 2026-11-08: $15 archive image, $200 tasking image, SAR $450, $35 aerial, $5 analytics; no subscriptions or minimum spend. Per-km² rates (optical archive $5, tasking $8, 3D $7.50, basemaps $1, up to $100 for 7.5 cm aerial) and SAR tasking $675 were not visible on the static page that day; Planet Select 25 km² minimum AOI and $6/$12 per km²; in-app provider list; 300+ sources; Next Available Capture within 24 hours",
       "url": "https://skyfi.com/en/pricing"
     },
     {
@@ -318,7 +318,7 @@
       "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration"
     }
   ],
-  "updated": "2026-10-28",
+  "updated": "2026-11-08",
   "delivery": {
     "modes": [
       "commission"
@@ -336,7 +336,7 @@
   },
   "spec_version": "2026-10-26",
   "capability": "com.irlpls.capture.card",
-  "expires": "2027-10-27",
+  "expires": "2027-11-07",
   "capture": {
     "by": "devices"
   },
