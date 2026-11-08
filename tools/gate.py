@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
-from irlpls.gate import gate_files  # noqa: E402
+sys.path.insert(0, str(ROOT))  # works from a plain checkout; no install needed
+from irlpls.gate import HINTS, gate_files  # noqa: E402
 
 
 def main(argv=None):
@@ -33,6 +33,8 @@ def main(argv=None):
         for p, r in res.items():
             for e in r.errors:
                 print(f"{p}: error {e['code']} {e['pointer'] or '/'}: {e['message']}")
+                if e["code"] in HINTS:
+                    print(f"    fix: {HINTS[e['code']]}")
             for w in r.warnings:
                 print(f"{p}: warn {w['code']} {w['pointer'] or '/'}: {w['message']}")
         print(f"{len(res)} checked, {bad} failed")

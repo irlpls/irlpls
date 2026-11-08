@@ -144,3 +144,33 @@ def test_cli(tmp_path):
     d = json.loads(r.stdout)
     assert d["failed"] == 1 and d["results"][1]["errors"][0]["code"].startswith("T")
     assert run("--batch", str(ROOT / "cards")).returncode == 0
+
+
+def test_rank_boost_is_error():
+    assert "T9_PROMO_KEY" in codes(card(rank_boost=1))[0]
+    assert "T9_PROMO_KEY" in codes(card(paid_placement=True))[0]
+
+
+def test_promo_text_warns_only():
+    e, r = codes(card(short="The best premium air feed"))
+    assert "W_PROMO_TEXT" in {w["code"] for w in r.warnings} and not e & {"W_PROMO_TEXT"}
+
+
+def test_one_fault_one_error():
+    e, r = codes(card(short="x" * 139))
+    assert [x["pointer"] for x in r.errors].count("/short") == 1
+    r = gate.gate_card(card(provider_url="http://10.0.0.5/"))
+    assert [x["pointer"] for x in r.errors if x["code"].startswith("T1")] == []
+
+
+def test_unstated_rights_one_line():
+    r = gate.gate_card(card(licensing={}))
+    assert sum(w["code"] == "W_UNSTATED_RIGHTS" for w in r.warnings) <= 1
+    assert not any("not stated" in w["message"] and w["code"] == "W_VALIDATE" for w in r.warnings)
+
+
+def test_cli_prints_fix_hint(tmp_path):
+    bad = tmp_path / "bad.json"
+    bad.write_text(json.dumps(card(provider_url="https://127.0.0.1/")))
+    out = subprocess.run([sys.executable, str(ROOT / "tools" / "gate.py"), str(bad)], capture_output=True, text=True, cwd=tmp_path).stdout
+    assert "fix:" in out

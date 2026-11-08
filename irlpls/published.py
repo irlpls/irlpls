@@ -42,12 +42,14 @@ import json
 import os
 import pathlib
 import re
-import urllib.error
 import urllib.parse
-import urllib.request
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 
 from . import psl, validate
 from . import http as _http
+from . import safefetch as _safefetch
 
 HERE = pathlib.Path(__file__).resolve().parent
 DIR = HERE / "data" / "published"
@@ -56,6 +58,8 @@ SCHEMA = HERE.parent / "schema" / "capture-card.schema.json"
 
 MAX_BYTES = 256 * 1024
 TIMEOUT_S = 10
+WORKERS = 16               # domains read in parallel (one request in flight per host)
+SKIPPED = "skipped (budget)"
 KEEP_DAYS = 7
 GONE_404_DAYS = 2
 COOLDOWN_DAYS = 30          # a card re-enters the "Recently published" strip at most once per 30 days
@@ -97,25 +101,16 @@ def host_of(url):
 
 # ------------------------------------------------------------------ fetching
 
-class _NoRedirect(urllib.request.HTTPRedirectHandler):
-    def redirect_request(self, *a, **k):
-        return None
-
-
 def default_fetch(url, headers):
-    """One GET, no redirects, HTTPS and public hosts only (irlpls.http.check_url), no compression, TIMEOUT_S, MAX_BYTES.
+    """One GET through irlpls.safefetch (SSRF-safe: public IPs only, pinned; honest User-Agent; robots.txt; per-host
+    rate limit): HTTPS only, no redirects followed, no compression, TIMEOUT_S, MAX_BYTES.
     Returns (status, headers with lower-case names, body bytes). Raises on network errors and on an oversized body."""
-    _http.check_url(url, allow_http=False)
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json", **headers})
     try:
-        r = urllib.request.build_opener(_NoRedirect).open(req, timeout=TIMEOUT_S)
-    except urllib.error.HTTPError as e:
-        r = e
-    with r:
-        status = getattr(r, "status", None) or r.code
-        h = {k.lower(): v for k, v in (r.headers or {}).items()}
-        body = _http._read_capped(r, MAX_BYTES) if status == 200 else b""
-    return status, h, body
+        r = _safefetch.fetch(url, headers=headers, max_bytes=MAX_BYTES, timeout=TIMEOUT_S, allow_http=False,
+                             max_redirects=0, user_agent=USER_AGENT)
+    except _safefetch.TooManyRedirects:
+        return 302, {}, b""   # a redirect is never followed; _read_one rejects it ("served by a redirect")
+    return r.status, {k.lower(): v for k, v in (r.headers or {}).items()}, (r.body if r.status == 200 else b"")
 
 
 # ------------------------------------------------------------------ checking
@@ -387,11 +382,15 @@ def _max_age(headers):
     return int(m.group(1)) if m else None
 
 
-def run(compiled, state=None, fetch=default_fetch, now=None, extra=(), d=None, evidence=None):
+def run(compiled, state=None, fetch=default_fetch, now=None, extra=(), d=None, evidence=None, workers=WORKERS,
+        budget=None, clock=time.monotonic):
     """Read every target host once and update `state` in place. Returns (state, rejects, board_items).
 
     compiled: the compiled cards (cards/*.json). fetch(url, headers) -> (status, headers, body); default_fetch in
-    production, a fake in tests. evidence(card) -> [{where, verdict}] for a card's sample packs (None skips it)."""
+    production, a fake in tests. evidence(card) -> [{where, verdict}] for a card's sample packs (None skips it).
+    The network reads run on up to `workers` threads (a host is read once, so one request in flight per host); the
+    results are applied one at a time in sorted-host order, so state and outputs are deterministic. When `budget`
+    seconds run out, hosts not yet started are left as they were and reported in `last_skipped` (status SKIPPED)."""
     state = state if state is not None else empty_state()
     for k, v in empty_state().items():
         state.setdefault(k, v)
@@ -400,12 +399,64 @@ def run(compiled, state=None, fetch=default_fetch, now=None, extra=(), d=None, e
     d = d or state_dir()
     by_id = {c["id"]: c for c in compiled}
     rejects, board = [], []
+    plan = []   # (host, ids, headers) for the hosts that are due
     for host, ids in sorted(targets(compiled, extra).items()):
-        _read_one(host, ids, state, fetch, now, today, by_id, d, rejects, board, evidence)
+        dom = state["domains"].setdefault(host, {})
+        if _not_due(dom, now):
+            continue
+        plan.append((host, ids, _cond_headers(dom)))
+    deadline = None if budget is None else clock() + budget
+    skipped, results = [], {}
+
+    def work(item):
+        host, _ids, headers = item
+        if deadline is not None and clock() >= deadline:
+            return host, SKIPPED
+        try:
+            return host, ("ok", fetch(f"https://{host}{WELL_KNOWN}", headers))
+        except Exception as e:   # applied (and classified) later, in order
+            return host, ("err", e)
+
+    if plan:
+        ex = ThreadPoolExecutor(max_workers=max(1, min(workers, len(plan))), thread_name_prefix="pub")
+        futs = [ex.submit(work, it) for it in plan]
+        for f in futs:
+            wait = None if deadline is None else max(0.0, deadline + TIMEOUT_S + 1 - clock())
+            try:
+                host, r = f.result(timeout=wait)
+            except Exception:   # a worker overran the budget plus one timeout: give up on it
+                continue
+            results[host] = r
+        ex.shutdown(wait=False, cancel_futures=True)
+    for host, ids, _h in plan:
+        r = results.get(host, SKIPPED)
+        if r == SKIPPED:
+            skipped.append(host)
+            state["domains"].setdefault(host, {})["status"] = SKIPPED
+            continue
+        _read_one(host, ids, state, r, now, today, by_id, d, rejects, board, evidence)
+    run.last_skipped = skipped
     state["checked_at"] = iso(now)
     state["next_read"] = iso(now + datetime.timedelta(days=1))
     state["schedule"] = SCHEDULE
     return state, rejects, board
+
+
+run.last_skipped = []
+
+
+def _not_due(dom, now):
+    last = parse_iso(dom.get("fetched_at"))
+    return bool(last and dom.get("max_age") and (now - last).total_seconds() + 3600 < min(dom["max_age"], MAX_AGE_CAP_S))
+
+
+def _cond_headers(dom):
+    headers = {}
+    if dom.get("etag"):
+        headers["If-None-Match"] = dom["etag"]
+    if dom.get("last_modified"):
+        headers["If-Modified-Since"] = dom["last_modified"]
+    return headers
 
 
 def _entries_for(state, host):
@@ -432,27 +483,21 @@ def _fail_entries(state, host, kind, reason, today, now):
             e.pop("_missing_days", None)
 
 
-def _read_one(host, ids, state, fetch, now, today, by_id, d, rejects, board, evidence):
+def _read_one(host, ids, state, result, now, today, by_id, d, rejects, board, evidence):
+    """Apply one host's fetch result: ("ok", (status, headers, body)) or ("err", exception)."""
     url = f"https://{host}{WELL_KNOWN}"
     dom = state["domains"].setdefault(host, {})
-    last = parse_iso(dom.get("fetched_at"))
-    if last and dom.get("max_age") and (now - last).total_seconds() + 3600 < min(dom["max_age"], MAX_AGE_CAP_S):
-        return   # the provider asked us not to re-read yet
-    headers = {}
-    if dom.get("etag"):
-        headers["If-None-Match"] = dom["etag"]
-    if dom.get("last_modified"):
-        headers["If-Modified-Since"] = dom["last_modified"]
-    try:
-        status, h, body = fetch(url, headers)
-    except _http.TooLarge as e:
-        dom.update(fetched_at=iso(now), status="too_large")
-        _log(rejects, host, url, "oversized", [e], now=now)
-        _fail_entries(state, host, "rejected", f"larger than {MAX_BYTES // 1024} KB", today, now)
-        return
-    except Exception as e:  # network, DNS, TLS, timeouts, refused hosts: not the provider's card
-        dom.update(fetched_at=iso(now), status=type(e).__name__)
-        _fail_entries(state, host, "unreachable", None, today, now)
+    if result[0] == "ok":
+        status, h, body = result[1]
+    else:
+        e = result[1]
+        if isinstance(e, (_http.TooLarge, _safefetch.TooLarge)):
+            dom.update(fetched_at=iso(now), status="too_large")
+            _log(rejects, host, url, "oversized", [e], now=now)
+            _fail_entries(state, host, "rejected", f"larger than {MAX_BYTES // 1024} KB", today, now)
+        else:   # network, DNS, TLS, timeouts, blocked/refused hosts, robots: not the provider's card
+            dom.update(fetched_at=iso(now), status=type(e).__name__)
+            _fail_entries(state, host, "unreachable", None, today, now)
         return
     h = {k.lower(): v for k, v in (h or {}).items()}
     dom.update(fetched_at=iso(now), status=status, max_age=_max_age(h))

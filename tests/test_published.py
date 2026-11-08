@@ -222,9 +222,9 @@ def test_an_html_catch_all_is_not_a_card_and_is_not_logged(d):
 
 
 def test_the_fetcher_refuses_plain_http_and_private_hosts_without_sending():
-    with pytest.raises(published._http.UnsafeURL):
+    with pytest.raises(published._safefetch.UnsafeURL):
         published.default_fetch("http://www.proxypics.com/.well-known/irlpls", {})
-    with pytest.raises(published._http.UnsafeURL):
+    with pytest.raises(published._safefetch.SafeFetchError):
         published.default_fetch("https://localhost/.well-known/irlpls", {})
 
 

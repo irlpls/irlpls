@@ -7,7 +7,9 @@ Reuses irlpls.validate (schema, text and evidence rules); adds size/encoding, bi
 URL syntax rules for SSRF, promo/ranking keys, prompt-injection phrases and over-long fields. Never touches the
 network and never resolves DNS. Stable codes: T0_SIZE T0_ENCODING T0_JSON T0_NOT_OBJECT T0_CONTROL T0_BIDI
 T0_ZEROWIDTH T1_SCHEMA T2_URL_SYNTAX T2_URL_SCHEME T2_URL_CREDENTIALS T2_URL_PRIVATE T2_URL_IP_LITERAL T2_URL_PORT
-T9_PROMO_KEY T9_INJECTION T9_OVERLONG; warnings: W_VALIDATE W_AFFILIATE.
+T9_PROMO_KEY T9_INJECTION T9_OVERLONG; warnings: W_VALIDATE W_AFFILIATE W_PROMO_TEXT W_UNSTATED_RIGHTS.
+HINTS maps each code to a one-line fix. One fault yields one error: a schema, length or URL problem already reported at a
+pointer is not repeated under a second code.
 """
 import ipaddress
 import json
@@ -21,6 +23,33 @@ from . import safe_text, validate
 MAX_BYTES = 32 * 1024
 PROMO_KEYS = {"sponsored", "promoted", "featured", "rank", "ranking", "boost", "paid", "ad", "ads", "priority", "score"}
 AFFILIATE_PARAMS = ("ref", "utm_", "aff", "affiliate")
+# Key-name fragments that mean "buys position": matched against whole names and against their _/-/space/camelCase parts.
+PROMO_KEY_PARTS = ("sponsor", "boost", "promot", "featured", "rank", "paid", "priority", "score")
+_PROMO_TEXT = re.compile(r"(?<![\w])(best|leading|world[- ]class|premium|#\s?1|trusted by)(?![\w])", re.I)
+_PROMO_TEXT_KEYS = {"name", "short", "summary", "description"}
+HINTS = {
+    "T0_SIZE": "Cut the card down; at most 32 KB. Remove long prose.",
+    "T0_ENCODING": "Save the file as UTF-8.",
+    "T0_JSON": "Fix the JSON syntax (trailing comma, missing quote) or the file path.",
+    "T0_NOT_OBJECT": "The file must be one JSON object, as in examples/card-template.json.",
+    "T0_CONTROL": "Delete control characters; use plain spaces in text.",
+    "T0_BIDI": "Delete bidirectional override characters.",
+    "T0_ZEROWIDTH": "Delete zero-width or invisible characters.",
+    "T1_SCHEMA": "Fix the field named in the pointer; the message lists what is expected.",
+    "T2_URL_SYNTAX": "Use a plain URL with no spaces, quotes or angle brackets.",
+    "T2_URL_SCHEME": "Use an https:// URL.",
+    "T2_URL_CREDENTIALS": "Remove user:pass@ from the URL.",
+    "T2_URL_PRIVATE": "Use the provider's public DNS name, not a local or private host.",
+    "T2_URL_IP_LITERAL": "Use the provider's DNS name instead of an IP address.",
+    "T2_URL_PORT": "Use https on the default port 443.",
+    "T9_PROMO_KEY": "Remove the key. Cards cannot carry anything that buys position.",
+    "T9_INJECTION": "Rewrite the text as a plain statement of what the provider serves; no instructions to an AI.",
+    "T9_OVERLONG": "Shorten the text to the stated limit.",
+    "W_PROMO_TEXT": "State what the provider serves, not how good it is. Keep the word only if the provider's own name or a quoted source uses it.",
+    "W_UNSTATED_RIGHTS": "Expected. Leave a right out when the provider's public pages do not say; add it only with a source.",
+    "W_AFFILIATE": "Remove ref/utm_ parameters from the URL.",
+    "W_VALIDATE": "Advice from the validator; read it.",
+}
 
 _BIDI = re.compile("[\u202a-\u202e\u2066-\u2069\u200e\u200f\u061c]")
 _ZERO = re.compile("[\u200b-\u200d\u2060\ufeff\u180e\u00ad]")
@@ -78,6 +107,14 @@ def _walk(o, parts=(), key=None):
             yield from _walk(v, parts + (i,), key)
     elif isinstance(o, str):
         yield parts, key, o
+
+
+def _is_promo_key(k):
+    kl = k.lower()
+    if kl in PROMO_KEYS:
+        return True
+    parts = [x.lower() for x in re.split(r"[_\-\s.]+|(?<=[a-z])(?=[A-Z])", k) if x]
+    return any(x.startswith(PROMO_KEY_PARTS) or x in PROMO_KEYS for x in parts)
 
 
 def _numeric_host(host):
@@ -155,8 +192,8 @@ def gate_card(card, raw_size=None):
         if isinstance(val, tuple):  # a dict key
             k = val[1]
             if isinstance(k, str):
-                if k.lower() in PROMO_KEYS:
-                    add("T9_PROMO_KEY", ptr, f"promo/ranking key {k!r} is not allowed (no ranking for money)")
+                if _is_promo_key(k):
+                    add("T9_PROMO_KEY", ptr, f"promo/ranking key {k!r} is not allowed (no ranking for money). Remove the key; cards cannot carry anything that buys position.")
                 if _BIDI.search(k) or _ZERO.search(k) or _CTL.search(k):
                     add("T0_CONTROL", ptr, "key contains control, bidi or zero-width characters")
             continue
@@ -178,26 +215,39 @@ def gate_card(card, raw_size=None):
             if s and _affiliate(s):
                 warns.append(_item("W_AFFILIATE", ptr, "URL has referral/affiliate-style parameters (ref, utm_)"))
         else:
+            m = _PROMO_TEXT.search(s) if key in _PROMO_TEXT_KEYS else None
+            if m:
+                warns.append(_item("W_PROMO_TEXT", ptr, f"reads like an advertisement ({m.group(0)!r}). State what the provider serves, not how good it is."))
             for rx in _INJECTION:
                 if rx.search(s):
                     add("T9_INJECTION", ptr, "free text contains a phrase addressed to an AI agent (prompt-injection pattern)")
                     break
 
     # T1 schema and policy: reuse validate.problems; classify its text rules into stable codes
-    for sev, where, msg in validate.problems(card):
+    hard = {p for (c, p) in seen if c != "T9_INJECTION"}  # pointers already failing: report one fault once
+    unstated = []
+    probs = sorted(validate.problems(card), key=lambda t: t[0] != "warn" and not ("control" in t[2] or "longer than" in t[2] or "too long" in t[2] or "URL" in t[2] or "host" in t[2]))
+    for sev, where, msg in probs:
         ptr = _where_to_pointer(where)
         if sev == "warn":
-            warns.append(_item("W_VALIDATE", ptr, msg))
+            if msg.startswith("not stated:") and where.startswith("licensing."):
+                unstated.append(where.split(".", 1)[1])
+            else:
+                warns.append(_item("W_VALIDATE", ptr, msg))
         elif "control characters" in msg:
             add("T0_CONTROL", ptr, msg)
-        elif msg.startswith("longer than"):
+        elif msg.startswith(("longer than", "too long")):
             add("T9_OVERLONG", ptr, msg)
         elif "plain https URL" in msg:
             add("T2_URL_SCHEME", ptr, msg)
         elif "private, loopback or local host" in msg:
             add("T2_URL_PRIVATE", ptr, msg)
-        else:
+        elif ptr not in hard:  # the specific code above already reported this pointer
             add("T1_SCHEMA", ptr, msg)
+        hard.add(ptr)
+    if unstated:
+        warns.append(_item("W_UNSTATED_RIGHTS", "/licensing", "rights not stated (" + ", ".join(unstated) + "): "
+                           "optional; an unstated right counts as not granted. Leave out what the provider does not say."))
     return GateResult(not errs, errs, warns)
 
 

@@ -7,7 +7,7 @@
 
 Runs once a day from tools/healthcheck.py (so from the com.mo.irlpls-healthcheck LaunchAgent, 06:10); the next
 30-minute refresh build shows the result, so a valid card is live on irlpls within a day of being published.
-One conditional GET per domain (If-None-Match / If-Modified-Since), 10 s timeout, 256 KB cap, no redirects, https only,
+One conditional GET per domain (If-None-Match / If-Modified-Since), 16 parallel workers (one request per host, via irlpls.safefetch), 10 s timeout, 256 KB cap, no redirects, https only,
 User-Agent "irlpls-cardreader/0.1 (+https://irlpls.com/providers.html; hello@irlpls.com)". Never sends anything else.
 
 Writes irlpls/data/published/{state.json,<id>.json,rejects.log} (gitignored) and site/published.json (public part).
@@ -47,6 +47,8 @@ def main(argv=None):
     ap.add_argument("--only", default="", help="comma-separated hosts to read (the others keep their last state)")
     ap.add_argument("--no-board", action="store_true", help="never touch docs/research/BOARD.json")
     ap.add_argument("--no-evidence", action="store_true", help="skip the sample-pack evidence check")
+    ap.add_argument("--workers", type=int, default=published.WORKERS, help="domains read in parallel (one request per host)")
+    ap.add_argument("--budget", type=float, default=130.0, help="seconds for the whole read; hosts left over are 'skipped (budget)'")
     ap.add_argument("--site", default=str(ROOT / "site"), help="where published.json goes (skipped if the folder is missing)")
     a = ap.parse_args(argv)
     cards = compiled_cards()
@@ -57,13 +59,16 @@ def main(argv=None):
         extra = [x for x in extra if x.lower() in only]
     state = published.load_state()
     state, rejects, board = published.run(cards, state, extra=extra,
-                                          evidence=None if a.no_evidence else sample_pack_evidence)
+                                          evidence=None if a.no_evidence else sample_pack_evidence,
+                                          workers=a.workers, budget=a.budget)
     published.save(state, site=a.site)
     published.append_rejects(rejects)
     added = [] if a.no_board else published.board_add(board, BOARD)
     live = sum(1 for e in state["cards"].values() if e.get("state") == "live")
     print(f"{state['checked_at']} published cards: {len(state['domains'])} domains read, {live} live, "
           f"{len(state['cards'])} listed, {len(rejects)} refused, {len(added)} board notes -> {published.state_dir()}")
+    if published.run.last_skipped:
+        print(f"  {published.SKIPPED}: {len(published.run.last_skipped)} domains ({', '.join(published.run.last_skipped[:5])}...)")
     for i in added:
         print("  board: added", i)
     return 0
