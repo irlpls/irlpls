@@ -6276,6 +6276,147 @@
    ]
   },
   {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "dwd-pollen-gefahrenindex",
+   "family": "pollen-allergy",
+   "name": "DWD pollen hazard index (Germany)",
+   "status": "unclaimed",
+   "provider_url": "https://www.dwd.de/DE/leistungen/gefahrenindizespollen/gefahrenindexpollen.html",
+   "short": "Pollen load index for 8 pollen types in 27 German sub-regions, today to day after tomorrow; free JSON.",
+   "summary": "The German weather service DWD publishes a daily pollen hazard index forecast on its open data server: for each of 27 sub-regions it gives a 0 to 3 load level for hazel, alder, birch, ash, grass, rye, mugwort and ragweed for today, tomorrow and the day after. One JSON file, no key.",
+   "tags": [
+    "pollen",
+    "allergy",
+    "hay fever",
+    "germany",
+    "dwd",
+    "forecast",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "pollen load today in a German region",
+     "pollen forecast for the next two days",
+     "which pollen types are active"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Open data server README: weather and climate data are free of charge, without registration."
+   },
+   "latency": {
+    "typical": "Updated once a day",
+    "notes": "Live check 2026-11-08: last_update 11:00, next_update 2026-11-09 11:00 (daily issue)."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: last_update 11:00, next_update 2026-11-09 11:00 (daily issue)."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 24 hours (daily issue)"
+   },
+   "coverage": {
+    "regions": [
+     "Germany"
+    ],
+    "notes": "27 sub-regions in 2026-11-08 file. Values are forecast load levels, not particle counts. Most types read 0 in November.",
+    "areas": [
+     "DE"
+    ]
+   },
+   "licensing": {
+    "summary": "Legal notice page: all open spatial data and services of DWD may be re-used under CC BY 4.0, acknowledging the source. The Open Data Server README refers to this page as its terms. AI training is not addressed."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.dwd.de/opendata",
+    "base_url": "https://opendata.dwd.de/climate_environment/health/alerts",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/s31fg.json",
+      "notes": "Index per region and pollen type for today, tomorrow and day after; legend with level text (German)."
+     }
+    ],
+    "rate_limits": "No service level guaranteed per DWD page; no rate limit stated.",
+    "notes": "German-language field names and legend. The server keeps request IPs for up to 7 days (README)."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each file has a last_update stamp set by DWD; the forecast method is not described in the file."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Pollen hazard index JSON (live GET)",
+     "url": "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
+    },
+    {
+     "claim": "Open Data Server README (terms link)",
+     "url": "https://opendata.dwd.de/README.txt"
+    },
+    {
+     "claim": "Legal notice: CC BY 4.0 for open spatial data",
+     "url": "https://www.dwd.de/EN/service/legal_notice/legal_notice_node.html"
+    }
+   ]
+  },
+  {
    "family": "air-quality",
    "status": "unclaimed",
    "pricing": {

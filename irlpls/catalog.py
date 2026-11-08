@@ -71,6 +71,8 @@ FAMILY_DEFS = [
      ["traffic count on E18 Finland"]),
     ("avalanche-snow", "read", "Avalanche danger and snow warnings",
      ["avalanche danger Norway today"]),
+    ("pollen-allergy", "read", "Pollen forecast and hay fever risk",
+     ["pollen forecast Germany today", "is it a high pollen day in Munich"]),
     ("wildfire-camera", "watch", "Wildfire-watch cameras",
      ["camera view of smoke near Lake Tahoe, CA now"]),
     ("webcam-anywhere", "watch", "Public webcams worldwide",

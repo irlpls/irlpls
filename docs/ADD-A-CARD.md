@@ -25,6 +25,7 @@ Ten minutes, one JSON file.
 | `bike-share` | Bike-share station availability (GBFS) |
 | `road-traffic-flow` | Road traffic counts, flow and incident messages (not cameras) |
 | `avalanche-snow` | Avalanche danger and snow warnings |
+| `pollen-allergy` | Pollen forecast and hay fever risk |
 | `traffic-road-camera` | Traffic and road cameras |
 | `wildfire-camera` | Wildfire-watch cameras |
 | `webcam-anywhere` | Public webcams worldwide |

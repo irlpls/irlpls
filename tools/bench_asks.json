@@ -134,6 +134,9 @@
   ],
   "avalanche-snow": [
    {"ask": "avalanche danger Norway today", "label": "Avalanche danger, Norway", "source": "catalog"}
+ ],
+  "pollen-allergy": [
+   {"ask": "pollen forecast Germany today", "label": "Pollen, Germany", "source": "catalog"}
   ]
  }
 }
