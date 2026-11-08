@@ -112,6 +112,32 @@ def test_request_headers():
     assert "Cookie" not in sent[0] and "Authorization" not in sent[0]
 
 
+def _sent_requests(e, url, **kw):
+    sent = []
+    orig = _Pending.sendall
+    _Pending.sendall = lambda self, b: (sent.append(b.decode()), orig(self, b))[1]
+    try:
+        e.get(url, **kw)
+    finally:
+        _Pending.sendall = orig
+    return sent
+
+
+def test_extra_headers_sent_but_cannot_split_request_or_override_host():
+    e = Env({("a.example", "/"): resp()})
+    sent = _sent_requests(e, "https://a.example/", headers={
+        "If-None-Match": 'W/"v1"\r\nX-Evil: 1', "Host": "evil.example", "User-Agent": "x"})
+    assert 'If-None-Match: W/"v1"X-Evil: 1\r\n' in sent[0] and "\r\nX-Evil" not in sent[0]
+    assert "Host: a.example\r\n" in sent[0] and "evil.example" not in sent[0]
+
+
+def test_extra_headers_not_sent_to_another_host_after_redirect():
+    e = Env({("a.example", "/"): resp(302, b"", "Location: https://b.example/y\r\n"), ("b.example", "/y"): resp()},
+            dns={"b.example": ["8.8.8.8"]})
+    sent = _sent_requests(e, "https://a.example/", headers={"If-None-Match": '"abc"'})
+    assert len(sent) == 2 and "If-None-Match" in sent[0] and "If-None-Match" not in sent[1]
+
+
 @pytest.mark.parametrize("ip", [
     "127.0.0.1", "127.8.8.8", "10.0.0.1", "172.16.5.5", "172.31.255.255", "192.168.1.1", "169.254.169.254",
     "100." "64.0.1", "100." "127.255.254", "0.0.0.0", "224.0.0.1", "255.255.255.255", "198.18.0.1",

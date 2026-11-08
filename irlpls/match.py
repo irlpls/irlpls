@@ -460,14 +460,21 @@ def unsupported(req, ranked):
     return NO_PROVIDER if not ranked or max((s["fit"] or 0) for s in ranked) < WEAK else None
 
 
-def rank(cards, req):
+def rank(cards, req, index=None):
+    """Ranked fits. `index` (irlpls.index.build(cards)) limits scoring to plausible cards; False forces brute force."""
     if about_provider(req.need, [c for c in cards if in_scope(c)]):
         return []   # a question about a provider is answered from its card, never routed to a provider
     if ask_problem(req):
         return []   # not an ask irlpls can route (see need.ask_problem): unsupported() says why
-    out = [score(c, req) for c in cards if in_scope(c)]
+    from . import index as _ix
+    if index is None:
+        index = _ix.cached(cards)
+    elif index is False:
+        index = None   # force brute force
+    pool = _ix.candidates(req, index) if index is not None else cards   # a superset of the cards with fit > 0
+    out = [score(c, req) for c in pool if in_scope(c)]
     out = [s for s in out if s["fit"] is None or s["fit"] > 0]
-    by_id = {c["id"]: c for c in cards}
+    by_id = index.by_id if index is not None else {c["id"]: c for c in cards}
 
     def key(s):  # fit first; ties go to providers that name your place, then ones you can use free, then to more proof,
         # and last to a card its provider publishes itself. Publishing adds no fit and nothing is ever paid for (STANDARD 7).

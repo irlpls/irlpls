@@ -229,14 +229,21 @@ class Fetcher:
     # public ---------------------------------------------------------------
     def fetch(self, url, method="GET", allow_http=False, max_bytes=MAX_BYTES, timeout=10.0,
               read_timeout=5.0, content_types=None, max_redirects=3, robots=True,
-              user_agent=UA, allow_ports=None, read_body=True):
+              user_agent=UA, allow_ports=None, read_body=True, headers=None):
         if method not in ("GET", "HEAD"):
             raise UnsafeURL("only GET and HEAD")
         deadline = self.clock() + timeout
+        extra = {}
+        for k, v in (headers or {}).items():  # e.g. If-None-Match; never let a value split the request
+            if k.lower() not in ("host", "user-agent", "connection", "accept-encoding", "content-length"):
+                extra[re.sub(r"[^A-Za-z0-9-]", "", str(k))] = re.sub(r"[\r\n\x00]", "", str(v))
+        first_host = urlsplit(url).hostname
         chain, cur = [], url
         while True:
+            # conditional headers go to the original host only, never across a redirect to another one
             r = self._once(cur, method, allow_http, max_bytes, deadline, read_timeout, robots,
-                           user_agent, allow_ports, read_body)
+                           user_agent, allow_ports, read_body,
+                           extra if urlsplit(cur).hostname == first_host else {})
             loc = r.headers.get("location")
             if r.status in REDIRECT_CODES and loc:
                 if len(chain) >= max_redirects:
@@ -255,7 +262,7 @@ class Fetcher:
     def _opted_out(self, host):
         return any(host == h or host.endswith("." + h) for h in self.optout)
 
-    def _once(self, url, method, allow_http, max_bytes, deadline, rt, robots, ua, allow_ports, read_body):
+    def _once(self, url, method, allow_http, max_bytes, deadline, rt, robots, ua, allow_ports, read_body, extra=None):
         scheme, host, port, path, default = _parse_url(url, allow_http, allow_ports)
         if self._opted_out(host):
             raise RobotsDisallowed(f"{host} has opted out")
@@ -275,7 +282,8 @@ class Fetcher:
         try:
             hosthdr = host if port == default else f"{host}:{port}"
             req = (f"{method} {path} HTTP/1.1\r\nHost: {hosthdr}\r\nUser-Agent: {ua}\r\nAccept: */*\r\n"
-                   "Accept-Encoding: identity\r\nConnection: close\r\n\r\n")
+                   + "".join(f"{k}: {v}\r\n" for k, v in (extra or {}).items())
+                   + "Accept-Encoding: identity\r\nConnection: close\r\n\r\n")
             try:
                 conn.sendall(req.encode("ascii", "ignore"))
             except (socket.timeout, TimeoutError):
