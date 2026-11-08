@@ -16,7 +16,7 @@
   "name": "Meteo Chile WIS2 hourly synoptic observations",
   "provider_url": "https://wischile.meteochile.gob.cl",
   "short": "Latest synoptic weather from Chilean stations via the national WIS2 node: JSON and CSV, free, no key.",
-  "summary": "The Chilean weather service (Direccion Meteorologica de Chile, meteochile.gob.cl) runs a WIS2-in-a-box node at wischile.meteochile.gob.cl that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 23:00 UTC; the collection held 2,621,476 features and the node's station list 123 stations. Chile's earthquake and SINCA air-quality sites refused automated access in earlier probes; this node is a separate, open route to its weather data.",
+  "summary": "The Chilean weather service (Direccion Meteorologica de Chile, meteochile.gob.cl) runs a WIS2-in-a-box node at wischile.meteochile.gob.cl that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 23:00 UTC; the collection held 2,621,476 features and the node's station list 123 stations. Weather observations only; this node is an open route to the national weather data.",
   "capabilities": {
     "modalities": [
       "sensor"
@@ -153,7 +153,18 @@
     "government",
     "free",
     "hourly",
-    "synop"
+    "synop",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "santiago",
+    "punta arenas",
+    "windy",
+    "cold",
+    "hot"
   ],
   "sources": [
     {

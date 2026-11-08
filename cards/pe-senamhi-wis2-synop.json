@@ -154,7 +154,17 @@
     "government",
     "free",
     "hourly",
-    "synop"
+    "synop",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "lima",
+    "windy",
+    "cold",
+    "hot"
   ],
   "sources": [
     {

@@ -153,7 +153,18 @@
     "government",
     "free",
     "synop",
-    "3-hourly"
+    "3-hourly",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "dhaka",
+    "chittagong",
+    "windy",
+    "cold",
+    "hot"
   ],
   "sources": [
     {

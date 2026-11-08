@@ -153,7 +153,18 @@
     "government",
     "free",
     "hourly",
-    "synop"
+    "synop",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "sao paulo",
+    "brasilia",
+    "windy",
+    "cold",
+    "hot"
   ],
   "sources": [
     {
