@@ -1096,6 +1096,8 @@ def main(public=False):
         (SITE / "health.json").write_text(json.dumps({"irlpls_public_health": 1, "cards": PUBLIC_HEALTH}, indent=1) + "\n")
     write_lite(cards)
     (SITE / "cards.json").write_text(json.dumps({"assurances": [list(a) for a in ASSURANCES], "cards": cards, **({"health": flagged} if flagged else {})}))
+    from irlpls import shards  # additive: site/shards/ (scale step 7); no existing file changes
+    shards.write_shards(cards, lite, SITE / "shards", dump=_dump)
     shutil.copy(ROOT / "schema" / "request.schema.json", SITE / "request.schema.json")
     (SITE / "reviewers.json").write_text(json.dumps({"reviewers": REV, "note": review.NOTE}, indent=1) + "\n")  # IRLMatch.REVIEWERS must match
     pages = ["", "find.html", "compare.html", "docs.html", "agents.html", "standard.html", "changelog.html", "governance.html", "providers.html", "add-a-card.html", "privacy.html", "glossary.html"] + [f'c/{c["id"]}.html' for c in cards]
@@ -1144,6 +1146,7 @@ def main(public=False):
         out = SITE / urllib.parse.urlparse(sid).path.lstrip("/")
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(f.read_text())
+    shards.check_budgets(SITE / "shards", SITE)
     if public:
         public_scrub(SITE)
     print(f"built {len(cards)} cards -> {SITE}" + (" (public: no prototypes, no preview-only files)" if public else ""))

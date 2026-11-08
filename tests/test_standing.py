@@ -17,6 +17,13 @@ CARDS = [json.loads(p.read_text()) for p in sorted((ROOT / "cards").glob("*.json
 LISTED = standing.listed(CARDS)
 
 
+@pytest.fixture(scope="module")
+def plans():
+    """{ask: plan(ask, LISTED)} for every card's ask, made once; plans are only read."""
+    asks = {a["ask"] for c in LISTED for a in standing.asks_for(c["id"])}
+    return {q: standing.plan(q, LISTED) for q in asks}
+
+
 def test_every_family_has_asks_and_every_ask_is_from_the_bench_or_the_catalog():
     from irlpls.catalog import FAMILIES
     from tests.test_match_bench import BENCH
@@ -57,10 +64,8 @@ def test_ranks_are_the_plans_own_positions(cid):
         assert r["pos"] == (ids.index(cid) + 1 if cid in ids else None)
 
 
-def test_the_sentence_and_the_rank_agree_for_every_card_and_bench_ask():
+def test_the_sentence_and_the_rank_agree_for_every_card_and_bench_ask(plans):
     """One list: the 'option N of M' an agent says is the '#N of M' the card page shows, for every card on every ask."""
-    asks = {a["ask"] for c in LISTED for a in standing.asks_for(c["id"])}
-    plans = {q: standing.plan(q, LISTED) for q in asks}
     checked = 0
     for c in LISTED:
         rows = standing.ranks(c["id"], LISTED, plans)
@@ -143,10 +148,10 @@ console.log(JSON.stringify(Q.map(([id,q])=>{const r=M.parse(q,C);
 
 
 @pytest.mark.skipif(not shutil.which("node"), reason="node not installed")
-def test_check_page_ranks_match_python():
+def test_check_page_ranks_match_python(plans):
     qs, want = [], []
     for cid in sorted({c["id"] for c in LISTED}):   # every card, every one of its asks
-        for r in standing.ranks(cid, CARDS):
+        for r in standing.ranks(cid, LISTED, plans):
             qs.append([cid, r["ask"]])
             want.append([r["pos"], r["of"]])
     out = subprocess.run(["node", "-e", NODE, str(ROOT)], input=json.dumps(qs), capture_output=True, text=True, check=True)

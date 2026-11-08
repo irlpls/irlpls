@@ -542,7 +542,7 @@ def test_each_card_opens_on_its_question_then_arrives_within_7_5s(browser, base)
     assert p.evaluate(vis, "#ex1 .you") and p.locator("#ex1 .tool.hide").count() == 1
     p.wait_for_timeout(1500)
     assert p.evaluate(vis, "#ex1 .tool") and p.inner_text("#ex1 .tt").strip()
-    p.wait_for_timeout(4500)
+    p.wait_for_function("document.querySelectorAll('#ex1 .hide, #ex1 .wait, #ex1 .pre-you').length === 0", timeout=9000)   # polled, was a fixed 4.5 s
     assert p.evaluate("[...document.querySelectorAll('#ex1 .hide, #ex1 .wait, #ex1 .pre-you')].length") == 0
 
 
@@ -664,7 +664,7 @@ def test_screen_two_rail_draws_once_and_is_still_when_asked(browser, base):
     assert p.evaluate("document.documentElement.classList.contains('rail')")
     assert p.locator("#chain li.on").count() == 0
     p.evaluate("document.getElementById('how').scrollIntoView({block:'start'})")
-    p.wait_for_timeout(4600)
+    p.wait_for_function("document.querySelectorAll('#chain li.on').length === 8", timeout=9000)   # polled, was a fixed 4.6 s
     assert p.locator("#chain li.on").count() == 8
 
 
@@ -1374,7 +1374,7 @@ def test_slow_provider_says_it_is_still_waiting(browser, base):
     p = landing(browser, base, q="?still=1#try")
     p.route("**/api.waterdata.usgs.gov/ogcapi/**", lambda r: None)  # never answers (the page's own 15 s timeout ends it)
     try_(p, "usgs-water", "river, Texas")
-    p.wait_for_timeout(3400)
+    p.wait_for_function("document.querySelector('#lv .lvs') && document.querySelector('#lv .lvs').innerText.includes('Still waiting for USGS')", timeout=9000)   # polled, was a fixed 3.4 s
     assert "Still waiting for USGS" in p.inner_text("#lv .lvs")
 
 

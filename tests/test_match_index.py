@@ -62,15 +62,31 @@ def parsed(cards, q):
         return None
 
 
+_BRUTE = {}
+
+
+def brute_reference(cards, label):
+    """{ask: (brute-force ranking, ms)} for every parseable ask over this list, computed once per session. The brute-force
+    pass is the slow part of this file (~200 s over the clones), and both the equivalence check and the latency
+    comparison need it, so they share it; the ms are timed on the same asks in the same process."""
+    if label not in _BRUTE:
+        out = {}
+        for q in ASKS:
+            req = parsed(cards, q)
+            if req is None:
+                continue
+            s = time.perf_counter()
+            out[q] = (req, rank(cards, req, False), (time.perf_counter() - s) * 1000)
+        _BRUTE[label] = out
+    return _BRUTE[label]
+
+
 def check(cards, label):
     idx = ix.build(cards)
     bad, n = [], 0
-    for q in ASKS:
-        req = parsed(cards, q)
-        if req is None:
-            continue
+    for q, (req, a, _ms) in brute_reference(cards, label).items():
         n += 1
-        a, b = rank(cards, req, False), rank(cards, req, idx)
+        b = rank(cards, req, idx)
         if {s["id"] for s in a} != {s["id"] for s in b} or [s["id"] for s in a[:20]] != [s["id"] for s in b[:20]] \
                 or [s["fit"] for s in a[:20]] != [s["fit"] for s in b[:20]]:
             bad.append(q)
@@ -82,6 +98,7 @@ def test_index_equals_brute_force_real_cards():
     check(CARDS, "real")
 
 
+@pytest.mark.slow
 def test_index_equals_brute_force_with_2000_clones():
     check(BIG, "real+2000")
 
@@ -93,16 +110,16 @@ def test_default_rank_uses_cached_index_for_large_lists():
     assert [s["id"] for s in rank(BIG, req)] == [s["id"] for s in rank(BIG, req, False)]
 
 
+@pytest.mark.slow
 def test_latency_before_after(capsys):
     idx = ix.build(BIG)
-    qs = [parsed(BIG, q) for q in ASKS[:60]]
-    qs = [r for r in qs if r]
-    t = {"brute": [], "indexed": []}
+    ref = brute_reference(BIG, "real+2000")   # brute-force timings were taken on these same asks, same process
+    qs = [ref[q][0] for q in ASKS[:60] if q in ref]
+    t = {"brute": [ref[q][2] for q in ASKS[:60] if q in ref], "indexed": []}
     for r in qs:
-        for name, arg in (("brute", False), ("indexed", idx)):
-            s = time.perf_counter()
-            rank(BIG, r, arg)
-            t[name].append((time.perf_counter() - s) * 1000)
+        s = time.perf_counter()
+        rank(BIG, r, idx)
+        t["indexed"].append((time.perf_counter() - s) * 1000)
     q = lambda v, p: sorted(v)[min(len(v) - 1, int(p * len(v)))]  # noqa: E731
     line = f"rank latency at {len(BIG)} cards, {len(qs)} asks (ms): " + "; ".join(
         f"{k} p50={statistics.median(v):.1f} p95={q(v, .95):.1f}" for k, v in t.items())

@@ -26,4 +26,6 @@ def _no_real_geocoder(request, monkeypatch):
 
 
 def pytest_configure(config):
+    config.addinivalue_line("markers", "slow: long scale test (minutes); still runs in CI and in a plain `pytest`, "
+                                       "skip locally with `-m 'not slow'`")
     config.addinivalue_line("markers", "network: test may use the real network")

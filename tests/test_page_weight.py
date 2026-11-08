@@ -150,3 +150,14 @@ def test_index_embeds_only_the_first_screen():
     blob = json.loads(re.search(r'<script id="cards" type="application/json">(.*?)</script>', h, re.S).group(1))
     assert 1 <= len(blob["cards"]) <= 8 and blob["n"] >= 85
     assert len(json.dumps(blob)) < 20_000
+
+
+def test_shards_stay_small():
+    m = SITE / "shards" / "manifest.json"
+    if not m.exists():
+        pytest.skip("shards not built")
+    man = json.loads(m.read_text())
+    assert max(s["bytes"] for s in man["shards"]) <= 1 << 20, "a catalog shard is over 1 MiB"
+    assert max(p["bytes"] for p in man["packs"]) <= 25 << 20
+    assert sum(1 for f in (SITE / "shards").rglob("*") if f.is_file()) <= 600
+    assert sum(1 for f in SITE.rglob("*") if f.is_file()) <= 15_000
