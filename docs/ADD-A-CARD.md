@@ -7,7 +7,7 @@ Ten minutes, one JSON file.
 1. **Start from the template.** Copy `examples/card-template.json` (also at [card-template.json](card-template.json)) to `cards/<id>.json`. The id is lowercase letters, digits and hyphens, and the file name is `<id>.json`. Every field is explained in `examples/card-template.md`.
 2. **Fill it from public pages.** Replace each value. Delete what does not apply. Add a source for every claim.
 3. **Validate.** `irlpls validate cards/<id>.json`. Errors say the field, what is expected and what was found. Warnings are advice; read them.
-4. **Pick a family.** Add the id to the closest family in `FAMILIES` in `irlpls/catalog.py`, in that family's last list, for example `["usgs-water", "uk-ea-flood", "<id>"]`. The family ids are the first item of each entry in that list.
+4. **Pick a family.** Set the card's own `family` field to the closest family id, for example `"family": "river-water-level"`. The family ids are the first item of each entry in `FAMILY_DEFS` in `irlpls/catalog.py`; you do not edit that file to add a card.
 5. **Build and check.** `python build.py`, then `python tools/check_cards.py`. Both say in plain words what to fix, naming the card.
 6. **Send it.** Open a pull request, or email the file to hello@irlpls.com.
 

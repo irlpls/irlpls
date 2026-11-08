@@ -2,7 +2,7 @@
 """Repo-level card gate for CI; stdlib + jsonschema (already in CI).
 
 Catches what the schema step cannot: duplicate ids, id != filename, promo/ranking keys, evidenced without evidence_url
-(via irlpls.validate.problems errors), and ids missing from FAMILIES in irlpls/catalog.py (build fails anyway, but say it plainly).
+(via irlpls.validate.problems errors), and cards with no or an unknown "family" field (build fails anyway, but say it plainly; Fix: add "family": "<id>" to the card).
 Exit 1 on any finding.   python tools/check_cards.py
 """
 import glob

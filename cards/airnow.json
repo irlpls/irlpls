@@ -1,5 +1,6 @@
 {
   "id": "airnow",
+  "family": "air-quality",
   "name": "EPA AirNow",
   "status": "unclaimed",
   "provider_url": "https://docs.airnowapi.org/",

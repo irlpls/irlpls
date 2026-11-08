@@ -1,5 +1,6 @@
 {
   "id": "dojah-scout",
+  "family": "address-verification",
   "name": "Scout by Dojah",
   "status": "unclaimed",
   "provider_url": "https://scout.dojah.io",

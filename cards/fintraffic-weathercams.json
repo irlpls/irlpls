@@ -1,5 +1,6 @@
 {
   "id": "fintraffic-weathercams",
+  "family": "traffic-road-camera",
   "name": "Fintraffic Digitraffic road weather cameras",
   "status": "unclaimed",
   "provider_url": "https://www.digitraffic.fi/en/road-traffic/",

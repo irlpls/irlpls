@@ -1,4 +1,5 @@
 {
+  "family": "weather-station",
   "status": "unclaimed",
   "pricing": {
     "model": "free",

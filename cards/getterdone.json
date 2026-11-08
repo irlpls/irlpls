@@ -1,5 +1,6 @@
 {
   "id": "getterdone",
+  "family": "photo-of-address",
   "name": "GetterDone",
   "status": "unclaimed",
   "adapter": "getterdone",

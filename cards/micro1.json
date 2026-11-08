@@ -1,5 +1,6 @@
 {
   "id": "micro1",
+  "family": "dataset-egocentric",
   "name": "micro1",
   "provider_url": "https://www.micro1.ai",
   "status": "unclaimed",

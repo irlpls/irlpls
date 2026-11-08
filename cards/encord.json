@@ -1,5 +1,6 @@
 {
   "id": "encord",
+  "family": "dataset-egocentric",
   "name": "Encord",
   "provider_url": "https://encord.com",
   "status": "unclaimed",

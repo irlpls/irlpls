@@ -1,5 +1,6 @@
 {
   "id": "wsdot-cameras",
+  "family": "traffic-road-camera",
   "name": "WSDOT highway cameras",
   "status": "unclaimed",
   "provider_url": "https://wsdot.wa.gov/traffic/api/",

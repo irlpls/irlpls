@@ -1,5 +1,6 @@
 {
   "id": "pixxel",
+  "family": "satellite-thermal-hyperspectral",
   "name": "Pixxel",
   "adapter": "pixxel",
   "provider_url": "https://www.pixxel.space",

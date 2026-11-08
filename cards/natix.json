@@ -1,5 +1,6 @@
 {
   "id": "natix",
+  "family": "street-level-imagery",
   "name": "NATIX Network",
   "provider_url": "https://www.natix.network/",
   "status": "unclaimed",

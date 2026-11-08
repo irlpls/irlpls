@@ -1,5 +1,6 @@
 {
   "id": "usgs-earthquakes",
+  "family": "earthquake",
   "name": "USGS earthquake feed",
   "status": "unclaimed",
   "provider_url": "https://earthquake.usgs.gov/earthquakes/feed/",

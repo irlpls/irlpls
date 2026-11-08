@@ -1,5 +1,6 @@
 {
   "id": "vizzion",
+  "family": "traffic-road-camera",
   "name": "Vizzion road imagery",
   "provider_url": "https://vizzion.com",
   "status": "unclaimed",

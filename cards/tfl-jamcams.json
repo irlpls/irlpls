@@ -1,5 +1,6 @@
 {
   "id": "tfl-jamcams",
+  "family": "traffic-road-camera",
   "name": "TfL JamCams",
   "status": "unclaimed",
   "provider_url": "https://api-portal.tfl.gov.uk/",

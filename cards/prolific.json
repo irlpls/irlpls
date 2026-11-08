@@ -1,5 +1,6 @@
 {
   "id": "prolific",
+  "family": "dataset-crowd-media",
   "name": "Prolific",
   "provider_url": "https://www.prolific.com",
   "status": "unclaimed",

@@ -1,5 +1,6 @@
 {
   "id": "satvu",
+  "family": "satellite-thermal-hyperspectral",
   "name": "SatVu",
   "adapter": "satvu",
   "status": "unclaimed",

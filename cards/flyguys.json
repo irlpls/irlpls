@@ -1,5 +1,6 @@
 {
   "id": "flyguys",
+  "family": "drone-capture",
   "name": "FlyGuys",
   "provider_url": "https://flyguys.com",
   "short": "Nationwide US drone, LiDAR and inspection missions flown by a pilot network.",

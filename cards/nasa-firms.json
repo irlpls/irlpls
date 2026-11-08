@@ -1,5 +1,6 @@
 {
   "id": "nasa-firms",
+  "family": "wildfire-detection",
   "name": "NASA FIRMS active fires",
   "status": "unclaimed",
   "provider_url": "https://firms.modaps.eosdis.nasa.gov/",

@@ -1,5 +1,6 @@
 {
   "id": "objectways",
+  "family": "dataset-egocentric",
   "name": "Objectways",
   "provider_url": "https://objectways.com",
   "status": "unclaimed",

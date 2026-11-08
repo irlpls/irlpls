@@ -1,5 +1,6 @@
 {
   "id": "skywatch",
+  "family": "satellite-optical",
   "name": "SkyWatch EarthCache",
   "adapter": "skywatch",
   "provider_url": "https://skywatch.com",

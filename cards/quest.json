@@ -1,5 +1,6 @@
 {
   "id": "quest",
+  "family": "errand-anywhere",
   "name": "Quest",
   "provider_url": "https://hireahuman.quest",
   "status": "unclaimed",

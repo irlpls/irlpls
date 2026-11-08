@@ -1,5 +1,6 @@
 {
   "id": "spexi",
+  "family": "drone-capture",
   "name": "Spexi",
   "provider_url": "https://www.spexi.com",
   "status": "unclaimed",

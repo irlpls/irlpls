@@ -1,5 +1,6 @@
 {
   "id": "open-meteo",
+  "family": "weather-station",
   "name": "Open-Meteo",
   "status": "unclaimed",
   "provider_url": "https://open-meteo.com",

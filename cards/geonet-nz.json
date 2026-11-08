@@ -1,5 +1,6 @@
 {
   "id": "geonet-nz",
+  "family": "earthquake",
   "name": "GeoNet (New Zealand earthquakes and volcanoes)",
   "provider_url": "https://www.geonet.org.nz",
   "short": "New Zealand earthquakes and volcano alert levels; free, keyless.",

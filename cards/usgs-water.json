@@ -1,5 +1,6 @@
 {
   "id": "usgs-water",
+  "family": "river-water-level",
   "name": "USGS stream gauges",
   "adapter": "usgs_water",
   "status": "unclaimed",

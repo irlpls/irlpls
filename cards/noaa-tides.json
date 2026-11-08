@@ -1,5 +1,6 @@
 {
   "id": "noaa-tides",
+  "family": "coast-tide-wave",
   "name": "NOAA tide and current stations",
   "adapter": "noaa_tides",
   "status": "unclaimed",

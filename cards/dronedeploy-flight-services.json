@@ -1,5 +1,6 @@
 {
   "id": "dronedeploy-flight-services",
+  "family": "drone-capture",
   "name": "DroneDeploy Flight Services",
   "provider_url": "https://www.dronedeploy.com",
   "status": "unclaimed",

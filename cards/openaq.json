@@ -1,5 +1,6 @@
 {
   "id": "openaq",
+  "family": "air-quality",
   "name": "OpenAQ",
   "status": "unclaimed",
   "provider_url": "https://openaq.org",

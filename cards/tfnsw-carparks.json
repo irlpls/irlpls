@@ -1,5 +1,6 @@
 {
   "id": "tfnsw-carparks",
+  "family": "parking-occupancy",
   "name": "Transport for NSW Car Park API",
   "status": "unclaimed",
   "provider_url": "https://opendata.transport.nsw.gov.au/data/dataset/car-park-api",

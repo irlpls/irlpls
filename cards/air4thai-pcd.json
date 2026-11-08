@@ -1,4 +1,5 @@
 {
+  "family": "air-quality",
   "status": "unclaimed",
   "pricing": {
     "model": "free",

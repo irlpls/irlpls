@@ -1,5 +1,6 @@
 {
   "id": "fmi-open-data",
+  "family": "weather-station",
   "name": "FMI Open Data (Finnish Meteorological Institute observations)",
   "provider_url": "https://en.ilmatieteenlaitos.fi/open-data",
   "short": "Finnish weather, sea level, lightning and air quality; keyless, CC BY.",

@@ -1,5 +1,6 @@
 {
   "id": "open-cosmos-datacosmos",
+  "family": "satellite-optical",
   "name": "Open Cosmos DataCosmos",
   "provider_url": "https://www.open-cosmos.com/data-ai-ready",
   "short": "Task Open Cosmos satellites or buy catalogue imagery by API.",

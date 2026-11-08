@@ -1,5 +1,6 @@
 {
   "id": "snappr",
+  "family": "photo-of-address",
   "name": "Snappr",
   "provider_url": "https://www.snappr.com",
   "status": "unclaimed",

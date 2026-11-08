@@ -1,5 +1,6 @@
 {
   "id": "alertcalifornia",
+  "family": "wildfire-camera",
   "name": "ALERTCalifornia cameras (UC San Diego)",
   "status": "unclaimed",
   "provider_url": "https://cameras.alertcalifornia.org/",

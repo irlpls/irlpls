@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "irlpls Capture Card 2026-10-26 (com.irlpls.capture.card)",
-  "description": "A provider's self-maintained, standardized description of what real-world data it can collect. Claims are the provider's; IRLpls standardizes how they are expressed and evidenced. There is deliberately no overall quality score.",
+  "description": "A provider's self-maintained, standardized description of what real-world data it can collect. Claims are the provider's; IRLpls standardizes how they are expressed and evidenced. There is deliberately no overall quality score. Optional field `family` (added without changing schema_version): the kebab-case id of the catalog family the card belongs to, for example river-water-level; the catalog derives family membership from it, so adding a card needs no edit to irlpls/catalog.py.",
   "type": "object",
   "required": [
     "capabilities",
@@ -20,6 +20,11 @@
     "verification"
   ],
   "properties": {
+    "family": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Optional. Id of an existing catalog family (see FAMILY_DEFS in irlpls/catalog.py), e.g. river-water-level. An unknown id fails the build."
+    },
     "id": {
       "type": "string",
       "pattern": "^[a-z0-9-]+$"

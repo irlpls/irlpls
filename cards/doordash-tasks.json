@@ -1,5 +1,6 @@
 {
   "id": "doordash-tasks",
+  "family": "photo-of-address",
   "name": "DoorDash Tasks",
   "status": "unclaimed",
   "provider_url": "https://developer.doordash.com/en-US/tasks",

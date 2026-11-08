@@ -1,5 +1,6 @@
 {
   "id": "capella",
+  "family": "satellite-radar",
   "name": "Capella Space",
   "status": "unclaimed",
   "provider_url": "https://www.capellaspace.com/",

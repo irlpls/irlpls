@@ -1,5 +1,6 @@
 {
   "id": "emsc-seismicportal",
+  "family": "earthquake",
   "name": "EMSC SeismicPortal (FDSN event service and live feed)",
   "provider_url": "https://www.seismicportal.eu",
   "short": "Global earthquake catalogue, free keyless FDSN API and websocket.",

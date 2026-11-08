@@ -1,5 +1,6 @@
 {
   "id": "uk-ea-flood",
+  "family": "river-water-level",
   "name": "Environment Agency real-time flood-monitoring API",
   "status": "unclaimed",
   "provider_url": "https://environment.data.gov.uk/flood-monitoring/doc/reference",

@@ -1,5 +1,6 @@
 {
   "id": "execution-market",
+  "family": "errand-anywhere",
   "name": "Execution Market",
   "provider_url": "https://execution.market",
   "status": "unclaimed",

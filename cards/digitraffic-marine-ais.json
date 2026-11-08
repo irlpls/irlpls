@@ -1,5 +1,6 @@
 {
   "id": "digitraffic-marine-ais",
+  "family": "ship-positions",
   "name": "Digitraffic Marine (Finnish AIS vessel positions)",
   "provider_url": "https://www.digitraffic.fi/en/marine-traffic/",
   "short": "Live AIS ship positions in Finnish waters; free, keyless, CC BY.",

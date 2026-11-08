@@ -1,5 +1,6 @@
 {
   "id": "mecka",
+  "family": "dataset-egocentric",
   "name": "Mecka",
   "provider_url": "https://www.mecka.ai",
   "status": "unclaimed",

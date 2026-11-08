@@ -393,18 +393,16 @@ def to_provider_file(card):
 
 def family_fix(card_id):
     """The plain, one-line fix for a card that is in no family (shared by build.py and tools/check_cards.py)."""
-    from .catalog import FAMILIES
-    ex = FAMILIES[0]
-    ids = ", ".join(f[0] for f in FAMILIES[:6])
-    return (f"{card_id}: not in any family. Fix: add \"{card_id}\" to FAMILIES in irlpls/catalog.py, in the last list of the closest "
-            f"family, for example: [{', '.join(repr(x).replace(chr(39), chr(34)) for x in ex[4][:2])}, \"{card_id}\"]),   "
-            f"(family ids: {ids}, ...)")
+    from .catalog import FAMILY_DEFS
+    ids = ", ".join(f[0] for f in FAMILY_DEFS[:6])
+    return (f"{card_id}: not in any family. Fix: add \"family\": \"<id>\" to the card, the closest family id "
+            f"(family ids: {ids}, ...; all are listed in FAMILY_DEFS in irlpls/catalog.py)")
 
 
 def repo_problems(cards_dir):
     """[str]: what the repo gate and build.py both refuse, in plain words, naming the card.
     Not valid JSON, id != file name, duplicate id, and a listed card that belongs to no family."""
-    from .catalog import FAMILIES, usable
+    from .catalog import FAMILY_DEFS, family_members, usable
     out, seen, cards = [], {}, []
     for f in sorted(pathlib.Path(cards_dir).glob("*.json")):
         try:
@@ -420,8 +418,12 @@ def repo_problems(cards_dir):
         seen[cid] = f.stem
         if isinstance(c, dict):
             cards.append(c)
-    in_family = {p for f in FAMILIES for p in f[4]}
-    for c in usable(cards):
-        if c.get("id") not in in_family:
+    cards = usable(cards)
+    known = {f[0] for f in FAMILY_DEFS}
+    in_family = {p for ids in family_members(cards, strict=False).values() for p in ids}
+    for c in cards:
+        if c.get("family") is not None and c["family"] not in known:
+            out.append(f"{c.get('id')}: unknown family {c['family']!r}. Fix: set \"family\" to one of: {', '.join(sorted(known))}")
+        elif c.get("id") not in in_family:
             out.append(family_fix(c.get("id")))
     return out

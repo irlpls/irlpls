@@ -1,5 +1,6 @@
 {
   "id": "mapilio",
+  "family": "street-level-imagery",
   "name": "Mapilio",
   "status": "unclaimed",
   "provider_url": "https://mapilio.com",

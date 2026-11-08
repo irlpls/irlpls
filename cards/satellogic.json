@@ -1,5 +1,6 @@
 {
   "id": "satellogic",
+  "family": "satellite-optical",
   "name": "Satellogic",
   "status": "unclaimed",
   "provider_url": "https://satellogic.com/",

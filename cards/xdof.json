@@ -1,5 +1,6 @@
 {
   "id": "xdof",
+  "family": "dataset-egocentric",
   "name": "XDOF",
   "provider_url": "https://www.xdof.ai",
   "status": "unclaimed",

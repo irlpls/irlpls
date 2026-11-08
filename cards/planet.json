@@ -1,4 +1,5 @@
 {
+  "family": "satellite-optical",
   "spec_version": "2026-10-26",
   "capability": "com.irlpls.capture.card",
   "id": "planet",

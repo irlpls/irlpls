@@ -1,5 +1,6 @@
 {
   "id": "premise",
+  "family": "store-shelf-check",
   "name": "Premise",
   "provider_url": "https://premise.com",
   "status": "unclaimed",

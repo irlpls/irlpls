@@ -1,5 +1,6 @@
 {
   "id": "copernicus-sentinel",
+  "family": "satellite-radar",
   "name": "Copernicus Sentinel (Copernicus Data Space Ecosystem)",
   "status": "unclaimed",
   "provider_url": "https://dataspace.copernicus.eu",

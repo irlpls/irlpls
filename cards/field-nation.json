@@ -1,5 +1,6 @@
 {
   "id": "field-nation",
+  "family": "photo-of-address",
   "name": "Field Nation",
   "provider_url": "https://fieldnation.com",
   "status": "unclaimed",

@@ -1,5 +1,6 @@
 {
   "id": "human-archive",
+  "family": "dataset-egocentric",
   "name": "Human Archive",
   "provider_url": "https://humanarchive.ai",
   "status": "unclaimed",

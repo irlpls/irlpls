@@ -1,4 +1,5 @@
 {
+  "family": "earthquake",
   "status": "unclaimed",
   "pricing": {
     "model": "free",

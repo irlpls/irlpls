@@ -1,5 +1,6 @@
 {
   "id": "telus-digital",
+  "family": "dataset-crowd-media",
   "name": "TELUS Digital (AI Data Solutions)",
   "provider_url": "https://www.telusdigital.com",
   "status": "unclaimed",

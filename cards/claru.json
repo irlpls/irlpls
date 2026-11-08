@@ -1,5 +1,6 @@
 {
   "id": "claru",
+  "family": "dataset-egocentric",
   "name": "Claru",
   "provider_url": "https://claru.ai",
   "status": "unclaimed",

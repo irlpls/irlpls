@@ -1,5 +1,6 @@
 {
   "id": "caltrans-cctv",
+  "family": "traffic-road-camera",
   "name": "Caltrans highway cameras",
   "status": "unclaimed",
   "provider_url": "https://cwwp2.dot.ca.gov/",

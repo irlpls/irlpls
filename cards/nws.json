@@ -1,5 +1,6 @@
 {
   "id": "nws",
+  "family": "weather-station",
   "name": "NWS weather stations (NOAA)",
   "status": "unclaimed",
   "provider_url": "https://www.weather.gov",

@@ -1,5 +1,6 @@
 {
   "id": "unidata",
+  "family": "dataset-egocentric",
   "name": "Unidata",
   "provider_url": "https://unidata.pro",
   "status": "unclaimed",

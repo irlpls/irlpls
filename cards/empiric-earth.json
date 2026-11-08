@@ -1,5 +1,6 @@
 {
   "id": "empiric-earth",
+  "family": "street-level-imagery",
   "name": "Empiric Earth (Nexar)",
   "provider_url": "https://empiricearth.com",
   "status": "unclaimed",

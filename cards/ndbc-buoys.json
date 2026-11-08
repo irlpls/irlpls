@@ -1,5 +1,6 @@
 {
   "id": "ndbc-buoys",
+  "family": "coast-tide-wave",
   "name": "NOAA NDBC buoys",
   "status": "unclaimed",
   "provider_url": "https://www.ndbc.noaa.gov/",

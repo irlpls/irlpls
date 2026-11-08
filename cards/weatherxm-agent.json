@@ -1,5 +1,6 @@
 {
   "id": "weatherxm-agent",
+  "family": "weather-station",
   "name": "WeatherXM Agent API",
   "status": "unclaimed",
   "provider_url": "https://agent.weatherxm.com/",

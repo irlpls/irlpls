@@ -1,4 +1,5 @@
 {
+  "family": "parking-occupancy",
   "status": "unclaimed",
   "pricing": {
     "model": "free",

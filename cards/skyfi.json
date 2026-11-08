@@ -1,5 +1,6 @@
 {
   "id": "skyfi",
+  "family": "satellite-optical",
   "name": "SkyFi",
   "status": "unclaimed",
   "provider_url": "https://skyfi.com",

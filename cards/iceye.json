@@ -1,5 +1,6 @@
 {
   "id": "iceye",
+  "family": "satellite-radar",
   "name": "ICEYE",
   "status": "unclaimed",
   "provider_url": "https://www.iceye.com/",

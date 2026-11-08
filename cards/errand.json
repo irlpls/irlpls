@@ -1,5 +1,6 @@
 {
   "id": "errand",
+  "family": "errand-anywhere",
   "name": "Errand",
   "status": "unclaimed",
   "adapter": "errand",

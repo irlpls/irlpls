@@ -1,5 +1,6 @@
 {
   "id": "awign-robotics",
+  "family": "dataset-egocentric",
   "name": "Awign Robotics Data",
   "provider_url": "https://www.awign.com",
   "status": "unclaimed",

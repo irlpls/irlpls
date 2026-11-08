@@ -88,7 +88,7 @@ def _tree(tmp_path, ids):
 def test_repo_problems_family_duplicate_and_filename(tmp_path):
     d = _tree(tmp_path, [("example-weather-co", "example-weather-co"), ("other", "example-weather-co")])
     out = "\n".join(validate.repo_problems(d))
-    assert "example-weather-co: not in any family" in out and 'FAMILIES in irlpls/catalog.py' in out
+    assert "example-weather-co: not in any family" in out and '"family": "<id>"' in out
     assert "other: id 'example-weather-co' must equal the file name" in out
     assert "duplicate id" in out
 
@@ -103,6 +103,7 @@ def _repo_copy(tmp_path):
     shutil.copytree(ROOT, dst, ignore=shutil.ignore_patterns(".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build", ".pytest_cache", "tests"))
     c = json.loads((ROOT / "cards" / "airnow.json").read_text())
     c["id"] = "example-weather-co"
+    c.pop("family", None)   # a card with no family
     (dst / "cards" / "example-weather-co.json").write_text(json.dumps(c))
     return dst
 
@@ -113,10 +114,10 @@ def test_build_fails_plainly_without_traceback(tmp_path):
                        env={**__import__("os").environ, "IRLPLS_NO_FETCH": "1"})
     assert r.returncode != 0
     assert "Traceback" not in r.stderr
-    assert "example-weather-co: not in any family" in r.stderr and "FAMILIES in irlpls/catalog.py" in r.stderr
+    assert "example-weather-co: not in any family" in r.stderr and '"family": "<id>"' in r.stderr
 
 
 def test_check_cards_says_the_same(tmp_path):
     dst = _repo_copy(tmp_path)
     r = subprocess.run([sys.executable, str(dst / "tools" / "check_cards.py")], capture_output=True, text=True, cwd=dst)
-    assert r.returncode == 1 and "example-weather-co: not in any family" in r.stdout and "FAMILIES in irlpls/catalog.py" in r.stdout
+    assert r.returncode == 1 and "example-weather-co: not in any family" in r.stdout and '"family": "<id>"' in r.stdout

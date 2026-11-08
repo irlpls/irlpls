@@ -1,5 +1,6 @@
 {
   "id": "airtasker",
+  "family": "errand-anywhere",
   "name": "Airtasker",
   "provider_url": "https://www.airtasker.com",
   "status": "unclaimed",

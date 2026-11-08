@@ -1,5 +1,6 @@
 {
   "id": "appen",
+  "family": "dataset-crowd-media",
   "name": "Appen",
   "provider_url": "https://www.appen.com",
   "status": "unclaimed",

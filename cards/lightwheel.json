@@ -1,5 +1,6 @@
 {
   "id": "lightwheel",
+  "family": "dataset-egocentric",
   "name": "Lightwheel EgoSuite",
   "provider_url": "https://www.lightwheel.ai",
   "status": "unclaimed",

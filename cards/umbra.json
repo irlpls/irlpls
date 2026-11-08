@@ -1,5 +1,6 @@
 {
   "id": "umbra",
+  "family": "satellite-radar",
   "name": "Umbra",
   "status": "unclaimed",
   "provider_url": "https://umbra.space",

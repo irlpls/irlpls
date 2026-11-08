@@ -1,5 +1,6 @@
 {
   "id": "sensor-community",
+  "family": "air-quality",
   "name": "Sensor.Community",
   "status": "unclaimed",
   "provider_url": "https://sensor.community",

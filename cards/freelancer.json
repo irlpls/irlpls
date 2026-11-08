@@ -1,5 +1,6 @@
 {
   "id": "freelancer",
+  "family": "errand-anywhere",
   "name": "Freelancer.com (local jobs)",
   "provider_url": "https://www.freelancer.com",
   "status": "unclaimed",

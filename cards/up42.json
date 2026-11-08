@@ -1,5 +1,6 @@
 {
   "id": "up42",
+  "family": "drone-capture",
   "name": "UP42",
   "adapter": "up42",
   "status": "unclaimed",

@@ -1,5 +1,6 @@
 {
   "id": "vantor-hub",
+  "family": "satellite-optical",
   "name": "Vantor Hub (WorldView tasking)",
   "provider_url": "https://vantor.com/product/platform/hub/",
   "short": "Task WorldView optical, 3D and radar captures by API.",

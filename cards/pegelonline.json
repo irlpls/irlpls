@@ -1,5 +1,6 @@
 {
   "id": "pegelonline",
+  "family": "river-water-level",
   "name": "PEGELONLINE (German Federal Waterways)",
   "status": "unclaimed",
   "provider_url": "https://www.pegelonline.wsv.de",

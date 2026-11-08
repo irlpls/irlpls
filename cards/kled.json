@@ -1,5 +1,6 @@
 {
   "id": "kled",
+  "family": "dataset-egocentric",
   "name": "Kled AI",
   "provider_url": "https://www.kled.ai",
   "status": "unclaimed",

@@ -38,6 +38,7 @@
  ],
  "cards": [
   {
+   "family": "air-quality",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -194,6 +195,7 @@
   },
   {
    "id": "airnow",
+   "family": "air-quality",
    "name": "EPA AirNow",
    "status": "unclaimed",
    "provider_url": "https://docs.airnowapi.org/",
@@ -455,6 +457,7 @@
   },
   {
    "id": "airtasker",
+   "family": "errand-anywhere",
    "name": "Airtasker",
    "provider_url": "https://www.airtasker.com",
    "status": "unclaimed",
@@ -765,6 +768,7 @@
   },
   {
    "id": "alertcalifornia",
+   "family": "wildfire-camera",
    "name": "ALERTCalifornia cameras (UC San Diego)",
    "status": "unclaimed",
    "provider_url": "https://cameras.alertcalifornia.org/",
@@ -990,6 +994,7 @@
    "adapter": "alertcalifornia"
   },
   {
+   "family": "river-water-level",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -1161,6 +1166,7 @@
   },
   {
    "id": "appen",
+   "family": "dataset-crowd-media",
    "name": "Appen",
    "provider_url": "https://www.appen.com",
    "status": "unclaimed",
@@ -1328,6 +1334,7 @@
   },
   {
    "id": "awign-robotics",
+   "family": "dataset-egocentric",
    "name": "Awign Robotics Data",
    "provider_url": "https://www.awign.com",
    "status": "unclaimed",
@@ -1490,6 +1497,355 @@
    ]
   },
   {
+   "family": "parking-occupancy",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "id": "basel-parkhaus-occupancy",
+   "name": "Basel public car park occupancy (Parkleitsystem)",
+   "provider_url": "https://data.bs.ch/explore/dataset/100088/",
+   "short": "Live free spaces in Basel's public car park garages. Free, no key, CC BY 4.0.",
+   "summary": "The canton of Basel-Stadt open data portal serves the current occupancy of public car park garages in Basel as a keyless Opendatasoft API: free and total places, share free and occupancy percent, status, address, coordinates, a link to the operator's page and a published timestamp. On 2026-11-08 the dataset held 16 entries (for example Parkhaus City, 1001 of 1114 free) with timestamps a few minutes old.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "free places in a Basel car park now",
+     "occupancy percent of Basel's public garages",
+     "list Basel car parks with address and coordinates"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Basel, Switzerland"
+    ],
+    "areas": [
+     "CH"
+    ],
+    "notes": "16 public car parks and garages in Basel-Stadt on 2026-11-08."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: published timestamps were minutes old; the free count changed between calls."
+   },
+   "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Per-record published and last_downloaded fields; update interval is not stated."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "Per-record published and last_downloaded fields; update interval is not stated."
+   },
+   "licensing": {
+    "summary": "The dataset is licensed CC BY 4.0 per its metadata; reuse including commercial is allowed with attribution to the publisher (Parkhauser Basel-Stadt) and a link to the licence. AI training and resale are not specifically addressed beyond CC BY 4.0 itself."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Per-record published timestamp (UTC).",
+     "unknown": "How the garage counters are checked is not documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed car park coordinates and address in the record.",
+     "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Counts come from the garage operators' systems.",
+     "unknown": "Counting method and error are not documented."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.bs.ch/explore/dataset/100088/information/",
+    "base_url": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100088",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/catalog/datasets/100088/records",
+      "params": "limit, where, select, order_by",
+      "notes": "Current records: title, free, total, auslastung_prozent, status, address, geo_point_2d, published."
+     }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "basel",
+    "switzerland",
+    "parkhaus",
+    "parkleitsystem",
+    "cc by",
+    "open data",
+    "real-time",
+    "government",
+    "europe",
+    "free",
+    "garage",
+    "space",
+    "spaces",
+    "parking lot",
+    "full",
+    "places libres",
+    "parkplatz"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-08: HTTP 200, 16 car parks with free and total places",
+     "url": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100088/records?limit=2"
+    },
+    {
+     "claim": "Dataset metadata: licence CC BY 4.0, publisher, modified time",
+     "url": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100088"
+    },
+    {
+     "claim": "Creative Commons Attribution 4.0 licence",
+     "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+   ]
+  },
+  {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "bd-bmd-wis2-synop",
+   "name": "Bangladesh Meteorological Department WIS2 observations",
+   "provider_url": "https://wis2node.bmd.gov.bd",
+   "short": "Latest synoptic weather from Bangladeshi stations via the national WIS2 node: JSON and CSV, free, no key.",
+   "summary": "The Bangladesh Meteorological Department (BMD) runs a WIS2-in-a-box node at wis2node.bmd.gov.bd that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 18:00 UTC; the collection held 248,703 features and the node's station list 54 stations. Reports were stamped at 18:00 UTC when the call was made around 22:30 UTC, so this node may publish less often than hourly; cadence was not measured.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest hourly surface weather observations at Bangladeshi stations",
+     "station list with WIGOS identifiers and coordinates",
+     "history of one station's decoded observations"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Bangladesh"
+    ],
+    "areas": [
+     "BD"
+    ],
+    "notes": "Bangladeshi national network as published to WIS2; density and which stations report are set by the weather service and were not audited."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No limit stated on the node's pages that were checked; the node is a public OGC API server, so use modest page sizes.",
+     "source_url": "https://wis2node.bmd.gov.bd/oapi/openapi"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest decoded report 2026-11-07 18:00 UTC, published within about an hour of its observation time (pubtime in the messages collection)."
+   },
+   "latency": {
+    "typical": "Within about an hour of the observation hour",
+    "notes": "One sample only. WIS2 messages also announce each file on a public MQTT broker; the HTTP API was the path tested."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About an hour",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "The node's discovery metadata for this dataset declares the WMO data policy 'core' and carries no separate licence or terms link. No national terms were found on the node pages checked. Attribution, resale and AI training are not stated by the provider."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each feature has phenomenonTime and reportTime in UTC.",
+     "unknown": "Observation time is as encoded by the station or service; clock accuracy not checked."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in each feature and in the node's station list, keyed by WIGOS identifier.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values are decoded from the service's own BUFR reports.",
+     "unknown": "The node does not document quality control; decoding and plausibility checks are not described."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.wis2box.wis.wmo.int/en/latest/",
+    "base_url": "https://wis2node.bmd.gov.bd/oapi",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; none required."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/urn:wmo:md:bd-bmd:synop/items",
+      "params": "f=json|csv, limit, offset, sortby=-reportTime, plus property filters such as wigos_station_identifier",
+      "notes": "Decoded observations, one feature per variable per report. Sort by -reportTime for the newest."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/collections/stations/items",
+      "params": "f=json, limit",
+      "notes": "Station list with WIGOS identifiers and coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/messages/items",
+      "params": "f=json, limit, sortby=-pubtime",
+      "notes": "WIS2 notification messages with links to the BUFR files under /data."
+     }
+    ],
+    "rate_limits": "Not published on the pages checked.",
+    "notes": "OpenAPI document at /oapi/openapi. Standard WIS2-in-a-box software, so the same paths work on other national nodes.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather station",
+    "weather observations",
+    "bangladesh",
+    "bmd",
+    "wis2",
+    "wmo",
+    "south asia",
+    "government",
+    "free",
+    "synop",
+    "3-hourly",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "dhaka",
+    "chittagong",
+    "windy",
+    "cold",
+    "hot"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset discovery metadata: title, WMO data policy core, update dates",
+     "url": "https://wis2node.bmd.gov.bd/oapi/collections/discovery-metadata/items/urn:wmo:md:bd-bmd:synop?f=json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest decoded report 2026-11-07 18:00 UTC; 248,703 features matched",
+     "url": "https://wis2node.bmd.gov.bd/oapi/collections/urn:wmo:md:bd-bmd:synop/items?f=json&limit=1&sortby=-reportTime"
+    },
+    {
+     "claim": "Station list returned 54 stations",
+     "url": "https://wis2node.bmd.gov.bd/oapi/collections/stations/items?f=json&limit=1"
+    }
+   ]
+  },
+  {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -1680,6 +2036,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -1845,7 +2202,192 @@
    ]
   },
   {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "br-inmet-wis2-synop",
+   "name": "INMET Brazil WIS2 automatic station observations",
+   "provider_url": "https://wis2bra.inmet.gov.br",
+   "short": "Latest synoptic weather from Brazilian stations via the national WIS2 node: JSON and CSV, free, no key.",
+   "summary": "Brazil's national meteorological institute (INMET) runs a WIS2-in-a-box node at wis2bra.inmet.gov.br that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 22:00 UTC; the collection held 7,277,130 features and the node's station list 1458 stations. The service's own legacy API (apitempo.inmet.gov.br) did not respond from the test network; this WIS2 node did.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest hourly surface weather observations at Brazilian stations",
+     "station list with WIGOS identifiers and coordinates",
+     "history of one station's decoded observations"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Brazil"
+    ],
+    "areas": [
+     "BR"
+    ],
+    "notes": "Brazilian national network as published to WIS2; density and which stations report are set by the weather service and were not audited."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No limit stated on the node's pages that were checked; the node is a public OGC API server, so use modest page sizes.",
+     "source_url": "https://wis2bra.inmet.gov.br/oapi/openapi"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest decoded report 2026-11-07 22:00 UTC, published within about an hour of its observation time (pubtime in the messages collection)."
+   },
+   "latency": {
+    "typical": "Within about an hour of the observation hour",
+    "notes": "One sample only. WIS2 messages also announce each file on a public MQTT broker; the HTTP API was the path tested."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About an hour",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "The node's discovery metadata for this dataset declares the WMO data policy 'core' and carries no separate licence or terms link. No national terms were found on the node pages checked. Attribution, resale and AI training are not stated by the provider."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each feature has phenomenonTime and reportTime in UTC.",
+     "unknown": "Observation time is as encoded by the station or service; clock accuracy not checked."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in each feature and in the node's station list, keyed by WIGOS identifier.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values are decoded from the service's own BUFR reports.",
+     "unknown": "The node does not document quality control; decoding and plausibility checks are not described."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.wis2box.wis.wmo.int/en/latest/",
+    "base_url": "https://wis2bra.inmet.gov.br/oapi",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; none required."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/urn:wmo:md:br-inmet:synop/items",
+      "params": "f=json|csv, limit, offset, sortby=-reportTime, plus property filters such as wigos_station_identifier",
+      "notes": "Decoded observations, one feature per variable per report. Sort by -reportTime for the newest."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/collections/stations/items",
+      "params": "f=json, limit",
+      "notes": "Station list with WIGOS identifiers and coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/messages/items",
+      "params": "f=json, limit, sortby=-pubtime",
+      "notes": "WIS2 notification messages with links to the BUFR files under /data."
+     }
+    ],
+    "rate_limits": "Not published on the pages checked.",
+    "notes": "OpenAPI document at /oapi/openapi. Standard WIS2-in-a-box software, so the same paths work on other national nodes.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather station",
+    "weather observations",
+    "brazil",
+    "inmet",
+    "wis2",
+    "wmo",
+    "latin america",
+    "government",
+    "free",
+    "hourly",
+    "synop",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "sao paulo",
+    "brasilia",
+    "windy",
+    "cold",
+    "hot"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset discovery metadata: title, WMO data policy core, update dates",
+     "url": "https://wis2bra.inmet.gov.br/oapi/collections/discovery-metadata/items/urn:wmo:md:br-inmet:synop?f=json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest decoded report 2026-11-07 22:00 UTC; 7,277,130 features matched",
+     "url": "https://wis2bra.inmet.gov.br/oapi/collections/urn:wmo:md:br-inmet:synop/items?f=json&limit=1&sortby=-reportTime"
+    },
+    {
+     "claim": "Station list returned 1458 stations",
+     "url": "https://wis2bra.inmet.gov.br/oapi/collections/stations/items?f=json&limit=1"
+    }
+   ]
+  },
+  {
    "id": "caltrans-cctv",
+   "family": "traffic-road-camera",
    "name": "Caltrans highway cameras",
    "status": "unclaimed",
    "provider_url": "https://cwwp2.dot.ca.gov/",
@@ -2058,6 +2600,7 @@
   },
   {
    "id": "capella",
+   "family": "satellite-radar",
    "name": "Capella Space",
    "status": "unclaimed",
    "provider_url": "https://www.capellaspace.com/",
@@ -2347,6 +2890,7 @@
    }
   },
   {
+   "family": "coast-tide-wave",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -2520,7 +3064,192 @@
    ]
   },
   {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "cl-meteochile-wis2-synop",
+   "name": "Meteo Chile WIS2 hourly synoptic observations",
+   "provider_url": "https://wischile.meteochile.gob.cl",
+   "short": "Latest synoptic weather from Chilean stations via the national WIS2 node: JSON and CSV, free, no key.",
+   "summary": "The Chilean weather service (Direccion Meteorologica de Chile, meteochile.gob.cl) runs a WIS2-in-a-box node at wischile.meteochile.gob.cl that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 23:00 UTC; the collection held 2,621,476 features and the node's station list 123 stations. Weather observations only; this node is an open route to the national weather data.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest hourly surface weather observations at Chilean stations",
+     "station list with WIGOS identifiers and coordinates",
+     "history of one station's decoded observations"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Chile"
+    ],
+    "areas": [
+     "CL"
+    ],
+    "notes": "Chilean national network as published to WIS2; density and which stations report are set by the weather service and were not audited."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No limit stated on the node's pages that were checked; the node is a public OGC API server, so use modest page sizes.",
+     "source_url": "https://wischile.meteochile.gob.cl/oapi/openapi"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest decoded report 2026-11-07 23:00 UTC, published within about an hour of its observation time (pubtime in the messages collection)."
+   },
+   "latency": {
+    "typical": "Within about an hour of the observation hour",
+    "notes": "One sample only. WIS2 messages also announce each file on a public MQTT broker; the HTTP API was the path tested."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About an hour",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "The node's discovery metadata for this dataset declares the WMO data policy 'core' and carries no separate licence or terms link. No national terms were found on the node pages checked. Attribution, resale and AI training are not stated by the provider."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each feature has phenomenonTime and reportTime in UTC.",
+     "unknown": "Observation time is as encoded by the station or service; clock accuracy not checked."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in each feature and in the node's station list, keyed by WIGOS identifier.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values are decoded from the service's own BUFR reports.",
+     "unknown": "The node does not document quality control; decoding and plausibility checks are not described."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.wis2box.wis.wmo.int/en/latest/",
+    "base_url": "https://wischile.meteochile.gob.cl/oapi",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; none required."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/urn:wmo:md:cl-meteochile:synop-onehours/items",
+      "params": "f=json|csv, limit, offset, sortby=-reportTime, plus property filters such as wigos_station_identifier",
+      "notes": "Decoded observations, one feature per variable per report. Sort by -reportTime for the newest."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/collections/stations/items",
+      "params": "f=json, limit",
+      "notes": "Station list with WIGOS identifiers and coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/messages/items",
+      "params": "f=json, limit, sortby=-pubtime",
+      "notes": "WIS2 notification messages with links to the BUFR files under /data."
+     }
+    ],
+    "rate_limits": "Not published on the pages checked.",
+    "notes": "OpenAPI document at /oapi/openapi. Standard WIS2-in-a-box software, so the same paths work on other national nodes.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather station",
+    "weather observations",
+    "chile",
+    "meteochile",
+    "wis2",
+    "wmo",
+    "latin america",
+    "government",
+    "free",
+    "hourly",
+    "synop",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "santiago",
+    "punta arenas",
+    "windy",
+    "cold",
+    "hot"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset discovery metadata: title, WMO data policy core, update dates",
+     "url": "https://wischile.meteochile.gob.cl/oapi/collections/discovery-metadata/items/urn:wmo:md:cl-meteochile:synop-onehours?f=json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest decoded report 2026-11-07 23:00 UTC; 2,621,476 features matched",
+     "url": "https://wischile.meteochile.gob.cl/oapi/collections/urn:wmo:md:cl-meteochile:synop-onehours/items?f=json&limit=1&sortby=-reportTime"
+    },
+    {
+     "claim": "Station list returned 123 stations",
+     "url": "https://wischile.meteochile.gob.cl/oapi/collections/stations/items?f=json&limit=1"
+    }
+   ]
+  },
+  {
    "id": "claru",
+   "family": "dataset-egocentric",
    "name": "Claru",
    "provider_url": "https://claru.ai",
    "status": "unclaimed",
@@ -2696,6 +3425,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -2849,7 +3579,473 @@
    ]
   },
   {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "co-ideam-precipitation-10min",
+   "name": "Colombia IDEAM 10-minute rainfall stations (datos.gov.co)",
+   "provider_url": "https://www.datos.gov.co/d/s54a-sgyg",
+   "short": "IDEAM rainfall totals every 10 minutes at stations across Colombia via the open-data portal. Free, no key.",
+   "summary": "Colombia's national weather and environment institute (IDEAM) publishes rain recorded every 10 minutes at stations across the country as an open dataset on datos.gov.co (Socrata, SODA JSON API). Each record has station code and name, department, municipality, hydrographic zone, latitude, longitude, sensor description, unit (mm) and the observed value with its time. The description says it has basic WMO-recommended quality control, with failing values corrected or removed, and that it can support early warning systems. Update frequency is stated as daily. A keyless GET sorted by time on 2026-11-07 UTC returned records stamped 2026-11-06 23:59 local time.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "10-minute rainfall by station",
+     "station metadata with coordinates, department and municipality"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Colombia"
+    ],
+    "areas": [
+     "CO"
+    ],
+    "notes": "Colombia only. Station count was not measured."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "Socrata platform; no number checked. Unauthenticated Socrata calls can be throttled; an app token is optional and was not used.",
+     "source_url": "https://www.datos.gov.co/api/views/s54a-sgyg"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC with order by fechaobservacion desc: newest records 2026-11-06T23:59 local, under a day old. Metadata says daily updates; rowsUpdatedAt 2026-11-07."
+   },
+   "latency": {
+    "typical": "Up to about a day",
+    "notes": "Readings are 10-minute but the dataset is refreshed daily, so this is near-real-time, not minutes."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a day on 2026-11-07",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "Dataset metadata on datos.gov.co: Creative Commons Attribution Share-Alike 4.0 International (credit IDEAM; derivative datasets must carry the same licence). Provenance flagged official. The portal's own terms of use were not read. Automated access, AI training and resale are not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record has an observation timestamp (local, no offset shown).",
+     "unknown": "Time zone is not stated in the records."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station latitude and longitude in each record.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Metadata states basic WMO-recommended quality control, with failing values corrected or removed.",
+     "unknown": "Quality control is described only in general terms."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://dev.socrata.com/",
+    "base_url": "https://www.datos.gov.co/resource/s54a-sgyg.json",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; Socrata app tokens are optional."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/resource/s54a-sgyg.json",
+      "params": "$limit, $order, $where (SoQL)",
+      "notes": "10-minute rainfall observations; order by fechaobservacion DESC for the newest."
+     }
+    ],
+    "rate_limits": "Not checked.",
+    "notes": "JSON via SODA.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "rain",
+    "rainfall",
+    "precipitation",
+    "weather",
+    "10-minute",
+    "colombia",
+    "ideam",
+    "stations",
+    "latin america",
+    "government",
+    "open data",
+    "free"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset: rain recorded every 10 minutes at IDEAM stations; basic WMO QC; frequency of update daily; attribution IDEAM; licence CC BY-SA 4.0; provenance official",
+     "url": "https://www.datos.gov.co/api/views/s54a-sgyg"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest records fechaobservacion 2026-11-06T23:59:00, value 0 mm at El Bagre and Escuela La Union",
+     "url": "https://www.datos.gov.co/resource/s54a-sgyg.json?$order=fechaobservacion%20DESC&$limit=2"
+    }
+   ]
+  },
+  {
+   "family": "river-water-level",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "co-ideam-river-level",
+   "name": "Colombia IDEAM river level stations (datos.gov.co)",
+   "provider_url": "https://www.datos.gov.co/d/bdmn-sqnh",
+   "short": "IDEAM river level readings at stations on Colombian rivers, hourly, via the national open-data portal. Free, no key.",
+   "summary": "Colombia's national weather and environment institute (IDEAM) publishes instantaneous river level (water surface height, metres) from its automatic hydrology stations as an open dataset on datos.gov.co (Socrata, SODA JSON API). Each record has station code and name, department, municipality, hydrographic zone, latitude, longitude, sensor description, unit and the observed value with its time. The description says the level is monitored, recorded and transmitted hourly, and that the data are raw readings from station sensors, not validated by IDEAM; update frequency is stated as daily. A keyless GET sorted by time on 2026-11-07 UTC returned readings stamped 2026-11-06 23:59 local time (El Bagre, Nechi river, 3.97 m). Sibling datasets for minimum and maximum river level were not checked.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "river level by station",
+     "station metadata with coordinates, department and hydrographic zone"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Colombia"
+    ],
+    "areas": [
+     "CO"
+    ],
+    "notes": "Colombia only; stations on the main river basins. Station count was not measured."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "Socrata platform; no number checked. Unauthenticated Socrata calls can be throttled; an app token is optional and was not used.",
+     "source_url": "https://www.datos.gov.co/api/views/bdmn-sqnh"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC with order by fechaobservacion desc: newest record 2026-11-06T23:59 local, so under a day old. Metadata says the dataset updates daily; rowsUpdatedAt 2026-11-07."
+   },
+   "latency": {
+    "typical": "Up to about a day",
+    "notes": "Dataset update frequency is stated as daily in the metadata, so this is near-real-time, not minutes."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a day on 2026-11-07",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "Dataset metadata on datos.gov.co: Creative Commons Attribution Share-Alike 4.0 International (credit IDEAM; derivative datasets must carry the same licence). Provenance flagged official. The description says the data are raw, unvalidated readings from automatic stations, free to consume under stated clauses. The portal's own terms of use were not read. Automated access, AI training and resale are not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record has an observation timestamp (local, no offset shown).",
+     "unknown": "Time zone is not stated in the records."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station latitude and longitude in each record.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Metadata states the values are raw instantaneous sensor data, not validated.",
+     "unknown": "The metadata says the data are not validated by IDEAM."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://dev.socrata.com/",
+    "base_url": "https://www.datos.gov.co/resource/bdmn-sqnh.json",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; Socrata app tokens are optional."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/resource/bdmn-sqnh.json",
+      "params": "$limit, $order, $where (SoQL)",
+      "notes": "Hourly instantaneous river level; order by fechaobservacion DESC for the newest."
+     }
+    ],
+    "rate_limits": "Not checked.",
+    "notes": "JSON via SODA.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "river",
+    "river level",
+    "water level",
+    "hydrology",
+    "hourly",
+    "colombia",
+    "ideam",
+    "stations",
+    "latin america",
+    "government",
+    "open data",
+    "free"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset: instantaneous river level, hourly; raw sensor data not validated by IDEAM; frequency of update daily; attribution IDEAM; licence CC BY-SA 4.0; provenance official",
+     "url": "https://www.datos.gov.co/api/views/bdmn-sqnh"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest record 2026-11-06T23:59 value 3.97 m at El Bagre",
+     "url": "https://www.datos.gov.co/resource/bdmn-sqnh.json?$order=fechaobservacion%20DESC&$limit=2"
+    }
+   ]
+  },
+  {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "co-ideam-third-party-stations",
+   "name": "Colombia IDEAM third-party station data (datos.gov.co)",
+   "provider_url": "https://www.datos.gov.co/d/57sv-p2fu",
+   "short": "Rain and soil moisture from partner-agency stations (e.g. Bogota) via IDEAM open data. Free, no key.",
+   "summary": "Colombia's national weather and environment institute (IDEAM) republishes, as an open dataset on datos.gov.co (Socrata, SODA JSON API), meteorological variables recorded at stations that belong to other environmental entities. Each record has station code and name, department, municipality, hydrographic zone, latitude, longitude, sensor description, unit, the observed value with its time and an entity field naming the owner. The two newest records on 2026-11-07 came from a Bogota station owned by the district risk management institute: 10-minute accumulated rain and hourly soil moisture at 50 cm. The metadata gives a one-line description and states daily updates. Which other owners and variables the dataset contains was not enumerated.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "10-minute rainfall and soil moisture at partner stations",
+     "station metadata with owner entity, coordinates and municipality"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Colombia"
+    ],
+    "areas": [
+     "CO"
+    ],
+    "notes": "Colombia; partner networks such as Bogota's district risk institute. Which owners and regions are included was not enumerated."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "Socrata platform; no number checked. Unauthenticated Socrata calls can be throttled; an app token is optional and was not used.",
+     "source_url": "https://www.datos.gov.co/api/views/57sv-p2fu"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC with order by fechaobservacion desc: newest records stamped 2026-11-07T17:07 local, within hours of the call; rowsUpdatedAt 2026-11-07."
+   },
+   "latency": {
+    "typical": "Hours",
+    "notes": "Metadata says daily updates; the one sample was only hours old."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Hours on 2026-11-07",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "Dataset metadata on datos.gov.co: Creative Commons Attribution Share-Alike 4.0 International (credit IDEAM; derivative datasets must carry the same licence). Provenance flagged official. The portal's own terms of use were not read. Automated access, AI training and resale are not addressed."
+   },
+   "verification": {
+    "time": {
+     "level": "claimed",
+     "method": "Each record has an observation timestamp (local, no offset shown).",
+     "unknown": "Time zone is not stated in the records."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station latitude and longitude in each record.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "The metadata gives no quality-control statement for this dataset.",
+     "unknown": "Quality control is described only in general terms."
+    },
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://dev.socrata.com/",
+    "base_url": "https://www.datos.gov.co/resource/57sv-p2fu.json",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; Socrata app tokens are optional."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/resource/57sv-p2fu.json",
+      "params": "$limit, $order, $where (SoQL)",
+      "notes": "Observations from partner stations; filter on entidad or codigoestacion with $where."
+     }
+    ],
+    "rate_limits": "Not checked.",
+    "notes": "JSON via SODA.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "rain",
+    "soil moisture",
+    "weather",
+    "bogota",
+    "partner stations",
+    "colombia",
+    "ideam",
+    "stations",
+    "latin america",
+    "government",
+    "open data",
+    "free"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset: variables recorded at stations of other environmental entities; frequency of update daily; attribution IDEAM; licence CC BY-SA 4.0; provenance official",
+     "url": "https://www.datos.gov.co/api/views/57sv-p2fu"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest records 2026-11-07T17:07 at VITELMA (district risk institute), rain 0 mm and soil moisture 70.77 %",
+     "url": "https://www.datos.gov.co/resource/57sv-p2fu.json?$order=fechaobservacion%20DESC&$limit=2"
+    }
+   ]
+  },
+  {
    "id": "copernicus-sentinel",
+   "family": "satellite-radar",
    "name": "Copernicus Sentinel (Copernicus Data Space Ecosystem)",
    "status": "unclaimed",
    "provider_url": "https://dataspace.copernicus.eu",
@@ -3163,6 +4359,7 @@
   },
   {
    "id": "defined-ai",
+   "family": "dataset-egocentric",
    "name": "Defined.ai",
    "provider_url": "https://defined.ai",
    "status": "unclaimed",
@@ -3395,6 +4592,7 @@
   },
   {
    "id": "digitraffic-marine-ais",
+   "family": "ship-positions",
    "name": "Digitraffic Marine (Finnish AIS vessel positions)",
    "provider_url": "https://www.digitraffic.fi/en/marine-traffic/",
    "short": "Live AIS ship positions in Finnish waters; free, keyless, CC BY.",
@@ -3575,6 +4773,7 @@
    "adapter": "digitraffic-marine-ais"
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -3740,6 +4939,7 @@
   },
   {
    "id": "dojah-scout",
+   "family": "address-verification",
    "name": "Scout by Dojah",
    "status": "unclaimed",
    "provider_url": "https://scout.dojah.io",
@@ -3918,6 +5118,7 @@
   },
   {
    "id": "doordash-tasks",
+   "family": "photo-of-address",
    "name": "DoorDash Tasks",
    "status": "unclaimed",
    "provider_url": "https://developer.doordash.com/en-US/tasks",
@@ -4097,6 +5298,7 @@
   },
   {
    "id": "dronedeploy-flight-services",
+   "family": "drone-capture",
    "name": "DroneDeploy Flight Services",
    "provider_url": "https://www.dronedeploy.com",
    "status": "unclaimed",
@@ -4333,6 +5535,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -4497,6 +5700,7 @@
    ]
   },
   {
+   "family": "air-quality",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -4667,6 +5871,7 @@
   },
   {
    "id": "empiric-earth",
+   "family": "street-level-imagery",
    "name": "Empiric Earth (Nexar)",
    "provider_url": "https://empiricearth.com",
    "status": "unclaimed",
@@ -4988,6 +6193,7 @@
   },
   {
    "id": "emsc-seismicportal",
+   "family": "earthquake",
    "name": "EMSC SeismicPortal (FDSN event service and live feed)",
    "provider_url": "https://www.seismicportal.eu",
    "short": "Global earthquake catalogue, free keyless FDSN API and websocket.",
@@ -5147,6 +6353,7 @@
   },
   {
    "id": "encord",
+   "family": "dataset-egocentric",
    "name": "Encord",
    "provider_url": "https://encord.com",
    "status": "unclaimed",
@@ -5338,6 +6545,7 @@
   },
   {
    "id": "errand",
+   "family": "errand-anywhere",
    "name": "Errand",
    "status": "unclaimed",
    "adapter": "errand",
@@ -5613,7 +6821,191 @@
    ]
   },
   {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "et-ethiomet-wis2-synop",
+   "name": "Ethiopian Meteorological Institute WIS2 surface observations",
+   "provider_url": "https://wis2.ethiomet.gov.et",
+   "short": "Latest synoptic weather from Ethiopian stations via the national WIS2 node: JSON and CSV, free, no key.",
+   "summary": "The Ethiopian Meteorological Institute runs a WIS2-in-a-box node at wis2.ethiomet.gov.et that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 21:00 UTC; the collection held 99,373 features and the node's station list 30 stations. The dataset description says it comes from the institute's GBON automatic weather station network.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest hourly surface weather observations at Ethiopian stations",
+     "station list with WIGOS identifiers and coordinates",
+     "history of one station's decoded observations"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Ethiopia"
+    ],
+    "areas": [
+     "ET"
+    ],
+    "notes": "Ethiopian national network as published to WIS2; density and which stations report are set by the weather service and were not audited."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No limit stated on the node's pages that were checked; the node is a public OGC API server, so use modest page sizes.",
+     "source_url": "https://wis2.ethiomet.gov.et/oapi/openapi"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest decoded report 2026-11-07 21:00 UTC, published within about an hour of its observation time (pubtime in the messages collection)."
+   },
+   "latency": {
+    "typical": "Within about an hour of the observation hour",
+    "notes": "One sample only. WIS2 messages also announce each file on a public MQTT broker; the HTTP API was the path tested."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About an hour",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "The node's discovery metadata for this dataset declares the WMO data policy 'core' and carries no separate licence or terms link. No national terms were found on the node pages checked. Attribution, resale and AI training are not stated by the provider."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each feature has phenomenonTime and reportTime in UTC.",
+     "unknown": "Observation time is as encoded by the station or service; clock accuracy not checked."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in each feature and in the node's station list, keyed by WIGOS identifier.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values are decoded from the service's own BUFR reports.",
+     "unknown": "The node does not document quality control; decoding and plausibility checks are not described."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.wis2box.wis.wmo.int/en/latest/",
+    "base_url": "https://wis2.ethiomet.gov.et/oapi",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; none required."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/urn:wmo:md:et-ethiomet:data.core.weather.surface-based-observations.synop/items",
+      "params": "f=json|csv, limit, offset, sortby=-reportTime, plus property filters such as wigos_station_identifier",
+      "notes": "Decoded observations, one feature per variable per report. Sort by -reportTime for the newest."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/collections/stations/items",
+      "params": "f=json, limit",
+      "notes": "Station list with WIGOS identifiers and coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/messages/items",
+      "params": "f=json, limit, sortby=-pubtime",
+      "notes": "WIS2 notification messages with links to the BUFR files under /data."
+     }
+    ],
+    "rate_limits": "Not published on the pages checked.",
+    "notes": "OpenAPI document at /oapi/openapi. Standard WIS2-in-a-box software, so the same paths work on other national nodes.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather station",
+    "weather observations",
+    "ethiopia",
+    "ethiomet",
+    "wis2",
+    "wmo",
+    "africa",
+    "gbon",
+    "government",
+    "free",
+    "hourly",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "addis ababa",
+    "windy",
+    "cold",
+    "hot"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset discovery metadata: title, WMO data policy core, update dates",
+     "url": "https://wis2.ethiomet.gov.et/oapi/collections/discovery-metadata/items/urn:wmo:md:et-ethiomet:data.core.weather.surface-based-observations.synop?f=json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest decoded report 2026-11-07 21:00 UTC; 99,373 features matched",
+     "url": "https://wis2.ethiomet.gov.et/oapi/collections/urn:wmo:md:et-ethiomet:data.core.weather.surface-based-observations.synop/items?f=json&limit=1&sortby=-reportTime"
+    },
+    {
+     "claim": "Station list returned 30 stations",
+     "url": "https://wis2.ethiomet.gov.et/oapi/collections/stations/items?f=json&limit=1"
+    }
+   ]
+  },
+  {
    "id": "execution-market",
+   "family": "errand-anywhere",
    "name": "Execution Market",
    "provider_url": "https://execution.market",
    "status": "unclaimed",
@@ -5968,6 +7360,7 @@
   },
   {
    "id": "field-agent",
+   "family": "store-shelf-check",
    "name": "Field Agent (now Storesight)",
    "status": "unclaimed",
    "provider_url": "https://storesight.com/",
@@ -6243,6 +7636,7 @@
   },
   {
    "id": "field-nation",
+   "family": "photo-of-address",
    "name": "Field Nation",
    "provider_url": "https://fieldnation.com",
    "status": "unclaimed",
@@ -6546,6 +7940,7 @@
   },
   {
    "id": "fintraffic-weathercams",
+   "family": "traffic-road-camera",
    "name": "Fintraffic Digitraffic road weather cameras",
    "status": "unclaimed",
    "provider_url": "https://www.digitraffic.fi/en/road-traffic/",
@@ -6786,6 +8181,7 @@
   },
   {
    "id": "flyguys",
+   "family": "drone-capture",
    "name": "FlyGuys",
    "provider_url": "https://flyguys.com",
    "short": "Nationwide US drone, LiDAR and inspection missions flown by a pilot network.",
@@ -7019,6 +8415,7 @@
   },
   {
    "id": "fmi-open-data",
+   "family": "weather-station",
    "name": "FMI Open Data (Finnish Meteorological Institute observations)",
    "provider_url": "https://en.ilmatieteenlaitos.fi/open-data",
    "short": "Finnish weather, sea level, lightning and air quality; keyless, CC BY.",
@@ -7196,6 +8593,7 @@
   },
   {
    "id": "freelancer",
+   "family": "errand-anywhere",
    "name": "Freelancer.com (local jobs)",
    "provider_url": "https://www.freelancer.com",
    "status": "unclaimed",
@@ -7525,6 +8923,171 @@
    ]
   },
   {
+   "family": "wildfire-detection",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "id": "ga-dea-hotspots-australia",
+   "name": "Digital Earth Australia Hotspots (Geoscience Australia)",
+   "provider_url": "https://hotspots.dea.ga.gov.au/",
+   "short": "Satellite fire hotspots over Australia, updated through the day. Free, no key, CC BY 4.0.",
+   "summary": "Geoscience Australia's Digital Earth Australia Hotspots serves satellite-detected fire hotspots for Australia as a keyless WFS GeoServer: point detections with satellite and sensor (for example Himawari-9 AHI), acquisition time, fire power, confidence, temperature and Australian state, for the last three days and the full set. On 2026-11-08 the three-day layer returned GeoJSON whose newest detection was stamped 2026-11-08T03:00Z, minutes before the call.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "fire hotspots near a place in Australia in the last three days",
+     "latest satellite pass times and hotspot count for an Australian state",
+     "fire radiative power and confidence of a hotspot"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Australia and surrounding region"
+    ],
+    "areas": [
+     "AU"
+    ],
+    "notes": "Detections from geostationary and polar satellites over Australia; a hotspot is a heat signal, not a confirmed fire or its extent."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: newest detection start_dt 2026-11-08T03:00:00Z against a call at about 03:25Z."
+   },
+   "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Geostationary Himawari scans every 10 minutes; polar passes add detections several times a day."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes to an hour after satellite acquisition",
+    "notes": "Geostationary Himawari scans every 10 minutes; polar passes add detections several times a day."
+   },
+   "licensing": {
+    "summary": "The WFS capabilities state: (c) Commonwealth of Australia (Geoscience Australia) 2016, released under the Creative Commons Attribution 4.0 International Licence. Fees: none. Attribute Geoscience Australia and link the licence. Hotspots are automated and can include false alarms. AI training is not specifically addressed beyond CC BY 4.0."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "start_dt and process_dt per detection (UTC).",
+     "unknown": "Satellite clock handling is not documented in the pages read."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Latitude and longitude from the satellite detection.",
+     "unknown": "Geostationary pixel size limits location accuracy; an accuracy field is present."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Automated fire detection algorithm with a confidence value.",
+     "unknown": "False detections occur; no ground confirmation."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://hotspots.dea.ga.gov.au/",
+    "base_url": "https://hotspots.dea.ga.gov.au/geoserver/public/ows",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "",
+      "params": "service=WFS&version=2.0.0&request=GetCapabilities",
+      "notes": "Layers incl. public:hotspots, public:hotspots_three_days and satellite pass layers."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "",
+      "params": "service=WFS&version=2.0.0&request=GetFeature&typeNames=public:hotspots_three_days&outputFormat=application/json&count=N&sortBy=start_dt D",
+      "notes": "Hotspots in the last three days as GeoJSON; add bbox or cql_filter to limit the area."
+     }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Standard OGC WFS 2.0.0 served by GeoServer.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "wildfire",
+    "bushfire",
+    "fire hotspot",
+    "active fire",
+    "satellite",
+    "himawari",
+    "australia",
+    "geoscience australia",
+    "wfs",
+    "cc by",
+    "real-time",
+    "government",
+    "free",
+    "oceania"
+   ],
+   "sources": [
+    {
+     "claim": "WFS capabilities: Digital Earth Australia Hotspots, layers, Fees NONE, CC BY 4.0 notice",
+     "url": "https://hotspots.dea.ga.gov.au/geoserver/public/wfs?service=WFS&version=2.0.0&request=GetCapabilities"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-08: HTTP 200 GeoJSON hotspots_three_days",
+     "url": "https://hotspots.dea.ga.gov.au/geoserver/public/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=public:hotspots_three_days&count=1&outputFormat=application/json"
+    },
+    {
+     "claim": "Hotspots portal",
+     "url": "https://hotspots.dea.ga.gov.au/"
+    }
+   ]
+  },
+  {
+   "family": "earthquake",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -7690,7 +9253,170 @@
    ]
   },
   {
+   "family": "parking-occupancy",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "id": "gent-parking-garages",
+   "name": "Ghent car park occupancy (Mobiliteitsbedrijf Gent)",
+   "provider_url": "https://data.stad.gent/explore/dataset/bezetting-parkeergarages-real-time/",
+   "short": "Live free spaces in Ghent's public car parks. Free, no key, Flemish free-reuse licence.",
+   "summary": "The City of Ghent's open data portal publishes real-time occupancy of its public car park garages as a keyless Opendatasoft API. Each record gives name, total capacity, available capacity, occupation percent, open-now and temporarily-closed flags, an occupancy trend, opening hours, operator and coordinates. On 2026-11-08 the dataset held 15 car parks, each stamped within minutes of the call (for example Sint-Michiels 316 of 450 free).",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "free spaces and occupancy percent for a Ghent car park now",
+     "list Ghent car parks with capacity, coordinates and opening hours",
+     "whether a Ghent car park is open or temporarily closed"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Ghent, Belgium"
+    ],
+    "areas": [
+     "BE"
+    ],
+    "notes": "15 public car parks managed under Mobiliteitsbedrijf Gent as listed on 2026-11-08; not on-street parking."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: lastupdate on each record was within minutes of the call; dataset metadata lists continuous updates."
+   },
+   "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Per-record lastupdate field; update interval is not stated beyond 'continuous' in the dataset metadata."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes; each record carries its own lastupdate",
+    "notes": "Per-record lastupdate field; update interval is not stated beyond 'continuous' in the dataset metadata."
+   },
+   "licensing": {
+    "summary": "City of Ghent (Mobiliteitsbedrijf Gent) publishes this dataset under the Flemish 'Modellicentie Gratis Hergebruik' (model licence for free reuse, v1.0). The licence text says the licensee must name the licensor and, where possible, the year or date the product was made available, and must not suggest official status or endorsement. The product is supplied as is, with no guarantee of fitness. AI training and resale are not specifically addressed."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each record has a lastupdate timestamp with offset.",
+     "unknown": "Sensor clock checks are not documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed car park coordinates in the record.",
+     "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Counts come from the garage operators' systems.",
+     "unknown": "Counting method and error are not documented."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.stad.gent/explore/dataset/bezetting-parkeergarages-real-time/information/",
+    "base_url": "https://data.stad.gent/api/explore/v2.1/catalog/datasets/bezetting-parkeergarages-real-time",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/catalog/datasets/bezetting-parkeergarages-real-time/records",
+      "params": "limit, where, select, order_by",
+      "notes": "Current occupancy records: name, totalcapacity, availablecapacity, occupation, lastupdate, isopennow, temporaryclosed, location."
+     }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200. The portal may apply its own quotas; none were read.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "ghent",
+    "gent",
+    "belgium",
+    "flanders",
+    "open data",
+    "real-time",
+    "garage",
+    "government",
+    "europe",
+    "free",
+    "space",
+    "spaces",
+    "parking lot",
+    "full",
+    "places libres"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-08: HTTP 200, 15 car parks with capacity and availability",
+     "url": "https://data.stad.gent/api/explore/v2.1/catalog/datasets/bezetting-parkeergarages-real-time/records?limit=2"
+    },
+    {
+     "claim": "Dataset metadata: title, publisher Mobiliteitsbedrijf Gent, licence name and link, continuous update",
+     "url": "https://data.stad.gent/api/explore/v2.1/catalog/datasets/bezetting-parkeergarages-real-time"
+    },
+    {
+     "claim": "Flemish Modellicentie Gratis Hergebruik v1.0 (attribution, no implied endorsement, as-is)",
+     "url": "https://www.vlaanderen.be/digitaal-vlaanderen/onze-oplossingen/open-data/voorwaarden-voor-het-hergebruik-van-overheidsinformatie/modellicentie-gratis-hergebruik"
+    }
+   ]
+  },
+  {
    "id": "geonet-nz",
+   "family": "earthquake",
    "name": "GeoNet (New Zealand earthquakes and volcanoes)",
    "provider_url": "https://www.geonet.org.nz",
    "short": "New Zealand earthquakes and volcano alert levels; free, keyless.",
@@ -8092,6 +9818,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -8265,6 +9992,7 @@
   },
   {
    "id": "getterdone",
+   "family": "photo-of-address",
    "name": "GetterDone",
    "status": "unclaimed",
    "adapter": "getterdone",
@@ -8547,6 +10275,7 @@
   },
   {
    "id": "globhe",
+   "family": "drone-capture",
    "name": "Globhe",
    "provider_url": "https://www.globhe.com",
    "status": "unclaimed",
@@ -8967,6 +10696,7 @@
   },
   {
    "id": "hire-a-human",
+   "family": "photo-of-address",
    "name": "Hire a Human",
    "provider_url": "https://hire-a-human.ai",
    "status": "unclaimed",
@@ -9206,6 +10936,7 @@
   },
   {
    "id": "hivemapper",
+   "family": "street-level-imagery",
    "name": "Bee Maps (Hivemapper)",
    "status": "unclaimed",
    "tags": [
@@ -9532,6 +11263,7 @@
    ]
   },
   {
+   "family": "traffic-road-camera",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -9705,6 +11437,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -9879,6 +11612,7 @@
   },
   {
    "id": "hover",
+   "family": "property-scan-3d",
    "name": "Hover",
    "provider_url": "https://hover.to",
    "status": "unclaimed",
@@ -10202,6 +11936,7 @@
   },
   {
    "id": "hubeau-hydrometrie",
+   "family": "river-water-level",
    "name": "Hub'Eau Hydrom\u00e9trie (France river levels and flow)",
    "provider_url": "https://hubeau.eaufrance.fr",
    "short": "Live French river height and flow, about 5,000 stations; keyless.",
@@ -10373,6 +12108,7 @@
   },
   {
    "id": "human-archive",
+   "family": "dataset-egocentric",
    "name": "Human Archive",
    "provider_url": "https://humanarchive.ai",
    "status": "unclaimed",
@@ -10609,6 +12345,7 @@
   },
   {
    "id": "human-for-ai",
+   "family": "photo-of-address",
    "name": "Human For AI",
    "provider_url": "https://humanforai.dev",
    "status": "unclaimed",
@@ -10884,6 +12621,7 @@
   },
   {
    "id": "human-pages",
+   "family": "errand-anywhere",
    "name": "Human Pages",
    "provider_url": "https://humanpages.ai",
    "status": "unclaimed",
@@ -11111,6 +12849,7 @@
   },
   {
    "id": "iceye",
+   "family": "satellite-radar",
    "name": "ICEYE",
    "status": "unclaimed",
    "provider_url": "https://www.iceye.com/",
@@ -11455,6 +13194,7 @@
    "expires": "2027-10-27"
   },
   {
+   "family": "earthquake",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -11602,6 +13342,7 @@
    ]
   },
   {
+   "family": "river-water-level",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -11766,6 +13507,7 @@
    ]
   },
   {
+   "family": "earthquake",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -11944,6 +13686,7 @@
    ]
   },
   {
+   "family": "earthquake",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -12121,6 +13864,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -12304,6 +14048,191 @@
    ]
   },
   {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "in-imd-wis2-synop",
+   "name": "India Meteorological Department WIS2 synoptic observations",
+   "provider_url": "https://wis2box.imd.gov.in",
+   "short": "Latest synoptic weather from Indian stations via the national WIS2 node: JSON and CSV, free, no key.",
+   "summary": "The India Meteorological Department (IMD) runs a WIS2-in-a-box node at wis2box.imd.gov.in that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 21:00 UTC; the collection held 2,833,105 features and the node's station list 432 stations. Other IMD datasets on the node (CAP alerts, tsunami, satellite products) were listed in the WIS2 catalogue but not tested.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest hourly surface weather observations at Indian stations",
+     "station list with WIGOS identifiers and coordinates",
+     "history of one station's decoded observations"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "India"
+    ],
+    "areas": [
+     "IN"
+    ],
+    "notes": "Indian national network as published to WIS2; density and which stations report are set by the weather service and were not audited."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No limit stated on the node's pages that were checked; the node is a public OGC API server, so use modest page sizes.",
+     "source_url": "https://wis2box.imd.gov.in/oapi/openapi"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest decoded report 2026-11-07 21:00 UTC, published within about an hour of its observation time (pubtime in the messages collection)."
+   },
+   "latency": {
+    "typical": "Within about an hour of the observation hour",
+    "notes": "One sample only. WIS2 messages also announce each file on a public MQTT broker; the HTTP API was the path tested."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About an hour",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "The node's discovery metadata for this dataset declares the WMO data policy 'core' and carries no separate licence or terms link. No national terms were found on the node pages checked. Attribution, resale and AI training are not stated by the provider."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each feature has phenomenonTime and reportTime in UTC.",
+     "unknown": "Observation time is as encoded by the station or service; clock accuracy not checked."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in each feature and in the node's station list, keyed by WIGOS identifier.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values are decoded from the service's own BUFR reports.",
+     "unknown": "The node does not document quality control; decoding and plausibility checks are not described."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.wis2box.wis.wmo.int/en/latest/",
+    "base_url": "https://wis2box.imd.gov.in/oapi",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; none required."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/urn:wmo:md:in-imd:surface-based-observations.synop/items",
+      "params": "f=json|csv, limit, offset, sortby=-reportTime, plus property filters such as wigos_station_identifier",
+      "notes": "Decoded observations, one feature per variable per report. Sort by -reportTime for the newest."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/collections/stations/items",
+      "params": "f=json, limit",
+      "notes": "Station list with WIGOS identifiers and coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/messages/items",
+      "params": "f=json, limit, sortby=-pubtime",
+      "notes": "WIS2 notification messages with links to the BUFR files under /data."
+     }
+    ],
+    "rate_limits": "Not published on the pages checked.",
+    "notes": "OpenAPI document at /oapi/openapi. Standard WIS2-in-a-box software, so the same paths work on other national nodes.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather station",
+    "weather observations",
+    "india",
+    "imd",
+    "wis2",
+    "wmo",
+    "south asia",
+    "government",
+    "free",
+    "hourly",
+    "synop",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "delhi",
+    "mumbai",
+    "windy",
+    "cold",
+    "hot"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset discovery metadata: title, WMO data policy core, update dates",
+     "url": "https://wis2box.imd.gov.in/oapi/collections/discovery-metadata/items/urn:wmo:md:in-imd:surface-based-observations.synop?f=json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest decoded report 2026-11-07 21:00 UTC; 2,833,105 features matched",
+     "url": "https://wis2box.imd.gov.in/oapi/collections/urn:wmo:md:in-imd:surface-based-observations.synop/items?f=json&limit=1&sortby=-reportTime"
+    },
+    {
+     "claim": "Station list returned 432 stations",
+     "url": "https://wis2box.imd.gov.in/oapi/collections/stations/items?f=json&limit=1"
+    }
+   ]
+  },
+  {
+   "family": "earthquake",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -12464,6 +14393,7 @@
    ]
   },
   {
+   "family": "wildfire-detection",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -12625,6 +14555,7 @@
    ]
   },
   {
+   "family": "coast-tide-wave",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -12794,6 +14725,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -12959,6 +14891,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -13154,6 +15087,7 @@
    ]
   },
   {
+   "family": "coast-tide-wave",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -13310,6 +15244,7 @@
    ]
   },
   {
+   "family": "coast-tide-wave",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -13468,6 +15403,7 @@
   },
   {
    "id": "kled",
+   "family": "dataset-egocentric",
    "name": "Kled AI",
    "provider_url": "https://www.kled.ai",
    "status": "unclaimed",
@@ -13690,6 +15626,7 @@
   },
   {
    "id": "lightwheel",
+   "family": "dataset-egocentric",
    "name": "Lightwheel EgoSuite",
    "provider_url": "https://www.lightwheel.ai",
    "status": "unclaimed",
@@ -13844,6 +15781,7 @@
   },
   {
    "id": "lxt-clickworker",
+   "family": "errand-anywhere",
    "name": "LXT (clickworker)",
    "provider_url": "https://www.lxt.ai",
    "status": "unclaimed",
@@ -14124,6 +16062,7 @@
   },
   {
    "id": "mapilio",
+   "family": "street-level-imagery",
    "name": "Mapilio",
    "status": "unclaimed",
    "provider_url": "https://mapilio.com",
@@ -14555,6 +16494,7 @@
   },
   {
    "id": "mecka",
+   "family": "dataset-egocentric",
    "name": "Mecka",
    "provider_url": "https://www.mecka.ai",
    "status": "unclaimed",
@@ -14772,6 +16712,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -14935,6 +16876,7 @@
   },
   {
    "id": "micro1",
+   "family": "dataset-egocentric",
    "name": "micro1",
    "provider_url": "https://www.micro1.ai",
    "status": "unclaimed",
@@ -15379,6 +17321,7 @@
   },
   {
    "id": "mundane",
+   "family": "photo-of-address",
    "name": "Mundane",
    "provider_url": "https://mundane.market",
    "status": "unclaimed",
@@ -15749,6 +17692,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -15915,6 +17859,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -16101,7 +18046,170 @@
    ]
   },
   {
+   "family": "parking-occupancy",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "id": "nantes-parking-availability",
+   "name": "Nantes public car park availability (Naolib)",
+   "provider_url": "https://data.nantesmetropole.fr/explore/dataset/244400404_parkings-publics-nantes-disponibilites/",
+   "short": "Live free places in Nantes public car parks. Free, no key, ODbL.",
+   "summary": "Nantes Metropole's open data portal serves a keyless Opendatasoft API with real-time availability of public car parks in Nantes: car park id and name, status code, available places, operating capacity, a fill threshold, address, coordinates and a timestamp. On 2026-11-08 the dataset held 27 car parks (for example Tour Bretagne, 453 of 643 available) stamped within minutes.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "free places in a Nantes car park now",
+     "whether a Nantes car park is full",
+     "list Nantes public car parks with address and coordinates"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Nantes, France"
+    ],
+    "areas": [
+     "FR"
+    ],
+    "notes": "27 public car parks on 2026-11-08. Status codes are numeric and not explained in the records read."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: grp_horodatage was minutes old."
+   },
+   "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Per-record grp_horodatage field; update interval not stated."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "Per-record grp_horodatage field; update interval not stated."
+   },
+   "licensing": {
+    "summary": "Nantes Metropole lists the dataset under the Open Database License (ODbL 1.0): copy, adapt and commercial use are allowed with credit, share-alike for adapted databases and keeping the licence. AI training is not specifically addressed beyond ODbL itself."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Per-record grp_horodatage timestamp (UTC).",
+     "unknown": "Device clock checks are not documented."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed car park coordinates and address in the record.",
+     "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Counts come from the operators' systems.",
+     "unknown": "Counting method and the meaning of grp_statut codes are not documented."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.nantesmetropole.fr/explore/dataset/244400404_parkings-publics-nantes-disponibilites/information/",
+    "base_url": "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_parkings-publics-nantes-disponibilites",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/catalog/datasets/244400404_parkings-publics-nantes-disponibilites/records",
+      "params": "limit, where, select, order_by",
+      "notes": "Current records: grp_nom, grp_disponible, grp_exploitation, grp_complet, grp_statut, grp_horodatage, location."
+     }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "nantes",
+    "france",
+    "naolib",
+    "odbl",
+    "open data",
+    "real-time",
+    "government",
+    "europe",
+    "free",
+    "garage",
+    "space",
+    "spaces",
+    "parking lot",
+    "full",
+    "places libres"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-08: HTTP 200, 27 car parks with available places",
+     "url": "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_parkings-publics-nantes-disponibilites/records?limit=1"
+    },
+    {
+     "claim": "Dataset metadata: licence ODbL, publisher Nantes Metropole",
+     "url": "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_parkings-publics-nantes-disponibilites"
+    },
+    {
+     "claim": "Open Database License 1.0 text",
+     "url": "https://opendatacommons.org/licenses/odbl/1-0/"
+    }
+   ]
+  },
+  {
    "id": "nasa-firms",
+   "family": "wildfire-detection",
    "name": "NASA FIRMS active fires",
    "status": "unclaimed",
    "provider_url": "https://firms.modaps.eosdis.nasa.gov/",
@@ -16356,6 +18464,7 @@
   },
   {
    "id": "natix",
+   "family": "street-level-imagery",
    "name": "NATIX Network",
    "provider_url": "https://www.natix.network/",
    "status": "unclaimed",
@@ -16557,6 +18666,7 @@
   },
   {
    "id": "ndbc-buoys",
+   "family": "coast-tide-wave",
    "name": "NOAA NDBC buoys",
    "status": "unclaimed",
    "provider_url": "https://www.ndbc.noaa.gov/",
@@ -16810,6 +18920,7 @@
    "adapter": "ndbc-buoys"
   },
   {
+   "family": "street-level-imagery",
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card",
    "id": "nextbase-insight",
@@ -16961,6 +19072,7 @@
    "expires": "2027-11-04"
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -17136,6 +19248,7 @@
   },
   {
    "id": "noaa-tides",
+   "family": "coast-tide-wave",
    "name": "NOAA tide and current stations",
    "adapter": "noaa_tides",
    "status": "unclaimed",
@@ -17404,6 +19517,7 @@
    }
   },
   {
+   "family": "earthquake",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -17568,6 +19682,7 @@
   },
   {
    "id": "nws",
+   "family": "weather-station",
    "name": "NWS weather stations (NOAA)",
    "status": "unclaimed",
    "provider_url": "https://www.weather.gov",
@@ -17829,6 +19944,7 @@
   },
   {
    "id": "objectways",
+   "family": "dataset-egocentric",
    "name": "Objectways",
    "provider_url": "https://objectways.com",
    "status": "unclaimed",
@@ -17997,6 +20113,7 @@
   },
   {
    "id": "open-cosmos-datacosmos",
+   "family": "satellite-optical",
    "name": "Open Cosmos DataCosmos",
    "provider_url": "https://www.open-cosmos.com/data-ai-ready",
    "short": "Task Open Cosmos satellites or buy catalogue imagery by API.",
@@ -18222,6 +20339,7 @@
   },
   {
    "id": "open-meteo",
+   "family": "weather-station",
    "name": "Open-Meteo",
    "status": "unclaimed",
    "provider_url": "https://open-meteo.com",
@@ -18475,6 +20593,7 @@
   },
   {
    "id": "openaq",
+   "family": "air-quality",
    "name": "OpenAQ",
    "status": "unclaimed",
    "provider_url": "https://openaq.org",
@@ -18779,6 +20898,7 @@
    "capability": "com.irlpls.capture.card"
   },
   {
+   "family": "river-water-level",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -18953,7 +21073,192 @@
    ]
   },
   {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "pe-senamhi-wis2-synop",
+   "name": "SENAMHI Peru WIS2 hourly observations",
+   "provider_url": "https://wis.senamhi.gob.pe",
+   "short": "Latest synoptic weather from Peruvian stations via the national WIS2 node: JSON and CSV, free, no key.",
+   "summary": "Peru's national weather and hydrology service (SENAMHI) runs a WIS2-in-a-box node at wis.senamhi.gob.pe that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 22:00 UTC; the collection held 433,026 features and the node's station list 31 stations.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest hourly surface weather observations at Peruvian stations",
+     "station list with WIGOS identifiers and coordinates",
+     "history of one station's decoded observations"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Peru"
+    ],
+    "areas": [
+     "PE"
+    ],
+    "notes": "Peruvian national network as published to WIS2; density and which stations report are set by the weather service and were not audited."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No limit stated on the node's pages that were checked; the node is a public OGC API server, so use modest page sizes.",
+     "source_url": "https://wis.senamhi.gob.pe/oapi/openapi"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest decoded report 2026-11-07 22:00 UTC, published within about an hour of its observation time (pubtime in the messages collection)."
+   },
+   "latency": {
+    "typical": "Within about an hour of the observation hour",
+    "notes": "One sample only. WIS2 messages also announce each file on a public MQTT broker; the HTTP API was the path tested."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About an hour",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "The node's discovery metadata for this dataset declares the WMO data policy 'core' and carries no separate licence or terms link. No national terms were found on the node pages checked. Attribution, resale and AI training are not stated by the provider."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each feature has phenomenonTime and reportTime in UTC.",
+     "unknown": "Observation time is as encoded by the station or service; clock accuracy not checked."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in each feature and in the node's station list, keyed by WIGOS identifier.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values are decoded from the service's own BUFR reports.",
+     "unknown": "The node does not document quality control; decoding and plausibility checks are not described."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.wis2box.wis.wmo.int/en/latest/",
+    "base_url": "https://wis.senamhi.gob.pe/oapi",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; none required."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/urn:wmo:md:pe-senamhi:synop-hourly/items",
+      "params": "f=json|csv, limit, offset, sortby=-reportTime, plus property filters such as wigos_station_identifier",
+      "notes": "Decoded observations, one feature per variable per report. Sort by -reportTime for the newest."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/collections/stations/items",
+      "params": "f=json, limit",
+      "notes": "Station list with WIGOS identifiers and coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/messages/items",
+      "params": "f=json, limit, sortby=-pubtime",
+      "notes": "WIS2 notification messages with links to the BUFR files under /data."
+     }
+    ],
+    "rate_limits": "Not published on the pages checked.",
+    "notes": "OpenAPI document at /oapi/openapi. Standard WIS2-in-a-box software, so the same paths work on other national nodes.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather station",
+    "weather observations",
+    "peru",
+    "senamhi",
+    "wis2",
+    "wmo",
+    "latin america",
+    "andes",
+    "government",
+    "free",
+    "hourly",
+    "synop",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "lima",
+    "windy",
+    "cold",
+    "hot"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset discovery metadata: title, WMO data policy core, update dates",
+     "url": "https://wis.senamhi.gob.pe/oapi/collections/discovery-metadata/items/urn:wmo:md:pe-senamhi:synop-hourly?f=json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest decoded report 2026-11-07 22:00 UTC; 433,026 features matched",
+     "url": "https://wis.senamhi.gob.pe/oapi/collections/urn:wmo:md:pe-senamhi:synop-hourly/items?f=json&limit=1&sortby=-reportTime"
+    },
+    {
+     "claim": "Station list returned 31 stations",
+     "url": "https://wis.senamhi.gob.pe/oapi/collections/stations/items?f=json&limit=1"
+    }
+   ]
+  },
+  {
    "id": "pegelonline",
+   "family": "river-water-level",
    "name": "PEGELONLINE (German Federal Waterways)",
    "status": "unclaimed",
    "provider_url": "https://www.pegelonline.wsv.de",
@@ -19175,6 +21480,7 @@
   },
   {
    "id": "pixxel",
+   "family": "satellite-thermal-hyperspectral",
    "name": "Pixxel",
    "adapter": "pixxel",
    "provider_url": "https://www.pixxel.space",
@@ -19438,6 +21744,7 @@
    "expires": "2027-10-27"
   },
   {
+   "family": "satellite-optical",
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card",
    "id": "planet",
@@ -19830,6 +22137,7 @@
   },
   {
    "id": "pospulse-streetspotr",
+   "family": "store-shelf-check",
    "name": "POSpulse (Streetspotr community)",
    "status": "unclaimed",
    "provider_url": "https://www.pospulse.com",
@@ -19988,6 +22296,7 @@
   },
   {
    "id": "precisely-ground-level-images",
+   "family": "photo-of-address",
    "name": "Precisely Ground Level Images (via DoorDash Tasks)",
    "status": "unclaimed",
    "provider_url": "https://www.precisely.com/data-guide/products/ground-level-images/",
@@ -20135,6 +22444,7 @@
   },
   {
    "id": "premise",
+   "family": "store-shelf-check",
    "name": "Premise",
    "provider_url": "https://premise.com",
    "status": "unclaimed",
@@ -20347,6 +22657,7 @@
   },
   {
    "id": "prolific",
+   "family": "dataset-crowd-media",
    "name": "Prolific",
    "provider_url": "https://www.prolific.com",
    "status": "unclaimed",
@@ -20796,6 +23107,7 @@
   },
   {
    "id": "proxypics",
+   "family": "photo-of-address",
    "name": "ProxyPics",
    "provider_url": "https://www.proxypics.com",
    "status": "unclaimed",
@@ -21089,6 +23401,7 @@
   },
   {
    "id": "purpleair",
+   "family": "air-quality",
    "name": "PurpleAir",
    "status": "unclaimed",
    "provider_url": "https://www.purpleair.com",
@@ -21375,6 +23688,7 @@
   },
   {
    "id": "quest",
+   "family": "errand-anywhere",
    "name": "Quest",
    "provider_url": "https://hireahuman.quest",
    "status": "unclaimed",
@@ -21621,7 +23935,172 @@
    "capability": "com.irlpls.capture.card"
   },
   {
+   "family": "parking-occupancy",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "id": "rennes-parking-citedia",
+   "name": "Rennes car park availability and tariffs (Citedia)",
+   "provider_url": "https://data.rennesmetropole.fr/explore/dataset/export-api-parking-citedia/",
+   "short": "Live free spaces and tariffs for Rennes car parks. Free, no key, ODbL.",
+   "summary": "Rennes Metropole's open data portal serves a keyless Opendatasoft API with the live state of the car parks run by Citedia: status (open or closed), maximum and free places, coordinates, opening hours and a tariff grid by duration. On 2026-11-08 the dataset held 10 car parks (for example Colombier, 718 of 939 free); the processing timestamp was minutes old.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "free places in a Rennes car park now",
+     "tariff for 1 to 4 hours in a Rennes car park",
+     "whether a Rennes car park is open"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Rennes, France"
+    ],
+    "areas": [
+     "FR"
+    ],
+    "notes": "10 Citedia-operated car parks on 2026-11-08; the record has no per-row timestamp, only the dataset processing time."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: free counts changed between two calls minutes apart (716, then 718 free at Colombier)."
+   },
+   "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "No per-record timestamp; dataset metadata data_processed was 2026-11-08T03:15:03Z on a 03:2x call."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "No per-record timestamp; dataset metadata data_processed was 2026-11-08T03:15:03Z on a 03:2x call."
+   },
+   "licensing": {
+    "summary": "Rennes Metropole lists the dataset under the Open Database License (ODbL 1.0): you may copy, adapt and use it commercially if you credit the source, keep the database open when you publish an adapted database (share-alike) and keep the licence. The operator is Citedia. AI training is not specifically addressed beyond ODbL itself."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Dataset-level processing time only.",
+     "unknown": "No per-car-park measurement time is in the record."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed car park coordinates (geo) in the record.",
+     "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Counts come from the operator's systems.",
+     "unknown": "Counting method and error are not documented."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.rennesmetropole.fr/explore/dataset/export-api-parking-citedia/information/",
+    "base_url": "https://data.rennesmetropole.fr/api/explore/v2.1/catalog/datasets/export-api-parking-citedia",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/catalog/datasets/export-api-parking-citedia/records",
+      "params": "limit, where, select, order_by",
+      "notes": "Current records: key (name), status, max, free, geo, tariff fields, orgahoraires."
+     }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "tariff",
+    "rennes",
+    "brittany",
+    "france",
+    "citedia",
+    "odbl",
+    "open data",
+    "real-time",
+    "government",
+    "europe",
+    "free",
+    "garage",
+    "space",
+    "spaces",
+    "parking lot",
+    "full",
+    "places libres"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-08: HTTP 200, 10 car parks with max and free places",
+     "url": "https://data.rennesmetropole.fr/api/explore/v2.1/catalog/datasets/export-api-parking-citedia/records?limit=2"
+    },
+    {
+     "claim": "Dataset metadata: publisher Citedia, licence ODbL, data_processed time",
+     "url": "https://data.rennesmetropole.fr/api/explore/v2.1/catalog/datasets/export-api-parking-citedia"
+    },
+    {
+     "claim": "Open Database License 1.0 text",
+     "url": "https://opendatacommons.org/licenses/odbl/1-0/"
+    }
+   ]
+  },
+  {
    "id": "rentahuman",
+   "family": "errand-anywhere",
    "name": "RentAHuman",
    "provider_url": "https://rentahuman.ai",
    "status": "unclaimed",
@@ -21940,6 +24419,7 @@
    }
   },
   {
+   "family": "traffic-road-camera",
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card",
    "id": "road511",
@@ -22200,6 +24680,7 @@
   },
   {
    "id": "satellogic",
+   "family": "satellite-optical",
    "name": "Satellogic",
    "status": "unclaimed",
    "provider_url": "https://satellogic.com/",
@@ -22516,6 +24997,7 @@
   },
   {
    "id": "satvu",
+   "family": "satellite-thermal-hyperspectral",
    "name": "SatVu",
    "adapter": "satvu",
    "status": "unclaimed",
@@ -22856,6 +25338,7 @@
   },
   {
    "id": "sensor-community",
+   "family": "air-quality",
    "name": "Sensor.Community",
    "status": "unclaimed",
    "provider_url": "https://sensor.community",
@@ -23077,6 +25560,7 @@
    "expires": "2027-10-27"
   },
   {
+   "family": "air-quality",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -23230,6 +25714,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -23447,6 +25932,7 @@
   },
   {
    "id": "shaip",
+   "family": "dataset-crowd-media",
    "name": "Shaip",
    "provider_url": "https://www.shaip.com",
    "status": "unclaimed",
@@ -23626,6 +26112,7 @@
   },
   {
    "id": "skyfi",
+   "family": "satellite-optical",
    "name": "SkyFi",
    "status": "unclaimed",
    "provider_url": "https://skyfi.com",
@@ -23990,6 +26477,7 @@
   },
   {
    "id": "skywatch",
+   "family": "satellite-optical",
    "name": "SkyWatch EarthCache",
    "adapter": "skywatch",
    "provider_url": "https://skywatch.com",
@@ -24262,6 +26750,7 @@
    "expires": "2027-10-27"
   },
   {
+   "family": "river-water-level",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -24438,6 +26927,7 @@
    ]
   },
   {
+   "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -24600,6 +27090,7 @@
   },
   {
    "id": "snappr",
+   "family": "photo-of-address",
    "name": "Snappr",
    "provider_url": "https://www.snappr.com",
    "status": "unclaimed",
@@ -24888,6 +27379,7 @@
   },
   {
    "id": "spexi",
+   "family": "drone-capture",
    "name": "Spexi",
    "provider_url": "https://www.spexi.com",
    "status": "unclaimed",
@@ -25222,6 +27714,169 @@
    }
   },
   {
+   "family": "parking-occupancy",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "id": "strasbourg-parking-occupancy",
+   "name": "Strasbourg car park occupancy (Eurometropole)",
+   "provider_url": "https://data.strasbourg.eu/explore/dataset/occupation-parkings-temps-reel/",
+   "short": "Live free spaces in Strasbourg car parks. Free, no key, Licence Ouverte.",
+   "summary": "The Eurometropole de Strasbourg open data portal serves a keyless Opendatasoft API with real-time car park occupancy: name, state, total and free places, a user-facing count, occupancy rate, a green-to-red status colour and coordinates. On 2026-11-08 the dataset held 35 car parks (for example Parking Gare Wodli, 633 of 955 free); the dataset was processed minutes before the call.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "free places in a Strasbourg car park now",
+     "occupancy rate of Strasbourg car parks",
+     "whether a Strasbourg car park is open"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Strasbourg, France"
+    ],
+    "areas": [
+     "FR"
+    ],
+    "notes": "35 car parks on 2026-11-08, including railway-station and park-and-ride sites."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: dataset data_processed time was minutes old."
+   },
+   "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "No per-record timestamp; dataset-level processing time only."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "No per-record timestamp; dataset-level processing time only."
+   },
+   "licensing": {
+    "summary": "Licensed under the Licence Ouverte (Etalab) per the dataset metadata: free reuse including commercial, provided you credit the source and the date of the last update. The publisher is the Eurometropole de Strasbourg. AI training is not specifically addressed."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Dataset-level processing time only.",
+     "unknown": "No per-car-park measurement time is in the record."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Fixed car park coordinates in the record.",
+     "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Counts come from the operators' systems.",
+     "unknown": "Counting method is not documented."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.strasbourg.eu/explore/dataset/occupation-parkings-temps-reel/information/",
+    "base_url": "https://data.strasbourg.eu/api/explore/v2.1/catalog/datasets/occupation-parkings-temps-reel",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/catalog/datasets/occupation-parkings-temps-reel/records",
+      "params": "limit, where, select, order_by",
+      "notes": "Current records: nom_parking, etat_descriptif, total, libre, taux_occup, realtimestatus, position."
+     }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "strasbourg",
+    "alsace",
+    "france",
+    "etalab",
+    "open data",
+    "real-time",
+    "government",
+    "europe",
+    "free",
+    "garage",
+    "space",
+    "spaces",
+    "parking lot",
+    "full",
+    "places libres"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-08: HTTP 200, 35 car parks with total and free places",
+     "url": "https://data.strasbourg.eu/api/explore/v2.1/catalog/datasets/occupation-parkings-temps-reel/records?limit=2"
+    },
+    {
+     "claim": "Dataset metadata: licence Licence Ouverte (Etalab), publisher Eurometropole de Strasbourg",
+     "url": "https://data.strasbourg.eu/api/explore/v2.1/catalog/datasets/occupation-parkings-temps-reel"
+    },
+    {
+     "claim": "Licence Ouverte text",
+     "url": "https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"
+    }
+   ]
+  },
+  {
+   "family": "river-water-level",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -25395,6 +28050,7 @@
   },
   {
    "id": "telus-digital",
+   "family": "dataset-crowd-media",
    "name": "TELUS Digital (AI Data Solutions)",
    "provider_url": "https://www.telusdigital.com",
    "status": "unclaimed",
@@ -25569,6 +28225,7 @@
   },
   {
    "id": "tfl-jamcams",
+   "family": "traffic-road-camera",
    "name": "TfL JamCams",
    "status": "unclaimed",
    "provider_url": "https://api-portal.tfl.gov.uk/",
@@ -25819,6 +28476,7 @@
   },
   {
    "id": "tfnsw-carparks",
+   "family": "parking-occupancy",
    "name": "Transport for NSW Car Park API",
    "status": "unclaimed",
    "provider_url": "https://opendata.transport.nsw.gov.au/data/dataset/car-park-api",
@@ -26054,6 +28712,7 @@
   },
   {
    "id": "toloka",
+   "family": "dataset-egocentric",
    "name": "Toloka",
    "provider_url": "https://toloka.ai",
    "status": "unclaimed",
@@ -26346,6 +29005,7 @@
    "adapter": "toloka"
   },
   {
+   "family": "earthquake",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -26495,6 +29155,7 @@
   },
   {
    "id": "truelabel",
+   "family": "dataset-egocentric",
    "name": "Truelabel",
    "provider_url": "https://truelabel.ai",
    "status": "unclaimed",
@@ -26671,6 +29332,7 @@
   },
   {
    "id": "truepic-vision",
+   "family": "photo-of-address",
    "name": "Truepic Vision",
    "provider_url": "https://truepic.com",
    "status": "unclaimed",
@@ -26946,6 +29608,7 @@
   },
   {
    "id": "uk-ea-flood",
+   "family": "river-water-level",
    "name": "Environment Agency real-time flood-monitoring API",
    "status": "unclaimed",
    "provider_url": "https://environment.data.gov.uk/flood-monitoring/doc/reference",
@@ -27182,6 +29845,7 @@
   },
   {
    "id": "umbra",
+   "family": "satellite-radar",
    "name": "Umbra",
    "status": "unclaimed",
    "provider_url": "https://umbra.space",
@@ -27568,6 +30232,7 @@
   },
   {
    "id": "unidata",
+   "family": "dataset-egocentric",
    "name": "Unidata",
    "provider_url": "https://unidata.pro",
    "status": "unclaimed",
@@ -27742,6 +30407,7 @@
   },
   {
    "id": "up42",
+   "family": "drone-capture",
    "name": "UP42",
    "adapter": "up42",
    "status": "unclaimed",
@@ -28106,6 +30772,7 @@
   },
   {
    "id": "usgs-earthquakes",
+   "family": "earthquake",
    "name": "USGS earthquake feed",
    "status": "unclaimed",
    "provider_url": "https://earthquake.usgs.gov/earthquakes/feed/",
@@ -28348,7 +31015,177 @@
    }
   },
   {
+   "family": "earthquake",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "id": "usgs-hans-volcano-alerts",
+   "name": "USGS Volcano Notification Service alert levels (HANS)",
+   "provider_url": "https://volcanoes.usgs.gov/hans-public/",
+   "short": "Current US volcano alert level and aviation colour code by volcano. Free, no key, US public domain.",
+   "summary": "The USGS Volcano Hazards Program's HANS public API lists US volcanoes at elevated alert (getCapElevated) and all monitored volcanoes with their current alert level and aviation colour code (getMonitoredVolcanoes), with the observatory, coordinates, last notice time and synopsis. On 2026-11-08 getCapElevated returned two volcanoes, including Great Sitkin (WATCH, ORANGE) with a notice published 2026-11-07 stating that slow lava eruption within the summit crater continues.",
+   "capabilities": {
+    "modalities": [
+     "sensor",
+     "text-report"
+    ],
+    "tasks": [
+     "current alert level and colour code of a US volcano",
+     "which US volcanoes are at elevated alert now",
+     "latest observatory synopsis for a US volcano"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "United States: Alaska, Cascades, Hawaii, Yellowstone, Long Valley and others monitored by USGS observatories"
+    ],
+    "areas": [
+     "US"
+    ],
+    "notes": "Only volcanoes monitored by USGS observatories (Alaska, Cascades, Hawaii, California, Yellowstone, Northern Mariana Islands)."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: newest elevated notice published 2026-11-07; notices are event-driven."
+   },
+   "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Notices are issued on status change and in periodic updates; quiet volcanoes keep notices that are years old."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes to hours after a status change",
+    "notes": "Notices are issued on status change and in periodic updates; quiet volcanoes keep notices that are years old."
+   },
+   "licensing": {
+    "summary": "USGS-authored data and information are in the U.S. Public Domain per the USGS copyrights page, except some third-party images; credit to USGS is requested. No terms for the HANS API itself were found beyond that page. Alert levels are expert judgements and can change without notice. AI training is not specifically addressed."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "sent_date_cap and pubDate per notice.",
+     "unknown": "Time of the underlying observation is in the synopsis text."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Volcano coordinates and number (vnum) per record.",
+     "unknown": "Per-notice plume location is only in free text."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Alert level and colour code issued by the observatory.",
+     "unknown": "Levels are expert judgements."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://volcanoes.usgs.gov/hans-public/api/",
+    "base_url": "https://volcanoes.usgs.gov/hans-public/api/volcano",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent or needed in the calls made."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/getCapElevated",
+      "params": "none",
+      "notes": "Volcanoes at elevated alert with CAP fields and synopsis."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/getMonitoredVolcanoes",
+      "params": "none",
+      "notes": "All monitored volcanoes with current alert_level and color_code."
+     }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "The documentation pages are Swagger-style listings at /hans-public/api/ and /hans-public/api/volcano/.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "volcano",
+    "volcanic activity",
+    "eruption",
+    "alert level",
+    "aviation colour code",
+    "usgs",
+    "alaska",
+    "hawaii",
+    "cascades",
+    "public domain",
+    "real-time",
+    "government",
+    "free",
+    "north america"
+   ],
+   "sources": [
+    {
+     "claim": "Live keyless GET 2026-11-08: HTTP 200 elevated volcanoes with alert level and synopsis",
+     "url": "https://volcanoes.usgs.gov/hans-public/api/volcano/getCapElevated"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-08: HTTP 200 all monitored volcanoes",
+     "url": "https://volcanoes.usgs.gov/hans-public/api/volcano/getMonitoredVolcanoes"
+    },
+    {
+     "claim": "HANS API documentation page",
+     "url": "https://volcanoes.usgs.gov/hans-public/api/volcano/"
+    },
+    {
+     "claim": "USGS copyrights and credits: USGS-authored data are U.S. Public Domain",
+     "url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits"
+    }
+   ]
+  },
+  {
    "id": "usgs-water",
+   "family": "river-water-level",
    "name": "USGS stream gauges",
    "adapter": "usgs_water",
    "status": "unclaimed",
@@ -28676,7 +31513,191 @@
    }
   },
   {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "uy-inumet-wis2-synop",
+   "name": "INUMET Uruguay WIS2 hourly observations",
+   "provider_url": "https://w2b.inumet.gub.uy",
+   "short": "Latest synoptic weather from Uruguayan stations via the national WIS2 node: JSON and CSV, free, no key.",
+   "summary": "Uruguay's national meteorological institute (INUMET) runs a WIS2-in-a-box node at w2b.inumet.gub.uy that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-08 00:00 UTC; the collection held 729,753 features and the node's station list 27 stations.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest hourly surface weather observations at Uruguayan stations",
+     "station list with WIGOS identifiers and coordinates",
+     "history of one station's decoded observations"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "Uruguay"
+    ],
+    "areas": [
+     "UY"
+    ],
+    "notes": "Uruguayan national network as published to WIS2; density and which stations report are set by the weather service and were not audited."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No limit stated on the node's pages that were checked; the node is a public OGC API server, so use modest page sizes.",
+     "source_url": "https://w2b.inumet.gub.uy/oapi/openapi"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest decoded report 2026-11-08 00:00 UTC, published within about an hour of its observation time (pubtime in the messages collection)."
+   },
+   "latency": {
+    "typical": "Within about an hour of the observation hour",
+    "notes": "One sample only. WIS2 messages also announce each file on a public MQTT broker; the HTTP API was the path tested."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About an hour",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "The node's discovery metadata for this dataset declares the WMO data policy 'core' and carries no separate licence or terms link. No national terms were found on the node pages checked. Attribution, resale and AI training are not stated by the provider."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each feature has phenomenonTime and reportTime in UTC.",
+     "unknown": "Observation time is as encoded by the station or service; clock accuracy not checked."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in each feature and in the node's station list, keyed by WIGOS identifier.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values are decoded from the service's own BUFR reports.",
+     "unknown": "The node does not document quality control; decoding and plausibility checks are not described."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.wis2box.wis.wmo.int/en/latest/",
+    "base_url": "https://w2b.inumet.gub.uy/oapi",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; none required."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/urn:wmo:md:uy-inumet:surface-based-observations.synop/items",
+      "params": "f=json|csv, limit, offset, sortby=-reportTime, plus property filters such as wigos_station_identifier",
+      "notes": "Decoded observations, one feature per variable per report. Sort by -reportTime for the newest."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/collections/stations/items",
+      "params": "f=json, limit",
+      "notes": "Station list with WIGOS identifiers and coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/messages/items",
+      "params": "f=json, limit, sortby=-pubtime",
+      "notes": "WIS2 notification messages with links to the BUFR files under /data."
+     }
+    ],
+    "rate_limits": "Not published on the pages checked.",
+    "notes": "OpenAPI document at /oapi/openapi. Standard WIS2-in-a-box software, so the same paths work on other national nodes.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather station",
+    "weather observations",
+    "uruguay",
+    "inumet",
+    "wis2",
+    "wmo",
+    "latin america",
+    "government",
+    "free",
+    "hourly",
+    "synop",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "montevideo",
+    "windy",
+    "cold",
+    "hot"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset discovery metadata: title, WMO data policy core, update dates",
+     "url": "https://w2b.inumet.gub.uy/oapi/collections/discovery-metadata/items/urn:wmo:md:uy-inumet:surface-based-observations.synop?f=json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest decoded report 2026-11-08 00:00 UTC; 729,753 features matched",
+     "url": "https://w2b.inumet.gub.uy/oapi/collections/urn:wmo:md:uy-inumet:surface-based-observations.synop/items?f=json&limit=1&sortby=-reportTime"
+    },
+    {
+     "claim": "Station list returned 27 stations",
+     "url": "https://w2b.inumet.gub.uy/oapi/collections/stations/items?f=json&limit=1"
+    }
+   ]
+  },
+  {
    "id": "vangrid",
+   "family": "errand-anywhere",
    "name": "Vangrid",
    "provider_url": "https://vangrid.io",
    "status": "unclaimed",
@@ -28997,6 +32018,7 @@
   },
   {
    "id": "vantor-hub",
+   "family": "satellite-optical",
    "name": "Vantor Hub (WorldView tasking)",
    "provider_url": "https://vantor.com/product/platform/hub/",
    "short": "Task WorldView optical, 3D and radar captures by API.",
@@ -29262,6 +32284,7 @@
   },
   {
    "id": "vizzion",
+   "family": "traffic-road-camera",
    "name": "Vizzion road imagery",
    "provider_url": "https://vizzion.com",
    "status": "unclaimed",
@@ -29454,6 +32477,7 @@
   },
   {
    "id": "weatherxm-agent",
+   "family": "weather-station",
    "name": "WeatherXM Agent API",
    "status": "unclaimed",
    "provider_url": "https://agent.weatherxm.com/",
@@ -29690,6 +32714,7 @@
   },
   {
    "id": "wegolook",
+   "family": "photo-of-address",
    "name": "WeGoLook",
    "provider_url": "https://wegolook.com",
    "status": "unclaimed",
@@ -29906,6 +32931,7 @@
   },
   {
    "id": "windy-webcams",
+   "family": "traffic-road-camera",
    "name": "Windy Webcams",
    "status": "unclaimed",
    "provider_url": "https://api.windy.com/webcams/pricing",
@@ -30143,6 +33169,7 @@
    "capability": "com.irlpls.capture.card"
   },
   {
+   "family": "river-water-level",
    "status": "unclaimed",
    "pricing": {
     "model": "free",
@@ -30312,6 +33339,7 @@
   },
   {
    "id": "wsdot-cameras",
+   "family": "traffic-road-camera",
    "name": "WSDOT highway cameras",
    "status": "unclaimed",
    "provider_url": "https://wsdot.wa.gov/traffic/api/",
@@ -30572,6 +33600,7 @@
   },
   {
    "id": "xdof",
+   "family": "dataset-egocentric",
    "name": "XDOF",
    "provider_url": "https://www.xdof.ai",
    "status": "unclaimed",
@@ -30786,7 +33815,192 @@
    ]
   },
   {
+   "family": "weather-station",
+   "status": "unclaimed",
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "updated": "2026-11-07",
+   "expires": "2027-11-07",
+   "id": "za-weathersa-wis2-synop",
+   "name": "South African Weather Service WIS2 hourly observations",
+   "provider_url": "https://wis.weathersa.co.za",
+   "short": "Latest synoptic weather from South African stations via the national WIS2 node: JSON and CSV, free, no key.",
+   "summary": "The South African Weather Service (SAWS) runs a WIS2-in-a-box node at wis.weathersa.co.za that republishes the country's hourly synoptic (SYNOP) observations. Besides the WMO BUFR files, the node serves each decoded value over an OGC API Features endpoint as GeoJSON or CSV: one feature per variable with station WIGOS identifier, coordinates, variable name, unit, value and report time. A keyless GET sorted by -reportTime on 2026-11-07 UTC returned a report stamped 2026-11-07 22:00 UTC; the collection held 2,831,659 features and the node's station list 126 stations. The BUFR file links under /data answered 502 Bad Gateway in the same test, so only the decoded API was verified.",
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "latest hourly surface weather observations at South African stations",
+     "station list with WIGOS identifiers and coordinates",
+     "history of one station's decoded observations"
+    ]
+   },
+   "coverage": {
+    "regions": [
+     "South Africa"
+    ],
+    "areas": [
+     "ZA"
+    ],
+    "notes": "South African national network as published to WIS2; density and which stations report are set by the weather service and were not audited."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-07",
+    "automation_allowed": true,
+    "gate": "none",
+    "rate_limit": {
+     "scope": "unknown",
+     "notes": "No limit stated on the node's pages that were checked; the node is a public OGC API server, so use modest page sizes.",
+     "source_url": "https://wis.weathersa.co.za/oapi/openapi"
+    }
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "hours",
+    "basis": "Live GET 2026-11-07 UTC: newest decoded report 2026-11-07 22:00 UTC, published within about an hour of its observation time (pubtime in the messages collection)."
+   },
+   "latency": {
+    "typical": "Within about an hour of the observation hour",
+    "notes": "One sample only. WIS2 messages also announce each file on a public MQTT broker; the HTTP API was the path tested."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "About an hour",
+    "notes": "One sample only."
+   },
+   "licensing": {
+    "summary": "The node's discovery metadata for this dataset declares the WMO data policy 'core' and carries no separate licence or terms link. No national terms were found on the node pages checked. Attribution, resale and AI training are not stated by the provider."
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "Not applicable: automated instruments or official analysis, not people."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation from instrument to API is documented."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not applicable: no camera frames in this feed."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+     "level": "claimed",
+     "method": "Each feature has phenomenonTime and reportTime in UTC.",
+     "unknown": "Observation time is as encoded by the station or service; clock accuracy not checked."
+    },
+    "location": {
+     "level": "claimed",
+     "method": "Station coordinates in each feature and in the node's station list, keyed by WIGOS identifier.",
+     "unknown": "Fixed stations with published coordinates; not independently checked."
+    },
+    "content": {
+     "level": "claimed",
+     "method": "Values are decoded from the service's own BUFR reports.",
+     "unknown": "The node does not document quality control; decoding and plausibility checks are not described."
+    }
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.wis2box.wis.wmo.int/en/latest/",
+    "base_url": "https://wis.weathersa.co.za/oapi",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key sent; none required."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/urn:wmo:md:za-weathersa:xoeh2t/items",
+      "params": "f=json|csv, limit, offset, sortby=-reportTime, plus property filters such as wigos_station_identifier",
+      "notes": "Decoded observations, one feature per variable per report. Sort by -reportTime for the newest."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/collections/stations/items",
+      "params": "f=json, limit",
+      "notes": "Station list with WIGOS identifiers and coordinates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/collections/messages/items",
+      "params": "f=json, limit, sortby=-pubtime",
+      "notes": "WIS2 notification messages with links to the BUFR files under /data."
+     }
+    ],
+    "rate_limits": "Not published on the pages checked.",
+    "notes": "OpenAPI document at /oapi/openapi. Standard WIS2-in-a-box software, so the same paths work on other national nodes.",
+    "mcp": {
+     "remote": null,
+     "registry_name": null,
+     "first_party": false
+    }
+   },
+   "tags": [
+    "weather station",
+    "weather observations",
+    "south africa",
+    "saws",
+    "wis2",
+    "wmo",
+    "africa",
+    "government",
+    "free",
+    "hourly",
+    "synop",
+    "temperature",
+    "rain",
+    "wind",
+    "humidity",
+    "pressure",
+    "current weather",
+    "cape town",
+    "johannesburg",
+    "windy",
+    "cold",
+    "hot"
+   ],
+   "sources": [
+    {
+     "claim": "Dataset discovery metadata: title, WMO data policy core, update dates",
+     "url": "https://wis.weathersa.co.za/oapi/collections/discovery-metadata/items/urn:wmo:md:za-weathersa:xoeh2t?f=json"
+    },
+    {
+     "claim": "Live keyless GET 2026-11-07: HTTP 200, newest decoded report 2026-11-07 22:00 UTC; 2,831,659 features matched",
+     "url": "https://wis.weathersa.co.za/oapi/collections/urn:wmo:md:za-weathersa:xoeh2t/items?f=json&limit=1&sortby=-reportTime"
+    },
+    {
+     "claim": "Station list returned 126 stations",
+     "url": "https://wis.weathersa.co.za/oapi/collections/stations/items?f=json&limit=1"
+    }
+   ]
+  },
+  {
    "id": "zeitview",
+   "family": "drone-capture",
    "name": "Zeitview",
    "provider_url": "https://www.zeitview.com",
    "status": "unclaimed",

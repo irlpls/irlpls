@@ -2,7 +2,7 @@
 
 Shared by tools/build_catalog.py (writes catalog.json / catalog.index.json) and irlpls/mcp_server.py
 (irlpls_list_capabilities, irlpls://catalog). build() generates it in-process from Capture Cards plus the adapter
-sources; nothing here is hand-written per provider except the FAMILIES membership table. No network.
+sources; nothing here is hand-written per provider: a card names its own family in its `family` field. No network.
 """
 from . import isotime
 import datetime
@@ -36,93 +36,106 @@ TYPES = [
      "need_shape": "<N> <clips|photos|recordings> of <scene>, <deadline>", "needs": ["quantity", "deadline", "AI-training rights", "budget"]},
 ]
 
-# ---------------------------------------------------------------- families: (id, type, title, examples, providers)
-FAMILIES = [
+# ---------------------------------------------------------------- families
+# Definitions only: (id, type, title, example asks[, extra members]). A card joins a family by declaring
+# "family": "<id>" in its own file; nobody edits this table to add a card. The optional fifth item lists cards that are
+# ALSO cross-listed here (a card has one "family"; this is for a card that genuinely answers a second kind of ask), or
+# a card that cannot carry the field. Members of a family are listed in sorted id order.
+FAMILY_DEFS = [
     ("river-water-level", "read", "River and stream level, flow, flood",
-     ["river level at Comfort, TX now", "is the Thames at Oxford in flood", "water level of the Rhine at Cologne now"],
-     ["usgs-water", "uk-ea-flood", "pegelonline", "hubeau-hydrometrie", "wsc-hydrometric-realtime", "opw-waterlevel-ie", "smhi-hydrological-observations", "imgw-hydro-poland", "syke-hydrology-finland", "ana-telemetria-brazil", "co-ideam-river-level"]),
+     ["river level at Comfort, TX now", "is the Thames at Oxford in flood", "water level of the Rhine at Cologne now"]),
     ("coast-tide-wave", "read", "Tide, sea level, waves, buoys",
-     ["tide height at Galveston, TX now", "wave height off Monterey, CA now"],
-     ["noaa-tides", "ndbc-buoys", "ioc-sealevel-monitoring", "jma-tsunami-bulletins", "kartverket-vannstand-api", "chs-iwls-water-levels"]),
+     ["tide height at Galveston, TX now", "wave height off Monterey, CA now"]),
     ("weather-station", "read", "Weather at a station: temperature, wind, rain, lightning",
      ["temperature and wind at Denver, CO now", "weather in Oulu, Finland now"],
-     ["nws", "fmi-open-data", "ndbc-buoys", "weatherxm-agent", "open-meteo", "sg-data-gov-realtime", "hko-open-data", "jma-bosai", "bmkg-open-data", "my-data-gov-weather", "mx-smn-conagua", "co-ideam-datos-abiertos", "bom-anon-ftp-observations", "noaa-awc-metar-taf", "met-no-locationforecast", "dwd-opendata-poi-observations", "ipma-pt-observations", "imo-iceland-weather-obs", "smhi-metobs-observations", "geosphere-at-tawes-current", "dmi-metobs-observations", "za-weathersa-wis2-synop", "in-imd-wis2-synop", "cl-meteochile-wis2-synop", "pe-senamhi-wis2-synop", "uy-inumet-wis2-synop", "et-ethiomet-wis2-synop", "bd-bmd-wis2-synop", "br-inmet-wis2-synop", "co-ideam-precipitation-10min", "co-ideam-third-party-stations"]),
+     ["ndbc-buoys"]),
     ("air-quality", "read", "Air quality, PM2.5, smoke, AQI",
      ["air quality in Lagos, Nigeria now", "PM2.5 near Portland, OR now", "is the smoke bad in Delhi right now"],
-     ["airnow", "openaq", "purpleair", "sensor-community", "fmi-open-data", "sg-data-gov-realtime", "air4thai-pcd", "seoul-realtime-city-air", "eccc-geomet-aqhi"]),
+     ["fmi-open-data", "sg-data-gov-realtime"]),
     ("parking-occupancy", "read", "Car park occupancy and free spaces",
-     ["free parking spaces at Sydney train station car park", "is the car park at Tallawong full"],
-     ["tfnsw-carparks", "gent-parking-garages", "rennes-parking-citedia", "basel-parkhaus-occupancy", "nantes-parking-availability", "strasbourg-parking-occupancy"]),
+     ["free parking spaces at Sydney train station car park", "is the car park at Tallawong full"]),
     ("earthquake", "read", "Earthquakes and volcano alert levels",
-     ["earthquakes near Tokyo in the last hour", "volcano alert level in New Zealand now"],
-     ["usgs-earthquakes", "emsc-seismicportal", "geonet-nz", "tr-afad-earthquakes", "gdacs-alerts", "igp-peru-sismos", "ingv-fdsnws-events", "imo-iceland-quakes", "imo-iceland-volcano-alerts", "nrcan-fdsn-earthquakes", "usgs-hans-volcano-alerts"]),
+     ["earthquakes near Tokyo in the last hour", "volcano alert level in New Zealand now"]),
     ("wildfire-detection", "read", "Active fire detections from satellites",
-     ["active fires near Athens, Greece in the last day"],
-     ["nasa-firms", "inpe-queimadas-focos", "ga-dea-hotspots-australia"]),
+     ["active fires near Athens, Greece in the last day"]),
     ("ship-positions", "read", "Ship positions (AIS)",
-     ["current ship positions in the Gulf of Finland", "vessels near the port of Helsinki now"],
-     ["digitraffic-marine-ais"]),
+     ["current ship positions in the Gulf of Finland", "vessels near the port of Helsinki now"]),
     ("traffic-road-camera", "watch", "Traffic and road cameras",
      ["traffic camera in Helsinki, Finland now", "highway camera on I-5 near Seattle now", "traffic on the Westway, London now"],
-     ["fintraffic-weathercams", "tfl-jamcams", "caltrans-cctv", "wsdot-cameras", "windy-webcams", "road511", "vizzion", "sg-data-gov-realtime", "hk-td-traffic-snapshots"]),
+     ["sg-data-gov-realtime"]),
     ("wildfire-camera", "watch", "Wildfire-watch cameras",
-     ["camera view of smoke near Lake Tahoe, CA now"],
-     ["alertcalifornia"]),
+     ["camera view of smoke near Lake Tahoe, CA now"]),
     ("webcam-anywhere", "watch", "Public webcams worldwide",
      ["webcam of Piazza San Marco, Venice now", "beach webcam in Tarifa, Spain now"],
      ["windy-webcams"]),
     ("photo-of-address", "send", "Photo or check of a specific address",
-     ["photo of the storefront at 123 Main St, Springfield, IL today", "is the ramp at 40 High St, Leeds blocked, photo please",
-      "exterior photos of the building at 500 Market St, San Francisco, CA this week"],
-     ["proxypics", "getterdone", "precisely-ground-level-images", "wegolook", "truepic-vision", "doordash-tasks", "snappr",
-      "field-nation", "hire-a-human", "mundane", "human-for-ai"]),
+     ["photo of the storefront at 123 Main St, Springfield, IL today", "is the ramp at 40 High St, Leeds blocked, photo please", "exterior photos of the building at 500 Market St, San Francisco, CA this week"]),
     ("store-shelf-check", "send", "Shelf photos, price checks, mystery shopping",
      ["shelf photo of the cereal aisle at a Tesco in Leeds this week", "mystery shop of 20 stores in Berlin, DE"],
-     ["field-agent", "pospulse-streetspotr", "mundane", "premise"]),
+     ["mundane"]),
     ("errand-anywhere", "send", "A person does an errand or checks something in person",
      ["someone to check if the shop at 14 rue Oberkampf, Paris is open, with a photo", "a person in Seoul to photograph a menu board today"],
-     ["rentahuman", "airtasker", "freelancer", "execution-market", "errand", "quest", "vangrid", "hire-a-human", "mundane",
-      "human-for-ai", "lxt-clickworker", "human-pages"]),
+     ["hire-a-human", "mundane", "human-for-ai"]),
     ("address-verification", "send", "Address verification by field agent",
-     ["verify the address 12 Allen Avenue, Ikeja, Lagos with GPS photos"],
-     ["dojah-scout"]),
+     ["verify the address 12 Allen Avenue, Ikeja, Lagos with GPS photos"]),
     ("property-scan-3d", "send", "Homeowner phone scan to a 3D property model",
-     ["3D model and measurements of the house at 8 Elm St, Dallas, TX"],
-     ["hover"]),
+     ["3D model and measurements of the house at 8 Elm St, Dallas, TX"]),
     ("street-level-imagery", "send", "Fresh street-level imagery from a dashcam network",
-     ["fresh street-level photos of Rue de Rivoli, Paris this week", "current video of the junction at 5th and Main, Austin, TX within 2 days"],
-     ["hivemapper", "empiric-earth", "natix", "nextbase-insight", "mapilio"]),
+     ["fresh street-level photos of Rue de Rivoli, Paris this week", "current video of the junction at 5th and Main, Austin, TX within 2 days"]),
     ("drone-capture", "overhead", "Drone photos, surveys, inspections",
-     ["drone photos of my roof at 45 Oak Ave, Austin, TX within 3 days", "drone survey of a 20-hectare site near Perth, AU next week",
-      "thermal drone inspection of a solar farm in Spain"],
-     ["globhe", "spexi", "dronedeploy-flight-services", "flyguys", "zeitview", "up42"]),
+     ["drone photos of my roof at 45 Oak Ave, Austin, TX within 3 days", "drone survey of a 20-hectare site near Perth, AU next week", "thermal drone inspection of a solar farm in Spain"]),
     ("satellite-optical", "overhead", "New optical satellite image of an area",
      ["new satellite image of the Port of Los Angeles within 3 days", "optical satellite photo of a field near Fresno, CA this week"],
-     ["skyfi", "planet", "satellogic", "vantor-hub", "skywatch", "up42", "open-cosmos-datacosmos"]),
+     ["up42"]),
     ("satellite-radar", "overhead", "Radar (SAR) image, through cloud and at night",
      ["SAR radar image of the port of Rotterdam tonight", "radar image of the flood near Dhaka within 2 days"],
-     ["umbra", "capella", "iceye", "skyfi", "copernicus-sentinel"]),
+     ["skyfi"]),
     ("satellite-thermal-hyperspectral", "overhead", "Thermal infrared or hyperspectral satellite image",
-     ["thermal satellite image of a city heat island, Phoenix, AZ", "hyperspectral image of a mine site in Chile"],
-     ["satvu", "pixxel"]),
+     ["thermal satellite image of a city heat island, Phoenix, AZ", "hyperspectral image of a mine site in Chile"]),
     ("free-latest-satellite", "overhead", "Newest free satellite pass (Sentinel)",
      ["latest free Sentinel image of Lake Mead"],
      ["copernicus-sentinel"]),
     ("dataset-egocentric", "collect", "First-person (egocentric) video and robot-learning data",
-     ["500 first-person clips of a hand opening a push-bar door, within 7 days", "200 hours of egocentric kitchen video from India",
-      "teleoperation demonstrations of folding laundry"],
-     ["toloka", "kled", "awign-robotics", "claru", "encord", "human-archive", "lightwheel", "mecka", "micro1", "objectways",
-      "unidata", "xdof", "truelabel", "defined-ai"]),
+     ["500 first-person clips of a hand opening a push-bar door, within 7 days", "200 hours of egocentric kitchen video from India", "teleoperation demonstrations of folding laundry"]),
     ("dataset-driving", "collect", "Driving and dashcam video for AI training",
      ["1000 dashcam clips of cyclists at dusk, within 14 days", "driving video of snow on German highways"],
      ["natix", "empiric-earth", "hivemapper"]),
     ("dataset-crowd-media", "collect", "Custom photos, video, audio or speech from a contributor crowd",
      ["2000 photos of handwritten shopping lists, 50 countries", "5000 voice recordings in Swahili, within 3 weeks"],
-     ["appen", "defined-ai", "telus-digital", "lxt-clickworker", "shaip", "premise", "kled", "toloka", "prolific"]),
+     ["defined-ai", "lxt-clickworker", "premise", "kled", "toloka"]),
     ("survey-participants", "collect", "Survey or study participants",
      ["300 responses to a 5-minute survey from US adults, within 3 days"],
      ["prolific", "premise", "toloka"]),
 ]
+
+
+def family_members(cards, strict=True):
+    """{family id: [card ids]} from each card's `family` field plus the explicit extras in FAMILY_DEFS, sorted by id.
+    strict: a card naming an unknown family, an extra naming an absent card, or a card in no family raises ValueError."""
+    ids = {d[0] for d in FAMILY_DEFS}
+    by = {c["id"]: c for c in cards}
+    out = {d[0]: set(d[4]) if len(d) > 4 else set() for d in FAMILY_DEFS}
+    for fid, extra in out.items():
+        for pid in list(extra):
+            if pid not in by:
+                if strict:
+                    raise ValueError(f"family {fid} names unknown or out-of-scope card {pid}")
+                extra.discard(pid)
+    for cid, c in by.items():
+        f = c.get("family")
+        if f is None:
+            continue
+        if f not in ids:
+            if strict:
+                raise ValueError(f"{cid}: unknown family {f!r}. Fix: set \"family\" to one of: {', '.join(sorted(ids))}")
+            continue
+        out[f].add(cid)
+    if strict:
+        orphans = sorted(set(by) - set().union(*out.values()))
+        if orphans:
+            raise ValueError("cards in no family: " + ", ".join(orphans) + ". Fix: add \"family\": \"<id>\" to the card (the closest family id from FAMILY_DEFS in irlpls/catalog.py)")
+    return {k: sorted(v) for k, v in out.items()}
+
 
 # ---------------------------------------------------------------- asks irlpls cannot serve (checked against the cards)
 UNSUPPORTED = [
@@ -241,6 +254,24 @@ def usable(cards):
     return [c for c in cards if c.get("status") != "defunct" and (c.get("delivery") or {}).get("modes")]
 
 
+def _packaged_cards():
+    """The cards next to this module: the repo's cards/ when present, else the wheel's data copy."""
+    d = HERE.parent / "cards"
+    if d.is_dir():
+        return usable([json.loads(f.read_text()) for f in sorted(d.glob("*.json"))])
+    f = HERE / "data" / "cards.json"
+    return usable(json.loads(f.read_text())["cards"]) if f.exists() else []
+
+
+def _families_view():
+    mem = family_members(_packaged_cards(), strict=False)
+    return [(d[0], d[1], d[2], d[3], mem[d[0]]) for d in FAMILY_DEFS]
+
+
+# Derived view for readers: (id, type, title, examples, member ids) from the cards on disk. Do not edit; edit FAMILY_DEFS.
+FAMILIES = _families_view()
+
+
 def row(p):
     cv = p["coverage"]
     where = "global" if cv["global"] else ",".join(cv["areas"][:6]) if cv["listed"] else "unlisted"
@@ -270,20 +301,14 @@ def build(cards, top=None, strict=True):
     _HEALTH["data"] = _health.load()   # the last daily read check, read once per build
     by = {c["id"]: c for c in cards}
     ad = adapters()
+    mem = family_members(cards, strict=strict)
     fam_of = {}
-    for fid, typ, title, ex, pids in FAMILIES:
+    for fid, pids in mem.items():
         for pid in pids:
-            if pid not in by:
-                if not strict:
-                    continue
-                raise ValueError(f"family {fid} names unknown or out-of-scope card {pid}")
             fam_of.setdefault(pid, []).append(fid)
-    orphans = sorted(set(by) - set(fam_of))
-    if orphans and strict:
-        raise ValueError("cards in no family: " + ", ".join(orphans) + ". Fix: add each id to the provider list of the closest family in FAMILIES (irlpls/catalog.py)")
     fams = []
-    for fid, typ, title, ex, pids in FAMILIES:
-        pids = [p for p in pids if p in by]
+    for fid, typ, title, ex, *_ in FAMILY_DEFS:
+        pids = mem[fid]
         if not pids:
             continue
         ps = [by[p] for p in pids]

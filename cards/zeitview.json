@@ -1,5 +1,6 @@
 {
   "id": "zeitview",
+  "family": "drone-capture",
   "name": "Zeitview",
   "provider_url": "https://www.zeitview.com",
   "status": "unclaimed",

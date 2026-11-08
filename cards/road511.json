@@ -1,4 +1,5 @@
 {
+  "family": "traffic-road-camera",
   "spec_version": "2026-10-26",
   "capability": "com.irlpls.capture.card",
   "id": "road511",

@@ -1,5 +1,6 @@
 {
   "id": "field-agent",
+  "family": "store-shelf-check",
   "name": "Field Agent (now Storesight)",
   "status": "unclaimed",
   "provider_url": "https://storesight.com/",

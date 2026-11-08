@@ -1,5 +1,6 @@
 {
   "id": "hubeau-hydrometrie",
+  "family": "river-water-level",
   "name": "Hub'Eau Hydrométrie (France river levels and flow)",
   "provider_url": "https://hubeau.eaufrance.fr",
   "short": "Live French river height and flow, about 5,000 stations; keyless.",

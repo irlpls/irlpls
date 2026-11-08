@@ -1,5 +1,6 @@
 {
   "id": "shaip",
+  "family": "dataset-crowd-media",
   "name": "Shaip",
   "provider_url": "https://www.shaip.com",
   "status": "unclaimed",

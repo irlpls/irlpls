@@ -1,5 +1,6 @@
 {
   "id": "windy-webcams",
+  "family": "traffic-road-camera",
   "name": "Windy Webcams",
   "status": "unclaimed",
   "provider_url": "https://api.windy.com/webcams/pricing",

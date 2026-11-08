@@ -1,5 +1,6 @@
 {
   "id": "truelabel",
+  "family": "dataset-egocentric",
   "name": "Truelabel",
   "provider_url": "https://truelabel.ai",
   "status": "unclaimed",
