@@ -5,7 +5,7 @@
   "status": "unclaimed",
   "provider_url": "https://dataspace.copernicus.eu",
   "short": "Free EU Sentinel radar and optical satellite imagery, usually online 1-4 hours after each pass.",
-  "summary": "The EU's Copernicus Data Space Ecosystem serves new Sentinel-1 (C-band radar, works day and night through cloud), Sentinel-2 (13-band optical, 10 m best) and other Sentinel products free, via STAC, OData, S3, Sentinel Hub and openEO, with PUSH/PULL catalogue subscriptions and a public Traceability service whose traces carry signed product hashes.",
+  "summary": "The EU's Copernicus Data Space Ecosystem serves new Sentinel-1 (C-band radar, works day and night through cloud), Sentinel-2 (13-band optical, 10 m resolution) and other Sentinel products free, via STAC, OData, S3, Sentinel Hub and openEO, with PUSH/PULL catalogue subscriptions and a public Traceability service whose traces carry signed product hashes.",
   "tags": [
     "satellite",
     "sentinel",
