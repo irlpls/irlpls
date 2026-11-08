@@ -1,0 +1,156 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "id": "basel-parkhaus-occupancy",
+  "name": "Basel public car park occupancy (Parkleitsystem)",
+  "provider_url": "https://data.bs.ch/explore/dataset/100088/",
+  "short": "Live free spaces in Basel's public car park garages. Free, no key, CC BY 4.0.",
+  "summary": "The canton of Basel-Stadt open data portal serves the current occupancy of public car park garages in Basel as a keyless Opendatasoft API: free and total places, share free and occupancy percent, status, address, coordinates, a link to the operator's page and a published timestamp. On 2026-11-08 the dataset held 16 entries (for example Parkhaus City, 1001 of 1114 free) with timestamps a few minutes old.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "free places in a Basel car park now",
+      "occupancy percent of Basel's public garages",
+      "list Basel car parks with address and coordinates"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Basel, Switzerland"
+    ],
+    "areas": [
+      "CH"
+    ],
+    "notes": "16 public car parks and garages in Basel-Stadt on 2026-11-08."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: published timestamps were minutes old; the free count changed between calls."
+  },
+  "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Per-record published and last_downloaded fields; update interval is not stated."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "Per-record published and last_downloaded fields; update interval is not stated."
+  },
+  "licensing": {
+    "summary": "The dataset is licensed CC BY 4.0 per its metadata; reuse including commercial is allowed with attribution to the publisher (Parkhauser Basel-Stadt) and a link to the licence. AI training and resale are not specifically addressed beyond CC BY 4.0 itself."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Per-record published timestamp (UTC).",
+      "unknown": "How the garage counters are checked is not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed car park coordinates and address in the record.",
+      "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Counts come from the garage operators' systems.",
+      "unknown": "Counting method and error are not documented."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.bs.ch/explore/dataset/100088/information/",
+    "base_url": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100088",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/catalog/datasets/100088/records",
+        "params": "limit, where, select, order_by",
+        "notes": "Current records: title, free, total, auslastung_prozent, status, address, geo_point_2d, published."
+      }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "basel",
+    "switzerland",
+    "parkhaus",
+    "parkleitsystem",
+    "cc by",
+    "open data",
+    "real-time",
+    "government",
+    "europe",
+    "free"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-08: HTTP 200, 16 car parks with free and total places",
+      "url": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100088/records?limit=2"
+    },
+    {
+      "claim": "Dataset metadata: licence CC BY 4.0, publisher, modified time",
+      "url": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100088"
+    },
+    {
+      "claim": "Creative Commons Attribution 4.0 licence",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ]
+}

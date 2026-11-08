@@ -1,0 +1,155 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "id": "strasbourg-parking-occupancy",
+  "name": "Strasbourg car park occupancy (Eurometropole)",
+  "provider_url": "https://data.strasbourg.eu/explore/dataset/occupation-parkings-temps-reel/",
+  "short": "Live free spaces in Strasbourg car parks. Free, no key, Licence Ouverte.",
+  "summary": "The Eurometropole de Strasbourg open data portal serves a keyless Opendatasoft API with real-time car park occupancy: name, state, total and free places, a user-facing count, occupancy rate, a green-to-red status colour and coordinates. On 2026-11-08 the dataset held 35 car parks (for example Parking Gare Wodli, 633 of 955 free); the dataset was processed minutes before the call.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "free places in a Strasbourg car park now",
+      "occupancy rate of Strasbourg car parks",
+      "whether a Strasbourg car park is open"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Strasbourg, France"
+    ],
+    "areas": [
+      "FR"
+    ],
+    "notes": "35 car parks on 2026-11-08, including railway-station and park-and-ride sites."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: dataset data_processed time was minutes old."
+  },
+  "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "No per-record timestamp; dataset-level processing time only."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "No per-record timestamp; dataset-level processing time only."
+  },
+  "licensing": {
+    "summary": "Licensed under the Licence Ouverte (Etalab) per the dataset metadata: free reuse including commercial, provided you credit the source and the date of the last update. The publisher is the Eurometropole de Strasbourg. AI training is not specifically addressed."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Dataset-level processing time only.",
+      "unknown": "No per-car-park measurement time is in the record."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed car park coordinates in the record.",
+      "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Counts come from the operators' systems.",
+      "unknown": "Counting method is not documented."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.strasbourg.eu/explore/dataset/occupation-parkings-temps-reel/information/",
+    "base_url": "https://data.strasbourg.eu/api/explore/v2.1/catalog/datasets/occupation-parkings-temps-reel",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/catalog/datasets/occupation-parkings-temps-reel/records",
+        "params": "limit, where, select, order_by",
+        "notes": "Current records: nom_parking, etat_descriptif, total, libre, taux_occup, realtimestatus, position."
+      }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "strasbourg",
+    "alsace",
+    "france",
+    "etalab",
+    "open data",
+    "real-time",
+    "government",
+    "europe",
+    "free"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-08: HTTP 200, 35 car parks with total and free places",
+      "url": "https://data.strasbourg.eu/api/explore/v2.1/catalog/datasets/occupation-parkings-temps-reel/records?limit=2"
+    },
+    {
+      "claim": "Dataset metadata: licence Licence Ouverte (Etalab), publisher Eurometropole de Strasbourg",
+      "url": "https://data.strasbourg.eu/api/explore/v2.1/catalog/datasets/occupation-parkings-temps-reel"
+    },
+    {
+      "claim": "Licence Ouverte text",
+      "url": "https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf"
+    }
+  ]
+}

@@ -118,7 +118,7 @@ BENCH = [
     # ---- time words set timing, never description; non-US places ----
     ("earthquake near Los Angeles in the last hour", {"usgs-earthquakes"}, {"noaa-tides", "ndbc-buoys", "nasa-firms", "caltrans-cctv"}),
     ("free parking spaces at Sydney train station car park", {"tfnsw-carparks"}, {"caltrans-cctv", "windy-webcams"}),
-    ("is the car park at Tallawong full", {"tfnsw-carparks"}, {"caltrans-cctv", "windy-webcams"}),
+    ("is the car park at Tallawong full", {"tfnsw-carparks", "nantes-parking-availability", "rennes-parking-citedia", "gent-parking-garages", "basel-parkhaus-occupancy", "strasbourg-parking-occupancy"}, {"caltrans-cctv", "windy-webcams"}),
     ("earthquakes near Tokyo in the past 24 hours", {"usgs-earthquakes"}, {"noaa-tides", "nws", "hivemapper"}),
     ("what was the magnitude of the quake 10 minutes ago near Seattle", {"usgs-earthquakes"}, {"wsdot-cameras", "noaa-tides", "nws"}),
     ("wildfire hotspots in California in the past 2 days", {"nasa-firms"}, {"caltrans-cctv", "proxypics", "skyfi"}),

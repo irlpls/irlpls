@@ -1,0 +1,156 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "id": "gent-parking-garages",
+  "name": "Ghent car park occupancy (Mobiliteitsbedrijf Gent)",
+  "provider_url": "https://data.stad.gent/explore/dataset/bezetting-parkeergarages-real-time/",
+  "short": "Live free spaces in Ghent's public car parks. Free, no key, Flemish free-reuse licence.",
+  "summary": "The City of Ghent's open data portal publishes real-time occupancy of its public car park garages as a keyless Opendatasoft API. Each record gives name, total capacity, available capacity, occupation percent, open-now and temporarily-closed flags, an occupancy trend, opening hours, operator and coordinates. On 2026-11-08 the dataset held 15 car parks, each stamped within minutes of the call (for example Sint-Michiels 316 of 450 free).",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "free spaces and occupancy percent for a Ghent car park now",
+      "list Ghent car parks with capacity, coordinates and opening hours",
+      "whether a Ghent car park is open or temporarily closed"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Ghent, Belgium"
+    ],
+    "areas": [
+      "BE"
+    ],
+    "notes": "15 public car parks managed under Mobiliteitsbedrijf Gent as listed on 2026-11-08; not on-street parking."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: lastupdate on each record was within minutes of the call; dataset metadata lists continuous updates."
+  },
+  "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Per-record lastupdate field; update interval is not stated beyond 'continuous' in the dataset metadata."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes; each record carries its own lastupdate",
+    "notes": "Per-record lastupdate field; update interval is not stated beyond 'continuous' in the dataset metadata."
+  },
+  "licensing": {
+    "summary": "City of Ghent (Mobiliteitsbedrijf Gent) publishes this dataset under the Flemish 'Modellicentie Gratis Hergebruik' (model licence for free reuse, v1.0). The licence text says the licensee must name the licensor and, where possible, the year or date the product was made available, and must not suggest official status or endorsement. The product is supplied as is, with no guarantee of fitness. AI training and resale are not specifically addressed."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Each record has a lastupdate timestamp with offset.",
+      "unknown": "Sensor clock checks are not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed car park coordinates in the record.",
+      "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Counts come from the garage operators' systems.",
+      "unknown": "Counting method and error are not documented."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.stad.gent/explore/dataset/bezetting-parkeergarages-real-time/information/",
+    "base_url": "https://data.stad.gent/api/explore/v2.1/catalog/datasets/bezetting-parkeergarages-real-time",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/catalog/datasets/bezetting-parkeergarages-real-time/records",
+        "params": "limit, where, select, order_by",
+        "notes": "Current occupancy records: name, totalcapacity, availablecapacity, occupation, lastupdate, isopennow, temporaryclosed, location."
+      }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200. The portal may apply its own quotas; none were read.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "ghent",
+    "gent",
+    "belgium",
+    "flanders",
+    "open data",
+    "real-time",
+    "garage",
+    "government",
+    "europe",
+    "free"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-08: HTTP 200, 15 car parks with capacity and availability",
+      "url": "https://data.stad.gent/api/explore/v2.1/catalog/datasets/bezetting-parkeergarages-real-time/records?limit=2"
+    },
+    {
+      "claim": "Dataset metadata: title, publisher Mobiliteitsbedrijf Gent, licence name and link, continuous update",
+      "url": "https://data.stad.gent/api/explore/v2.1/catalog/datasets/bezetting-parkeergarages-real-time"
+    },
+    {
+      "claim": "Flemish Modellicentie Gratis Hergebruik v1.0 (attribution, no implied endorsement, as-is)",
+      "url": "https://www.vlaanderen.be/digitaal-vlaanderen/onze-oplossingen/open-data/voorwaarden-voor-het-hergebruik-van-overheidsinformatie/modellicentie-gratis-hergebruik"
+    }
+  ]
+}

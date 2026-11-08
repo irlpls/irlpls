@@ -1,0 +1,157 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "id": "rennes-parking-citedia",
+  "name": "Rennes car park availability and tariffs (Citedia)",
+  "provider_url": "https://data.rennesmetropole.fr/explore/dataset/export-api-parking-citedia/",
+  "short": "Live free spaces and tariffs for Rennes car parks. Free, no key, ODbL.",
+  "summary": "Rennes Metropole's open data portal serves a keyless Opendatasoft API with the live state of the car parks run by Citedia: status (open or closed), maximum and free places, coordinates, opening hours and a tariff grid by duration. On 2026-11-08 the dataset held 10 car parks (for example Colombier, 718 of 939 free); the processing timestamp was minutes old.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "free places in a Rennes car park now",
+      "tariff for 1 to 4 hours in a Rennes car park",
+      "whether a Rennes car park is open"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Rennes, France"
+    ],
+    "areas": [
+      "FR"
+    ],
+    "notes": "10 Citedia-operated car parks on 2026-11-08; the record has no per-row timestamp, only the dataset processing time."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: free counts changed between two calls minutes apart (716, then 718 free at Colombier)."
+  },
+  "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "No per-record timestamp; dataset metadata data_processed was 2026-11-08T03:15:03Z on a 03:2x call."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "No per-record timestamp; dataset metadata data_processed was 2026-11-08T03:15:03Z on a 03:2x call."
+  },
+  "licensing": {
+    "summary": "Rennes Metropole lists the dataset under the Open Database License (ODbL 1.0): you may copy, adapt and use it commercially if you credit the source, keep the database open when you publish an adapted database (share-alike) and keep the licence. The operator is Citedia. AI training is not specifically addressed beyond ODbL itself."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Dataset-level processing time only.",
+      "unknown": "No per-car-park measurement time is in the record."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed car park coordinates (geo) in the record.",
+      "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Counts come from the operator's systems.",
+      "unknown": "Counting method and error are not documented."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.rennesmetropole.fr/explore/dataset/export-api-parking-citedia/information/",
+    "base_url": "https://data.rennesmetropole.fr/api/explore/v2.1/catalog/datasets/export-api-parking-citedia",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/catalog/datasets/export-api-parking-citedia/records",
+        "params": "limit, where, select, order_by",
+        "notes": "Current records: key (name), status, max, free, geo, tariff fields, orgahoraires."
+      }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "tariff",
+    "rennes",
+    "brittany",
+    "france",
+    "citedia",
+    "odbl",
+    "open data",
+    "real-time",
+    "government",
+    "europe",
+    "free"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-08: HTTP 200, 10 car parks with max and free places",
+      "url": "https://data.rennesmetropole.fr/api/explore/v2.1/catalog/datasets/export-api-parking-citedia/records?limit=2"
+    },
+    {
+      "claim": "Dataset metadata: publisher Citedia, licence ODbL, data_processed time",
+      "url": "https://data.rennesmetropole.fr/api/explore/v2.1/catalog/datasets/export-api-parking-citedia"
+    },
+    {
+      "claim": "Open Database License 1.0 text",
+      "url": "https://opendatacommons.org/licenses/odbl/1-0/"
+    }
+  ]
+}

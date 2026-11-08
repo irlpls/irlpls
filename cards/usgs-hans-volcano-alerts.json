@@ -1,0 +1,168 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "id": "usgs-hans-volcano-alerts",
+  "name": "USGS Volcano Notification Service alert levels (HANS)",
+  "provider_url": "https://volcanoes.usgs.gov/hans-public/",
+  "short": "Current US volcano alert level and aviation colour code by volcano. Free, no key, US public domain.",
+  "summary": "The USGS Volcano Hazards Program's HANS public API lists US volcanoes at elevated alert (getCapElevated) and all monitored volcanoes with their current alert level and aviation colour code (getMonitoredVolcanoes), with the observatory, coordinates, last notice time and synopsis. On 2026-11-08 getCapElevated returned two volcanoes, including Great Sitkin (WATCH, ORANGE) with a notice published 2026-11-07 stating that slow lava eruption within the summit crater continues.",
+  "capabilities": {
+    "modalities": [
+      "sensor",
+      "text-report"
+    ],
+    "tasks": [
+      "current alert level and colour code of a US volcano",
+      "which US volcanoes are at elevated alert now",
+      "latest observatory synopsis for a US volcano"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "United States: Alaska, Cascades, Hawaii, Yellowstone, Long Valley and others monitored by USGS observatories"
+    ],
+    "areas": [
+      "US"
+    ],
+    "notes": "Only volcanoes monitored by USGS observatories (Alaska, Cascades, Hawaii, California, Yellowstone, Northern Mariana Islands)."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: newest elevated notice published 2026-11-07; notices are event-driven."
+  },
+  "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Notices are issued on status change and in periodic updates; quiet volcanoes keep notices that are years old."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes to hours after a status change",
+    "notes": "Notices are issued on status change and in periodic updates; quiet volcanoes keep notices that are years old."
+  },
+  "licensing": {
+    "summary": "USGS-authored data and information are in the U.S. Public Domain per the USGS copyrights page, except some third-party images; credit to USGS is requested. No terms for the HANS API itself were found beyond that page. Alert levels are expert judgements and can change without notice. AI training is not specifically addressed."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "sent_date_cap and pubDate per notice.",
+      "unknown": "Time of the underlying observation is in the synopsis text."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Volcano coordinates and number (vnum) per record.",
+      "unknown": "Per-notice plume location is only in free text."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Alert level and colour code issued by the observatory.",
+      "unknown": "Levels are expert judgements."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://volcanoes.usgs.gov/hans-public/api/",
+    "base_url": "https://volcanoes.usgs.gov/hans-public/api/volcano",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/getCapElevated",
+        "params": "none",
+        "notes": "Volcanoes at elevated alert with CAP fields and synopsis."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/getMonitoredVolcanoes",
+        "params": "none",
+        "notes": "All monitored volcanoes with current alert_level and color_code."
+      }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "The documentation pages are Swagger-style listings at /hans-public/api/ and /hans-public/api/volcano/.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "volcano",
+    "volcanic activity",
+    "eruption",
+    "alert level",
+    "aviation colour code",
+    "usgs",
+    "alaska",
+    "hawaii",
+    "cascades",
+    "public domain",
+    "real-time",
+    "government",
+    "free",
+    "north america"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-08: HTTP 200 elevated volcanoes with alert level and synopsis",
+      "url": "https://volcanoes.usgs.gov/hans-public/api/volcano/getCapElevated"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-08: HTTP 200 all monitored volcanoes",
+      "url": "https://volcanoes.usgs.gov/hans-public/api/volcano/getMonitoredVolcanoes"
+    },
+    {
+      "claim": "HANS API documentation page",
+      "url": "https://volcanoes.usgs.gov/hans-public/api/volcano/"
+    },
+    {
+      "claim": "USGS copyrights and credits: USGS-authored data are U.S. Public Domain",
+      "url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits"
+    }
+  ]
+}

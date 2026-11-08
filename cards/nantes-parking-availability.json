@@ -1,0 +1,155 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "id": "nantes-parking-availability",
+  "name": "Nantes public car park availability (Naolib)",
+  "provider_url": "https://data.nantesmetropole.fr/explore/dataset/244400404_parkings-publics-nantes-disponibilites/",
+  "short": "Live free places in Nantes public car parks. Free, no key, ODbL.",
+  "summary": "Nantes Metropole's open data portal serves a keyless Opendatasoft API with real-time availability of public car parks in Nantes: car park id and name, status code, available places, operating capacity, a fill threshold, address, coordinates and a timestamp. On 2026-11-08 the dataset held 27 car parks (for example Tour Bretagne, 453 of 643 available) stamped within minutes.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "free places in a Nantes car park now",
+      "whether a Nantes car park is full",
+      "list Nantes public car parks with address and coordinates"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Nantes, France"
+    ],
+    "areas": [
+      "FR"
+    ],
+    "notes": "27 public car parks on 2026-11-08. Status codes are numeric and not explained in the records read."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: grp_horodatage was minutes old."
+  },
+  "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Per-record grp_horodatage field; update interval not stated."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes",
+    "notes": "Per-record grp_horodatage field; update interval not stated."
+  },
+  "licensing": {
+    "summary": "Nantes Metropole lists the dataset under the Open Database License (ODbL 1.0): copy, adapt and commercial use are allowed with credit, share-alike for adapted databases and keeping the licence. AI training is not specifically addressed beyond ODbL itself."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "Per-record grp_horodatage timestamp (UTC).",
+      "unknown": "Device clock checks are not documented."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Fixed car park coordinates and address in the record.",
+      "unknown": "Coordinates are provider-published and unauthenticated."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Counts come from the operators' systems.",
+      "unknown": "Counting method and the meaning of grp_statut codes are not documented."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://data.nantesmetropole.fr/explore/dataset/244400404_parkings-publics-nantes-disponibilites/information/",
+    "base_url": "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_parkings-publics-nantes-disponibilites",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/catalog/datasets/244400404_parkings-publics-nantes-disponibilites/records",
+        "params": "limit, where, select, order_by",
+        "notes": "Current records: grp_nom, grp_disponible, grp_exploitation, grp_complet, grp_statut, grp_horodatage, location."
+      }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Opendatasoft Explore API v2.1; keyless calls answered 200.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "car park",
+    "parking",
+    "occupancy",
+    "free spaces",
+    "nantes",
+    "france",
+    "naolib",
+    "odbl",
+    "open data",
+    "real-time",
+    "government",
+    "europe",
+    "free"
+  ],
+  "sources": [
+    {
+      "claim": "Live keyless GET 2026-11-08: HTTP 200, 27 car parks with available places",
+      "url": "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_parkings-publics-nantes-disponibilites/records?limit=1"
+    },
+    {
+      "claim": "Dataset metadata: licence ODbL, publisher Nantes Metropole",
+      "url": "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_parkings-publics-nantes-disponibilites"
+    },
+    {
+      "claim": "Open Database License 1.0 text",
+      "url": "https://opendatacommons.org/licenses/odbl/1-0/"
+    }
+  ]
+}

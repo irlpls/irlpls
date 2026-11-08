@@ -1,0 +1,163 @@
+{
+  "status": "unclaimed",
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request"
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "id": "ga-dea-hotspots-australia",
+  "name": "Digital Earth Australia Hotspots (Geoscience Australia)",
+  "provider_url": "https://hotspots.dea.ga.gov.au/",
+  "short": "Satellite fire hotspots over Australia, updated through the day. Free, no key, CC BY 4.0.",
+  "summary": "Geoscience Australia's Digital Earth Australia Hotspots serves satellite-detected fire hotspots for Australia as a keyless WFS GeoServer: point detections with satellite and sensor (for example Himawari-9 AHI), acquisition time, fire power, confidence, temperature and Australian state, for the last three days and the full set. On 2026-11-08 the three-day layer returned GeoJSON whose newest detection was stamped 2026-11-08T03:00Z, minutes before the call.",
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "fire hotspots near a place in Australia in the last three days",
+      "latest satellite pass times and hotspot count for an Australian state",
+      "fire radiative power and confidence of a hotspot"
+    ]
+  },
+  "coverage": {
+    "regions": [
+      "Australia and surrounding region"
+    ],
+    "areas": [
+      "AU"
+    ],
+    "notes": "Detections from geostationary and polar satellites over Australia; a hotspot is a heat signal, not a confirmed fire or its extent."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "automation_allowed": true,
+    "gate": "none"
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live GET 2026-11-08: newest detection start_dt 2026-11-08T03:00:00Z against a call at about 03:25Z."
+  },
+  "latency": {
+    "typical": "Not measured in one sample.",
+    "notes": "Geostationary Himawari scans every 10 minutes; polar passes add detections several times a day."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes to an hour after satellite acquisition",
+    "notes": "Geostationary Himawari scans every 10 minutes; polar passes add detections several times a day."
+  },
+  "licensing": {
+    "summary": "The WFS capabilities state: (c) Commonwealth of Australia (Geoscience Australia) 2016, released under the Creative Commons Attribution 4.0 International Licence. Fees: none. Attribute Geoscience Australia and link the licence. Hotspots are automated and can include false alarms. AI training is not specifically addressed beyond CC BY 4.0."
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "Not applicable: automated systems, not people."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation from source to API is documented."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not applicable: no imagery in this feed."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "Nothing documented independently confirms individual readings."
+    },
+    "time": {
+      "level": "claimed",
+      "method": "start_dt and process_dt per detection (UTC).",
+      "unknown": "Satellite clock handling is not documented in the pages read."
+    },
+    "location": {
+      "level": "claimed",
+      "method": "Latitude and longitude from the satellite detection.",
+      "unknown": "Geostationary pixel size limits location accuracy; an accuracy field is present."
+    },
+    "content": {
+      "level": "claimed",
+      "method": "Automated fire detection algorithm with a confidence value.",
+      "unknown": "False detections occur; no ground confirmation."
+    }
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://hotspots.dea.ga.gov.au/",
+    "base_url": "https://hotspots.dea.ga.gov.au/geoserver/public/ows",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key sent or needed in the calls made."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "",
+        "params": "service=WFS&version=2.0.0&request=GetCapabilities",
+        "notes": "Layers incl. public:hotspots, public:hotspots_three_days and satellite pass layers."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "",
+        "params": "service=WFS&version=2.0.0&request=GetFeature&typeNames=public:hotspots_three_days&outputFormat=application/json&count=N&sortBy=start_dt D",
+        "notes": "Hotspots in the last three days as GeoJSON; add bbox or cql_filter to limit the area."
+      }
+    ],
+    "rate_limits": "Not stated in the pages read.",
+    "notes": "Standard OGC WFS 2.0.0 served by GeoServer.",
+    "mcp": {
+      "remote": null,
+      "registry_name": null,
+      "first_party": false
+    }
+  },
+  "tags": [
+    "wildfire",
+    "bushfire",
+    "fire hotspot",
+    "active fire",
+    "satellite",
+    "himawari",
+    "australia",
+    "geoscience australia",
+    "wfs",
+    "cc by",
+    "real-time",
+    "government",
+    "free",
+    "oceania"
+  ],
+  "sources": [
+    {
+      "claim": "WFS capabilities: Digital Earth Australia Hotspots, layers, Fees NONE, CC BY 4.0 notice",
+      "url": "https://hotspots.dea.ga.gov.au/geoserver/public/wfs?service=WFS&version=2.0.0&request=GetCapabilities"
+    },
+    {
+      "claim": "Live keyless GET 2026-11-08: HTTP 200 GeoJSON hotspots_three_days",
+      "url": "https://hotspots.dea.ga.gov.au/geoserver/public/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=public:hotspots_three_days&count=1&outputFormat=application/json"
+    },
+    {
+      "claim": "Hotspots portal",
+      "url": "https://hotspots.dea.ga.gov.au/"
+    }
+  ]
+}
