@@ -1,0 +1,146 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "digitraffic-road-weather-stations",
+  "family": "weather-station",
+  "name": "Digitraffic Road (Finnish road weather stations)",
+  "status": "unclaimed",
+  "provider_url": "https://www.digitraffic.fi/en/road-traffic/",
+  "short": "Air and road surface readings from about 530 Finnish road weather stations; free, keyless JSON.",
+  "summary": "Fintraffic's Digitraffic service publishes current sensor values from road weather stations across Finland: air temperature, pressure, humidity and other road-condition sensors, each with a measured time. All stations come in one call. No key is needed.",
+  "tags": [
+    "weather",
+    "road weather",
+    "temperature",
+    "road conditions",
+    "finland",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current air temperature at a Finnish road station",
+      "road weather sensor values",
+      "list of road weather stations"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service page: open data under CC 4.0 BY. No fee or key is mentioned."
+  },
+  "latency": {
+    "typical": "Minutes",
+    "notes": "Live check 2026-11-08: the all-stations call listed 532 stations; dataUpdatedTime was 12:21Z and station measurements were from the preceding minutes."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: the all-stations call listed 532 stations; dataUpdatedTime was 12:21Z and station measurements were from the preceding minutes."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+  },
+  "coverage": {
+    "regions": [
+      "Finland"
+    ],
+    "notes": "Stations along the Finnish road network.",
+    "areas": [
+      "FI"
+    ]
+  },
+  "licensing": {
+    "summary": "Digitraffic terms: Fintraffic's open data is licensed under Creative Commons 4.0 BY, which allows distributing, remixing and commercial use with credit to the source; the notice and a link to the licence must be kept and changes indicated. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/road-traffic/",
+    "base_url": "https://tie.digitraffic.fi/api/weather/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/stations/data",
+        "notes": "Latest sensor values for all stations (about 350 kB)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/stations",
+        "notes": "Station list as GeoJSON."
+      }
+    ],
+    "rate_limits": "Not read.",
+    "notes": "Requests need an Accept-Encoding: gzip header; without it the server answers 406. Sensor names are Finnish codes such as ILMA (air)."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each sensor value has a measuredTime from the station; how the clock is kept is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Station coordinates are published; nothing proves a station has not been moved."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Digitraffic terms of service: CC 4.0 BY licence and attribution rules",
+      "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+      "claim": "Live GET /stations/data (532 stations)",
+      "url": "https://tie.digitraffic.fi/api/weather/v1/stations/data"
+    },
+    {
+      "claim": "Road weather data overview",
+      "url": "https://www.digitraffic.fi/en/road-traffic/"
+    }
+  ]
+}

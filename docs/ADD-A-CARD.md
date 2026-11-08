@@ -21,6 +21,10 @@ Ten minutes, one JSON file.
 | `earthquake` | Earthquakes and volcano alert levels |
 | `wildfire-detection` | Active fire detections from satellites |
 | `ship-positions` | Ship positions (AIS) |
+| `transit-realtime` | Live transit: vehicle positions, GTFS-realtime, train locations |
+| `bike-share` | Bike-share station availability (GBFS) |
+| `road-traffic-flow` | Road traffic counts, flow and incident messages (not cameras) |
+| `avalanche-snow` | Avalanche danger and snow warnings |
 | `traffic-road-camera` | Traffic and road cameras |
 | `wildfire-camera` | Wildfire-watch cameras |
 | `webcam-anywhere` | Public webcams worldwide |

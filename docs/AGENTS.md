@@ -112,7 +112,7 @@ Made-to-order requests stop at a quote. Tell your person the price and get a yes
 
 ### How to read the catalog
 
-`catalog.index.json` has `families[]`. Each family has `type`, `title` and `example_needs` (the shape of ask it answers), `provider_rows`, `free_now` (providers whose access is free) and `coverage.areas_listed` (every ISO code the family's cards list; if your place is not in it and no card is `global`, nothing covers it).
+`catalog.index.json` has `families[]`. Each family has `type`, `title` and `example_needs` (the shape of ask it answers), `provider_rows` (at most 8 per family, alphabetical by id and not a ranking; `providers_total` is the real count, and `irlpls_list_capabilities` with a place, route or free_only filter returns all matching rows), `free_now` (providers whose access is free) and `coverage.areas_listed` (every ISO code the family's cards list; if your place is not in it and no card is `global`, nothing covers it).
 
 Each `provider_rows` line is `id | route | coverage | price | evidenced guarantees | sdk state | readiness`:
 

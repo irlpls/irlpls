@@ -1,0 +1,155 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "oslo-bysykkel-gbfs",
+  "family": "bike-share",
+  "name": "Oslo City Bike (live station availability)",
+  "status": "unclaimed",
+  "provider_url": "https://oslobysykkel.no/en/open-data",
+  "short": "Oslo city bike stations: bikes and free docks right now; free, keyless GBFS.",
+  "summary": "Oslo City Bike, operated by UIP Bauer Media Outdoor Norge AS, publishes live GBFS 2.3 JSON feeds for its stations: how many bikes and free docks each station has, whether it is renting and returning, and station locations and capacity. The feeds answered without a key.",
+  "tags": [
+    "bike share",
+    "bikes",
+    "docks",
+    "gbfs",
+    "oslo",
+    "norway",
+    "micromobility",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "bikes available at an Oslo city bike station",
+      "free docks at a station",
+      "station locations and capacity",
+      "whether a station is renting or returning"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Open data page: realtime availability in live-updated JSON feeds, published under NLOD 2.0. No key mentioned."
+  },
+  "latency": {
+    "typical": "Feed ttl is 15 seconds",
+    "notes": "Live check 2026-11-08: station_status.json has ttl 15 and per-station last_reported timestamps within seconds of the request."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: station_status.json has ttl 15 and per-station last_reported timestamps within seconds of the request."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+  },
+  "coverage": {
+    "regions": [
+      "Oslo, Norway"
+    ],
+    "notes": "Stations in Oslo; the station count is not stated on the data page.",
+    "areas": [
+      "NO"
+    ]
+  },
+  "licensing": {
+    "summary": "Open data page: the data is published under the Norwegian Licence for Open Government Data (NLOD) 2.0, which allows copying, adapting and commercial use with attribution of the source. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://oslobysykkel.no/en/open-data",
+    "base_url": "https://gbfs.urbansharing.com/oslobysykkel.no",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/gbfs.json",
+        "notes": "Feed index (GBFS 2.3)."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/station_information.json",
+        "notes": "Station id, name, address, lat, lon, capacity."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/station_status.json",
+        "notes": "num_bikes_available, num_docks_available, is_renting, is_returning, last_reported per station."
+      }
+    ],
+    "rate_limits": "None stated.",
+    "notes": "Plain JSON. Historical trips are published monthly as CSV and JSON on the same data page."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each station carries a last_reported Unix time; how the clock is kept is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Station coordinates are published by the operator; nothing proves a dock has not moved."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Realtime JSON feeds, NLOD 2.0 licence",
+      "url": "https://oslobysykkel.no/en/open-data"
+    },
+    {
+      "claim": "Live GET station_status.json (ttl 15, per-station counts)",
+      "url": "https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json"
+    },
+    {
+      "claim": "NLOD 2.0 licence text",
+      "url": "https://data.norge.no/nlod/en/2.0"
+    }
+  ]
+}

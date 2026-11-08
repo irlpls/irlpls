@@ -63,6 +63,14 @@ FAMILY_DEFS = [
     ("traffic-road-camera", "watch", "Traffic and road cameras",
      ["traffic camera in Helsinki, Finland now", "highway camera on I-5 near Seattle now", "traffic on the Westway, London now"],
      ["sg-data-gov-realtime"]),
+    ("transit-realtime", "read", "Live transit: vehicle positions, GTFS-realtime, train locations",
+     ["where are the trains in Finland now", "next bus Brisbane live"]),
+    ("bike-share", "read", "Bike-share station availability (GBFS)",
+     ["bikes available at Oslo bysykkel station"]),
+    ("road-traffic-flow", "read", "Road traffic counts, flow and incident messages (not cameras)",
+     ["traffic count on E18 Finland"]),
+    ("avalanche-snow", "read", "Avalanche danger and snow warnings",
+     ["avalanche danger Norway today"]),
     ("wildfire-camera", "watch", "Wildfire-watch cameras",
      ["camera view of smoke near Lake Tahoe, CA now"]),
     ("webcam-anywhere", "watch", "Public webcams worldwide",
@@ -280,6 +288,9 @@ def row(p):
             f' | {p["readiness"]["level"]}')
 
 
+INDEX_ROWS_PER_FAMILY = 8   # keeps the unfiltered index size bounded as the catalog grows (a bench found it linear in providers)
+
+
 def index_of(cat):
     """catalog.index.json: types, families with one-line provider rows, unsupported; no full records."""
     provs = cat["providers"]
@@ -287,7 +298,10 @@ def index_of(cat):
     idx["row_format"] = "id | route | coverage | price | evidenced guarantees | sdk state | readiness"
     idx["families"] = [{**{k: f[k] for k in ("id", "type", "title", "routes", "free_now", "coverage")},
                         "example_needs": [e["need"] for e in f["example_needs"]],
-                        "provider_rows": [row(provs[i]) for i in f["providers"]]} for f in cat["families"]]
+                        "provider_rows": [row(provs[i]) for i in f["providers"][:INDEX_ROWS_PER_FAMILY]],
+                        "providers_total": len(f["providers"])} for f in cat["families"]]
+    idx["rows_note"] = (f"provider_rows lists at most {INDEX_ROWS_PER_FAMILY} providers per family (alphabetical by id, not a ranking); "
+                        "providers_total is the real count. Filter by place, route or free_only for the rest.")
     idx["unsupported"] = cat["unsupported"]
     idx["full"] = "/catalog.json"
     return idx
@@ -464,6 +478,7 @@ def query(type=None, family=None, place=None, route=None, free_only=False, detai
         g = dict(by_idx[f["id"]])
         if filtered:
             g["provider_rows"] = [row(provs[i]) for i in rows_for[f["id"]]]
+            g["providers_total"] = len(rows_for[f["id"]])
             g["free_now"] = [i for i in g["free_now"] if i in rows_for[f["id"]]]
         out_fams.append(g)
     tids = {f["type"] for f in out_fams} if filtered else set(TYPE_IDS)

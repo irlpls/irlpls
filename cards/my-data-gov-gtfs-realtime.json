@@ -1,0 +1,146 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "my-data-gov-gtfs-realtime",
+  "family": "transit-realtime",
+  "name": "data.gov.my GTFS Realtime (Malaysia vehicle positions)",
+  "status": "unclaimed",
+  "provider_url": "https://developer.data.gov.my/realtime-api/gtfs-realtime",
+  "short": "Live vehicle positions of Malaysian trains and buses (KTMB, Prasarana, BAS.MY); free, keyless GTFS Realtime.",
+  "summary": "Malaysia's official open data API serves GTFS Realtime vehicle-position feeds from KTMB (rail), Prasarana (LRT, MRT, monorail and bus) and BAS.MY stage bus services in several cities. The docs page states the feeds are licensed CC BY 4.0 and updated every 30 seconds. Responses are GTFS Realtime protobuf.",
+  "tags": [
+    "transit",
+    "gtfs realtime",
+    "vehicle positions",
+    "bus",
+    "rail",
+    "malaysia",
+    "kuala lumpur",
+    "southeast asia",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "live position of a bus or train in Malaysia",
+      "vehicles of one agency or city",
+      "KTMB train positions"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Docs page: licence CC BY 4.0. A rate limit page exists; no fee is mentioned. The feed answered without a key."
+  },
+  "latency": {
+    "typical": "Updated every 30 seconds",
+    "notes": "Docs page: all Vehicle Position feeds are updated every 30 seconds. Live check 2026-11-08: the KTMB and Prasarana feeds answered 200."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Docs page: all Vehicle Position feeds are updated every 30 seconds. Live check 2026-11-08: the KTMB and Prasarana feeds answered 200."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+  },
+  "coverage": {
+    "regions": [
+      "Malaysia"
+    ],
+    "notes": "Feeds listed: KTMB, Prasarana (by category, e.g. rapid-bus-kl) and BAS.MY in Kangar, Alor Setar, Kota Bharu, Kuala Terengganu, Ipoh, Seremban, Melaka, Johor Bahru and Kuching.",
+    "areas": [
+      "MY"
+    ]
+  },
+  "licensing": {
+    "summary": "Docs page: all GTFS Realtime feeds are licensed under CC BY 4.0. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://developer.data.gov.my/realtime-api/gtfs-realtime",
+    "base_url": "https://api.data.gov.my/gtfs-realtime",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/vehicle-position/ktmb/",
+        "notes": "KTMB train positions (protobuf)."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/vehicle-position/prasarana/",
+        "notes": "Prasarana positions (protobuf).",
+        "params": "category, e.g. rapid-bus-kl"
+      }
+    ],
+    "rate_limits": "Not read; the docs have a Rate Limit page.",
+    "notes": "A request without a trailing slash answers 301 to the slashed path; use the slashed path. Only vehicle positions are served today; the docs say trip updates and alerts are planned for 2026."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Positions carry a timestamp from the agency feed; how it is set is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Positions come from vehicle GPS reported by the agencies; nothing independent is described."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Feeds, CC BY 4.0, 30-second update, agency list",
+      "url": "https://developer.data.gov.my/realtime-api/gtfs-realtime"
+    },
+    {
+      "claim": "Live GET prasarana vehicle-position, category rapid-bus-kl (protobuf)",
+      "url": "https://api.data.gov.my/gtfs-realtime/vehicle-position/prasarana/?category=rapid-bus-kl"
+    }
+  ]
+}

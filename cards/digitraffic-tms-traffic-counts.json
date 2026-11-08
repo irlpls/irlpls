@@ -1,0 +1,140 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "digitraffic-tms-traffic-counts",
+  "family": "road-traffic-flow",
+  "name": "Digitraffic Road (Finnish traffic measurement stations)",
+  "status": "unclaimed",
+  "provider_url": "https://www.digitraffic.fi/en/road-traffic/",
+  "short": "Vehicle counts and average speeds over 5-minute windows at Finnish road stations; free, keyless JSON.",
+  "summary": "Fintraffic's Digitraffic service publishes traffic measurement station (TMS) data for Finnish roads: vehicle counts and mean speeds over 5-minute windows, per direction. All stations come in one call. No key is needed.",
+  "tags": [
+    "road traffic",
+    "traffic counts",
+    "vehicle speed",
+    "congestion",
+    "finland",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current vehicle speed on a Finnish road",
+      "vehicle counts per direction",
+      "list of traffic measurement stations"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service page: open data under CC 4.0 BY. No fee or key is mentioned."
+  },
+  "latency": {
+    "typical": "Minutes",
+    "notes": "Live check 2026-11-08: the all-stations call listed 522 stations; some had empty sensor lists with an epoch timestamp."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: the all-stations call listed 522 stations; some had empty sensor lists with an epoch timestamp."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+  },
+  "coverage": {
+    "regions": [
+      "Finland"
+    ],
+    "notes": "Stations along the Finnish road network; some stations return no values.",
+    "areas": [
+      "FI"
+    ]
+  },
+  "licensing": {
+    "summary": "Digitraffic terms: Fintraffic's open data is licensed under Creative Commons 4.0 BY, which allows distributing, remixing and commercial use with credit to the source; the notice and a link to the licence must be kept and changes indicated. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/road-traffic/",
+    "base_url": "https://tie.digitraffic.fi/api/tms/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/stations/data",
+        "notes": "Latest sensor values for all stations; 5-minute counts and speeds."
+      }
+    ],
+    "rate_limits": "Not read.",
+    "notes": "Requests need an Accept-Encoding: gzip header; without it the server answers 406. Sensor names are Finnish codes such as KESKINOPEUS_5MIN_LIUKUVA_SUUNTA1 (mean speed, direction 1)."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each sensor value has a measured time from the station; how the clock is kept is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Station coordinates are published; nothing proves a station has not been moved."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Digitraffic terms of service: CC 4.0 BY licence and attribution rules",
+      "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+      "claim": "Live GET /stations/data (522 stations)",
+      "url": "https://tie.digitraffic.fi/api/tms/v1/stations/data"
+    },
+    {
+      "claim": "Road traffic data overview",
+      "url": "https://www.digitraffic.fi/en/road-traffic/"
+    }
+  ]
+}

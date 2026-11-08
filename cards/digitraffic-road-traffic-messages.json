@@ -1,0 +1,143 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "digitraffic-road-traffic-messages",
+  "family": "road-traffic-flow",
+  "name": "Digitraffic Road (Finnish traffic messages)",
+  "status": "unclaimed",
+  "provider_url": "https://www.digitraffic.fi/en/road-traffic/",
+  "short": "Current road works, accidents and traffic announcements on Finnish roads; free, keyless GeoJSON.",
+  "summary": "Fintraffic's Digitraffic service publishes active traffic messages for Finnish roads as GeoJSON: road works, traffic announcements and restrictions, each with a type, release time, text in Finnish and other languages, and a location. Also available as DATEX II. No key is needed.",
+  "tags": [
+    "road traffic",
+    "incidents",
+    "road works",
+    "traffic messages",
+    "finland",
+    "geojson",
+    "datex ii",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "active road works on a Finnish road",
+      "traffic announcements and incidents",
+      "location and text of a traffic message"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service page: open data under CC 4.0 BY. No fee or key is mentioned."
+  },
+  "latency": {
+    "typical": "Updated as messages change",
+    "notes": "Live check 2026-11-08: the messages call returned 448 features; its dataUpdatedTime read 01:14Z that day, so the collection changes when a message is released or revised."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: the messages call returned 448 features; its dataUpdatedTime read 01:14Z that day, so the collection changes when a message is released or revised."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+  },
+  "coverage": {
+    "regions": [
+      "Finland"
+    ],
+    "notes": "Messages for the road network Fintraffic covers.",
+    "areas": [
+      "FI"
+    ]
+  },
+  "licensing": {
+    "summary": "Digitraffic terms: Fintraffic's open data is licensed under Creative Commons 4.0 BY, which allows distributing, remixing and commercial use with credit to the source; the notice and a link to the licence must be kept and changes indicated. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/road-traffic/",
+    "base_url": "https://tie.digitraffic.fi/api/traffic-message/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/messages",
+        "notes": "GeoJSON of active messages.",
+        "params": "inactiveHours, includeAreaGeometry, situationType"
+      }
+    ],
+    "rate_limits": "Not read.",
+    "notes": "Requests need an Accept-Encoding: gzip header; without it the server answers 406. DATEX II endpoints are listed on the docs page."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each message has releaseTime and versionTime from the agency; how they are set is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Message locations are road addresses and points entered by the agency."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Digitraffic terms of service: CC 4.0 BY licence and attribution rules",
+      "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+      "claim": "Live GET messages (448 features, GeoJSON)",
+      "url": "https://tie.digitraffic.fi/api/traffic-message/v1/messages?inactiveHours=0&includeAreaGeometry=false&situationType=TRAFFIC_ANNOUNCEMENT"
+    },
+    {
+      "claim": "Road traffic data overview, traffic message types",
+      "url": "https://www.digitraffic.fi/en/road-traffic/"
+    }
+  ]
+}

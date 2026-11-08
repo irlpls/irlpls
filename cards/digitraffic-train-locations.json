@@ -1,0 +1,147 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "digitraffic-train-locations",
+  "family": "transit-realtime",
+  "name": "Digitraffic Rail (Finnish train locations)",
+  "status": "unclaimed",
+  "provider_url": "https://www.digitraffic.fi/en/railway-traffic/",
+  "short": "Live GPS positions and speeds of trains in Finland; free, keyless GeoJSON.",
+  "summary": "Fintraffic's Digitraffic service publishes the latest location of each running train in Finland as GeoJSON: train number, departure date, speed, GPS accuracy and timestamp. No key is needed; the server requires gzip.",
+  "tags": [
+    "transit",
+    "train",
+    "rail",
+    "vehicle positions",
+    "finland",
+    "geojson",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "live position and speed of a train in Finland",
+      "all trains currently running",
+      "latest location of one train number"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service page: open data under CC 4.0 BY. No fee or key is mentioned."
+  },
+  "latency": {
+    "typical": "Seconds to minutes",
+    "notes": "Live check 2026-11-08: latest locations returned 130 trains with timestamps within seconds of the request."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: latest locations returned 130 trains with timestamps within seconds of the request."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+  },
+  "coverage": {
+    "regions": [
+      "Finland"
+    ],
+    "notes": "Trains currently reporting a GPS location; trains without a position are absent.",
+    "areas": [
+      "FI"
+    ]
+  },
+  "licensing": {
+    "summary": "Digitraffic terms: Fintraffic's open data is licensed under Creative Commons 4.0 BY, which allows distributing, remixing and commercial use with credit to the source; the notice and a link to the licence must be kept and changes indicated. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/railway-traffic/",
+    "base_url": "https://rata.digitraffic.fi/api/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/train-locations.geojson/latest/",
+        "notes": "Latest location of every running train as GeoJSON; properties trainNumber, departureDate, speed, accuracy, timestamp."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/train-locations.geojson/latest/{train_number}",
+        "notes": "One train."
+      }
+    ],
+    "rate_limits": "Not read.",
+    "notes": "Requests need an Accept-Encoding: gzip header; without it the server answers 406."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each position has a timestamp supplied by the train's reporting system; how it is set is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Positions are GPS fixes with an accuracy value; nothing independent is described."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Digitraffic terms of service: CC 4.0 BY licence and attribution rules",
+      "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+      "claim": "Live GET latest train locations (130 features, gzip required)",
+      "url": "https://rata.digitraffic.fi/api/v1/train-locations.geojson/latest/"
+    },
+    {
+      "claim": "Railway traffic data overview",
+      "url": "https://www.digitraffic.fi/en/railway-traffic/"
+    }
+  ]
+}

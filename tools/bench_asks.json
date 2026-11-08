@@ -121,6 +121,19 @@
   "survey-participants": [
    {"ask": "200 participants to record a short video of their kitchen within 3 days", "label": "200 kitchen videos"},
    {"ask": "300 responses to a 5-minute survey from US adults, within 3 days", "label": "300 survey responses, US", "source": "catalog"}
+  ],
+  "transit-realtime": [
+   {"ask": "where are the trains in Finland now", "label": "Trains, Finland", "source": "catalog"},
+   {"ask": "next bus Brisbane live", "label": "Live buses, Brisbane", "source": "catalog"}
+  ],
+  "bike-share": [
+   {"ask": "bikes available at Oslo bysykkel station", "label": "Bikes, Oslo", "source": "catalog"}
+  ],
+  "road-traffic-flow": [
+   {"ask": "traffic count on E18 Finland", "label": "Traffic count, E18", "source": "catalog"}
+  ],
+  "avalanche-snow": [
+   {"ask": "avalanche danger Norway today", "label": "Avalanche danger, Norway", "source": "catalog"}
   ]
  }
 }

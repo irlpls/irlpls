@@ -4773,6 +4773,582 @@
    "adapter": "digitraffic-marine-ais"
   },
   {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "digitraffic-road-traffic-messages",
+   "family": "road-traffic-flow",
+   "name": "Digitraffic Road (Finnish traffic messages)",
+   "status": "unclaimed",
+   "provider_url": "https://www.digitraffic.fi/en/road-traffic/",
+   "short": "Current road works, accidents and traffic announcements on Finnish roads; free, keyless GeoJSON.",
+   "summary": "Fintraffic's Digitraffic service publishes active traffic messages for Finnish roads as GeoJSON: road works, traffic announcements and restrictions, each with a type, release time, text in Finnish and other languages, and a location. Also available as DATEX II. No key is needed.",
+   "tags": [
+    "road traffic",
+    "incidents",
+    "road works",
+    "traffic messages",
+    "finland",
+    "geojson",
+    "datex ii",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "active road works on a Finnish road",
+     "traffic announcements and incidents",
+     "location and text of a traffic message"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service page: open data under CC 4.0 BY. No fee or key is mentioned."
+   },
+   "latency": {
+    "typical": "Updated as messages change",
+    "notes": "Live check 2026-11-08: the messages call returned 448 features; its dataUpdatedTime read 01:14Z that day, so the collection changes when a message is released or revised."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: the messages call returned 448 features; its dataUpdatedTime read 01:14Z that day, so the collection changes when a message is released or revised."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+   },
+   "coverage": {
+    "regions": [
+     "Finland"
+    ],
+    "notes": "Messages for the road network Fintraffic covers.",
+    "areas": [
+     "FI"
+    ]
+   },
+   "licensing": {
+    "summary": "Digitraffic terms: Fintraffic's open data is licensed under Creative Commons 4.0 BY, which allows distributing, remixing and commercial use with credit to the source; the notice and a link to the licence must be kept and changes indicated. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/road-traffic/",
+    "base_url": "https://tie.digitraffic.fi/api/traffic-message/v1",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/messages",
+      "notes": "GeoJSON of active messages.",
+      "params": "inactiveHours, includeAreaGeometry, situationType"
+     }
+    ],
+    "rate_limits": "Not read.",
+    "notes": "Requests need an Accept-Encoding: gzip header; without it the server answers 406. DATEX II endpoints are listed on the docs page."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each message has releaseTime and versionTime from the agency; how they are set is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Message locations are road addresses and points entered by the agency."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Digitraffic terms of service: CC 4.0 BY licence and attribution rules",
+     "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+     "claim": "Live GET messages (448 features, GeoJSON)",
+     "url": "https://tie.digitraffic.fi/api/traffic-message/v1/messages?inactiveHours=0&includeAreaGeometry=false&situationType=TRAFFIC_ANNOUNCEMENT"
+    },
+    {
+     "claim": "Road traffic data overview, traffic message types",
+     "url": "https://www.digitraffic.fi/en/road-traffic/"
+    }
+   ]
+  },
+  {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "digitraffic-road-weather-stations",
+   "family": "weather-station",
+   "name": "Digitraffic Road (Finnish road weather stations)",
+   "status": "unclaimed",
+   "provider_url": "https://www.digitraffic.fi/en/road-traffic/",
+   "short": "Air and road surface readings from about 530 Finnish road weather stations; free, keyless JSON.",
+   "summary": "Fintraffic's Digitraffic service publishes current sensor values from road weather stations across Finland: air temperature, pressure, humidity and other road-condition sensors, each with a measured time. All stations come in one call. No key is needed.",
+   "tags": [
+    "weather",
+    "road weather",
+    "temperature",
+    "road conditions",
+    "finland",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current air temperature at a Finnish road station",
+     "road weather sensor values",
+     "list of road weather stations"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service page: open data under CC 4.0 BY. No fee or key is mentioned."
+   },
+   "latency": {
+    "typical": "Minutes",
+    "notes": "Live check 2026-11-08: the all-stations call listed 532 stations; dataUpdatedTime was 12:21Z and station measurements were from the preceding minutes."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: the all-stations call listed 532 stations; dataUpdatedTime was 12:21Z and station measurements were from the preceding minutes."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+   },
+   "coverage": {
+    "regions": [
+     "Finland"
+    ],
+    "notes": "Stations along the Finnish road network.",
+    "areas": [
+     "FI"
+    ]
+   },
+   "licensing": {
+    "summary": "Digitraffic terms: Fintraffic's open data is licensed under Creative Commons 4.0 BY, which allows distributing, remixing and commercial use with credit to the source; the notice and a link to the licence must be kept and changes indicated. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/road-traffic/",
+    "base_url": "https://tie.digitraffic.fi/api/weather/v1",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/stations/data",
+      "notes": "Latest sensor values for all stations (about 350 kB)."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/stations",
+      "notes": "Station list as GeoJSON."
+     }
+    ],
+    "rate_limits": "Not read.",
+    "notes": "Requests need an Accept-Encoding: gzip header; without it the server answers 406. Sensor names are Finnish codes such as ILMA (air)."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each sensor value has a measuredTime from the station; how the clock is kept is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Station coordinates are published; nothing proves a station has not been moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Digitraffic terms of service: CC 4.0 BY licence and attribution rules",
+     "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+     "claim": "Live GET /stations/data (532 stations)",
+     "url": "https://tie.digitraffic.fi/api/weather/v1/stations/data"
+    },
+    {
+     "claim": "Road weather data overview",
+     "url": "https://www.digitraffic.fi/en/road-traffic/"
+    }
+   ]
+  },
+  {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "digitraffic-tms-traffic-counts",
+   "family": "road-traffic-flow",
+   "name": "Digitraffic Road (Finnish traffic measurement stations)",
+   "status": "unclaimed",
+   "provider_url": "https://www.digitraffic.fi/en/road-traffic/",
+   "short": "Vehicle counts and average speeds over 5-minute windows at Finnish road stations; free, keyless JSON.",
+   "summary": "Fintraffic's Digitraffic service publishes traffic measurement station (TMS) data for Finnish roads: vehicle counts and mean speeds over 5-minute windows, per direction. All stations come in one call. No key is needed.",
+   "tags": [
+    "road traffic",
+    "traffic counts",
+    "vehicle speed",
+    "congestion",
+    "finland",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current vehicle speed on a Finnish road",
+     "vehicle counts per direction",
+     "list of traffic measurement stations"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service page: open data under CC 4.0 BY. No fee or key is mentioned."
+   },
+   "latency": {
+    "typical": "Minutes",
+    "notes": "Live check 2026-11-08: the all-stations call listed 522 stations; some had empty sensor lists with an epoch timestamp."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: the all-stations call listed 522 stations; some had empty sensor lists with an epoch timestamp."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+   },
+   "coverage": {
+    "regions": [
+     "Finland"
+    ],
+    "notes": "Stations along the Finnish road network; some stations return no values.",
+    "areas": [
+     "FI"
+    ]
+   },
+   "licensing": {
+    "summary": "Digitraffic terms: Fintraffic's open data is licensed under Creative Commons 4.0 BY, which allows distributing, remixing and commercial use with credit to the source; the notice and a link to the licence must be kept and changes indicated. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/road-traffic/",
+    "base_url": "https://tie.digitraffic.fi/api/tms/v1",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/stations/data",
+      "notes": "Latest sensor values for all stations; 5-minute counts and speeds."
+     }
+    ],
+    "rate_limits": "Not read.",
+    "notes": "Requests need an Accept-Encoding: gzip header; without it the server answers 406. Sensor names are Finnish codes such as KESKINOPEUS_5MIN_LIUKUVA_SUUNTA1 (mean speed, direction 1)."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each sensor value has a measured time from the station; how the clock is kept is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Station coordinates are published; nothing proves a station has not been moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Digitraffic terms of service: CC 4.0 BY licence and attribution rules",
+     "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+     "claim": "Live GET /stations/data (522 stations)",
+     "url": "https://tie.digitraffic.fi/api/tms/v1/stations/data"
+    },
+    {
+     "claim": "Road traffic data overview",
+     "url": "https://www.digitraffic.fi/en/road-traffic/"
+    }
+   ]
+  },
+  {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "digitraffic-train-locations",
+   "family": "transit-realtime",
+   "name": "Digitraffic Rail (Finnish train locations)",
+   "status": "unclaimed",
+   "provider_url": "https://www.digitraffic.fi/en/railway-traffic/",
+   "short": "Live GPS positions and speeds of trains in Finland; free, keyless GeoJSON.",
+   "summary": "Fintraffic's Digitraffic service publishes the latest location of each running train in Finland as GeoJSON: train number, departure date, speed, GPS accuracy and timestamp. No key is needed; the server requires gzip.",
+   "tags": [
+    "transit",
+    "train",
+    "rail",
+    "vehicle positions",
+    "finland",
+    "geojson",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "live position and speed of a train in Finland",
+     "all trains currently running",
+     "latest location of one train number"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service page: open data under CC 4.0 BY. No fee or key is mentioned."
+   },
+   "latency": {
+    "typical": "Seconds to minutes",
+    "notes": "Live check 2026-11-08: latest locations returned 130 trains with timestamps within seconds of the request."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: latest locations returned 130 trains with timestamps within seconds of the request."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+   },
+   "coverage": {
+    "regions": [
+     "Finland"
+    ],
+    "notes": "Trains currently reporting a GPS location; trains without a position are absent.",
+    "areas": [
+     "FI"
+    ]
+   },
+   "licensing": {
+    "summary": "Digitraffic terms: Fintraffic's open data is licensed under Creative Commons 4.0 BY, which allows distributing, remixing and commercial use with credit to the source; the notice and a link to the licence must be kept and changes indicated. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.digitraffic.fi/en/railway-traffic/",
+    "base_url": "https://rata.digitraffic.fi/api/v1",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/train-locations.geojson/latest/",
+      "notes": "Latest location of every running train as GeoJSON; properties trainNumber, departureDate, speed, accuracy, timestamp."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/train-locations.geojson/latest/{train_number}",
+      "notes": "One train."
+     }
+    ],
+    "rate_limits": "Not read.",
+    "notes": "Requests need an Accept-Encoding: gzip header; without it the server answers 406."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each position has a timestamp supplied by the train's reporting system; how it is set is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Positions are GPS fixes with an accuracy value; nothing independent is described."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Digitraffic terms of service: CC 4.0 BY licence and attribution rules",
+     "url": "https://www.digitraffic.fi/en/terms-of-service/"
+    },
+    {
+     "claim": "Live GET latest train locations (130 features, gzip required)",
+     "url": "https://rata.digitraffic.fi/api/v1/train-locations.geojson/latest/"
+    },
+    {
+     "claim": "Railway traffic data overview",
+     "url": "https://www.digitraffic.fi/en/railway-traffic/"
+    }
+   ]
+  },
+  {
    "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
@@ -17859,6 +18435,152 @@
    ]
   },
   {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "my-data-gov-gtfs-realtime",
+   "family": "transit-realtime",
+   "name": "data.gov.my GTFS Realtime (Malaysia vehicle positions)",
+   "status": "unclaimed",
+   "provider_url": "https://developer.data.gov.my/realtime-api/gtfs-realtime",
+   "short": "Live vehicle positions of Malaysian trains and buses (KTMB, Prasarana, BAS.MY); free, keyless GTFS Realtime.",
+   "summary": "Malaysia's official open data API serves GTFS Realtime vehicle-position feeds from KTMB (rail), Prasarana (LRT, MRT, monorail and bus) and BAS.MY stage bus services in several cities. The docs page states the feeds are licensed CC BY 4.0 and updated every 30 seconds. Responses are GTFS Realtime protobuf.",
+   "tags": [
+    "transit",
+    "gtfs realtime",
+    "vehicle positions",
+    "bus",
+    "rail",
+    "malaysia",
+    "kuala lumpur",
+    "southeast asia",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "live position of a bus or train in Malaysia",
+     "vehicles of one agency or city",
+     "KTMB train positions"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Docs page: licence CC BY 4.0. A rate limit page exists; no fee is mentioned. The feed answered without a key."
+   },
+   "latency": {
+    "typical": "Updated every 30 seconds",
+    "notes": "Docs page: all Vehicle Position feeds are updated every 30 seconds. Live check 2026-11-08: the KTMB and Prasarana feeds answered 200."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Docs page: all Vehicle Position feeds are updated every 30 seconds. Live check 2026-11-08: the KTMB and Prasarana feeds answered 200."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+   },
+   "coverage": {
+    "regions": [
+     "Malaysia"
+    ],
+    "notes": "Feeds listed: KTMB, Prasarana (by category, e.g. rapid-bus-kl) and BAS.MY in Kangar, Alor Setar, Kota Bharu, Kuala Terengganu, Ipoh, Seremban, Melaka, Johor Bahru and Kuching.",
+    "areas": [
+     "MY"
+    ]
+   },
+   "licensing": {
+    "summary": "Docs page: all GTFS Realtime feeds are licensed under CC BY 4.0. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://developer.data.gov.my/realtime-api/gtfs-realtime",
+    "base_url": "https://api.data.gov.my/gtfs-realtime",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/vehicle-position/ktmb/",
+      "notes": "KTMB train positions (protobuf)."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/vehicle-position/prasarana/",
+      "notes": "Prasarana positions (protobuf).",
+      "params": "category, e.g. rapid-bus-kl"
+     }
+    ],
+    "rate_limits": "Not read; the docs have a Rate Limit page.",
+    "notes": "A request without a trailing slash answers 301 to the slashed path; use the slashed path. Only vehicle positions are served today; the docs say trip updates and alerts are planned for 2026."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Positions carry a timestamp from the agency feed; how it is set is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Positions come from vehicle GPS reported by the agencies; nothing independent is described."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Feeds, CC BY 4.0, 30-second update, agency list",
+     "url": "https://developer.data.gov.my/realtime-api/gtfs-realtime"
+    },
+    {
+     "claim": "Live GET prasarana vehicle-position, category rapid-bus-kl (protobuf)",
+     "url": "https://api.data.gov.my/gtfs-realtime/vehicle-position/prasarana/?category=rapid-bus-kl"
+    }
+   ]
+  },
+  {
    "family": "weather-station",
    "status": "unclaimed",
    "pricing": {
@@ -19681,6 +20403,151 @@
    ]
   },
   {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "nve-avalanche-warnings-norway",
+   "family": "avalanche-snow",
+   "name": "Norwegian Avalanche Warning Service (varsom.no API)",
+   "status": "unclaimed",
+   "provider_url": "https://api.nve.no/doc/snoeskredvarsel/",
+   "short": "Daily avalanche danger levels per Norwegian warning region; free, keyless JSON.",
+   "summary": "The Norwegian Avalanche Warning Service, run by NVE, publishes daily avalanche warnings through a REST API: danger level, valid period, next warning time and main text for each warning region. JSON or XML by Accept header. No key is needed.",
+   "tags": [
+    "avalanche",
+    "snow",
+    "mountain safety",
+    "danger level",
+    "warning",
+    "norway",
+    "svalbard",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "avalanche danger level in a Norwegian region today",
+     "warnings for a region and date range",
+     "summary of all regions"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "API docs page: the data is freely available. No fee or key is mentioned."
+   },
+   "latency": {
+    "typical": "A new warning each day",
+    "notes": "Live check 2026-11-08: warnings carry PublishTime and NextWarningTime (17:00 the day before); in early November the regions checked returned danger level 0 with text 'Ikke vurdert' (not assessed)."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: warnings carry PublishTime and NextWarningTime (17:00 the day before); in early November the regions checked returned danger level 0 with text 'Ikke vurdert' (not assessed)."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Updated daily"
+   },
+   "coverage": {
+    "regions": [
+     "Norway, including Svalbard"
+    ],
+    "notes": "Warning regions such as Trollheimen (3022), Svalbard east (3001) and Svalbard west (3002). Off-season regions show not assessed.",
+    "areas": [
+     "NO"
+    ]
+   },
+   "licensing": {
+    "summary": "API docs page (Norwegian): the data is freely available for use; a warning is not complete unless all its data is shown, and the source is to be named 'Varsler fra Snoskredvarslingen i Norge og www.varsom.no'. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.nve.no/doc/snoeskredvarsel/",
+    "base_url": "https://api01.nve.no/hydrology/forecast/avalanche/v6.3.0/api",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/AvalancheWarningByRegion/Simple/{regionId}/{langKey}/{from}/{to}",
+      "notes": "Warnings for one region; langKey 1 is Norwegian; dates YYYY-MM-DD.",
+      "params": "regionId, langKey, from, to"
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/RegionSummary/Simple/{langKey}/{from}/{to}",
+      "notes": "All regions with their warnings for the dates."
+     }
+    ],
+    "rate_limits": "None stated.",
+    "notes": "Swagger docs are linked from the docs page. The Accept header selects JSON or XML."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each warning has valid-from, valid-to and publish times; they are the service's own."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Warnings are forecasts for a region, not measurements at a point."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "Warnings are the forecasters' judgement; no check against observed avalanches is described here."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Docs: freely available data, source naming, REST JSON/XML",
+     "url": "https://api.nve.no/doc/snoeskredvarsel/"
+    },
+    {
+     "claim": "Live GET warning for Trollheimen",
+     "url": "https://api01.nve.no/hydrology/forecast/avalanche/v6.3.0/api/AvalancheWarningByRegion/Simple/3022/1/2026-11-07/2026-11-08"
+    }
+   ]
+  },
+  {
    "id": "nws",
    "family": "weather-station",
    "name": "NWS weather stations (NOAA)",
@@ -21069,6 +21936,161 @@
     {
      "claim": "Disclaimer: OPW network about 380 stations, not all shown",
      "url": "https://waterlevel.ie/disclaimer/"
+    }
+   ]
+  },
+  {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "oslo-bysykkel-gbfs",
+   "family": "bike-share",
+   "name": "Oslo City Bike (live station availability)",
+   "status": "unclaimed",
+   "provider_url": "https://oslobysykkel.no/en/open-data",
+   "short": "Oslo city bike stations: bikes and free docks right now; free, keyless GBFS.",
+   "summary": "Oslo City Bike, operated by UIP Bauer Media Outdoor Norge AS, publishes live GBFS 2.3 JSON feeds for its stations: how many bikes and free docks each station has, whether it is renting and returning, and station locations and capacity. The feeds answered without a key.",
+   "tags": [
+    "bike share",
+    "bikes",
+    "docks",
+    "gbfs",
+    "oslo",
+    "norway",
+    "micromobility",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "bikes available at an Oslo city bike station",
+     "free docks at a station",
+     "station locations and capacity",
+     "whether a station is renting or returning"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Open data page: realtime availability in live-updated JSON feeds, published under NLOD 2.0. No key mentioned."
+   },
+   "latency": {
+    "typical": "Feed ttl is 15 seconds",
+    "notes": "Live check 2026-11-08: station_status.json has ttl 15 and per-station last_reported timestamps within seconds of the request."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: station_status.json has ttl 15 and per-station last_reported timestamps within seconds of the request."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+   },
+   "coverage": {
+    "regions": [
+     "Oslo, Norway"
+    ],
+    "notes": "Stations in Oslo; the station count is not stated on the data page.",
+    "areas": [
+     "NO"
+    ]
+   },
+   "licensing": {
+    "summary": "Open data page: the data is published under the Norwegian Licence for Open Government Data (NLOD) 2.0, which allows copying, adapting and commercial use with attribution of the source. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://oslobysykkel.no/en/open-data",
+    "base_url": "https://gbfs.urbansharing.com/oslobysykkel.no",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/gbfs.json",
+      "notes": "Feed index (GBFS 2.3)."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/station_information.json",
+      "notes": "Station id, name, address, lat, lon, capacity."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/station_status.json",
+      "notes": "num_bikes_available, num_docks_available, is_renting, is_returning, last_reported per station."
+     }
+    ],
+    "rate_limits": "None stated.",
+    "notes": "Plain JSON. Historical trips are published monthly as CSV and JSON on the same data page."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each station carries a last_reported Unix time; how the clock is kept is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Station coordinates are published by the operator; nothing proves a dock has not moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Realtime JSON feeds, NLOD 2.0 licence",
+     "url": "https://oslobysykkel.no/en/open-data"
+    },
+    {
+     "claim": "Live GET station_status.json (ttl 15, per-station counts)",
+     "url": "https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json"
+    },
+    {
+     "claim": "NLOD 2.0 licence text",
+     "url": "https://data.norge.no/nlod/en/2.0"
     }
    ]
   },
@@ -29150,6 +30172,167 @@
     {
      "claim": "Live keyless GET 2026-11-06: HTTP 200, event 598454 ML 1.3 at Imranli (Sivas), date 2026-11-06T18:34:53",
      "url": "https://servisnet.afad.gov.tr/apigateway/deprem/apiv2/event/filter?start=2026-11-05&end=2026-11-07&limit=1"
+    }
+   ]
+  },
+  {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "translink-seq-gtfs-rt",
+   "family": "transit-realtime",
+   "name": "Translink (South East Queensland GTFS Realtime)",
+   "status": "unclaimed",
+   "provider_url": "https://www.data.qld.gov.au/dataset/translink-real-time-data",
+   "short": "Live vehicle positions, trip updates and alerts for South East Queensland public transport; free, keyless GTFS Realtime.",
+   "summary": "Translink, the Queensland Government public transport authority, publishes GTFS Realtime protobuf feeds for South East Queensland and Cairns: vehicle positions, trip updates and service alerts. The Queensland open data portal lists them under Creative Commons Attribution 4.0. The feeds answered without a key.",
+   "tags": [
+    "transit",
+    "gtfs realtime",
+    "vehicle positions",
+    "bus",
+    "train",
+    "tram",
+    "ferry",
+    "queensland",
+    "australia",
+    "brisbane",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "live position of a bus, train or ferry in South East Queensland",
+     "trip delay updates",
+     "service alerts",
+     "vehicles near a stop"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Open data portal record: licence Creative Commons Attribution 4.0. No fee or key is mentioned and the feed answered without one."
+   },
+   "latency": {
+    "typical": "Not published; protobuf snapshots",
+    "notes": "Live check 2026-11-08: VehiclePositions returned a protobuf feed of about 7.7 kB with current vehicle entities. The update interval is not stated on the portal record."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: VehiclePositions returned a protobuf feed of about 7.7 kB with current vehicle entities. The update interval is not stated on the portal record."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+   },
+   "coverage": {
+    "regions": [
+     "South East Queensland, Australia",
+     "Cairns, Australia"
+    ],
+    "notes": "Portal record lists SEQ and Cairns (CNS) feeds. Which operators and modes are included is not stated in the record.",
+    "areas": [
+     "AU-QLD"
+    ]
+   },
+   "licensing": {
+    "summary": "Open data portal record: Creative Commons Attribution 4.0, which allows reuse with attribution. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.data.qld.gov.au/dataset/translink-real-time-data",
+    "base_url": "https://gtfsrt.api.translink.com.au/api/realtime",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/SEQ/VehiclePositions",
+      "notes": "GTFS Realtime protobuf of vehicle positions, South East Queensland."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/SEQ/TripUpdates",
+      "notes": "Trip updates."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/SEQ/alerts",
+      "notes": "Service alerts."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/CNS/VehiclePositions",
+      "notes": "Cairns vehicle positions; also /CNS/TripUpdates and /CNS/alerts."
+     }
+    ],
+    "rate_limits": "None stated.",
+    "notes": "Responses are binary protobuf in the GTFS Realtime format, not JSON. A static GTFS feed for the same network is listed on the same portal."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each vehicle entity carries a timestamp from the operator's system; how it is set is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Positions come from vehicle-reported GPS; nothing independent is described."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Record: real-time data in GTFS-RT format, Creative Commons Attribution 4.0, feed URLs",
+     "url": "https://www.data.qld.gov.au/dataset/translink-real-time-data"
+    },
+    {
+     "claim": "Live GET SEQ VehiclePositions (application/x-protobuf)",
+     "url": "https://gtfsrt.api.translink.com.au/api/realtime/SEQ/VehiclePositions"
     }
    ]
   },

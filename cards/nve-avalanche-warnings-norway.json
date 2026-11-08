@@ -1,0 +1,145 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "nve-avalanche-warnings-norway",
+  "family": "avalanche-snow",
+  "name": "Norwegian Avalanche Warning Service (varsom.no API)",
+  "status": "unclaimed",
+  "provider_url": "https://api.nve.no/doc/snoeskredvarsel/",
+  "short": "Daily avalanche danger levels per Norwegian warning region; free, keyless JSON.",
+  "summary": "The Norwegian Avalanche Warning Service, run by NVE, publishes daily avalanche warnings through a REST API: danger level, valid period, next warning time and main text for each warning region. JSON or XML by Accept header. No key is needed.",
+  "tags": [
+    "avalanche",
+    "snow",
+    "mountain safety",
+    "danger level",
+    "warning",
+    "norway",
+    "svalbard",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "avalanche danger level in a Norwegian region today",
+      "warnings for a region and date range",
+      "summary of all regions"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "API docs page: the data is freely available. No fee or key is mentioned."
+  },
+  "latency": {
+    "typical": "A new warning each day",
+    "notes": "Live check 2026-11-08: warnings carry PublishTime and NextWarningTime (17:00 the day before); in early November the regions checked returned danger level 0 with text 'Ikke vurdert' (not assessed)."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: warnings carry PublishTime and NextWarningTime (17:00 the day before); in early November the regions checked returned danger level 0 with text 'Ikke vurdert' (not assessed)."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Updated daily"
+  },
+  "coverage": {
+    "regions": [
+      "Norway, including Svalbard"
+    ],
+    "notes": "Warning regions such as Trollheimen (3022), Svalbard east (3001) and Svalbard west (3002). Off-season regions show not assessed.",
+    "areas": [
+      "NO"
+    ]
+  },
+  "licensing": {
+    "summary": "API docs page (Norwegian): the data is freely available for use; a warning is not complete unless all its data is shown, and the source is to be named 'Varsler fra Snoskredvarslingen i Norge og www.varsom.no'. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api.nve.no/doc/snoeskredvarsel/",
+    "base_url": "https://api01.nve.no/hydrology/forecast/avalanche/v6.3.0/api",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/AvalancheWarningByRegion/Simple/{regionId}/{langKey}/{from}/{to}",
+        "notes": "Warnings for one region; langKey 1 is Norwegian; dates YYYY-MM-DD.",
+        "params": "regionId, langKey, from, to"
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/RegionSummary/Simple/{langKey}/{from}/{to}",
+        "notes": "All regions with their warnings for the dates."
+      }
+    ],
+    "rate_limits": "None stated.",
+    "notes": "Swagger docs are linked from the docs page. The Accept header selects JSON or XML."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each warning has valid-from, valid-to and publish times; they are the service's own."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Warnings are forecasts for a region, not measurements at a point."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "Warnings are the forecasters' judgement; no check against observed avalanches is described here."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Docs: freely available data, source naming, REST JSON/XML",
+      "url": "https://api.nve.no/doc/snoeskredvarsel/"
+    },
+    {
+      "claim": "Live GET warning for Trollheimen",
+      "url": "https://api01.nve.no/hydrology/forecast/avalanche/v6.3.0/api/AvalancheWarningByRegion/Simple/3022/1/2026-11-07/2026-11-08"
+    }
+  ]
+}

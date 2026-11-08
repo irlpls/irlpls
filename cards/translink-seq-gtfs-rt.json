@@ -1,0 +1,161 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "translink-seq-gtfs-rt",
+  "family": "transit-realtime",
+  "name": "Translink (South East Queensland GTFS Realtime)",
+  "status": "unclaimed",
+  "provider_url": "https://www.data.qld.gov.au/dataset/translink-real-time-data",
+  "short": "Live vehicle positions, trip updates and alerts for South East Queensland public transport; free, keyless GTFS Realtime.",
+  "summary": "Translink, the Queensland Government public transport authority, publishes GTFS Realtime protobuf feeds for South East Queensland and Cairns: vehicle positions, trip updates and service alerts. The Queensland open data portal lists them under Creative Commons Attribution 4.0. The feeds answered without a key.",
+  "tags": [
+    "transit",
+    "gtfs realtime",
+    "vehicle positions",
+    "bus",
+    "train",
+    "tram",
+    "ferry",
+    "queensland",
+    "australia",
+    "brisbane",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "live position of a bus, train or ferry in South East Queensland",
+      "trip delay updates",
+      "service alerts",
+      "vehicles near a stop"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Open data portal record: licence Creative Commons Attribution 4.0. No fee or key is mentioned and the feed answered without one."
+  },
+  "latency": {
+    "typical": "Not published; protobuf snapshots",
+    "notes": "Live check 2026-11-08: VehiclePositions returned a protobuf feed of about 7.7 kB with current vehicle entities. The update interval is not stated on the portal record."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: VehiclePositions returned a protobuf feed of about 7.7 kB with current vehicle entities. The update interval is not stated on the portal record."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+  },
+  "coverage": {
+    "regions": [
+      "South East Queensland, Australia",
+      "Cairns, Australia"
+    ],
+    "notes": "Portal record lists SEQ and Cairns (CNS) feeds. Which operators and modes are included is not stated in the record.",
+    "areas": [
+      "AU-QLD"
+    ]
+  },
+  "licensing": {
+    "summary": "Open data portal record: Creative Commons Attribution 4.0, which allows reuse with attribution. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://www.data.qld.gov.au/dataset/translink-real-time-data",
+    "base_url": "https://gtfsrt.api.translink.com.au/api/realtime",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/SEQ/VehiclePositions",
+        "notes": "GTFS Realtime protobuf of vehicle positions, South East Queensland."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/SEQ/TripUpdates",
+        "notes": "Trip updates."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/SEQ/alerts",
+        "notes": "Service alerts."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/CNS/VehiclePositions",
+        "notes": "Cairns vehicle positions; also /CNS/TripUpdates and /CNS/alerts."
+      }
+    ],
+    "rate_limits": "None stated.",
+    "notes": "Responses are binary protobuf in the GTFS Realtime format, not JSON. A static GTFS feed for the same network is listed on the same portal."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each vehicle entity carries a timestamp from the operator's system; how it is set is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Positions come from vehicle-reported GPS; nothing independent is described."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Record: real-time data in GTFS-RT format, Creative Commons Attribution 4.0, feed URLs",
+      "url": "https://www.data.qld.gov.au/dataset/translink-real-time-data"
+    },
+    {
+      "claim": "Live GET SEQ VehiclePositions (application/x-protobuf)",
+      "url": "https://gtfsrt.api.translink.com.au/api/realtime/SEQ/VehiclePositions"
+    }
+  ]
+}
