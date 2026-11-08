@@ -13,8 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from irlpls import validate  # noqa: E402
-
-PROMO_KEYS = {"sponsored", "promoted", "featured", "rank", "ranking", "boost", "paid", "ad", "ads", "priority", "score"}
+from irlpls.gate import PROMO_KEYS  # noqa: E402  (one shared list)
 
 
 def main():

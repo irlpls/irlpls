@@ -16,16 +16,16 @@ import json
 import re
 import sys
 import time
-import urllib.error
-import urllib.request
 from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+from irlpls import safefetch  # noqa: E402
 CARDS = ROOT / "cards"
-UA = "irlpls-card-check/0.1 (+https://irlpls.com)"
+UA = safefetch.UA
 TIMEOUT = 10
 MIN_GAP = 1.0  # seconds between requests to one host
 
@@ -92,19 +92,20 @@ def verdict(kind, st):
     return "FAIL"
 
 
-def http_fetch(url):
-    """HEAD, falling back to GET when HEAD is refused. Returns an int status or an error string."""
+def http_fetch(url, fetcher=None):
+    """HEAD, falling back to GET when HEAD is refused (via irlpls.safefetch: SSRF-safe, robots, rate limit).
+    Returns an int status or an error string."""
+    fetch = fetcher or safefetch.fetch
     for method in ("HEAD", "GET"):
-        req = urllib.request.Request(url, method=method, headers={"User-Agent": UA})
         try:
-            with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-                return r.status
-        except urllib.error.HTTPError as e:
-            if method == "HEAD" and e.code in (403, 405, 501):
-                continue
-            return e.code
+            st = fetch(url, method=method, timeout=TIMEOUT, read_body=False).status
+        except safefetch.SafeFetchError as e:
+            return f"error: {type(e).__name__}"
         except Exception as e:  # noqa: BLE001 - report, never crash a batch
             return f"error: {type(e).__name__}"
+        if method == "HEAD" and st in (403, 405, 501):
+            continue
+        return st
     return "error"
 
 

@@ -67,3 +67,25 @@ def test_verdicts_and_probe_output(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "root-info z 404 base" in out and "blocked (bot?) z 403 docs" in out and "FAIL" not in out
     assert rc.main(["--cards-dir", str(tmp_path), "--probe"], fetch=lambda u: 500) == 1
+
+
+def test_http_fetch_uses_safefetch_and_maps_errors():
+    from irlpls import safefetch as sf
+    calls = []
+
+    class R:
+        def __init__(self, status):
+            self.status = status
+
+    def fake(url, **kw):
+        calls.append(kw["method"])
+        if kw["method"] == "HEAD":
+            return R(405)
+        return R(200)
+
+    assert rc.http_fetch("https://x.example/", fetcher=fake) == 200 and calls == ["HEAD", "GET"]
+
+    def blocked(url, **kw):
+        raise sf.BlockedAddress("10.0.0.1")
+
+    assert rc.http_fetch("https://x.example/", fetcher=blocked) == "error: BlockedAddress"
