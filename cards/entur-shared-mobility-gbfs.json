@@ -1,0 +1,160 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "entur-shared-mobility-gbfs",
+  "family": "bike-share",
+  "name": "Entur shared mobility GBFS (Norway scooters, bikes, cars)",
+  "status": "unclaimed",
+  "provider_url": "https://developer.entur.no/open-data",
+  "short": "Norway e-scooters and city bikes: free vehicles and docks across about 80 systems via Entur; keyless GBFS.",
+  "summary": "Entur, the Norwegian public transport data platform, aggregates GBFS 2.3 feeds from shared mobility operators (scooter, bike and car share systems in Oslo, Bergen, Trondheim, Stavanger and other towns). An index lists each system; each feed gives free vehicle positions or station availability. Answered without a key on 2026-11-08.",
+  "tags": [
+    "scooter",
+    "e-scooter",
+    "bike share",
+    "gbfs",
+    "norway",
+    "micromobility",
+    "entur",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "scooters available near a place in Norway",
+      "bikes and docks at a Norwegian city bike station",
+      "list of shared mobility systems in Norway"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service: Entur data and APIs are free, licence NLOD. Requests should send an ET-Client-Name header; without it lower rate limits apply."
+  },
+  "latency": {
+    "typical": "Feed ttl 5 to 60 seconds",
+    "notes": "Live check 2026-11-08: Ryde Oslo free_bike_status ttl 5 and last_updated within a minute of the request."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: Ryde Oslo free_bike_status ttl 5 and last_updated within a minute of the request."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+  },
+  "coverage": {
+    "regions": [
+      "Norway"
+    ],
+    "notes": "The index listed about 80 systems on 2026-11-08, mostly scooter operators plus bike share systems; availability depends on each operator.",
+    "areas": [
+      "NO"
+    ]
+  },
+  "licensing": {
+    "summary": "Entur terms of service (read 2026-11-08): Entur's open data, including API responses, is published under the Norwegian Licence for Open Government Data (NLOD), which allows free reuse including commercial use with attribution ('Inneholder data under Norsk lisens for offentlige data (NLOD) tilgjengeliggjort av Entur AS'). Data is provided as is. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://developer.entur.no/open-data",
+    "base_url": "https://api.entur.io/mobility/v2/gbfs",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "",
+        "notes": "Index of systems with a GBFS URL each (id, url)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/v2/{system}/gbfs",
+        "notes": "GBFS 2.3 feed index for one system, for example rydeoslo or bergenbysykkel."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/v2/{system}/free_bike_status",
+        "notes": "Free vehicles with position and range (dockless systems)."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/v2/{system}/station_status",
+        "notes": "Docks and bikes per station (station systems)."
+      }
+    ],
+    "rate_limits": "Terms: rate limits are set per service and lower without an ET-Client-Name header.",
+    "notes": "Send ET-Client-Name with your application name as the terms ask. Licence applies to Entur-published data; operators' own pricing and app links are in each feed."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each feed has last_updated and per-vehicle or per-station times; how operators keep clocks is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Entur terms of service, NLOD licence",
+      "url": "https://developer.entur.no/terms-of-service"
+    },
+    {
+      "claim": "System index (live GET)",
+      "url": "https://api.entur.io/mobility/v2/gbfs"
+    },
+    {
+      "claim": "Ryde Oslo GBFS feed index (live GET)",
+      "url": "https://api.entur.io/mobility/v2/gbfs/v2/rydeoslo/gbfs"
+    }
+  ]
+}

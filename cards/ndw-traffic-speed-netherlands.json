@@ -1,0 +1,148 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "ndw-traffic-speed-netherlands",
+  "family": "road-traffic-flow",
+  "name": "NDW traffic speed and flow (Netherlands)",
+  "status": "unclaimed",
+  "provider_url": "https://opendata.ndw.nu/",
+  "short": "Dutch motorway traffic speed and flow per measurement site, refreshed every minute; free CC0 DATEX II files.",
+  "summary": "NDW, the Dutch national road data partnership, publishes open data files on opendata.ndw.nu. trafficspeed.xml.gz holds current speed and flow per measurement site as DATEX II (SOAP envelope, about 1 MB gzipped); measurement_current.xml.gz holds the site table with coordinates. No key was needed on 2026-11-08.",
+  "tags": [
+    "road traffic",
+    "traffic speed",
+    "traffic flow",
+    "datex ii",
+    "netherlands",
+    "ndw",
+    "open data",
+    "no key",
+    "cc0"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current traffic speed on a Dutch road",
+      "traffic flow at a measurement site",
+      "measurement site locations"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "NDW terms page: open data is offered under CC0 1.0 unless a dataset says otherwise."
+  },
+  "latency": {
+    "typical": "File refreshed about every minute",
+    "notes": "Live check 2026-11-08: Last-Modified 13:22:10 GMT, publicationTime 13:21:42Z at 13:22 GMT."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: Last-Modified 13:22:10 GMT, publicationTime 13:21:42Z at 13:22 GMT."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 2 minutes"
+  },
+  "coverage": {
+    "regions": [
+      "Netherlands"
+    ],
+    "notes": "National road network; sites are matched to coordinates through the separate site table file.",
+    "areas": [
+      "NL"
+    ]
+  },
+  "licensing": {
+    "summary": "NDW terms of use page (Gebruiksvoorwaarden Open Data, read in Dutch 2026-11-08): data offered as open data is under Creative Commons Zero (CC0 1.0) unless a specific dataset states otherwise; free use, copying, change and distribution, commercial too; attribution not required. AI training is not specifically addressed."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.ndw.nu/",
+    "base_url": "https://opendata.ndw.nu",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/trafficspeed.xml.gz",
+        "notes": "Current speed and flow per site, DATEX II."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/measurement_current.xml.gz",
+        "notes": "Measurement site table with locations (about 10 MB)."
+      }
+    ],
+    "rate_limits": "None stated on the page read.",
+    "notes": "Gzip DATEX II XML; the first file is served with an XML content type, so decompress yourself if the bytes are gzip."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each file carries a publicationTime; how detector clocks are kept is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "NDW open data file listing",
+      "url": "https://opendata.ndw.nu/"
+    },
+    {
+      "claim": "NDW terms of use, CC0 licence",
+      "url": "https://docs.ndw.nu/algemeen/data-gebruiksvoorwaarden"
+    },
+    {
+      "claim": "Traffic speed file (live GET)",
+      "url": "https://opendata.ndw.nu/trafficspeed.xml.gz"
+    }
+  ]
+}

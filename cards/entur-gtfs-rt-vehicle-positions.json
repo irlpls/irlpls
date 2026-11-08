@@ -1,0 +1,138 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "entur-gtfs-rt-vehicle-positions",
+  "family": "transit-realtime",
+  "name": "Entur GTFS-RT vehicle positions (Norway)",
+  "status": "unclaimed",
+  "provider_url": "https://developer.entur.no/open-data",
+  "short": "Live positions of public transport vehicles across Norway as one GTFS-realtime file; keyless.",
+  "summary": "Entur publishes a national GTFS-realtime feed of vehicle positions for Norwegian public transport operators, drawn from its realtime platform. One HTTP GET returns a protobuf FeedMessage (about 430 kB on 2026-11-08) with trip ids and positions. It answered without a key.",
+  "tags": [
+    "transit",
+    "gtfs-realtime",
+    "vehicle positions",
+    "bus",
+    "norway",
+    "entur",
+    "protobuf",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "where is a bus or tram in Norway now",
+      "vehicles currently running on a Norwegian route",
+      "national realtime vehicle snapshot"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service: Entur data and APIs are free, licence NLOD."
+  },
+  "latency": {
+    "typical": "Snapshot each request",
+    "notes": "Live check 2026-11-08: the FeedMessage header timestamp was within seconds of the request; trip ids from several operators were present."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: the FeedMessage header timestamp was within seconds of the request; trip ids from several operators were present."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+  },
+  "coverage": {
+    "regions": [
+      "Norway"
+    ],
+    "notes": "National feed; which operators and vehicles report is not listed on the pages read.",
+    "areas": [
+      "NO"
+    ]
+  },
+  "licensing": {
+    "summary": "Entur terms of service (read 2026-11-08): Entur's open data, including API responses, is published under NLOD, which allows free reuse including commercial use with attribution ('Inneholder data under Norsk lisens for offentlige data (NLOD) tilgjengeliggjort av Entur AS'). Data is provided as is. AI training and resale are not mentioned."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://developer.entur.no/open-data",
+    "base_url": "https://api.entur.io/realtime/v1",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/gtfs-rt/vehicle-positions",
+        "notes": "GTFS-realtime FeedMessage, protobuf."
+      }
+    ],
+    "rate_limits": "Terms: lower limits without an ET-Client-Name header.",
+    "notes": "Binary protobuf; decode with a GTFS-realtime library. Send ET-Client-Name with your application name. A trip-updates path returned 404 on the same check."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "The feed header carries a Unix timestamp; how vehicle clocks are kept is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Entur terms of service, NLOD licence",
+      "url": "https://developer.entur.no/terms-of-service"
+    },
+    {
+      "claim": "Vehicle positions feed (live GET, protobuf)",
+      "url": "https://api.entur.io/realtime/v1/gtfs-rt/vehicle-positions"
+    }
+  ]
+}

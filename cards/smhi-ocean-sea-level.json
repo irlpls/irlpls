@@ -1,0 +1,147 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "smhi-ocean-sea-level",
+  "family": "coast-tide-wave",
+  "name": "SMHI sea level observations (Sweden coast)",
+  "status": "unclaimed",
+  "provider_url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning",
+  "short": "SMHI sea level at 71 Swedish coastal stations, in cm, minute values; free, keyless JSON.",
+  "summary": "SMHI, the Swedish Meteorological and Hydrological Institute, serves oceanographic observations through an open JSON API. Parameter 13 is sea level as minute values in centimetres, with a station list and per-station series for the latest hour, day or months. The API answered without a key on 2026-11-08 and listed 71 stations.",
+  "tags": [
+    "sea level",
+    "tide",
+    "coast",
+    "sweden",
+    "smhi",
+    "oceanography",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "current sea level at a Swedish coastal station",
+      "sea level in the last hour at a station",
+      "list of SMHI sea level stations"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms page: open data is free under CC BY 4.0 SE. No key mentioned; none was needed."
+  },
+  "latency": {
+    "typical": "Minute values",
+    "notes": "Live check 2026-11-08: Kungsvik latest-hour series ended within two minutes of the request time."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: Kungsvik latest-hour series ended within two minutes of the request time."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 5 minutes"
+  },
+  "coverage": {
+    "regions": [
+      "Sweden"
+    ],
+    "notes": "71 stations listed for parameter 13 on 2026-11-08; the reference level of the values is not described in the API response.",
+    "areas": [
+      "SE"
+    ]
+  },
+  "licensing": {
+    "summary": "Terms page (Villkor for anvandning, updated 15 June 2026, read in Swedish): the open data follow Creative Commons Attribution 4.0 SE; copying, distributing and adapting are allowed, commercially too, naming SMHI as source and stating changes. Separate terms apply to consequence-based weather warnings, which are not part of this feed. AI training is not addressed."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://opendata.smhi.se/apidocs/",
+    "base_url": "https://opendata-download-ocobs.smhi.se/api/version/latest",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/parameter/13.json",
+        "notes": "Parameter 13 (sea level, minute values) with the station list."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/parameter/13/station/{id}/period/latest-hour/data.json",
+        "notes": "Series of {date, value, quality} for one station; periods latest-hour, latest-day, latest-months."
+      }
+    ],
+    "rate_limits": "None stated on the pages read.",
+    "notes": "Values are in cm; each point has a quality flag."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each point carries a Unix millisecond date; how station clocks are kept is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Sea level parameter 13 and station list (live GET)",
+      "url": "https://opendata-download-ocobs.smhi.se/api/version/latest/parameter/13.json"
+    },
+    {
+      "claim": "Latest-hour data for a station (live GET)",
+      "url": "https://opendata-download-ocobs.smhi.se/api/version/latest/parameter/13/station/2130/period/latest-hour/data.json"
+    },
+    {
+      "claim": "CC BY 4.0 SE terms of use",
+      "url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning"
+    }
+  ]
+}

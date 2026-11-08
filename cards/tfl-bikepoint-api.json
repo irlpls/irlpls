@@ -1,0 +1,153 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "tfl-bikepoint-api",
+  "family": "bike-share",
+  "name": "TfL BikePoint (Santander Cycles docking stations, London)",
+  "status": "unclaimed",
+  "provider_url": "https://api-portal.tfl.gov.uk/",
+  "short": "London docking stations: bikes, e-bikes and empty docks per station from the TfL Unified API; keyless reads.",
+  "summary": "Transport for London serves the BikePoint list of Santander Cycles docking stations through its Unified API. Each station has name, coordinates, number of bikes, empty docks and docks in total, updated about every few minutes. A plain GET answered without a key on 2026-11-08.",
+  "tags": [
+    "bike share",
+    "santander cycles",
+    "london",
+    "tfl",
+    "docks",
+    "bikes",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "bikes available at a London docking station",
+      "empty docks at a station",
+      "docking stations near a place in London"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "TfL licence terms: free transport data service. The terms speak of registration; unauthenticated GET calls worked."
+  },
+  "latency": {
+    "typical": "Minutes",
+    "notes": "Live check 2026-11-08: station properties carried modified times within about 20 minutes of the request; update interval is not stated."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: station properties carried modified times within about 20 minutes of the request; update interval is not stated."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes"
+  },
+  "coverage": {
+    "regions": [
+      "London, United Kingdom"
+    ],
+    "notes": "All BikePoints in the Unified API; the station count was not read from the licence pages.",
+    "areas": [
+      "GB"
+    ]
+  },
+  "licensing": {
+    "summary": "TfL Transport Data Service terms (the live page returned 403 to curl; read in an Internet Archive copy of the page): licence based on Open Government Licence v2.0 with TfL amendments. Free to copy, adapt and use commercially; must state 'Powered by TfL Open Data', the OS data notice, follow branding rules, keep to 500 calls per minute per feed. The terms say they apply from registration. The terms bar scraping of the Santander Cycles website. AI training and resale are not addressed."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api-portal.tfl.gov.uk/",
+    "base_url": "https://api.tfl.gov.uk",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/BikePoint",
+        "notes": "All docking stations with additionalProperties (NbBikes, NbEmptyDocks, NbDocks)."
+      },
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/BikePoint/{id}",
+        "notes": "One station, for example BikePoints_1."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/BikePoint/Search?query={text}",
+        "notes": "Search stations by name."
+      }
+    ],
+    "rate_limits": "Licence: up to 500 calls per minute per data feed.",
+    "notes": "Counts are strings inside additionalProperties. Registration for an app key is offered on the portal and is the route the licence text assumes."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each property has a modified time set by TfL; how often the source refreshes is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "TfL Transport Data Service licence terms (archive copy)",
+      "url": "https://web.archive.org/web/2024/https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service"
+    },
+    {
+      "claim": "API portal, open data users",
+      "url": "https://api-portal.tfl.gov.uk/"
+    },
+    {
+      "claim": "Live GET BikePoint station",
+      "url": "https://api.tfl.gov.uk/BikePoint/BikePoints_1"
+    }
+  ]
+}

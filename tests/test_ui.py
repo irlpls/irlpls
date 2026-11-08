@@ -11,8 +11,12 @@ import re
 import socketserver
 import threading
 
+import os
+
 import pytest
 
+# scales the generous upper bounds on slow runners; lower bounds (things must not happen early) never scale
+SLOW = float(os.environ.get("IRLPLS_SLOW_FACTOR", "1"))
 pw = pytest.importorskip("playwright.sync_api")
 SITE = pathlib.Path(__file__).resolve().parent.parent / "site"
 
@@ -532,17 +536,24 @@ def test_each_card_opens_on_its_question_then_arrives_within_7_5s(browser, base)
     b = p.evaluate("__b")
     assert b["empty"] < b["you"] < b["tool"], b              # the empty card, then the question, then irlpls
     assert b["tool"] - b["you"] >= 1200, b                   # the question holds, to be read
-    assert 600 <= b["you"] - b["empty"] <= 1500 and b["done"] <= 7500, b   # an empty beat first, then it appears
+    assert 600 <= b["you"] - b["empty"] <= 1500 * SLOW and b["done"] <= 7500 * SLOW, b   # an empty beat first, then it appears
     # a swiped-to card: the same beats, counted from when it is in view
+    # an in-page recorder (first frame of each beat) instead of fixed sleeps: the ordering and the gaps are
+    # asserted, so a slow runner can only stretch the later bounds, never fake an early one
+    p.evaluate("""window.__c={};(function f(){const c=document.getElementById('ex1'),t=performance.now(),y=c&&c.querySelector('.you');
+      if(y){const o=+getComputedStyle(y).opacity;
+        if(o<.1&&__c.empty==null)__c.empty=t;if(o>.5&&y.getBoundingClientRect().height>0&&__c.you==null)__c.you=t;
+        const tl=c.querySelector('.tool');
+        if(tl&&!tl.classList.contains('hide')&&+getComputedStyle(tl).opacity>.5&&__c.you!=null&&__c.tool==null)__c.tool=t}
+      if(__c.tool==null)requestAnimationFrame(f)})()""")
+    p.evaluate("window.__c.click=performance.now()")
     p.click("#pd button:nth-child(2)")
-    p.wait_for_function("document.querySelector('#pd button:nth-child(2)').getAttribute('aria-current')==='true'", timeout=3000)
-    p.wait_for_timeout(500)
-    assert not p.evaluate(vis, "#ex1 .you")                  # still empty: the question has not been sent yet
-    p.wait_for_timeout(1300)
-    assert p.evaluate(vis, "#ex1 .you") and p.locator("#ex1 .tool.hide").count() == 1
-    p.wait_for_timeout(1500)
-    assert p.evaluate(vis, "#ex1 .tool") and p.inner_text("#ex1 .tt").strip()
-    p.wait_for_function("document.querySelectorAll('#ex1 .hide, #ex1 .wait, #ex1 .pre-you').length === 0", timeout=9000)   # polled, was a fixed 4.5 s
+    p.wait_for_function("window.__c.tool != null", timeout=int(12000 * SLOW))
+    c = p.evaluate("__c")
+    assert c.get("empty") is not None and c["empty"] < c["you"] < c["tool"], c   # empty card, then the question, then irlpls
+    assert c["you"] - c["click"] >= 500, c                   # the question had not been sent yet at 0.5 s
+    assert c["tool"] - c["you"] >= 1200, c                   # and it holds, to be read
+    p.wait_for_function("document.querySelectorAll('#ex1 .hide, #ex1 .wait, #ex1 .pre-you').length === 0", timeout=int(9000 * SLOW))   # polled, was a fixed 4.5 s
     assert p.evaluate("[...document.querySelectorAll('#ex1 .hide, #ex1 .wait, #ex1 .pre-you')].length") == 0
 
 

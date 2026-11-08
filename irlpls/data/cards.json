@@ -7120,6 +7120,304 @@
    ]
   },
   {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "entur-gtfs-rt-vehicle-positions",
+   "family": "transit-realtime",
+   "name": "Entur GTFS-RT vehicle positions (Norway)",
+   "status": "unclaimed",
+   "provider_url": "https://developer.entur.no/open-data",
+   "short": "Live positions of public transport vehicles across Norway as one GTFS-realtime file; keyless.",
+   "summary": "Entur publishes a national GTFS-realtime feed of vehicle positions for Norwegian public transport operators, drawn from its realtime platform. One HTTP GET returns a protobuf FeedMessage (about 430 kB on 2026-11-08) with trip ids and positions. It answered without a key.",
+   "tags": [
+    "transit",
+    "gtfs-realtime",
+    "vehicle positions",
+    "bus",
+    "norway",
+    "entur",
+    "protobuf",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "where is a bus or tram in Norway now",
+     "vehicles currently running on a Norwegian route",
+     "national realtime vehicle snapshot"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service: Entur data and APIs are free, licence NLOD."
+   },
+   "latency": {
+    "typical": "Snapshot each request",
+    "notes": "Live check 2026-11-08: the FeedMessage header timestamp was within seconds of the request; trip ids from several operators were present."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: the FeedMessage header timestamp was within seconds of the request; trip ids from several operators were present."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+   },
+   "coverage": {
+    "regions": [
+     "Norway"
+    ],
+    "notes": "National feed; which operators and vehicles report is not listed on the pages read.",
+    "areas": [
+     "NO"
+    ]
+   },
+   "licensing": {
+    "summary": "Entur terms of service (read 2026-11-08): Entur's open data, including API responses, is published under NLOD, which allows free reuse including commercial use with attribution ('Inneholder data under Norsk lisens for offentlige data (NLOD) tilgjengeliggjort av Entur AS'). Data is provided as is. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://developer.entur.no/open-data",
+    "base_url": "https://api.entur.io/realtime/v1",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/gtfs-rt/vehicle-positions",
+      "notes": "GTFS-realtime FeedMessage, protobuf."
+     }
+    ],
+    "rate_limits": "Terms: lower limits without an ET-Client-Name header.",
+    "notes": "Binary protobuf; decode with a GTFS-realtime library. Send ET-Client-Name with your application name. A trip-updates path returned 404 on the same check."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "The feed header carries a Unix timestamp; how vehicle clocks are kept is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Entur terms of service, NLOD licence",
+     "url": "https://developer.entur.no/terms-of-service"
+    },
+    {
+     "claim": "Vehicle positions feed (live GET, protobuf)",
+     "url": "https://api.entur.io/realtime/v1/gtfs-rt/vehicle-positions"
+    }
+   ]
+  },
+  {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "entur-shared-mobility-gbfs",
+   "family": "bike-share",
+   "name": "Entur shared mobility GBFS (Norway scooters, bikes, cars)",
+   "status": "unclaimed",
+   "provider_url": "https://developer.entur.no/open-data",
+   "short": "Norway e-scooters and city bikes: free vehicles and docks across about 80 systems via Entur; keyless GBFS.",
+   "summary": "Entur, the Norwegian public transport data platform, aggregates GBFS 2.3 feeds from shared mobility operators (scooter, bike and car share systems in Oslo, Bergen, Trondheim, Stavanger and other towns). An index lists each system; each feed gives free vehicle positions or station availability. Answered without a key on 2026-11-08.",
+   "tags": [
+    "scooter",
+    "e-scooter",
+    "bike share",
+    "gbfs",
+    "norway",
+    "micromobility",
+    "entur",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "scooters available near a place in Norway",
+     "bikes and docks at a Norwegian city bike station",
+     "list of shared mobility systems in Norway"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms of service: Entur data and APIs are free, licence NLOD. Requests should send an ET-Client-Name header; without it lower rate limits apply."
+   },
+   "latency": {
+    "typical": "Feed ttl 5 to 60 seconds",
+    "notes": "Live check 2026-11-08: Ryde Oslo free_bike_status ttl 5 and last_updated within a minute of the request."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: Ryde Oslo free_bike_status ttl 5 and last_updated within a minute of the request."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under a minute"
+   },
+   "coverage": {
+    "regions": [
+     "Norway"
+    ],
+    "notes": "The index listed about 80 systems on 2026-11-08, mostly scooter operators plus bike share systems; availability depends on each operator.",
+    "areas": [
+     "NO"
+    ]
+   },
+   "licensing": {
+    "summary": "Entur terms of service (read 2026-11-08): Entur's open data, including API responses, is published under the Norwegian Licence for Open Government Data (NLOD), which allows free reuse including commercial use with attribution ('Inneholder data under Norsk lisens for offentlige data (NLOD) tilgjengeliggjort av Entur AS'). Data is provided as is. AI training and resale are not mentioned."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://developer.entur.no/open-data",
+    "base_url": "https://api.entur.io/mobility/v2/gbfs",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "",
+      "notes": "Index of systems with a GBFS URL each (id, url)."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/v2/{system}/gbfs",
+      "notes": "GBFS 2.3 feed index for one system, for example rydeoslo or bergenbysykkel."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/v2/{system}/free_bike_status",
+      "notes": "Free vehicles with position and range (dockless systems)."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/v2/{system}/station_status",
+      "notes": "Docks and bikes per station (station systems)."
+     }
+    ],
+    "rate_limits": "Terms: rate limits are set per service and lower without an ET-Client-Name header.",
+    "notes": "Send ET-Client-Name with your application name as the terms ask. Licence applies to Entur-published data; operators' own pricing and app links are in each feed."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each feed has last_updated and per-vehicle or per-station times; how operators keep clocks is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Entur terms of service, NLOD licence",
+     "url": "https://developer.entur.no/terms-of-service"
+    },
+    {
+     "claim": "System index (live GET)",
+     "url": "https://api.entur.io/mobility/v2/gbfs"
+    },
+    {
+     "claim": "Ryde Oslo GBFS feed index (live GET)",
+     "url": "https://api.entur.io/mobility/v2/gbfs/v2/rydeoslo/gbfs"
+    }
+   ]
+  },
+  {
    "id": "errand",
    "family": "errand-anywhere",
    "name": "Errand",
@@ -19642,6 +19940,154 @@
    "adapter": "ndbc-buoys"
   },
   {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "ndw-traffic-speed-netherlands",
+   "family": "road-traffic-flow",
+   "name": "NDW traffic speed and flow (Netherlands)",
+   "status": "unclaimed",
+   "provider_url": "https://opendata.ndw.nu/",
+   "short": "Dutch motorway traffic speed and flow per measurement site, refreshed every minute; free CC0 DATEX II files.",
+   "summary": "NDW, the Dutch national road data partnership, publishes open data files on opendata.ndw.nu. trafficspeed.xml.gz holds current speed and flow per measurement site as DATEX II (SOAP envelope, about 1 MB gzipped); measurement_current.xml.gz holds the site table with coordinates. No key was needed on 2026-11-08.",
+   "tags": [
+    "road traffic",
+    "traffic speed",
+    "traffic flow",
+    "datex ii",
+    "netherlands",
+    "ndw",
+    "open data",
+    "no key",
+    "cc0"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current traffic speed on a Dutch road",
+     "traffic flow at a measurement site",
+     "measurement site locations"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "NDW terms page: open data is offered under CC0 1.0 unless a dataset says otherwise."
+   },
+   "latency": {
+    "typical": "File refreshed about every minute",
+    "notes": "Live check 2026-11-08: Last-Modified 13:22:10 GMT, publicationTime 13:21:42Z at 13:22 GMT."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: Last-Modified 13:22:10 GMT, publicationTime 13:21:42Z at 13:22 GMT."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 2 minutes"
+   },
+   "coverage": {
+    "regions": [
+     "Netherlands"
+    ],
+    "notes": "National road network; sites are matched to coordinates through the separate site table file.",
+    "areas": [
+     "NL"
+    ]
+   },
+   "licensing": {
+    "summary": "NDW terms of use page (Gebruiksvoorwaarden Open Data, read in Dutch 2026-11-08): data offered as open data is under Creative Commons Zero (CC0 1.0) unless a specific dataset states otherwise; free use, copying, change and distribution, commercial too; attribution not required. AI training is not specifically addressed."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://docs.ndw.nu/",
+    "base_url": "https://opendata.ndw.nu",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/trafficspeed.xml.gz",
+      "notes": "Current speed and flow per site, DATEX II."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/measurement_current.xml.gz",
+      "notes": "Measurement site table with locations (about 10 MB)."
+     }
+    ],
+    "rate_limits": "None stated on the page read.",
+    "notes": "Gzip DATEX II XML; the first file is served with an XML content type, so decompress yourself if the bytes are gzip."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each file carries a publicationTime; how detector clocks are kept is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "NDW open data file listing",
+     "url": "https://opendata.ndw.nu/"
+    },
+    {
+     "claim": "NDW terms of use, CC0 licence",
+     "url": "https://docs.ndw.nu/algemeen/data-gebruiksvoorwaarden"
+    },
+    {
+     "claim": "Traffic speed file (live GET)",
+     "url": "https://opendata.ndw.nu/trafficspeed.xml.gz"
+    }
+   ]
+  },
+  {
    "family": "street-level-imagery",
    "spec_version": "2026-10-26",
    "capability": "com.irlpls.capture.card",
@@ -19792,6 +20238,165 @@
    ],
    "updated": "2026-11-04",
    "expires": "2027-11-04"
+  },
+  {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "nextbike-gbfs-cc0",
+   "family": "bike-share",
+   "name": "nextbike GBFS (Germany, Poland, Switzerland and other systems)",
+   "status": "unclaimed",
+   "provider_url": "https://nextbike.net/maps/gbfs/v2/nextbike_dd/en/system_information.json",
+   "short": "nextbike station availability in many cities (Duesseldorf, Berlin, Poland, Switzerland); keyless GBFS marked CC0.",
+   "summary": "nextbike GmbH serves GBFS 2.x feeds, one per city system under /maps/gbfs/v2/{system}, such as nextbike_dd (Duesseldorf) and nextbike_bn (Berlin). Station status lists bikes and docks available per station. The feeds answered without a key on 2026-11-08 and state license_id CC0-1.0 in system_information.",
+   "tags": [
+    "bike share",
+    "gbfs",
+    "nextbike",
+    "germany",
+    "poland",
+    "switzerland",
+    "micromobility",
+    "cc0",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "bikes at a nextbike station",
+     "free docks at a station",
+     "list of nextbike stations in a city"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Feed system_information states CC0-1.0. No key mentioned; none was needed."
+   },
+   "latency": {
+    "typical": "Feed ttl 60 seconds",
+    "notes": "Live check 2026-11-08: station_status ttl 60 and last_reported equal to the feed time."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: station_status ttl 60 and last_reported equal to the feed time."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 2 minutes"
+   },
+   "coverage": {
+    "regions": [
+     "Germany",
+     "Poland",
+     "Switzerland"
+    ],
+    "notes": "Seen on nextbike_dd, nextbike_bn, nextbike_pl and nextbike_ch; a full list of systems was not found (the discovery path returned 404).",
+    "areas": [
+     "DE",
+     "PL",
+     "CH"
+    ]
+   },
+   "licensing": {
+    "summary": "The operator's own system_information feed gives license_id CC0-1.0 (checked for four systems on 2026-11-08); the CC0 1.0 deed was read at Creative Commons. No separate nextbike terms page for the feeds was found, so conditions beyond the feed field are not known. AI training is covered by CC0 only if the field is accepted as the operator's statement."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://nextbike.net/maps/gbfs/v2/nextbike_dd/gbfs.json",
+    "base_url": "https://nextbike.net/maps/gbfs/v2",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/{system}/gbfs.json",
+      "notes": "Feed index, for example nextbike_dd."
+     },
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/{system}/en/station_information.json",
+      "notes": "Stations with coordinates."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/{system}/en/station_status.json",
+      "notes": "num_bikes_available, num_docks_available, last_reported per station."
+     }
+    ],
+    "rate_limits": "None stated.",
+    "notes": "The licence is stated only in the feed field; no human-readable terms page was found."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each station carries last_reported as a Unix time; how the clock is kept is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Feed index (live GET)",
+     "url": "https://nextbike.net/maps/gbfs/v2/nextbike_dd/gbfs.json"
+    },
+    {
+     "claim": "system_information with license_id CC0-1.0",
+     "url": "https://nextbike.net/maps/gbfs/v2/nextbike_dd/en/system_information.json"
+    },
+    {
+     "claim": "CC0 1.0 deed",
+     "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    }
+   ]
   },
   {
    "family": "weather-station",
@@ -28111,6 +28716,153 @@
    ]
   },
   {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "smhi-ocean-sea-level",
+   "family": "coast-tide-wave",
+   "name": "SMHI sea level observations (Sweden coast)",
+   "status": "unclaimed",
+   "provider_url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning",
+   "short": "SMHI sea level at 71 Swedish coastal stations, in cm, minute values; free, keyless JSON.",
+   "summary": "SMHI, the Swedish Meteorological and Hydrological Institute, serves oceanographic observations through an open JSON API. Parameter 13 is sea level as minute values in centimetres, with a station list and per-station series for the latest hour, day or months. The API answered without a key on 2026-11-08 and listed 71 stations.",
+   "tags": [
+    "sea level",
+    "tide",
+    "coast",
+    "sweden",
+    "smhi",
+    "oceanography",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "current sea level at a Swedish coastal station",
+     "sea level in the last hour at a station",
+     "list of SMHI sea level stations"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Terms page: open data is free under CC BY 4.0 SE. No key mentioned; none was needed."
+   },
+   "latency": {
+    "typical": "Minute values",
+    "notes": "Live check 2026-11-08: Kungsvik latest-hour series ended within two minutes of the request time."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: Kungsvik latest-hour series ended within two minutes of the request time."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Under 5 minutes"
+   },
+   "coverage": {
+    "regions": [
+     "Sweden"
+    ],
+    "notes": "71 stations listed for parameter 13 on 2026-11-08; the reference level of the values is not described in the API response.",
+    "areas": [
+     "SE"
+    ]
+   },
+   "licensing": {
+    "summary": "Terms page (Villkor for anvandning, updated 15 June 2026, read in Swedish): the open data follow Creative Commons Attribution 4.0 SE; copying, distributing and adapting are allowed, commercially too, naming SMHI as source and stating changes. Separate terms apply to consequence-based weather warnings, which are not part of this feed. AI training is not addressed."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://opendata.smhi.se/apidocs/",
+    "base_url": "https://opendata-download-ocobs.smhi.se/api/version/latest",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/parameter/13.json",
+      "notes": "Parameter 13 (sea level, minute values) with the station list."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/parameter/13/station/{id}/period/latest-hour/data.json",
+      "notes": "Series of {date, value, quality} for one station; periods latest-hour, latest-day, latest-months."
+     }
+    ],
+    "rate_limits": "None stated on the pages read.",
+    "notes": "Values are in cm; each point has a quality flag."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each point carries a Unix millisecond date; how station clocks are kept is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "Sea level parameter 13 and station list (live GET)",
+     "url": "https://opendata-download-ocobs.smhi.se/api/version/latest/parameter/13.json"
+    },
+    {
+     "claim": "Latest-hour data for a station (live GET)",
+     "url": "https://opendata-download-ocobs.smhi.se/api/version/latest/parameter/13/station/2130/period/latest-hour/data.json"
+    },
+    {
+     "claim": "CC BY 4.0 SE terms of use",
+     "url": "https://www.smhi.se/data/om-smhis-data/villkor-for-anvandning"
+    }
+   ]
+  },
+  {
    "id": "snappr",
    "family": "photo-of-address",
    "name": "Snappr",
@@ -29244,6 +29996,159 @@
    "spec_version": "2026-10-26",
    "short": "A training-data vendor whose app-based crowd collects custom photos, video and driving data to order.",
    "capability": "com.irlpls.capture.card"
+  },
+  {
+   "spec_version": "2026-10-26",
+   "capability": "com.irlpls.capture.card",
+   "id": "tfl-bikepoint-api",
+   "family": "bike-share",
+   "name": "TfL BikePoint (Santander Cycles docking stations, London)",
+   "status": "unclaimed",
+   "provider_url": "https://api-portal.tfl.gov.uk/",
+   "short": "London docking stations: bikes, e-bikes and empty docks per station from the TfL Unified API; keyless reads.",
+   "summary": "Transport for London serves the BikePoint list of Santander Cycles docking stations through its Unified API. Each station has name, coordinates, number of bikes, empty docks and docks in total, updated about every few minutes. A plain GET answered without a key on 2026-11-08.",
+   "tags": [
+    "bike share",
+    "santander cycles",
+    "london",
+    "tfl",
+    "docks",
+    "bikes",
+    "open data",
+    "no key"
+   ],
+   "capabilities": {
+    "modalities": [
+     "sensor"
+    ],
+    "tasks": [
+     "bikes available at a London docking station",
+     "empty docks at a station",
+     "docking stations near a place in London"
+    ]
+   },
+   "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "TfL licence terms: free transport data service. The terms speak of registration; unauthenticated GET calls worked."
+   },
+   "latency": {
+    "typical": "Minutes",
+    "notes": "Live check 2026-11-08: station properties carried modified times within about 20 minutes of the request; update interval is not stated."
+   },
+   "delivery": {
+    "modes": [
+     "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: station properties carried modified times within about 20 minutes of the request; update interval is not stated."
+   },
+   "freshness": {
+    "mode": "live",
+    "typical_age": "Minutes"
+   },
+   "coverage": {
+    "regions": [
+     "London, United Kingdom"
+    ],
+    "notes": "All BikePoints in the Unified API; the station count was not read from the licence pages.",
+    "areas": [
+     "GB"
+    ]
+   },
+   "licensing": {
+    "summary": "TfL Transport Data Service terms (the live page returned 403 to curl; read in an Internet Archive copy of the page): licence based on Open Government Licence v2.0 with TfL amendments. Free to copy, adapt and use commercially; must state 'Powered by TfL Open Data', the OS data notice, follow branding rules, keep to 500 calls per minute per feed. The terms say they apply from registration. The terms bar scraping of the Santander Cycles website. AI training and resale are not addressed."
+   },
+   "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+   },
+   "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://api-portal.tfl.gov.uk/",
+    "base_url": "https://api.tfl.gov.uk",
+    "auth": [
+     {
+      "type": "none",
+      "how_to_get": "No key or registration is needed."
+     }
+    ],
+    "endpoints": [
+     {
+      "action": "list",
+      "method": "GET",
+      "path": "/BikePoint",
+      "notes": "All docking stations with additionalProperties (NbBikes, NbEmptyDocks, NbDocks)."
+     },
+     {
+      "action": "fetch",
+      "method": "GET",
+      "path": "/BikePoint/{id}",
+      "notes": "One station, for example BikePoints_1."
+     },
+     {
+      "action": "search",
+      "method": "GET",
+      "path": "/BikePoint/Search?query={text}",
+      "notes": "Search stations by name."
+     }
+    ],
+    "rate_limits": "Licence: up to 500 calls per minute per data feed.",
+    "notes": "Counts are strings inside additionalProperties. Registration for an app key is offered on the portal and is the route the licence text assumes."
+   },
+   "capture": {
+    "by": "devices"
+   },
+   "verification": {
+    "human": {
+     "level": "none",
+     "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+     "level": "none",
+     "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+     "level": "none",
+     "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+     "level": "claimed",
+     "unknown": "Each property has a modified time set by TfL; how often the source refreshes is not stated."
+    },
+    "location": {
+     "level": "claimed",
+     "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+     "level": "none",
+     "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+     "level": "none",
+     "unknown": "No independent review of individual records is described."
+    }
+   },
+   "updated": "2026-11-08",
+   "expires": "2027-11-08",
+   "sources": [
+    {
+     "claim": "TfL Transport Data Service licence terms (archive copy)",
+     "url": "https://web.archive.org/web/2024/https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service"
+    },
+    {
+     "claim": "API portal, open data users",
+     "url": "https://api-portal.tfl.gov.uk/"
+    },
+    {
+     "claim": "Live GET BikePoint station",
+     "url": "https://api.tfl.gov.uk/BikePoint/BikePoints_1"
+    }
+   ]
   },
   {
    "id": "tfl-jamcams",

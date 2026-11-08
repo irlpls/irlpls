@@ -1,0 +1,159 @@
+{
+  "spec_version": "2026-10-26",
+  "capability": "com.irlpls.capture.card",
+  "id": "nextbike-gbfs-cc0",
+  "family": "bike-share",
+  "name": "nextbike GBFS (Germany, Poland, Switzerland and other systems)",
+  "status": "unclaimed",
+  "provider_url": "https://nextbike.net/maps/gbfs/v2/nextbike_dd/en/system_information.json",
+  "short": "nextbike station availability in many cities (Duesseldorf, Berlin, Poland, Switzerland); keyless GBFS marked CC0.",
+  "summary": "nextbike GmbH serves GBFS 2.x feeds, one per city system under /maps/gbfs/v2/{system}, such as nextbike_dd (Duesseldorf) and nextbike_bn (Berlin). Station status lists bikes and docks available per station. The feeds answered without a key on 2026-11-08 and state license_id CC0-1.0 in system_information.",
+  "tags": [
+    "bike share",
+    "gbfs",
+    "nextbike",
+    "germany",
+    "poland",
+    "switzerland",
+    "micromobility",
+    "cc0",
+    "open data",
+    "no key"
+  ],
+  "capabilities": {
+    "modalities": [
+      "sensor"
+    ],
+    "tasks": [
+      "bikes at a nextbike station",
+      "free docks at a station",
+      "list of nextbike stations in a city"
+    ]
+  },
+  "pricing": {
+    "model": "free",
+    "from_usd": 0,
+    "unit": "request",
+    "notes": "Feed system_information states CC0-1.0. No key mentioned; none was needed."
+  },
+  "latency": {
+    "typical": "Feed ttl 60 seconds",
+    "notes": "Live check 2026-11-08: station_status ttl 60 and last_reported equal to the feed time."
+  },
+  "delivery": {
+    "modes": [
+      "live"
+    ],
+    "speed": "minutes",
+    "basis": "Live check 2026-11-08: station_status ttl 60 and last_reported equal to the feed time."
+  },
+  "freshness": {
+    "mode": "live",
+    "typical_age": "Under 2 minutes"
+  },
+  "coverage": {
+    "regions": [
+      "Germany",
+      "Poland",
+      "Switzerland"
+    ],
+    "notes": "Seen on nextbike_dd, nextbike_bn, nextbike_pl and nextbike_ch; a full list of systems was not found (the discovery path returned 404).",
+    "areas": [
+      "DE",
+      "PL",
+      "CH"
+    ]
+  },
+  "licensing": {
+    "summary": "The operator's own system_information feed gives license_id CC0-1.0 (checked for four systems on 2026-11-08); the CC0 1.0 deed was read at Creative Commons. No separate nextbike terms page for the feeds was found, so conditions beyond the feed field are not known. AI training is covered by CC0 only if the field is accepted as the operator's statement."
+  },
+  "access": {
+    "cost": "free",
+    "key_required": false,
+    "tested_live": "2026-11-08",
+    "gate": "none"
+  },
+  "api": {
+    "available": true,
+    "self_serve": true,
+    "docs_url": "https://nextbike.net/maps/gbfs/v2/nextbike_dd/gbfs.json",
+    "base_url": "https://nextbike.net/maps/gbfs/v2",
+    "auth": [
+      {
+        "type": "none",
+        "how_to_get": "No key or registration is needed."
+      }
+    ],
+    "endpoints": [
+      {
+        "action": "fetch",
+        "method": "GET",
+        "path": "/{system}/gbfs.json",
+        "notes": "Feed index, for example nextbike_dd."
+      },
+      {
+        "action": "list",
+        "method": "GET",
+        "path": "/{system}/en/station_information.json",
+        "notes": "Stations with coordinates."
+      },
+      {
+        "action": "search",
+        "method": "GET",
+        "path": "/{system}/en/station_status.json",
+        "notes": "num_bikes_available, num_docks_available, last_reported per station."
+      }
+    ],
+    "rate_limits": "None stated.",
+    "notes": "The licence is stated only in the feed field; no human-readable terms page was found."
+  },
+  "capture": {
+    "by": "devices"
+  },
+  "verification": {
+    "human": {
+      "level": "none",
+      "unknown": "No person is involved in a reading; the data is machine-generated."
+    },
+    "application": {
+      "level": "none",
+      "unknown": "No signing or attestation of the data is described."
+    },
+    "camera": {
+      "level": "none",
+      "unknown": "Not a camera source; no image signing applies."
+    },
+    "time": {
+      "level": "claimed",
+      "unknown": "Each station carries last_reported as a Unix time; how the clock is kept is not stated."
+    },
+    "location": {
+      "level": "claimed",
+      "unknown": "Coordinates are published by the provider; nothing proves a device or station has not moved."
+    },
+    "content": {
+      "level": "none",
+      "unknown": "No check of a reading against a second source is described."
+    },
+    "corroboration": {
+      "level": "none",
+      "unknown": "No independent review of individual records is described."
+    }
+  },
+  "updated": "2026-11-08",
+  "expires": "2027-11-08",
+  "sources": [
+    {
+      "claim": "Feed index (live GET)",
+      "url": "https://nextbike.net/maps/gbfs/v2/nextbike_dd/gbfs.json"
+    },
+    {
+      "claim": "system_information with license_id CC0-1.0",
+      "url": "https://nextbike.net/maps/gbfs/v2/nextbike_dd/en/system_information.json"
+    },
+    {
+      "claim": "CC0 1.0 deed",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    }
+  ]
+}
